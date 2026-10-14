@@ -25,7 +25,7 @@ const IMAGES_VERSION = 4;  // bump when artwork files are replaced
 
 // Interactive pieces shown in the right-hand canvas when a card is opened
 const CANVAS_PAGES = {
-  '명태 액막이.png': 'charm.html',  // the fish charm
+  '명태 액막이.png': 'charm.html?v=2',  // the fish charm
 };
 
 const wrap = document.getElementById('cards');

@@ -23,8 +23,9 @@ html, body {
   --pin-x: 201px;
   --pin-y: -66px;
   position: absolute;
-  left: calc(50% - var(--pin-x));
-  top: calc(16vh - var(--pin-y));
+  left: calc(50% - 196px);  /* the fish runs 38–353 across the frame; centre it */
+  /* Centre the whole piece, from the top of the string (pin) to the bottom of the fish (334) */
+  top: calc(50% - (334px - var(--pin-y)) / 2 - var(--pin-y));
   width: 347px;
   height: 334px;
   transform-origin: var(--pin-x) var(--pin-y);
