@@ -153,14 +153,15 @@ const viewerLeft = document.getElementById('viewer-left');
 const canvas = document.getElementById('canvas');
 const closeBtn = document.getElementById('close');
 const DURATION = 700;
+const BACK_SHIFT = 40;  // px the opened card sits right of the nav's left edge; matches .viewer in style.css
 const EASE = 'cubic-bezier(0.65, 0, 0.35, 1)';
 let flip = null;
 let busy = false;
 
 function targetRect(w, h) {
   const r = viewerLeft.getBoundingClientRect();
-  // Left edge lines up with the "Info" link in the header
-  return { left: r.left, top: r.top + (r.height - h) / 2 };
+  // Sits a little in from the left edge of the page (BACK_SHIFT)
+  return { left: r.left + BACK_SHIFT, top: r.top + (r.height - h) / 2 };
 }
 
 // The flip box sits at its final spot and size; the source card's position
