@@ -23,6 +23,16 @@ const IMAGES = [
 ];
 const IMAGES_VERSION = 4;  // bump when artwork files are replaced
 
+// Cards with back artwork in cards/backs/ (same file name as the front);
+// the rest flip to a blank back
+const BACKS = new Set([
+  '명태 액막이.png',
+]);
+
+const backSrc = (name) => `cards/backs/${encodeURIComponent(name)}?v=${IMAGES_VERSION}`;
+// Load backs up front so they're ready by the time a card turns over
+BACKS.forEach((name) => { new Image().src = backSrc(name); });
+
 // Interactive pieces shown in the right-hand canvas when a card is opened
 const CANVAS_PAGES = {
   '명태 액막이.png': 'charm.html?v=2',  // the fish charm
@@ -184,6 +194,11 @@ async function open(card) {
   const h = cards[0].offsetHeight;
   flipBox = { ...targetRect(w, h), width: w, height: h };
 
+  const name = card.dataset.name;
+  const back = BACKS.has(name)
+    ? `<div class="flip--face flip--back has-art"><img src="${backSrc(name)}" alt="" draggable="false"></div>`
+    : '<div class="flip--face flip--back"><span>Card back</span></div>';
+
   flip = document.createElement('div');
   flip.className = 'flip';
   Object.assign(flip.style, {
@@ -193,13 +208,13 @@ async function open(card) {
   flip.innerHTML = `
     <div class="flip--inner">
       <div class="flip--face flip--front"><img src="${card.querySelector('img').src}" alt="" draggable="false"></div>
-      <div class="flip--face flip--back"><span>Card back</span></div>
+      ${back}
     </div>`;
   document.body.appendChild(flip);
 
   card.style.visibility = 'hidden';
   document.body.classList.add('is-open');
-  const page = CANVAS_PAGES[card.dataset.name];
+  const page = CANVAS_PAGES[name];
   if (page) {
     const frame = document.createElement('iframe');
     frame.className = 'viewer--frame';
