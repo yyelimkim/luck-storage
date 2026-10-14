@@ -1,0 +1,20 @@
+{
+  "name": "luck-storage",
+  "version": "1.0.0",
+  "scripts": {
+    "vendor": "mkdir -p vendor/dialkit && cp node_modules/dialkit/dist/vanilla/browser.global.js node_modules/dialkit/dist/vanilla/styles.css vendor/dialkit/"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/yyelimkim/luck-storage.git"
+  },
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/yyelimkim/luck-storage/issues"
+  },
+  "homepage": "https://github.com/yyelimkim/luck-storage#readme",
+  "devDependencies": {
+    "dialkit": "^2.0.2"
+  },
+  "private": true
+}

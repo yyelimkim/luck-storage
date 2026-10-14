@@ -1,0 +1,67 @@
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  height: 100%;
+  overflow: hidden;
+  background: #f0f0f0;
+}
+
+.stage {
+  position: fixed;
+  inset: 0;
+  touch-action: none;
+}
+.stage .part { cursor: grab; }
+.is-dragging,
+.is-dragging .stage .part { cursor: grabbing; }
+
+/* Figma frame "illust" is 347 x 334. The whole charm hangs from the top of
+   its straight string (--pin, above the frame), and the fish swings on its
+   own around the top knot. */
+.charm {
+  --pin-x: 201px;
+  --pin-y: -66px;
+  position: absolute;
+  left: calc(50% - var(--pin-x));
+  top: calc(16vh - var(--pin-y));
+  width: 347px;
+  height: 334px;
+  transform-origin: var(--pin-x) var(--pin-y);
+  will-change: transform;
+}
+.charm--fish {
+  position: absolute;
+  inset: 0;
+  transform-origin: 209.7px 183.7px;  /* centre of the top knot */
+  will-change: transform;
+}
+
+/* One Figma layer: an axis-aligned box with the (possibly rotated) vector centred in it */
+.part {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.part--inner {
+  position: relative;
+  flex: none;
+}
+.part--spill { position: absolute; }
+.part img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+/* The string's SVG is inlined so its path can be warped */
+.part svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}

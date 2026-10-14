@@ -1,5 +1,5 @@
 const COUNT = 16;  // one of each design; fills the 4-per-row grid evenly
-const SPACING_RATIO = 0.325;  // gap between card left edges, as a fraction of card width
+let SPACING_RATIO = 0.325;  // gap between card left edges, as a fraction of card width
 const EDGE = 50;       // breathing room at each end of the pan
 
 // Card artwork in cards/ (slide2.png is not a card)
@@ -21,7 +21,12 @@ const IMAGES = [
   '테루테루보즈.png',
   '포도 12알 먹기.png',
 ];
-const IMAGES_VERSION = 3;  // bump when artwork files are replaced
+const IMAGES_VERSION = 4;  // bump when artwork files are replaced
+
+// Interactive pieces shown in the right-hand canvas when a card is opened
+const CANVAS_PAGES = {
+  '명태 액막이.png': 'charm.html',  // the fish charm
+};
 
 const wrap = document.getElementById('cards');
 
@@ -30,6 +35,7 @@ const cards = [];
 for (let i = COUNT - 1; i >= 0; i--) {
   const card = document.createElement('div');
   card.className = 'card';
+  card.dataset.name = IMAGES[i % IMAGES.length];
   const img = document.createElement('img');
   img.src = `cards/${encodeURIComponent(IMAGES[i % IMAGES.length])}?v=${IMAGES_VERSION}`;
   img.alt = '';
@@ -82,6 +88,7 @@ layout();
 window.addEventListener('resize', layout);
 
 let openCard = null;
+let panEase = 0.08;  // lerp factor per frame
 let target = EDGE;
 let current = EDGE;
 
@@ -125,7 +132,7 @@ scroller.addEventListener('pointerup', endScrub);
 scroller.addEventListener('pointercancel', endScrub);
 
 (function tick() {
-  current += (target - current) * 0.08;
+  current += (target - current) * panEase;
   wrap.style.transform = `translateX(${current}px)`;
   requestAnimationFrame(tick);
 })();
@@ -133,6 +140,7 @@ scroller.addEventListener('pointercancel', endScrub);
 // Click: lift the card out of the strip, fly it to the left half and flip to its back
 const viewer = document.getElementById('viewer');
 const viewerLeft = document.getElementById('viewer-left');
+const canvas = document.getElementById('canvas');
 const closeBtn = document.getElementById('close');
 const DURATION = 700;
 const EASE = 'cubic-bezier(0.65, 0, 0.35, 1)';
@@ -191,6 +199,14 @@ async function open(card) {
 
   card.style.visibility = 'hidden';
   document.body.classList.add('is-open');
+  const page = CANVAS_PAGES[card.dataset.name];
+  if (page) {
+    const frame = document.createElement('iframe');
+    frame.className = 'viewer--frame';
+    frame.src = page;
+    frame.title = card.dataset.name.replace('.png', '');
+    canvas.appendChild(frame);
+  }
   await animateFlip(offsetTransform(rect, flipBox), 'translate(0, 0) scale(1)', 0, 180);
   busy = false;
 }
@@ -200,6 +216,7 @@ async function close() {
   busy = true;
   const rect = openCard.getBoundingClientRect();
   document.body.classList.remove('is-open');
+  canvas.replaceChildren();
 
   flip.getAnimations().forEach((a) => a.cancel());
   flip.firstElementChild.getAnimations().forEach((a) => a.cancel());
@@ -217,6 +234,7 @@ const grid = document.getElementById('grid');
 const gridCards = [...cards].reverse().map((card) => {
   const g = document.createElement('div');
   g.className = 'grid-card';
+  g.dataset.name = card.dataset.name;
   const img = card.querySelector('img').cloneNode();
   g.appendChild(img);
   g.addEventListener('click', () => open(g));
@@ -236,3 +254,22 @@ cards.forEach((card) => card.addEventListener('click', () => open(card)));
 closeBtn.addEventListener('click', (e) => { e.preventDefault(); close(); });
 viewerLeft.addEventListener('click', (e) => { if (e.target === viewerLeft) close(); });
 window.addEventListener('keydown', (e) => { if (e.key === 'Escape') close(); });
+
+// DialKit: live tuning panel, only on localhost
+if (window.DialKit && ['localhost', '127.0.0.1'].includes(location.hostname)) {
+  DialKit.createDialRoot({ position: 'bottom-right' });
+  const dials = DialKit.createDialKit('Card strip', {
+    overlap: [SPACING_RATIO, 0.1, 0.8, 0.005],
+    panEase: [panEase, 0.01, 0.3, 0.01],
+    idleBrightness: [1.7, 1, 2.5, 0.05],
+    idleContrast: [1.15, 0.5, 2.5, 0.05],
+    shadow: [0.12, 0, 0.4, 0.01],
+  });
+  dials.subscribe((v) => {
+    if (v.overlap !== SPACING_RATIO) { SPACING_RATIO = v.overlap; layout(); }
+    panEase = v.panEase;
+    wrap.style.setProperty('--idle-brightness', v.idleBrightness);
+    wrap.style.setProperty('--idle-contrast', v.idleContrast);
+    wrap.style.setProperty('--shadow', v.shadow);
+  });
+}

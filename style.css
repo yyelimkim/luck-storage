@@ -113,6 +113,10 @@ a { color: inherit; text-decoration: none; }
   /* Card size tracks the space between the bars, capped at 400x560 */
   --h: min(560px, calc(100vh - 200px));
   --w: calc(var(--h) * 5 / 7);
+  /* Idle tone and shadow, tunable live from DialKit */
+  --idle-brightness: 1.7;
+  --idle-contrast: 1.15;
+  --shadow: 0.12;
 }
 
 .card {
@@ -133,13 +137,13 @@ a { color: inherit; text-decoration: none; }
   height: 100%;
   user-select: none;
   /* Idle cards: mostly white with light greys. Shadow follows the artwork's own rounded edge (transparent corners) */
-  filter: grayscale(1) brightness(1.7) contrast(1.15) drop-shadow(0 1px 3px rgba(0, 0, 0, 0.12));
+  filter: grayscale(1) brightness(var(--idle-brightness)) contrast(var(--idle-contrast)) drop-shadow(0 1px 3px rgba(0, 0, 0, var(--shadow)));
   transition: filter 0.3s;
 }
 /* Only the hovered (or scrubbed-to) card shows in color */
 .card:hover img,
 .card.active img {
-  filter: grayscale(0) brightness(1) contrast(1) drop-shadow(0 1px 3px rgba(0, 0, 0, 0.12));
+  filter: grayscale(0) brightness(1) contrast(1) drop-shadow(0 1px 3px rgba(0, 0, 0, var(--shadow)));
 }
 
 /* Grid view */
@@ -241,7 +245,16 @@ a { color: inherit; text-decoration: none; }
 }
 .is-open .viewer { pointer-events: auto; }
 .viewer--left { cursor: pointer; }
-.viewer--canvas { /* blank for now: interaction goes here */ }
+.viewer--canvas { position: relative; }
+/* A card's interactive piece (e.g. charm.html), dropped in once the card is open */
+.viewer--frame {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+  background: transparent;
+}
 
 .flip {
   position: fixed;
