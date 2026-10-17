@@ -13,19 +13,26 @@ const STAGE_H = 874;
 // the same amount so the neighbours still peek out; while dialing the cards
 // stay on the dial's circle.
 const CARD_SCALE = 1.18;
+const CARD_DROP = 33;     // px the cards sit lower than in Figma, nearer the dial
+const DIAL_SCALE = 1.2;   // the dial is drawn this much bigger than in Figma
+
+// Figma's dialing fan is a circle round the dial's centre (radius ~464).
+// Dropping the cards shrinks that radius, so the arc shrinks with it.
+const OPEN_ARC = (834.74 - (370.77 + CARD_DROP)) / (834.74 - 370.77);
 
 const REST = {
-  cx: 201.68, cy: 396.9,   // centre card's middle
+  cx: 201.68, cy: 396.9 + CARD_DROP,  // centre card's middle
   a: 489.7 * CARD_SCALE,   // arc radii (Figma: side cards at ±167.5, +55.9, 20°)
   b: 926.1 * CARD_SCALE,
   step: 20, scale: CARD_SCALE,
-  dialX: 200.5, dialY: 853.5, dialScale: 1,
+  dialX: 200.5, dialY: 853.5, dialScale: DIAL_SCALE,
 };
 const OPEN = {
-  cx: 201.02, cy: 370.77,
-  a: 453.2, b: 471.4,      // side cards at ±226.6, +63.2, 30°: a circle round the dial
+  cx: 201.02, cy: 370.77 + CARD_DROP,
+  a: 453.2 * OPEN_ARC,     // Figma: side cards at ±226.6, +63.2, 30°
+  b: 471.4 * OPEN_ARC,
   step: 30, scale: (176.046 / 271.675) * CARD_SCALE,
-  dialX: 200.85, dialY: 834.74, dialScale: 278 / 215,
+  dialX: 200.85, dialY: 834.74, dialScale: (278 / 215) * DIAL_SCALE,
 };
 const FOCUS_SCALE = 1.12;  // the centre card grows by this much over its neighbours
 const SIDE_OPACITY = 0.8;  // neighbours one slot out fade to this
