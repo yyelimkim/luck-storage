@@ -43,10 +43,17 @@ img { -webkit-user-drag: none; }
   border-radius: 56px;
   box-shadow: 0 0 0 10px #111, 0 20px 60px rgba(0, 0, 0, 0.25);
 }
-/* On a phone the page itself is the screen, and cards may run to its edges */
+/* On a phone the page itself is the screen: full width, as tall as the
+   window (mobile.js sets the height), header at the very top */
 .is-phone,
 .is-phone body { background: #fff; }
-.is-phone .stage { overflow: visible; }
+.is-phone .stage {
+  left: 0;
+  top: 0;
+  margin: 0;
+  transform-origin: 0 0;
+}
+.is-phone .head { top: 0; }
 
 /* Status bar (Figma 97:716), preview only */
 .status {
@@ -190,7 +197,6 @@ img { -webkit-user-drag: none; }
   position: absolute;
   z-index: 60;
   perspective: 5000px;  /* shallow 3D so the card barely swells mid-flip */
-  transform-origin: 0 0;
   cursor: pointer;
 }
 .m-flip--inner {
@@ -205,23 +211,24 @@ img { -webkit-user-drag: none; }
   backface-visibility: hidden;
   -webkit-backface-visibility: hidden;
 }
-.m-flip--face img {
+/* Front: the artwork, cropped rather than stretched as the box changes shape */
+.m-flip--front img {
   display: block;
   width: 100%;
   height: 100%;
-  filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.15));
+  object-fit: cover;
 }
-/* Blank back until a card has back artwork, matching the desktop placeholder */
+/* Back: the sheet. Content sits inside 16px side guides. */
 .m-flip--back {
   transform: rotateY(180deg);
-  background: #f2f2f2;
-  border: 1.5px solid #d4d4d4;
-  border-radius: 6.25% / 4.4%;  /* same curve as the artwork corners */
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  background: #d9d9d9;
+  overflow: hidden;
+  padding: 16px;
 }
-.m-flip--back.has-art {
-  background: none;
-  border: 0;
-  border-radius: 0;
-  box-shadow: none;
+.m-flip--back img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: top;
 }

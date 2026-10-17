@@ -6,8 +6,10 @@
 // Card i sits `rel` slots from the centre; it lies at angle rel * step on an
 // arc below the centre card: x = A sin θ, y = B (1 − cos θ), tilted by θ.
 
+// Everything is laid out in Figma px: the screen is always 402 wide, and as
+// tall as the window allows (874 in the Figma frame and the desktop preview).
 const STAGE_W = 402;
-const STAGE_H = 874;
+const FIGMA_H = 874;
 
 // Cards are drawn this much bigger than in Figma. At rest the fan spreads by
 // the same amount so the neighbours still peek out; while dialing the cards
@@ -21,20 +23,26 @@ const DIAL_DROP = 16;     // px the dial sits lower than in Figma
 // Dropping the cards shrinks that radius, so the arc shrinks with it.
 const OPEN_ARC = (834.74 - (370.77 + CARD_DROP)) / (834.74 - 370.77);
 
-const REST = {
+// Both states as laid out on the 874-tall Figma frame
+const FIGMA_REST = {
   cx: 201.68, cy: 396.9 + CARD_DROP,  // centre card's middle
   a: 489.7 * CARD_SCALE,   // arc radii (Figma: side cards at ±167.5, +55.9, 20°)
   b: 926.1 * CARD_SCALE,
   step: 20, scale: CARD_SCALE,
   dialX: 200.5, dialY: 853.5 + DIAL_DROP, dialScale: DIAL_SCALE,
 };
-const OPEN = {
+const FIGMA_OPEN = {
   cx: 201.02, cy: 370.77 + CARD_DROP,
   a: 453.2 * OPEN_ARC,     // Figma: side cards at ±226.6, +63.2, 30°
   b: 471.4 * OPEN_ARC,
   step: 30, scale: (176.046 / 271.675) * CARD_SCALE,
   dialX: 200.85, dialY: 834.74 + DIAL_DROP, dialScale: (278 / 215) * DIAL_SCALE,
 };
+// The fan and dial run from the opened centre card's top down to the bottom edge
+const FAN_TOP = FIGMA_REST.cy - (388.182 / 2) * CARD_SCALE * 1.12;
+const HEAD_H = 49;        // header row height
+const HEAD_GAP = 40;      // least space kept between header and cards
+
 const FOCUS_SCALE = 1.12;  // the centre card grows by this much over its neighbours
 const SIDE_OPACITY = 0.8;  // neighbours one slot out fade to this
 const TICK_GAP = 45;  // the tick marks repeat every 45°
@@ -46,17 +54,46 @@ const fan = document.getElementById('fan');
 const dial = document.getElementById('dial');
 const ticks = document.getElementById('ticks');
 
-// Fit the 402 x 874 frame to the window. On a phone it fills the screen;
-// anywhere else it is shown as a framed preview.
-const isPhone = matchMedia('(pointer: coarse) and (max-width: 500px)').matches;
-document.documentElement.classList.add(isPhone ? 'is-phone' : 'is-preview');
-function fit() {
-  const pad = isPhone ? 0 : 40;
-  const s = Math.min((innerWidth - pad) / STAGE_W, (innerHeight - pad) / STAGE_H, isPhone ? Infinity : 1);
-  stage.style.transform = `scale(${s})`;
-  fitScale = s;
+// The states for the current screen: pinned to the bottom edge, and shrunk
+// about the bottom centre when the screen is too short for the full fan
+let REST = FIGMA_REST;
+let OPEN = FIGMA_OPEN;
+let stageH = FIGMA_H;
+function place(st, h, f) {
+  return {
+    ...st,
+    cx: STAGE_W / 2 + (st.cx - STAGE_W / 2) * f,
+    cy: h - (FIGMA_H - st.cy) * f,
+    a: st.a * f, b: st.b * f, scale: st.scale * f,
+    dialX: STAGE_W / 2 + (st.dialX - STAGE_W / 2) * f,
+    dialY: h - (FIGMA_H - st.dialY) * f,
+    dialScale: st.dialScale * f,
+  };
 }
+
+// Phone-sized windows get the screen edge to edge, the header at the very top
+// (the real status bar is above the page). Anything wider shows the 402 x 874
+// frame in a phone-shaped preview.
 let fitScale = 1;
+function fit() {
+  const phone = innerWidth <= 500;
+  document.documentElement.classList.toggle('is-phone', phone);
+  document.documentElement.classList.toggle('is-preview', !phone);
+  if (phone) {
+    fitScale = innerWidth / STAGE_W;
+    stageH = innerHeight / fitScale;
+  } else {
+    fitScale = Math.min((innerWidth - 40) / STAGE_W, (innerHeight - 40) / FIGMA_H, 1);
+    stageH = FIGMA_H;
+  }
+  stage.style.height = `${stageH}px`;
+  stage.style.transform = `scale(${fitScale})`;
+  const headTop = phone ? 0 : 44;
+  const room = stageH - headTop - HEAD_H - HEAD_GAP;
+  const f = Math.min(1, room / (FIGMA_H - FAN_TOP));
+  REST = place(FIGMA_REST, stageH, f);
+  OPEN = place(FIGMA_OPEN, stageH, f);
+}
 fit();
 addEventListener('resize', fit);
 
@@ -220,12 +257,14 @@ const endSwipe = () => {
 fan.addEventListener('pointerup', endSwipe);
 fan.addEventListener('pointercancel', endSwipe);
 
-// Tapping the centre card lifts it into an overlay and turns it over, its
-// back nearly filling the screen. Tapping anywhere turns it back and drops it
-// into the fan again.
+// Tapping the centre card turns it over, and as it turns it grows into a
+// sheet: full width, from just under the status bar to the bottom edge, with
+// rounded top corners. Tapping the sheet or the strip above it turns it back
+// and drops it into the fan again.
 const FLIP_MS = 700;
 const FLIP_EASE = 'cubic-bezier(0.65, 0, 0.35, 1)';  // same as the desktop flip
-const FLIP_MARGIN = 12;  // px of screen left either side of the opened card
+const SHEET_GAP = 18;     // px between the status bar and the sheet's top
+const SHEET_RADIUS = 32;  // the sheet's top corners
 const overlay = document.getElementById('overlay');
 let flipBusy = false;
 
@@ -242,14 +281,24 @@ function stageBox(el) {
   };
 }
 
-function flipAnimate(from, to, fromDeg, toDeg) {
-  const box = flip.box;
-  const t = (r) => `translate(${r.left - box.left}px, ${r.top - box.top}px) scale(${r.width / box.width})`;
-  const move = flip.el.animate([{ transform: t(from) }, { transform: t(to) }],
-    { duration: FLIP_MS, easing: FLIP_EASE, fill: 'forwards' });
+// The sheet: on a phone the real status bar sits above the page
+function sheetBox() {
+  const top = (document.documentElement.classList.contains('is-phone') ? 0 : 44) + SHEET_GAP;
+  return { left: 0, top, width: STAGE_W, height: stageH - top };
+}
+
+// Card corners follow the artwork's own curve; the sheet's are round on top only
+const cardRadius = (r) => `${r.width * 0.0625}px / ${r.height * 0.044}px`;
+const sheetRadius = `${SHEET_RADIUS}px ${SHEET_RADIUS}px 0 0`;
+
+function flipAnimate(from, to, fromDeg, toDeg, fromRadius, toRadius) {
+  const opts = { duration: FLIP_MS, easing: FLIP_EASE, fill: 'forwards' };
+  const px = (r) => ({ left: `${r.left}px`, top: `${r.top}px`, width: `${r.width}px`, height: `${r.height}px` });
+  const move = flip.el.animate([px(from), px(to)], opts);
   flip.el.firstElementChild.animate(
-    [{ transform: `rotateY(${fromDeg}deg)` }, { transform: `rotateY(${toDeg}deg)` }],
-    { duration: FLIP_MS, easing: FLIP_EASE, fill: 'forwards' });
+    [{ transform: `rotateY(${fromDeg}deg)` }, { transform: `rotateY(${toDeg}deg)` }], opts);
+  flip.el.querySelector('.m-flip--back').animate(
+    [{ borderRadius: fromRadius }, { borderRadius: toRadius }], opts);
   return move.finished;
 }
 
@@ -258,29 +307,20 @@ async function flipOpen(card) {
   flipBusy = true;
   const name = IMAGES[cards.indexOf(card)];
   const from = stageBox(card);
-  // Opened size: the screen's width less a margin, centred
-  const width = STAGE_W - FLIP_MARGIN * 2;
-  const height = width / (from.width / from.height);
-  const box = { left: FLIP_MARGIN, top: (STAGE_H - height) / 2, width, height };
 
   const el = document.createElement('div');
   el.className = 'm-flip';
-  Object.assign(el.style, {
-    left: `${box.left}px`, top: `${box.top}px`, width: `${width}px`, height: `${height}px`,
-  });
-  const back = BACKS.has(name)
-    ? `<div class="m-flip--face m-flip--back has-art"><img src="${backSrc(name)}" alt="" draggable="false"></div>`
-    : '<div class="m-flip--face m-flip--back"></div>';
+  const art = BACKS.has(name) ? `<img src="${backSrc(name)}" alt="" draggable="false">` : '';
   el.innerHTML = `
     <div class="m-flip--inner">
-      <div class="m-flip--face"><img src="${card.querySelector('img').src}" alt="" draggable="false"></div>
-      ${back}
+      <div class="m-flip--face m-flip--front"><img src="${card.querySelector('img').src}" alt="" draggable="false"></div>
+      <div class="m-flip--face m-flip--back">${art}</div>
     </div>`;
   stage.appendChild(el);
-  flip = { el, card, box };
+  flip = { el, card };
 
   document.documentElement.classList.add('is-flipped');
-  await flipAnimate(from, box, 0, 180);
+  await flipAnimate(from, sheetBox(), 0, 180, cardRadius(from), sheetRadius);
   flipBusy = false;
 }
 
@@ -288,10 +328,10 @@ async function flipClose() {
   if (!flip || flipBusy) return;
   flipBusy = true;
   document.documentElement.classList.remove('is-flipped');
-  flip.el.getAnimations().forEach((a) => a.cancel());
-  flip.el.firstElementChild.getAnimations().forEach((a) => a.cancel());
+  flip.el.getAnimations({ subtree: true }).forEach((a) => a.cancel());
   // The card is hidden but still laid out, so its box is where to land
-  await flipAnimate(flip.box, stageBox(flip.card), 180, 360);
+  const to = stageBox(flip.card);
+  await flipAnimate(sheetBox(), to, 180, 360, sheetRadius, cardRadius(to));
   flip.el.remove();
   flip = null;
   flipBusy = false;
