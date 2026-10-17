@@ -164,8 +164,64 @@ img { -webkit-user-drag: none; }
   margin-left: -77px;
   border-radius: 100px;
   background: #111;
-  z-index: 40;
+  z-index: 70;
   pointer-events: none;
   display: none;
 }
 .is-preview .homebar { display: block; }
+
+/* Opened card: a scrim over the screen, the card turned over on top */
+.overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 50;
+  background: rgba(240, 240, 240, 0.85);  /* --system-white */
+  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.5s;
+}
+.is-flipped .overlay { opacity: 1; pointer-events: auto; }
+.is-flipped .fan,
+.is-flipped .dial { pointer-events: none; }
+
+.m-flip {
+  position: absolute;
+  z-index: 60;
+  perspective: 5000px;  /* shallow 3D so the card barely swells mid-flip */
+  transform-origin: 0 0;
+  cursor: pointer;
+}
+.m-flip--inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transform-style: preserve-3d;
+}
+.m-flip--face {
+  position: absolute;
+  inset: 0;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+.m-flip--face img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.15));
+}
+/* Blank back until a card has back artwork, matching the desktop placeholder */
+.m-flip--back {
+  transform: rotateY(180deg);
+  background: #f2f2f2;
+  border: 1.5px solid #d4d4d4;
+  border-radius: 6.25% / 4.4%;  /* same curve as the artwork corners */
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+.m-flip--back.has-art {
+  background: none;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+}

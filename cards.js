@@ -19,3 +19,11 @@ const IMAGES = [
   '포도 12알 먹기.png',
 ];
 const IMAGES_VERSION = 4;  // bump when artwork files are replaced
+
+// Cards with back artwork in cards/backs/ (same file name as the front);
+// the rest flip to a blank back
+const BACKS = new Set([
+  '명태 액막이.png',
+]);
+
+const backSrc = (name) => `cards/backs/${encodeURIComponent(name)}?v=${IMAGES_VERSION}`;

@@ -15,6 +15,7 @@ const STAGE_H = 874;
 const CARD_SCALE = 1.18;
 const CARD_DROP = 33;     // px the cards sit lower than in Figma, nearer the dial
 const DIAL_SCALE = 1.2;   // the dial is drawn this much bigger than in Figma
+const DIAL_DROP = 16;     // px the dial sits lower than in Figma
 
 // Figma's dialing fan is a circle round the dial's centre (radius ~464).
 // Dropping the cards shrinks that radius, so the arc shrinks with it.
@@ -25,14 +26,14 @@ const REST = {
   a: 489.7 * CARD_SCALE,   // arc radii (Figma: side cards at ±167.5, +55.9, 20°)
   b: 926.1 * CARD_SCALE,
   step: 20, scale: CARD_SCALE,
-  dialX: 200.5, dialY: 853.5, dialScale: DIAL_SCALE,
+  dialX: 200.5, dialY: 853.5 + DIAL_DROP, dialScale: DIAL_SCALE,
 };
 const OPEN = {
   cx: 201.02, cy: 370.77 + CARD_DROP,
   a: 453.2 * OPEN_ARC,     // Figma: side cards at ±226.6, +63.2, 30°
   b: 471.4 * OPEN_ARC,
   step: 30, scale: (176.046 / 271.675) * CARD_SCALE,
-  dialX: 200.85, dialY: 834.74, dialScale: (278 / 215) * DIAL_SCALE,
+  dialX: 200.85, dialY: 834.74 + DIAL_DROP, dialScale: (278 / 215) * DIAL_SCALE,
 };
 const FOCUS_SCALE = 1.12;  // the centre card grows by this much over its neighbours
 const SIDE_OPACITY = 0.8;  // neighbours one slot out fade to this
@@ -78,6 +79,7 @@ let posTarget = START;
 let open = 0;
 let openTarget = 0;
 let dragging = false;
+let flip = null;  // the card lifted into the overlay: { el, card, box }
 
 const lerp = (a, b, t) => a + (b - a) * t;
 const ease = (t) => t * t * (3 - 2 * t);
@@ -94,8 +96,10 @@ function render() {
   cards.forEach((el, i) => {
     const rel = relOf(i);
     const th = rel * g.step;
-    if (Math.abs(th) > 100) { el.style.visibility = 'hidden'; return; }
-    el.style.visibility = '';
+    // Far cards are hidden, and so is a card lifted into the flip overlay
+    const lifted = flip && flip.card === el;
+    el.style.visibility = Math.abs(th) > 100 || lifted ? 'hidden' : '';
+    if (Math.abs(th) > 100) return;
     const x = g.cx + g.a * Math.sin(rad(th));
     const y = g.cy + g.b * (1 - Math.cos(rad(th)));
     const d = Math.abs(rel);
@@ -207,14 +211,100 @@ const endSwipe = () => {
   if (!dragging) return;
   if (moved) { release(); return; }
   dragging = false;
-  if (tapped) goTo(pos + relOf(cards.indexOf(tapped)));
+  if (!tapped) return;
+  const rel = relOf(cards.indexOf(tapped));
+  // The settled centre card turns over; a side card comes to the centre
+  if (Math.abs(rel) < 0.05 && open < 0.05) flipOpen(tapped);
+  else goTo(pos + rel);
 };
 fan.addEventListener('pointerup', endSwipe);
 fan.addEventListener('pointercancel', endSwipe);
 
+// Tapping the centre card lifts it into an overlay and turns it over, its
+// back nearly filling the screen. Tapping anywhere turns it back and drops it
+// into the fan again.
+const FLIP_MS = 700;
+const FLIP_EASE = 'cubic-bezier(0.65, 0, 0.35, 1)';  // same as the desktop flip
+const FLIP_MARGIN = 12;  // px of screen left either side of the opened card
+const overlay = document.getElementById('overlay');
+let flipBusy = false;
+
+// Preload backs so they're ready by the time a card turns over
+BACKS.forEach((name) => { new Image().src = backSrc(name); });
+
+// The card's on-screen box in stage px (it's upright when centred)
+function stageBox(el) {
+  const r = el.getBoundingClientRect();
+  const s = stage.getBoundingClientRect();
+  return {
+    left: (r.left - s.left) / fitScale, top: (r.top - s.top) / fitScale,
+    width: r.width / fitScale, height: r.height / fitScale,
+  };
+}
+
+function flipAnimate(from, to, fromDeg, toDeg) {
+  const box = flip.box;
+  const t = (r) => `translate(${r.left - box.left}px, ${r.top - box.top}px) scale(${r.width / box.width})`;
+  const move = flip.el.animate([{ transform: t(from) }, { transform: t(to) }],
+    { duration: FLIP_MS, easing: FLIP_EASE, fill: 'forwards' });
+  flip.el.firstElementChild.animate(
+    [{ transform: `rotateY(${fromDeg}deg)` }, { transform: `rotateY(${toDeg}deg)` }],
+    { duration: FLIP_MS, easing: FLIP_EASE, fill: 'forwards' });
+  return move.finished;
+}
+
+async function flipOpen(card) {
+  if (flip || flipBusy) return;
+  flipBusy = true;
+  const name = IMAGES[cards.indexOf(card)];
+  const from = stageBox(card);
+  // Opened size: the screen's width less a margin, centred
+  const width = STAGE_W - FLIP_MARGIN * 2;
+  const height = width / (from.width / from.height);
+  const box = { left: FLIP_MARGIN, top: (STAGE_H - height) / 2, width, height };
+
+  const el = document.createElement('div');
+  el.className = 'm-flip';
+  Object.assign(el.style, {
+    left: `${box.left}px`, top: `${box.top}px`, width: `${width}px`, height: `${height}px`,
+  });
+  const back = BACKS.has(name)
+    ? `<div class="m-flip--face m-flip--back has-art"><img src="${backSrc(name)}" alt="" draggable="false"></div>`
+    : '<div class="m-flip--face m-flip--back"></div>';
+  el.innerHTML = `
+    <div class="m-flip--inner">
+      <div class="m-flip--face"><img src="${card.querySelector('img').src}" alt="" draggable="false"></div>
+      ${back}
+    </div>`;
+  stage.appendChild(el);
+  flip = { el, card, box };
+
+  document.documentElement.classList.add('is-flipped');
+  await flipAnimate(from, box, 0, 180);
+  flipBusy = false;
+}
+
+async function flipClose() {
+  if (!flip || flipBusy) return;
+  flipBusy = true;
+  document.documentElement.classList.remove('is-flipped');
+  flip.el.getAnimations().forEach((a) => a.cancel());
+  flip.el.firstElementChild.getAnimations().forEach((a) => a.cancel());
+  // The card is hidden but still laid out, so its box is where to land
+  await flipAnimate(flip.box, stageBox(flip.card), 180, 360);
+  flip.el.remove();
+  flip = null;
+  flipBusy = false;
+}
+
+overlay.addEventListener('click', flipClose);
+stage.addEventListener('click', (e) => { if (flip && e.target.closest('.m-flip')) flipClose(); });
+addEventListener('keydown', (e) => { if (e.key === 'Escape') flipClose(); });
+
 // Arrow keys step through the cards, opening the dial while they do
 let keyTimer = 0;
 addEventListener('keydown', (e) => {
+  if (flip) return;
   if (e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') return;
   goTo(posTarget + (e.key === 'ArrowRight' ? 1 : -1));
   openTarget = 1;

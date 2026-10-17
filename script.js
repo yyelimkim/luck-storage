@@ -2,15 +2,8 @@ const COUNT = 16;  // one of each design; fills the 4-per-row grid evenly
 let SPACING_RATIO = 0.325;  // gap between card left edges, as a fraction of card width
 const EDGE = 50;       // breathing room at each end of the pan
 
-// IMAGES and IMAGES_VERSION come from cards.js
+// IMAGES, IMAGES_VERSION, BACKS and backSrc come from cards.js
 
-// Cards with back artwork in cards/backs/ (same file name as the front);
-// the rest flip to a blank back
-const BACKS = new Set([
-  '명태 액막이.png',
-]);
-
-const backSrc = (name) => `cards/backs/${encodeURIComponent(name)}?v=${IMAGES_VERSION}`;
 // Load backs up front so they're ready by the time a card turns over
 BACKS.forEach((name) => { new Image().src = backSrc(name); });
 
