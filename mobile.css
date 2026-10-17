@@ -1,0 +1,171 @@
+* { box-sizing: border-box; }
+
+@font-face {
+  font-family: "Paperlogy";
+  src: url("assets/fonts/Paperlogy-4Regular.ttf") format("truetype");
+  font-weight: 400;
+  font-display: swap;
+}
+
+:root {
+  --system-white: #f0f0f0;
+  --system-black: #272727;
+}
+
+html, body {
+  margin: 0;
+  height: 100%;
+  overflow: hidden;
+  background: var(--system-white);
+  color: var(--system-black);
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-user-select: none;
+  user-select: none;
+  overscroll-behavior: none;
+}
+
+img { -webkit-user-drag: none; }
+
+/* The Figma frame, 402 x 874. mobile.js scales it to fit and centres it. */
+.stage {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 402px;
+  height: 874px;
+  margin: -437px 0 0 -201px;
+  background: #fff;
+  overflow: hidden;
+}
+/* Desktop preview: the screen sits in a phone-shaped frame */
+.is-preview .stage {
+  border-radius: 56px;
+  box-shadow: 0 0 0 10px #111, 0 20px 60px rgba(0, 0, 0, 0.25);
+}
+/* On a phone the page itself is the screen, and cards may run to its edges */
+.is-phone,
+.is-phone body { background: #fff; }
+.is-phone .stage { overflow: visible; }
+
+/* Status bar (Figma 97:716), preview only */
+.status {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 402px;
+  height: 44px;
+  display: none;
+}
+.is-preview .status { display: block; }
+.status--time {
+  position: absolute;
+  left: 18px;
+  top: 12px;
+  width: 54px;
+  font: 600 15px/20px Inter, -apple-system, "SF Pro Text", sans-serif;
+  letter-spacing: -0.5px;
+  text-align: center;
+  color: #111;
+}
+.status--right {
+  position: absolute;
+  right: 17.67px;
+  top: 16.33px;
+}
+
+/* Header (Figma 97:710): title left, clover count right */
+.head {
+  position: absolute;
+  top: 44px;
+  left: 0;
+  width: 402px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 16px;
+  z-index: 20;
+}
+.head--title,
+.head--count span {
+  margin: 0;
+  font-family: "Paperlogy", sans-serif;
+  font-weight: 400;
+  font-size: 24px;
+  letter-spacing: -0.48px;
+  line-height: normal;
+  white-space: nowrap;
+}
+.head--count {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+.head--count img { display: block; }
+
+/* Cards: placed every frame by mobile.js */
+.fan {
+  position: absolute;
+  inset: 0;
+  z-index: 10;  /* cards stack inside this, under the header and dial */
+  touch-action: none;
+}
+.m-card {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 271.675px;
+  height: 388.182px;
+  will-change: transform;
+  cursor: pointer;
+  /* The artwork carries its own rounded edge; the shadow follows the same curve */
+  border-radius: 6.25% / 4.4%;
+  box-shadow: 0 4.429px 4.429px rgba(0, 0, 0, calc(0.15 * var(--focus, 0)));
+}
+.m-card img {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+/* Dial (Figma 97:729 at rest, 97:832 open). Drawn at its rest size; opening
+   it scales it up, and the ticks turn with the finger. */
+.dial {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 215px;
+  height: 215px;
+  border-radius: 50%;
+  z-index: 30;
+  touch-action: none;
+  cursor: grab;
+  outline: none;
+  will-change: transform;
+}
+.dial:active { cursor: grabbing; }
+.dial--face { position: absolute; inset: 0; display: block; }
+.dial--ticks {
+  position: absolute;
+  left: 0.64px;
+  top: 1.2px;
+  display: block;
+  /* Turn about the dial's centre */
+  transform-origin: 106.86px 106.3px;
+}
+
+/* Home indicator (Figma 97:726), preview only */
+.homebar {
+  position: absolute;
+  left: 50%;
+  bottom: 8px;
+  width: 154px;
+  height: 5px;
+  margin-left: -77px;
+  border-radius: 100px;
+  background: #111;
+  z-index: 40;
+  pointer-events: none;
+  display: none;
+}
+.is-preview .homebar { display: block; }

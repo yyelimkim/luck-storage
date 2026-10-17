@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="theme-color" content="#ffffff">
+  <title>행운보관소</title>
+  <link rel="stylesheet" href="mobile.css?v=1">
+</head>
+<body>
+  <!-- iPhone 17 screen (Figma 97:630 at rest, 97:730 while dialing), laid out at
+       402 x 874 and scaled to fit by mobile.js -->
+  <div class="stage" id="stage">
+    <!-- Fake status bar: only shown in the desktop preview frame -->
+    <div class="status">
+      <span class="status--time">9:41</span>
+      <img class="status--right" src="assets/mobile/status-right.svg" width="66.661" height="11.3363" alt="">
+    </div>
+
+    <header class="head">
+      <h1 class="head--title">행운보관소</h1>
+      <div class="head--count">
+        <img src="assets/mobile/clover.svg" width="27" height="27" alt="">
+        <span>12</span>
+      </div>
+    </header>
+
+    <!-- Cards fan around the dial's centre -->
+    <div class="fan" id="fan"></div>
+
+    <!-- Dial: press to open it, turn it to spin the cards -->
+    <div class="dial" id="dial" role="slider" aria-label="Cards" tabindex="0">
+      <img class="dial--face" src="assets/mobile/dial-rest.svg" width="215" height="215" alt="">
+      <img class="dial--ticks" id="ticks" src="assets/mobile/dial-ticks.svg" width="213.715" height="106.747" alt="">
+    </div>
+
+    <div class="homebar"></div>
+  </div>
+
+  <script src="cards.js?v=1"></script>
+  <script src="mobile.js?v=1"></script>
+</body>
+</html>
