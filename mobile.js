@@ -263,7 +263,7 @@ fan.addEventListener('pointercancel', endSwipe);
 // and drops it into the fan again.
 const FLIP_MS = 700;
 const FLIP_EASE = 'cubic-bezier(0.65, 0, 0.35, 1)';  // same as the desktop flip
-const SHEET_GAP = 18;     // px between the status bar and the sheet's top
+const SHEET_GAP = 36;     // px between the status bar and the sheet's top
 const SHEET_RADIUS = 32;  // the sheet's top corners
 const overlay = document.getElementById('overlay');
 let flipBusy = false;
