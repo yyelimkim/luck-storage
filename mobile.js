@@ -96,7 +96,6 @@ function render() {
   const turn = -(pos - Math.round(pos)) * OPEN.step;
   const tick = ((((turn + TICK_GAP / 2) % TICK_GAP) + TICK_GAP) % TICK_GAP) - TICK_GAP / 2;
   ticks.style.transform = `rotate(${tick}deg)`;
-  ticks.style.opacity = t.toFixed(3);
   dial.setAttribute('aria-valuenow', String(((Math.round(pos) % N) + N) % N + 1));
 }
 
