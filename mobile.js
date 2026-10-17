@@ -21,6 +21,8 @@ const OPEN = {
   step: 30, scale: 176.046 / 271.675,
   dialX: 200.85, dialY: 834.74, dialScale: 278 / 215,
 };
+const FOCUS_SCALE = 1.12;  // the centre card grows by this much over its neighbours
+const SIDE_OPACITY = 0.6;  // neighbours one slot out fade to this
 const TICK_GAP = 45;  // the tick marks repeat every 45°
 const START = IMAGES.indexOf('테루테루보즈.png');  // centred in the Figma frames
 
@@ -83,11 +85,15 @@ function render() {
     el.style.visibility = '';
     const x = g.cx + g.a * Math.sin(rad(th));
     const y = g.cy + g.b * (1 - Math.cos(rad(th)));
-    el.style.transform = `translate(${x}px, ${y}px) translate(-50%, -50%) rotate(${th}deg) scale(${g.scale})`;
-    el.style.zIndex = String(100 - Math.round(Math.abs(rel) * 10));
-    // Only the centre card and its two neighbours show; the next ones fade in
-    el.style.opacity = Math.min(1, Math.max(0, 2 - Math.abs(rel))).toFixed(3);
-    el.style.setProperty('--focus', Math.max(0, 1 - Math.abs(rel)).toFixed(3));
+    const d = Math.abs(rel);
+    const focus = Math.max(0, 1 - d);
+    const scale = g.scale * lerp(1, FOCUS_SCALE, focus);
+    el.style.transform = `translate(${x}px, ${y}px) translate(-50%, -50%) rotate(${th}deg) scale(${scale})`;
+    el.style.zIndex = String(100 - Math.round(d * 10));
+    // Centre card full strength, neighbours dimmer, the next ones fade in from nothing
+    const opacity = d <= 1 ? lerp(1, SIDE_OPACITY, d) : SIDE_OPACITY * Math.max(0, 2 - d);
+    el.style.opacity = opacity.toFixed(3);
+    el.style.setProperty('--focus', focus.toFixed(3));
   });
 
   dial.style.transform = `translate(${g.dialX - 107.5}px, ${g.dialY - 107.5}px) scale(${g.dialScale})`;
