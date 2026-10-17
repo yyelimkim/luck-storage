@@ -9,20 +9,26 @@
 const STAGE_W = 402;
 const STAGE_H = 874;
 
+// Cards are drawn this much bigger than in Figma. At rest the fan spreads by
+// the same amount so the neighbours still peek out; while dialing the cards
+// stay on the dial's circle.
+const CARD_SCALE = 1.18;
+
 const REST = {
   cx: 201.68, cy: 396.9,   // centre card's middle
-  a: 489.7, b: 926.1,      // arc radii (side cards at ±167.5, +55.9, 20°)
-  step: 20, scale: 1,
+  a: 489.7 * CARD_SCALE,   // arc radii (Figma: side cards at ±167.5, +55.9, 20°)
+  b: 926.1 * CARD_SCALE,
+  step: 20, scale: CARD_SCALE,
   dialX: 200.5, dialY: 853.5, dialScale: 1,
 };
 const OPEN = {
   cx: 201.02, cy: 370.77,
   a: 453.2, b: 471.4,      // side cards at ±226.6, +63.2, 30°: a circle round the dial
-  step: 30, scale: 176.046 / 271.675,
+  step: 30, scale: (176.046 / 271.675) * CARD_SCALE,
   dialX: 200.85, dialY: 834.74, dialScale: 278 / 215,
 };
 const FOCUS_SCALE = 1.12;  // the centre card grows by this much over its neighbours
-const SIDE_OPACITY = 0.6;  // neighbours one slot out fade to this
+const SIDE_OPACITY = 0.8;  // neighbours one slot out fade to this
 const TICK_GAP = 45;  // the tick marks repeat every 45°
 const START = IMAGES.indexOf('테루테루보즈.png');  // centred in the Figma frames
 
