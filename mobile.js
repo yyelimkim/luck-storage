@@ -257,22 +257,33 @@ const endSwipe = () => {
 fan.addEventListener('pointerup', endSwipe);
 fan.addEventListener('pointercancel', endSwipe);
 
-// Tapping the centre card turns it over on a white overlay (Figma 341:2279):
-// its back is a card the width of the screen in the card's colour, with the
-// card's name on its tag, a small drawing, what the custom is and how to do
-// it, and Claim Luck. Claim Luck grows that card down past the bottom of the
-// screen into where the ritual is performed (340:2217): the card's
-// interaction alone. Tapping the white around the card turns it back over;
-// the ritual's ✕ (or the white above it) drops it away, straight home.
+// Tapping the centre card turns it over on a frosted overlay (Figma 350:3771):
+// its back carries the card's name, a small drawing and what the custom is.
+// Under it the ritual's sheet peeks up, saying how to perform it. Scrolling
+// down brings the sheet up to fill the screen (350:4794), growing and firming
+// up as it comes; the ritual is performed there. Once done the sheet says so
+// (350:5111): Home, or Continue to keep at it. The back arrow steps back:
+// sheet down, then the card turned back over.
 const FLIP_MS = 700;
 const FLIP_EASE = 'cubic-bezier(0.65, 0, 0.35, 1)';  // same as the desktop flip
-const GROW_MS = 600;
-const PANEL_TOP = 26;      // px from the top of the screen (under the status bar)
-const INFO_H = 580;        // the turned-over card
-const PLAY_H = 937;        // ...grown for the ritual, running off the bottom
-const PANEL_RADIUS = 37.13;
+const SHEET_MS = 450;
+const INFO_W = 370;        // the turned-over card's width (350:3773)
+const INFO_H = 580;        // its height, laid out at the screen's width
+const INFO_TOP = 64;       // under the back arrow's row
+const PEEK = 180;          // how much of the sheet shows under the card
+const CARD_GAP = 52;       // least space between the card and the sheet
+const PANEL_RADIUS = 37.13;  // the card's corner at the screen's width
+const SHEET_RADIUS = 30;
+const SHEET_SCALE = 0.96;    // the peeking sheet's size...
+const SHEET_OPACITY = 0.7;   // ...and opacity, both 1 once it fills the screen
+const HOWTO_TOP = 64;        // the how-to line in the peeking sheet...
+const HOWTO_TOP_FULL = 17;   // ...and beside the back arrow once full
 const overlay = document.getElementById('overlay');
+const backBtn = document.getElementById('back');
 let flipBusy = false;
+
+const headTop = () => (document.documentElement.classList.contains('is-phone') ? 0 : 44);
+const sheetTop = () => stageH - PEEK;
 
 // The card's on-screen box in stage px (it's upright when centred)
 function stageBox(el) {
@@ -284,15 +295,13 @@ function stageBox(el) {
   };
 }
 
-// The grown card for the ritual, from near the top of the screen down: on a
-// phone the real status bar sits above the page
-function playBox() {
-  const top = (document.documentElement.classList.contains('is-phone') ? 0 : 44) + PANEL_TOP;
-  return { left: 0, top, width: STAGE_W, height: PLAY_H };
-}
-// The turned-over card, centred on the screen
+// The turned-over card: 370 wide under the back arrow, smaller on screens too
+// short to fit it above the peeking sheet. k is its scale from 402 wide.
 function infoBox() {
-  return { left: 0, top: (stageH - INFO_H) / 2, width: STAGE_W, height: INFO_H };
+  const top = headTop() + INFO_TOP;
+  const k = Math.min(INFO_W / STAGE_W, (sheetTop() - CARD_GAP - top) / INFO_H);
+  const width = STAGE_W * k;
+  return { left: (STAGE_W - width) / 2, top, width, height: INFO_H * k, k };
 }
 
 const midBox = (a, b) => ({
@@ -302,7 +311,6 @@ const midBox = (a, b) => ({
 
 // Card corners follow the artwork's own curve
 const cardRadius = (r) => `${r.width * 0.082}px / ${r.height * 0.0572}px`;  // matches .m-card
-const panelRadius = `${PANEL_RADIUS}px`;
 const px = (r) => ({ left: `${r.left}px`, top: `${r.top}px`, width: `${r.width}px`, height: `${r.height}px` });
 
 // boxes and radii run start → edge-on → end, alongside 0° → 90° → 180°
@@ -381,39 +389,149 @@ function artCrop(name, width, extra = '') {
     background-position:${-c.left * k}px ${-c.top * k}px; ${extra}"></div>`;
 }
 
+// The back of the card: name, small drawing, what the custom is
 function panelHTML(name) {
   const text = CARD_TEXT[name] || {};
-  const title = cardName(name);
-  const teru = name === '테루테루보즈.png';
   const drawn = ICONS[name];
-  const icon = teru
+  const icon = name === '테루테루보즈.png'
     ? `<div class="info--icon draw" style="width:54.347px; height:129.639px">${drawing(TERU_SMALL, CARD_COLOR[name])}</div>`
     : drawn
       ? `<img class="info--icon" src="assets/icons/${drawn[0]}.svg" width="${drawn[1]}" height="${drawn[2]}" alt="">`
       : `<div class="info--icon">${artCrop(name, ICON_H * ARTWORK_RATIO)}</div>`;
-  // The ritual is centred in the part of the grown card that's on screen
-  const ritual = CANVAS_PAGES[name]
-    ? `<iframe class="play--piece" src="${CANVAS_PAGES[name]}&sheet" title="${title}"></iframe>`
-    : teru
-      ? `<div class="draw" style="width:166.172px; height:472.5px">${drawing(TERU_BIG, 'var(--system-black)', [110.09, 43])}</div>`
-      : artCrop(name, STAGE_W - 2 * ART_CROP.left * (STAGE_W / 1040));
   return `
     <div class="panel" style="--card-color: ${CARD_COLOR[name]}">
-      <div class="panel--play">${ritual}<button type="button" class="play--close" aria-label="Home"></button></div>
       <div class="panel--info">
         <img class="info--frame" src="assets/system/info-frame.svg" width="354.069" height="531.104" alt="">
-        <div class="info--tag">${categoryTag(CATEGORY[name], title)}</div>
+        <div class="info--tag">${categoryTag(CATEGORY[name], cardName(name))}</div>
         <div class="info--body">
           ${icon}
-          <div class="info--text">
-            ${text.about ? `<p>${text.about}</p>` : ''}
-            ${text.howTo ? `<p>${text.howTo}</p>` : ''}
-          </div>
+          ${text.about ? `<p class="info--text">${text.about}</p>` : ''}
         </div>
-        <button type="button" class="info--claim">Claim Luck <img src="assets/system/arrow-right.svg" width="19" height="19" alt=""></button>
       </div>
       <div class="panel--paper"></div>
     </div>`;
+}
+
+// Teru Teru Bozu's ritual (350:4886): the doll under a sun and two clouds,
+// placed around the doll's own box as in Figma
+const TERU_SCENE = [
+  ['sun', -44.66, 48.29, 81.773, 81.773],
+  ['cloud-left', -111, 88.4, 125.319, 53.365],
+  ['cloud-right', 166.72, 2, 125.319, 53.364],
+];
+
+// The ritual's sheet: how to perform it, the card's interaction, and what
+// shows once the luck is claimed
+function sheetHTML(name) {
+  const text = CARD_TEXT[name] || {};
+  const title = cardName(name);
+  const ritual = CANVAS_PAGES[name]
+    ? `<iframe class="ritual--piece" src="${CANVAS_PAGES[name]}&sheet" title="${title}"></iframe>`
+    : name === '테루테루보즈.png'
+      ? `<div class="ritual--teru">
+          <div class="teru--doll draw">${drawing(TERU_BIG, 'var(--system-black)', [110.09, 43])}</div>
+          ${TERU_SCENE.map(([file, left, top, w, h]) =>
+            `<img class="teru--scene" src="assets/ritual/${file}.svg" style="left:${left}px; top:${top}px" width="${w}" height="${h}" alt="">`).join('')}
+        </div>`
+      // No interaction of its own yet: the artwork, tapped to claim
+      : `<button type="button" class="ritual--art" aria-label="Claim luck">${artCrop(name, STAGE_W - 2 * ART_CROP.left * (STAGE_W / 1040))}</button>`;
+  return `
+    <div class="sheet--fade"></div>
+    <img class="sheet--chevron" src="assets/system/chevron-down.svg" width="53.001" height="12.095" alt="">
+    <p class="sheet--howto">${text.howTo || ''}</p>
+    <div class="sheet--ritual">${ritual}</div>
+    <div class="sheet--claimed">
+      <div class="claimed--glow"></div>
+      <div class="claimed--body">
+        <p class="claimed--title">Luck Claimed!</p>
+        <button type="button" class="claimed--btn" data-act="home">Home</button>
+        <button type="button" class="claimed--btn claimed--btn-alt" data-act="continue">Continue</button>
+      </div>
+    </div>`;
+}
+
+// --- The sheet: p runs 0 (peeking under the card) → 1 (filling the screen) ---
+let sheet = null;  // { el, p, claimed }
+
+function setSheet(p) {
+  sheet.p = p;
+  const q = Math.max(0, p);  // below 0 the sheet is only arriving or leaving
+  const r = SHEET_RADIUS * (1 - q);
+  Object.assign(sheet.el.style, {
+    transform: `translateY(${sheetTop() * (1 - p)}px) scale(${lerp(SHEET_SCALE, 1, q)})`,
+    opacity: lerp(SHEET_OPACITY, 1, q),
+    borderRadius: `${r}px ${r}px 0 0`,
+  });
+  sheet.el.style.setProperty('--p', q);
+  sheet.el.querySelector('.sheet--howto').style.top = `${lerp(HOWTO_TOP, headTop() + HOWTO_TOP_FULL, q)}px`;
+  sheet.el.classList.toggle('is-full', p === 1);
+  // The card scrolls up with it
+  flip.el.style.transform = `translateY(${-sheetTop() * q}px)`;
+}
+
+// Glide the sheet to p, from wherever it is (also its entrance and exit,
+// from below the screen, p < 0)
+function sheetTo(to, ms = SHEET_MS) {
+  const from = sheet.p;
+  const t0 = performance.now();
+  sheet.anim = t0;
+  return new Promise((done) => {
+    (function frame(now) {
+      if (!sheet || sheet.anim !== t0) return done();
+      const t = Math.min(1, (now - t0) / ms);
+      setSheet(lerp(from, to, 1 - (1 - t) ** 3));
+      if (t < 1) requestAnimationFrame(frame); else done();
+    })(t0);
+  });
+}
+
+function claimed() {
+  if (!sheet || sheet.claimed) return;
+  sheet.claimed = true;
+  sheet.el.classList.add('is-claimed');
+}
+addEventListener('message', (e) => { if (e.data === 'luck-claimed') claimed(); });
+
+// Drag Teru Teru Bozu up to hang it; let go high enough and it hangs, swaying
+const TERU_DROP = 120;  // how far below its hanging spot the doll starts
+function teruRitual(el) {
+  const doll = el.querySelector('.teru--doll');
+  if (!doll) return;
+  let off = TERU_DROP;
+  let grab = null;
+  let hung = false;
+  const set = (o) => { off = o; doll.style.transform = `translateY(${o}px)`; };
+  set(TERU_DROP);
+  doll.addEventListener('pointerdown', (e) => {
+    if (hung) return;
+    doll.setPointerCapture(e.pointerId);
+    doll.getAnimations().forEach((a) => a.cancel());
+    grab = { y: e.clientY, off };
+  });
+  doll.addEventListener('pointermove', (e) => {
+    if (!grab) return;
+    set(Math.max(-10, Math.min(TERU_DROP + 40, grab.off + (e.clientY - grab.y) / fitScale)));
+  });
+  const letGo = async () => {
+    if (!grab) return;
+    grab = null;
+    if (off > TERU_DROP * 0.4) {
+      await doll.animate([{ transform: `translateY(${off}px)` }, { transform: `translateY(${TERU_DROP}px)` }],
+        { duration: 400, easing: 'cubic-bezier(0.3, 1.4, 0.5, 1)' }).finished;
+      set(TERU_DROP);
+      return;
+    }
+    hung = true;
+    doll.classList.add('is-hung');
+    await doll.animate([{ transform: `translateY(${off}px)` }, { transform: 'translateY(0)' }],
+      { duration: 250, easing: 'ease-out' }).finished;
+    set(0);
+    doll.animate(['0deg', '5deg', '-3.5deg', '2deg', '-1deg', '0deg'].map((d) => ({ transform: `rotate(${d})` })),
+      { duration: 1800, easing: 'ease-out' });
+    setTimeout(claimed, 700);
+  };
+  doll.addEventListener('pointerup', letGo);
+  doll.addEventListener('pointercancel', letGo);
 }
 
 async function flipOpen(card) {
@@ -425,59 +543,129 @@ async function flipOpen(card) {
 
   const el = document.createElement('div');
   el.className = 'm-flip';
+  el.style.setProperty('--k', to.k);
   el.innerHTML = `
     <div class="m-flip--inner">
       <div class="m-flip--face m-flip--front"><img src="${card.querySelector('img').src}" alt="" draggable="false"></div>
       <div class="m-flip--face m-flip--back">${panelHTML(name)}</div>
     </div>`;
-  el.querySelector('.info--claim').addEventListener('click', claim);
-  el.querySelector('.play--close').addEventListener('click', flipClose);
-  // The ritual fills what's on screen of the grown card
-  el.querySelector('.panel--play').style.height = `${stageH - playBox().top}px`;
   stage.appendChild(el);
-  flip = { el, card, playing: false };
+  flip = { el, card, box: to };
+
+  const sh = document.createElement('div');
+  sh.className = 'sheet';
+  sh.style.setProperty('--card-color', CARD_COLOR[name]);
+  sh.style.height = `${stageH}px`;
+  sh.style.setProperty('--ritual-top', `${headTop() + INFO_TOP}px`);
+  sh.innerHTML = sheetHTML(name);
+  stage.appendChild(sh);
+  sheet = { el: sh, p: -PEEK / sheetTop(), claimed: false };
+  setSheet(sheet.p);
+  teruRitual(sh);
+  sh.querySelector('.ritual--art')?.addEventListener('click', claimed);
+  sh.querySelectorAll('.claimed--btn').forEach((b) => b.addEventListener('click', () => {
+    if (b.dataset.act === 'home') goHome();
+    else {
+      sh.classList.remove('is-claimed');
+      sheet.claimed = false;
+      sh.querySelector('iframe')?.contentWindow.postMessage('luck-continue', '*');
+    }
+  }));
 
   document.documentElement.classList.add('is-flipped');
-  await flipAnimate([from, midBox(from, to), to], 0, [cardRadius(from), cardRadius(midBox(from, to)), panelRadius]);
+  await flipAnimate([from, midBox(from, to), to], 0,
+    [cardRadius(from), cardRadius(midBox(from, to)), `${PANEL_RADIUS * to.k}px`]);
+  await sheetTo(0);
   flipBusy = false;
 }
 
-// Claim Luck: the card rises and grows into the ritual, the notes giving way to it
-async function claim() {
-  if (!flip || flipBusy || flip.playing) return;
-  flipBusy = true;
-  flip.playing = true;
-  flip.el.classList.add('is-playing');
-  await flip.el.animate([px(infoBox()), px(playBox())],
-    { duration: GROW_MS, easing: FLIP_EASE, fill: 'forwards' }).finished;
-  flipBusy = false;
-}
-
+// Back: the sheet down if it's up, otherwise the card turned back over
 async function flipClose() {
   if (!flip || flipBusy) return;
+  if (sheet.p > 0) { sheetTo(0); return; }
   flipBusy = true;
   document.documentElement.classList.remove('is-flipped');
-  // From the ritual, straight home: the card drops away, no turning back over
-  if (flip.playing) {
-    await flip.el.animate([{ transform: 'none' }, { transform: `translateY(${stageH}px)` }],
-      { duration: GROW_MS * 0.75, easing: 'cubic-bezier(0.4, 0, 1, 1)', fill: 'forwards' }).finished;
-    flip.el.remove();
-    flip = null;
-    flipBusy = false;
-    return;
-  }
+  await sheetTo(-PEEK / sheetTop(), SHEET_MS * 0.6);
+  sheet.el.remove();
+  sheet = null;
   flip.el.getAnimations({ subtree: true }).forEach((a) => a.cancel());
   // The card is hidden but still laid out, so its box is where to land
-  const from = infoBox();
+  const from = flip.box;
   const to = stageBox(flip.card);
-  await flipAnimate([from, midBox(from, to), to], 180, [panelRadius, cardRadius(midBox(from, to)), cardRadius(to)]);
+  await flipAnimate([from, midBox(from, to), to], 180,
+    [`${PANEL_RADIUS * from.k}px`, cardRadius(midBox(from, to)), cardRadius(to)]);
   flip.el.remove();
   flip = null;
   flipBusy = false;
 }
 
-overlay.addEventListener('click', flipClose);
+// Home from the claimed sheet: it all drops away, no turning back over
+async function goHome() {
+  if (!flip || flipBusy) return;
+  flipBusy = true;
+  document.documentElement.classList.remove('is-flipped');
+  const drop = { duration: SHEET_MS, easing: 'cubic-bezier(0.4, 0, 1, 1)', fill: 'forwards' };
+  await Promise.all([sheet.el, flip.el].map((e) =>
+    e.animate([{ translate: '0 0' }, { translate: `0 ${stageH}px` }], drop).finished));
+  sheet.el.remove();
+  flip.el.remove();
+  sheet = null;
+  flip = null;
+  flipBusy = false;
+}
+
+backBtn.addEventListener('click', flipClose);
+overlay.addEventListener('click', () => { if (sheet && sheet.p === 0) flipClose(); });
 addEventListener('keydown', (e) => { if (e.key === 'Escape') flipClose(); });
+
+// Scrolling (wheel or a drag anywhere but the ritual itself) moves the sheet
+// with it; let go and it settles fully up or back down
+let scroll = null;
+let dragEnd = 0;
+// A drag isn't a tap: the click that ends it doesn't close or open anything
+addEventListener('click', (e) => { if (performance.now() - dragEnd < 100) e.stopPropagation(); }, true);
+function settle(dir) {
+  if (!sheet) return;
+  const p = sheet.p;
+  sheetTo(dir > 0 ? (p > 0.1 ? 1 : 0) : dir < 0 ? (p < 0.9 ? 0 : 1) : Math.round(p));
+}
+stage.addEventListener('pointerdown', (e) => {
+  if (!sheet || flipBusy || e.target.closest('.sheet--ritual, .sheet--claimed, .m-back')) return;
+  if (sheet.p === 1 && !e.target.closest('.sheet')) return;
+  sheet.anim = 0;
+  scroll = { y: e.clientY, p: sheet.p, last: e.clientY, t: e.timeStamp, v: 0, moved: false };
+});
+addEventListener('pointermove', (e) => {
+  if (!scroll) return;
+  const dy = (e.clientY - scroll.y) / fitScale;
+  if (!scroll.moved && Math.abs(dy) < 6) return;
+  scroll.moved = true;
+  scroll.v = (scroll.last - e.clientY) / Math.max(1, e.timeStamp - scroll.t);
+  scroll.last = e.clientY;
+  scroll.t = e.timeStamp;
+  setSheet(Math.max(0, Math.min(1, scroll.p - dy / sheetTop())));
+});
+addEventListener('pointerup', () => {
+  if (!scroll) return;
+  const { moved, v } = scroll;
+  scroll = null;
+  if (!moved) return;
+  dragEnd = performance.now();
+  settle(Math.abs(v) > 0.3 ? Math.sign(v) : 0);
+});
+// Tapping the peeking sheet brings it up too
+stage.addEventListener('click', (e) => {
+  if (sheet && sheet.p === 0 && !flipBusy && e.target.closest('.sheet')) sheetTo(1);
+});
+let wheelTimer = 0;
+stage.addEventListener('wheel', (e) => {
+  if (!sheet || flipBusy) return;
+  e.preventDefault();
+  sheet.anim = 0;
+  setSheet(Math.max(0, Math.min(1, sheet.p + e.deltaY / sheetTop())));
+  clearTimeout(wheelTimer);
+  wheelTimer = setTimeout(() => settle(Math.sign(e.deltaY)), 120);
+}, { passive: false });
 
 // Arrow keys step through the cards, opening the dial while they do
 let keyTimer = 0;

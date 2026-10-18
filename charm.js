@@ -311,6 +311,10 @@ function step(now) {
 // empty canvas drops it again.
 const stage = document.getElementById('stage');
 let press = null;
+const HITS_TO_CLAIM = 3;
+let hits = 0;
+// The sheet's Continue starts the count again
+addEventListener('message', (e) => { if (e.data === 'luck-continue') hits = 0; });
 
 stage.addEventListener('pointerdown', (e) => {
   if (e.button !== 0) return;
@@ -347,6 +351,8 @@ function release() {
       omega += side * HIT;
       omegaPhi -= side * HIT * 1.5;
       snap(0.6);
+      // Enough hits knock the bad luck loose: tell the page holding the sheet
+      if (IN_SHEET && ++hits === HITS_TO_CLAIM) parent.postMessage('luck-claimed', '*');
     } else {
       drop();
     }
