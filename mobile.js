@@ -355,6 +355,13 @@ function drawing(layers, knotColor, [dx, dy] = [0, 0]) {
 
 const ICON_H = 129.639;  // the small drawing's height (Teru's, in Figma)
 
+// Other cards' small drawings, exported whole from Figma: [file, width, height]
+const ICONS = {
+  '명태 액막이.png': ['pollock', 104, 100],      // 343:2694
+  '촛불 한번에 불기.png': ['candles', 113, 101],  // 343:2565
+  '걱정인형.png': ['worry-doll', 150, 96],        // 343:2693
+};
+
 // Cards without drawings of their own yet show their artwork instead: the
 // part inside the art's frame line, at the scale where the card is as wide
 // as the screen (or a given width)
@@ -373,9 +380,12 @@ function panelHTML(name) {
   const text = CARD_TEXT[name] || {};
   const title = cardName(name);
   const teru = name === '테루테루보즈.png';
+  const drawn = ICONS[name];
   const icon = teru
     ? `<div class="info--icon draw" style="width:54.347px; height:129.639px">${drawing(TERU_SMALL, CARD_COLOR[name])}</div>`
-    : `<div class="info--icon">${artCrop(name, ICON_H * ARTWORK_RATIO)}</div>`;
+    : drawn
+      ? `<img class="info--icon" src="assets/icons/${drawn[0]}.svg" width="${drawn[1]}" height="${drawn[2]}" alt="">`
+      : `<div class="info--icon">${artCrop(name, ICON_H * ARTWORK_RATIO)}</div>`;
   // The ritual is centred in the part of the grown card that's on screen
   const ritual = CANVAS_PAGES[name]
     ? `<iframe class="play--piece" src="${CANVAS_PAGES[name]}&sheet" title="${title}"></iframe>`
