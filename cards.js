@@ -98,11 +98,77 @@ const CARD_COLOR = {
   '포도 12알 먹기.png': 'var(--hot-pink)',
 };
 
-// What each card's sheet says under its name. Only Teru Teru Bozu is written
-// in Figma (331:1529) so far; the rest show their name alone.
+// What each card's sheet says under its name: what the custom is, and how
+// to perform it
 const CARD_TEXT = {
+  '걱정인형.png': {
+    about: 'A small doll from Guatemala, rooted in Mayan tradition, that you tell your worries to before sleep, believed to carry them away by morning.',
+    howTo: 'Type your worry into a field, then drag the doll under a pillow graphic to tuck it away.',
+  },
+  '꽃잎 점.png': {
+    about: 'An old French flower-petal game (“effeuiller la marguerite”) used to predict whether someone loves you back, one petal at a time.',
+    howTo: 'Tap each petal to pluck it off one at a time, alternating outcomes until the last one.',
+  },
+  '네잎 클로버 찾기.png': {
+    about: 'An Irish belief that finding a rare four-leaf clover among ordinary three-leaf ones is a sign of good luck.',
+    howTo: 'Swipe through a field of 3-leaf clovers searching, then tap the one 4-leaf clover when it appears.',
+  },
+  '돌팝 쌓기.png': {
+    about: 'A practice found across many cultures, including Scottish, Scandinavian, Buddhist, and Native American traditions, where a balanced stack of stones is believed to hold a wish in place.',
+    howTo: 'Drag stones one by one to stack them. Wobbles if off-center, settles if balanced.',
+  },
+  '돼지꿈.png': {
+    about: 'A Korean belief that dreaming of a pig (돼지꿈) brings wealth, often prompting people to buy a lottery ticket that day.',
+    howTo: 'Shake to “wake up,” then scratch-reveal like a lottery ticket.',
+  },
+  '드림캐쳐.png': {
+    about: 'A craft originating with the Ojibwe people of North America, hung above a bed and believed to catch bad dreams while letting good ones through.',
+    howTo: 'Tap to spin it. Floating bad-dream icons drift in and get caught, then fade.',
+  },
+  '명태 액막이.png': {
+    about: 'An old Korean custom of hanging a dried pollack by the door, believed to keep bad luck and evil spirits from entering the home.',
+    howTo: 'Tap or shake it to “hit” it, knocking the bad luck loose.',
+  },
+  '민들레 소원 빌기.png': {
+    about: 'A folk tradition from Western Europe and America. Blowing the seeds off a dandelion while making a wish is believed to carry that wish into the wind.',
+    howTo: 'Swipe/blow gesture scatters the seeds off the stem across the screen.',
+  },
+  '부처님 배 만지기.png': {
+    about: 'A Chinese folk Buddhist custom of rubbing the belly of Budai, the round-bellied figure, believed to bring good fortune to whoever touches it.',
+    howTo: 'Circular rub gesture on the belly, builds a glow the longer you rub.',
+  },
+  '빨간 옷 입기.png': {
+    about: 'A belief rooted in Chinese tradition and shared across East Asia that wearing red brings good fortune and wards off bad luck, especially on important days.',
+    howTo: 'Drag red clothing onto the figure to dress it.',
+  },
+  '손바닥의 인 쓰기.png': {
+    about: 'A Japanese custom of drawing the character for “person” on your palm and swallowing it, believed to calm nerves before something stressful.',
+    howTo: 'Trace 人 on the palm with your finger, then tap to “swallow” it.',
+  },
+  '시험 전 날 떡 먹기.png': {
+    about: 'A Korean tradition of eating sticky rice cake (찹쌀떡) before an exam, believed to help your answers “stick” and bring good results.',
+    howTo: 'Drag the rice cake to your mouth. It visually “sticks” in place.',
+  },
+  '악마의 눈.png': {
+    about: 'A charm widely used across Mediterranean and Middle Eastern cultures, believed to ward off envy and ill will directed at you.',
+    howTo: 'Tap the eye to make it blink, deflecting an incoming shadow/glare animation.',
+  },
+  '촛불 한번에 불기.png': {
+    about: 'A widespread Western birthday custom. Blowing out every candle in a single breath is believed to make your wish come true.',
+    howTo: 'Swipe across the candles in one motion (mimics blowing). All flames go out together or not at all.',
+  },
   '테루테루보즈.png': {
     about: 'A small handmade doll from Japan, hung outside the window the night before and believed to bring clear skies and keep the rain away.',
     howTo: 'Drag it upward to hang it from the top of the screen — it dangles and sways gently once released.',
   },
+  '포도 12알 먹기.png': {
+    about: 'A Spanish New Year’s tradition of eating twelve grapes as the clock strikes midnight, one for each month of luck ahead.',
+    howTo: 'Rapid-tap all 12 grapes before a short countdown runs out.',
+  },
+};
+
+// Interactive pieces: on desktop they fill the canvas beside an opened card;
+// on the phone they take the illustration's place on the card's sheet
+const CANVAS_PAGES = {
+  '명태 액막이.png': 'charm.html?v=3',  // the fish charm
 };

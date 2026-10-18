@@ -255,6 +255,17 @@ img { -webkit-user-drag: none; }
   -webkit-mask-image: linear-gradient(to bottom, transparent, #000 48px);
   mask-image: linear-gradient(to bottom, transparent, #000 48px);
 }
+/* A card's interactive piece, across the lower part of the sheet; the frame
+   line is drawn over it */
+.sheet--piece {
+  position: absolute;
+  left: 0;
+  top: 420px;
+  width: 402px;
+  height: 556px;
+  border: 0;
+  background: transparent;
+}
 .sheet--text {
   position: absolute;
   left: 49.23px;

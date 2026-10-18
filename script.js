@@ -7,10 +7,7 @@ const EDGE = 50;       // breathing room at each end of the pan
 // Load backs up front so they're ready by the time a card turns over
 BACKS.forEach((name) => { new Image().src = backSrc(name); });
 
-// Interactive pieces shown in the right-hand canvas when a card is opened
-const CANVAS_PAGES = {
-  '명태 액막이.png': 'charm.html?v=2',  // the fish charm
-};
+// CANVAS_PAGES (a card's interactive piece) comes from cards.js
 
 const wrap = document.getElementById('cards');
 

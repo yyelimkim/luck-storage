@@ -4,7 +4,7 @@ html, body {
   margin: 0;
   height: 100%;
   overflow: hidden;
-  background: #f0f0f0;
+  background: transparent;  /* sits on the desktop canvas or the phone's card sheet */
 }
 
 .stage {

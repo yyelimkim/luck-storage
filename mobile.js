@@ -265,7 +265,7 @@ fan.addEventListener('pointercancel', endSwipe);
 // above the sheet, turns it back.
 const FLIP_MS = 700;
 const FLIP_EASE = 'cubic-bezier(0.65, 0, 0.35, 1)';  // same as the desktop flip
-const SHEET_GAP = 36;     // px between the status bar and the sheet's top
+const SHEET_GAP = 24;     // px between the status bar and the sheet's top
 const SHEET_RADIUS = 37.13;  // the sheet's top corners
 const overlay = document.getElementById('overlay');
 let flipBusy = false;
@@ -289,14 +289,14 @@ function sheetBox() {
   return { left: 0, top, width: STAGE_W, height: stageH - top };
 }
 
-// Halfway through the turn, when the card is edge-on: still card-shaped,
-// halfway between the two in size and position
+// Halfway through the turn, when the card is edge-on: already the sheet's
+// full width, so the sheet never shows a gap at the sides, and halfway
+// between the two in height. Before that the card widens while turned away,
+// where the turn's own foreshortening hides it.
 function edgeOnBox(card, sheet) {
   const height = (card.height + sheet.height) / 2;
-  const width = height * (card.width / card.height);
-  const cx = (card.left + card.width / 2 + sheet.left + sheet.width / 2) / 2;
   const cy = (card.top + card.height / 2 + sheet.top + sheet.height / 2) / 2;
-  return { left: cx - width / 2, top: cy - height / 2, width, height };
+  return { left: sheet.left, top: cy - height / 2, width: sheet.width, height };
 }
 
 // Card corners follow the artwork's own curve; the sheet's are round on top only
@@ -315,8 +315,10 @@ function flipAnimate(boxes, fromDeg, radii) {
 }
 
 // The sheet's contents, laid out at the Figma frame's size (402 x 1149) and
-// scrolled inside the sheet. The illustration is the card's own artwork inside
-// its frame line, at the scale where the card is as wide as the sheet.
+// scrolled inside the sheet. The lower part is where the card's interaction
+// lives: its interactive piece if it has one (CANVAS_PAGES), otherwise the
+// card's own artwork inside its frame line, at the scale where the card is as
+// wide as the sheet.
 const ART_SCALE = STAGE_W / 1040;  // card artwork is 1040 x 1486
 const ART_TOP = 433;               // where the artwork's top edge falls on the sheet
 const ART_CROP = { left: 91, top: 116, right: 949, bottom: 1402 };  // inside the art's frame line
@@ -332,7 +334,9 @@ function sheetHTML(name) {
     <div class="sheet" style="--card-color: ${CARD_COLOR[name]}">
       <div class="sheet--page">
         <div class="sheet--paper"></div>
-        <div class="sheet--art" style="${art}"></div>
+        ${CANVAS_PAGES[name]
+          ? `<iframe class="sheet--piece" src="${CANVAS_PAGES[name]}" title="${ENGLISH[name].replace('.png', '')}"></iframe>`
+          : `<div class="sheet--art" style="${art}"></div>`}
         <div class="sheet--text">
           <p class="sheet--name">${ENGLISH[name].replace('.png', '')}</p>
           ${text.about ? `<p>${text.about}</p>` : ''}
