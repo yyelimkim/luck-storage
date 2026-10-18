@@ -321,7 +321,7 @@ function flipAnimate(boxes, fromDeg, radii) {
 // wide as the sheet.
 const ART_SCALE = STAGE_W / 1040;  // card artwork is 1040 x 1486
 const INTERACTION_GAP = 16;        // px between the end of the text and the interaction area
-const INTERACTION_BOTTOM = 956;    // ...which runs down to just above Home
+const INTERACTION_BOTTOM = 974;    // ...which runs down to just above Home
 const ART_CROP = { left: 91, top: 116, right: 949, bottom: 1402 };  // inside the art's frame line
 function sheetHTML(name) {
   const text = CARD_TEXT[name] || {};
@@ -343,6 +343,7 @@ function sheetHTML(name) {
           ${text.about ? `<p>${text.about}</p>` : ''}
           ${text.howTo ? `<p>${text.howTo}</p>` : ''}
         </div>
+        <img class="sheet--frame" src="assets/system/sheet-frame.svg" width="353.321" height="963.98" alt="">
         <button type="button" class="sheet--home">Home</button>
         <div class="sheet--tag">${categoryTag(CATEGORY[name])}</div>
         <button type="button" class="sheet--close" aria-label="Close"></button>

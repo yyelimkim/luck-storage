@@ -227,12 +227,12 @@ img { -webkit-user-drag: none; }
 }
 .sheet::-webkit-scrollbar { display: none; }
 /* The Figma frame's contents at their own size, centred while the sheet is
-   still narrower mid-turn. It ends 40px below Home (964 + 33), not at the
-   frame's full 1149. */
+   still narrower mid-turn. Everything from the tag down sits 18px lower
+   than in Figma, and the sheet ends 40px below Home (982 + 33). */
 .sheet--page {
   position: relative;
   width: 402px;
-  height: 1037px;
+  height: 1055px;
   margin-left: calc(50% - 201px);
   overflow: hidden;
   background: var(--card-color);
@@ -253,15 +253,10 @@ img { -webkit-user-drag: none; }
 .sheet--art {
   position: absolute;
   background-repeat: no-repeat;
-  /* The artwork's cut edges (top and sides) melt into the sheet */
-  -webkit-mask-image:
-    linear-gradient(to bottom, transparent, #000 48px),
-    linear-gradient(to right, transparent, #000 24px, #000 calc(100% - 24px), transparent);
-  -webkit-mask-composite: source-in;
-  mask-image:
-    linear-gradient(to bottom, transparent, #000 48px),
-    linear-gradient(to right, transparent, #000 24px, #000 calc(100% - 24px), transparent);
-  mask-composite: intersect;
+  /* The artwork's top and bottom edges melt into the sheet; its sides tuck
+     under the frame */
+  -webkit-mask-image: linear-gradient(to bottom, transparent, #000 48px, #000 calc(100% - 48px), transparent);
+  mask-image: linear-gradient(to bottom, transparent, #000 48px, #000 calc(100% - 48px), transparent);
 }
 /* A card's interactive piece, across the sheet below the text (mobile.js
    sets its top and height) */
@@ -287,10 +282,18 @@ img { -webkit-user-drag: none; }
   line-height: normal;
 }
 .sheet--text p { margin: 0; }
+/* The white frame line: the tag sits on its top edge, Home on its bottom */
+.sheet--frame {
+  position: absolute;
+  left: 24.3px;
+  top: 39.9px;
+  display: block;
+  pointer-events: none;
+}
 .sheet--home {
   position: absolute;
   left: 129px;
-  top: 964px;
+  top: 982px;
   width: 144.26px;
   height: 33.172px;
   padding: 0;
@@ -309,12 +312,12 @@ img { -webkit-user-drag: none; }
   transform: translateX(-50%);
   line-height: 0;
 }
-/* Close: a bare ✕, level with the tag at the top right (the button keeps
-   the tag's height as its tap area) */
+/* Close: a bare ✕ at the top right, tucked inside the frame just under its
+   top edge (the button keeps the tag's height as its tap area) */
 .sheet--close {
   position: absolute;
-  right: 16px;
-  top: 28px;
+  right: 40px;
+  top: 58px;
   width: 33.172px;
   height: 33.172px;
   padding: 0;
