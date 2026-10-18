@@ -390,7 +390,7 @@ function panelHTML(name) {
   const ritual = CANVAS_PAGES[name]
     ? `<iframe class="play--piece" src="${CANVAS_PAGES[name]}&sheet" title="${title}"></iframe>`
     : teru
-      ? `<div class="draw" style="width:166.172px; height:472.5px">${drawing(TERU_BIG, '#413636', [110.09, 43])}</div>`
+      ? `<div class="draw" style="width:166.172px; height:472.5px">${drawing(TERU_BIG, 'var(--system-black)', [110.09, 43])}</div>`
       : artCrop(name, STAGE_W - 2 * ART_CROP.left * (STAGE_W / 1040));
   return `
     <div class="panel" style="--card-color: ${CARD_COLOR[name]}">

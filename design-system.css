@@ -77,12 +77,12 @@
 }
 .tag[data-category="luck"] {
   --tag-color: var(--luck);
-  --tag-icon: url("assets/system/luck.svg");
+  --tag-icon: url("assets/system/luck.svg?v=2");
 }
 .tag[data-category="success"] {
   --tag-color: var(--success);
-  --tag-icon: url("assets/system/success-left.svg");
-  --tag-icon-end: url("assets/system/success-right.svg");
+  --tag-icon: url("assets/system/success-left.svg?v=2");
+  --tag-icon-end: url("assets/system/success-right.svg?v=2");
   --tag-size: 17.008px;
 }
 

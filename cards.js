@@ -83,9 +83,9 @@ function categoryTag(category, label) {
   return `<span class="tag${label ? ' tag--named' : ''}" data-category="${category}"><i class="tag--icon"></i><span class="tag--label">${text}</span><i class="tag--icon"></i></span>`;
 }
 
-// Each card's background colour, for its sheet when turned over. Most are
-// design-system colours; Pollock and Evil Eye are drawn in #dad449, a yellow
-// that isn't one of the file's variables.
+// Each card's background colour, for its back when turned over: always a
+// design-system colour. (Pollock's and Evil Eye's front artwork is drawn in
+// #dad449, a yellow outside the system; their backs use Yellow-Green.)
 const CARD_COLOR = {
   '걱정인형.png': 'var(--yellow-green)',
   '꽃잎 점.png': 'var(--hot-pink)',
@@ -93,13 +93,13 @@ const CARD_COLOR = {
   '돌팝 쌓기.png': 'var(--v2-blue)',
   '돼지꿈.png': 'var(--v2-blue)',
   '드림캐쳐.png': 'var(--v2-blue)',
-  '명태 액막이.png': '#dad449',
+  '명태 액막이.png': 'var(--yellow-green)',
   '민들레 소원 빌기.png': 'var(--v2-blue)',
   '부처님 배 만지기.png': 'var(--forest-green)',
   '빨간 옷 입기.png': 'var(--forest-green)',
   '손바닥의 인 쓰기.png': 'var(--v2-blue)',
   '시험 전 날 떡 먹기.png': 'var(--hot-pink)',
-  '악마의 눈.png': '#dad449',
+  '악마의 눈.png': 'var(--yellow-green)',
   '촛불 한번에 불기.png': 'var(--forest-green)',
   '테루테루보즈.png': 'var(--v2-blue)',
   '포도 12알 먹기.png': 'var(--hot-pink)',
