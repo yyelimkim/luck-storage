@@ -51,6 +51,10 @@ const ENGLISH = {
 const RENAMED = {
   '촛불 한번에 불기.png': 'Blowing Candles',
   '명태 액막이.png': 'Pollock Charm',
+  '시험 전 날 떡 먹기.png': 'Rice Cakes',
+  '민들레 소원 빌기.png': 'Dandelion Wish',
+  '포도 12알 먹기.png': '12 Grapes',
+  '부처님 배 만지기.png': 'Buddha’s Belly',
 };
 const cardName = (name) => RENAMED[name] || ENGLISH[name].replace('.png', '');
 const englishSrc = (name) => `cards/english%20cards/${encodeURIComponent(ENGLISH[name])}?v=${IMAGES_VERSION}`;
