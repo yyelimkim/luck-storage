@@ -173,7 +173,7 @@ img { -webkit-user-drag: none; }
   position: absolute;
   inset: 0;
   z-index: 50;
-  background: rgba(255, 255, 255, 0.8);
+  background: rgba(255, 255, 255, 0.9);
   -webkit-backdrop-filter: blur(2px);
   backdrop-filter: blur(2px);
   opacity: 0;
@@ -285,11 +285,15 @@ img { -webkit-user-drag: none; }
 .info--body {
   position: absolute;
   left: 50.5px;  /* (402 - 301) / 2 */
-  top: 124px;
+  /* Centred up and down in the frame, under the tag: 15 + 33.17 from the
+     top, the frame's bottom line (24.6 + 531.1) from the bottom */
+  top: 48.17px;
+  bottom: 24.3px;
   width: 301px;
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
   gap: 33px;
 }
 .info--icon { position: relative; flex: none; }
@@ -313,8 +317,9 @@ img { -webkit-user-drag: none; }
   overflow: hidden;
   background: var(--card-color);
   color: var(--system-black);
-  transform-origin: 50% 0;
-  will-change: transform, opacity;
+  /* Carries its colour on below, for when it snaps a touch past the top */
+  box-shadow: 0 60px 0 var(--card-color);
+  will-change: transform;
   cursor: pointer;
 }
 .sheet.is-full { cursor: auto; }
@@ -363,8 +368,9 @@ img { -webkit-user-drag: none; }
   bottom: 0;
   display: grid;
   place-items: center;
-  /* Grows a touch as the sheet comes up */
+  /* Grows a touch and firms up as the sheet comes up */
   transform: scale(calc(var(--ritual-scale) + (1 - var(--ritual-scale)) * var(--p, 0)));
+  opacity: calc(var(--ritual-opacity) + (1 - var(--ritual-opacity)) * var(--p, 0));
   transform-origin: 50% 0;
 }
 .sheet:not(.is-full) .sheet--ritual { pointer-events: none; }
@@ -380,14 +386,19 @@ img { -webkit-user-drag: none; }
   background: none;
   cursor: pointer;
 }
+/* As tall as the doll plus how far below it starts (TERU_DROP), so its
+   start and its hanging spot sit either side of the middle */
 .ritual--teru {
   position: relative;
   width: 166.172px;
-  height: 472.5px;
+  height: calc(472.5px + 90px);
 }
 .ritual--teru .teru--doll {
   position: absolute;
-  inset: 0;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 472.5px;
   cursor: grab;
   touch-action: none;
   transform-origin: 83px 0;  /* swings from the top of its string */

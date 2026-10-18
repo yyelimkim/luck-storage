@@ -260,8 +260,8 @@ fan.addEventListener('pointercancel', endSwipe);
 // Tapping the centre card turns it over on a frosted overlay (Figma 350:3771):
 // its back carries the card's name, a small drawing and what the custom is.
 // Under it the ritual's sheet peeks up, saying how to perform it. Scrolling
-// down brings the sheet up to fill the screen (350:4794), firming up and its
-// interaction growing as it comes; the ritual is performed there. Once done the sheet says so
+// down brings the sheet up to fill the screen (350:4794), its interaction
+// growing and firming up as it comes; the ritual is performed there. Once done the sheet says so
 // (350:5111): Home, or Continue to keep at it. The back arrow steps back:
 // sheet down, then the card turned back over.
 const FLIP_MS = 700;
@@ -274,8 +274,8 @@ const PEEK = 180;          // how much of the sheet shows under the card
 const CARD_GAP = 52;       // least space between the card and the sheet
 const PANEL_RADIUS = 37.13;  // the card's corner at the screen's width
 const SHEET_RADIUS = 30;
-const RITUAL_SCALE = 0.92;   // the peeking sheet's interaction size...
-const SHEET_OPACITY = 0.7;   // ...and the sheet's opacity, both 1 once it fills the screen
+const RITUAL_SCALE = 0.92;   // the peeking sheet's interaction: its size...
+const RITUAL_OPACITY = 0.4;  // ...and opacity, both 1 once the sheet fills the screen
 const HOWTO_TOP = 64;        // the how-to line in the peeking sheet...
 const HOWTO_TOP_FULL = 17;   // ...and beside the back arrow once full
 const backBtn = document.getElementById('back');
@@ -454,23 +454,28 @@ let sheet = null;  // { el, p, claimed }
 
 function setSheet(p) {
   sheet.p = p;
-  const q = Math.max(0, p);  // below 0 the sheet is only arriving or leaving
+  // Below 0 the sheet is only arriving or leaving; past 1 it's overshooting
+  // as it snaps into place
+  const q = Math.max(0, Math.min(1, p));
   const r = SHEET_RADIUS * (1 - q);
   Object.assign(sheet.el.style, {
     transform: `translateY(${sheetTop() * (1 - p)}px)`,
-    opacity: lerp(SHEET_OPACITY, 1, q),
     borderRadius: `${r}px ${r}px 0 0`,
   });
   sheet.el.style.setProperty('--p', q);
   sheet.el.querySelector('.sheet--howto').style.top = `${lerp(HOWTO_TOP, headTop() + HOWTO_TOP_FULL, q)}px`;
   sheet.el.classList.toggle('is-full', p === 1);
   // The card scrolls up with it
-  flip.el.style.transform = `translateY(${-sheetTop() * q}px)`;
+  flip.el.style.transform = `translateY(${-sheetTop() * Math.max(0, p)}px)`;
 }
 
 // Glide the sheet to p, from wherever it is (also its entrance and exit,
 // from below the screen, p < 0)
-function sheetTo(to, ms = SHEET_MS) {
+const easeOut = (t) => 1 - (1 - t) ** 3;
+// Lands a touch past and settles back: the snap
+const SNAP_BACK = 1;
+const snapEase = (t) => 1 + (SNAP_BACK + 1) * (t - 1) ** 3 + SNAP_BACK * (t - 1) ** 2;
+function sheetTo(to, ms = SHEET_MS, curve = easeOut) {
   const from = sheet.p;
   const t0 = performance.now();
   sheet.anim = t0;
@@ -478,10 +483,25 @@ function sheetTo(to, ms = SHEET_MS) {
     (function frame(now) {
       if (!sheet || sheet.anim !== t0) return done();
       const t = Math.min(1, (now - t0) / ms);
-      setSheet(lerp(from, to, 1 - (1 - t) ** 3));
+      setSheet(lerp(from, to, curve(t)));
       if (t < 1) requestAnimationFrame(frame); else done();
     })(t0);
   });
+}
+
+// The interaction gets the screen under the how-to line (as it sits once
+// the sheet is full), shrinking if need be so all of it shows at once,
+// centred. Returns its scale.
+const RITUAL_GAP = 24;
+function fitRitual(sh) {
+  const howto = sh.querySelector('.sheet--howto');
+  const top = headTop() + HOWTO_TOP_FULL + howto.offsetHeight + RITUAL_GAP;
+  sh.style.setProperty('--ritual-top', `${top}px`);
+  const piece = sh.querySelector('.ritual--teru, .ritual--art');
+  if (!piece) return 1;
+  const k = Math.min(1, (stageH - top - RITUAL_GAP) / piece.offsetHeight);
+  piece.style.transform = `scale(${k})`;
+  return k;
 }
 
 function claimed() {
@@ -492,8 +512,8 @@ function claimed() {
 addEventListener('message', (e) => { if (e.data === 'luck-claimed') claimed(); });
 
 // Drag Teru Teru Bozu up to hang it; let go high enough and it hangs, swaying
-const TERU_DROP = 120;  // how far below its hanging spot the doll starts
-function teruRitual(el) {
+const TERU_DROP = 90;  // how far below its hanging spot the doll starts
+function teruRitual(el, k) {
   const doll = el.querySelector('.teru--doll');
   if (!doll) return;
   let off = TERU_DROP;
@@ -509,7 +529,7 @@ function teruRitual(el) {
   });
   doll.addEventListener('pointermove', (e) => {
     if (!grab) return;
-    set(Math.max(-10, Math.min(TERU_DROP + 40, grab.off + (e.clientY - grab.y) / fitScale)));
+    set(Math.max(-10, Math.min(TERU_DROP + 40, grab.off + (e.clientY - grab.y) / (fitScale * k))));
   });
   const letGo = async () => {
     if (!grab) return;
@@ -555,13 +575,13 @@ async function flipOpen(card) {
   sh.className = 'sheet';
   sh.style.setProperty('--card-color', CARD_COLOR[name]);
   sh.style.height = `${stageH}px`;
-  sh.style.setProperty('--ritual-top', `${headTop() + INFO_TOP}px`);
   sh.style.setProperty('--ritual-scale', RITUAL_SCALE);
+  sh.style.setProperty('--ritual-opacity', RITUAL_OPACITY);
   sh.innerHTML = sheetHTML(name);
   stage.appendChild(sh);
   sheet = { el: sh, p: -PEEK / sheetTop(), claimed: false };
   setSheet(sheet.p);
-  teruRitual(sh);
+  teruRitual(sh, fitRitual(sh));
   sh.querySelector('.ritual--art')?.addEventListener('click', claimed);
   sh.querySelectorAll('.claimed--btn').forEach((b) => b.addEventListener('click', () => {
     if (b.dataset.act === 'home') goHome();
@@ -582,7 +602,7 @@ async function flipOpen(card) {
 // Back: the sheet down if it's up, otherwise the card turned back over
 async function flipClose() {
   if (!flip || flipBusy) return;
-  if (sheet.p > 0) { sheetTo(0); return; }
+  if (sheet.p > 0) { snapTo(0); return; }
   flipBusy = true;
   document.documentElement.classList.remove('is-flipped');
   await sheetTo(-PEEK / sheetTop(), SHEET_MS * 0.6);
@@ -623,10 +643,22 @@ let scroll = null;
 let dragEnd = 0;
 // A drag isn't a tap: the click that ends it doesn't close or open anything
 addEventListener('click', (e) => { if (performance.now() - dragEnd < 100) e.stopPropagation(); }, true);
-function settle(dir) {
+// Moved this far from where it rested (or flicked), it snaps the rest of the way
+const SNAP_AT = 0.06;
+function settle(from, dir) {
   if (!sheet) return;
   const p = sheet.p;
-  sheetTo(dir > 0 ? (p > 0.1 ? 1 : 0) : dir < 0 ? (p < 0.9 ? 0 : 1) : Math.round(p));
+  if (dir > 0 || p - from >= SNAP_AT) snapTo(1);
+  else if (dir < 0 || from - p >= SNAP_AT) snapTo(0);
+  else snapTo(from);
+}
+// Snap into place; scrolling that's still coming in (a trackpad's glide)
+// is let go until it has
+const SNAP_MS = 520;
+let snapping = 0;
+async function snapTo(p) {
+  snapping = performance.now();
+  await sheetTo(p, SNAP_MS, snapEase);
 }
 stage.addEventListener('pointerdown', (e) => {
   if (!sheet || flipBusy || e.target.closest('.sheet--ritual, .sheet--claimed, .m-back')) return;
@@ -646,24 +678,33 @@ addEventListener('pointermove', (e) => {
 });
 addEventListener('pointerup', () => {
   if (!scroll) return;
-  const { moved, v } = scroll;
+  const { moved, v, p } = scroll;
   scroll = null;
   if (!moved) return;
   dragEnd = performance.now();
-  settle(Math.abs(v) > 0.3 ? Math.sign(v) : 0);
+  settle(p, Math.abs(v) > 0.3 ? Math.sign(v) : 0);
 });
 // Tapping the peeking sheet brings it up too
 stage.addEventListener('click', (e) => {
-  if (sheet && sheet.p === 0 && !flipBusy && e.target.closest('.sheet')) sheetTo(1);
+  if (sheet && sheet.p === 0 && !flipBusy && e.target.closest('.sheet')) snapTo(1);
 });
 let wheelTimer = 0;
 stage.addEventListener('wheel', (e) => {
   if (!sheet || flipBusy) return;
   e.preventDefault();
-  sheet.anim = 0;
-  setSheet(Math.max(0, Math.min(1, sheet.p + e.deltaY / sheetTop())));
   clearTimeout(wheelTimer);
-  wheelTimer = setTimeout(() => settle(Math.sign(e.deltaY)), 120);
+  // Swallow the rest of the glide that set off a snap
+  if (performance.now() - snapping < SNAP_MS + 250) {
+    snapping = performance.now() - SNAP_MS;
+    return;
+  }
+  sheet.anim = 0;
+  const p = Math.max(0, Math.min(1, sheet.p + e.deltaY / sheetTop()));
+  setSheet(p);
+  if (e.deltaY > 0 && p >= SNAP_AT && p < 1) snapTo(1);
+  else if (e.deltaY < 0 && p <= 1 - SNAP_AT && p > 0) snapTo(0);
+  // Not far enough to snap: back where it was
+  else wheelTimer = setTimeout(() => snapTo(Math.round(sheet.p)), 150);
 }, { passive: false });
 
 // Arrow keys step through the cards, opening the dial while they do
