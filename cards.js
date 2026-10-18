@@ -70,10 +70,11 @@ const CATEGORY = {
   '포도 12알 먹기.png': 'luck',
 };
 
-// Markup for a category tag
-function categoryTag(category) {
-  const label = category[0].toUpperCase() + category.slice(1);
-  return `<span class="tag" data-category="${category}"><i class="tag--icon"></i><span class="tag--label">${label}</span><i class="tag--icon"></i></span>`;
+// Markup for a category tag. It reads the category's name unless given a
+// label (a card's name), in which case it grows to fit it.
+function categoryTag(category, label) {
+  const text = label || category[0].toUpperCase() + category.slice(1);
+  return `<span class="tag${label ? ' tag--named' : ''}" data-category="${category}"><i class="tag--icon"></i><span class="tag--label">${text}</span><i class="tag--icon"></i></span>`;
 }
 
 // Each card's background colour, for its sheet when turned over. Most are

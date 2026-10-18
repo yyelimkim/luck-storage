@@ -168,14 +168,12 @@ img { -webkit-user-drag: none; }
 }
 .is-preview .homebar { display: block; }
 
-/* Opened card: a scrim over the screen, the card turned over on top */
+/* Opened card: white over the screen, the card turned over on top */
 .overlay {
   position: absolute;
   inset: 0;
   z-index: 50;
-  background: color-mix(in srgb, var(--system-white) 85%, transparent);
-  -webkit-backdrop-filter: blur(6px);
-  backdrop-filter: blur(6px);
+  background: #fff;  /* the Figma frame's white */
   opacity: 0;
   pointer-events: none;
   transition: opacity 0.5s;
@@ -207,96 +205,81 @@ img { -webkit-user-drag: none; }
   width: 100%;
   height: 100%;
 }
-/* Back: the sheet (Figma 331:1529) */
+/* Back: the card turned over (Figma 341:2279), which grows into the ritual
+   (340:2217) on Claim Luck */
 .m-flip--back {
   transform: rotateY(180deg);
   overflow: hidden;
-  /* Same line as the tags and Home button */
-  border: 0.771px solid var(--system-black);
-  border-bottom: 0;  /* runs off the bottom of the screen */
+  border: 0.771px solid var(--system-black);  /* same line as the tags */
 }
-.sheet {
+.panel {
   position: absolute;
   inset: 0;
-  overflow-x: hidden;
-  overflow-y: auto;
-  overscroll-behavior: contain;
-  touch-action: pan-y;
-  scrollbar-width: none;
-  background: var(--card-color);
-}
-.sheet::-webkit-scrollbar { display: none; }
-/* The Figma frame's contents at their own size, centred while the sheet is
-   still narrower mid-turn. Everything from the tag down sits 18px lower
-   than in Figma, and the sheet ends 40px below Home (982 + 33). */
-.sheet--page {
-  position: relative;
-  width: 402px;
-  height: 1055px;
-  margin-left: calc(50% - 201px);
-  overflow: hidden;
   background: var(--card-color);
   color: var(--system-black);
 }
-/* Paper grain over the card colour; the artwork carries its own */
-.sheet--paper {
+/* Both layers are laid out at the Figma frame's width, centred while the
+   card is still turning */
+.panel--info,
+.panel--play {
   position: absolute;
-  left: -75.5px;
-  top: -62px;
-  width: 553px;
-  height: 1548px;
-  background: url("assets/system/paper.png") 0 0 / 553px 774px repeat-y;
-  transform: rotate(180deg);
-  mix-blend-mode: multiply;
+  top: 0;
+  left: calc(50% - 201px);
+  width: 402px;
+  transition: opacity 0.35s;
+}
+.panel--info { height: 580px; }
+.panel--play { height: 937px; opacity: 0; pointer-events: none; }
+.is-playing .panel--info { opacity: 0; pointer-events: none; }
+.is-playing .panel--play { opacity: 1; pointer-events: auto; transition-delay: 0.2s; }
+
+.info--frame {
+  position: absolute;
+  left: 23.6px;
+  top: 24.6px;
+  display: block;
   pointer-events: none;
 }
-.sheet--art {
+.info--tag {
   position: absolute;
-  background-repeat: no-repeat;
-  /* The artwork's top and bottom edges melt into the sheet; its sides tuck
-     under the frame */
-  -webkit-mask-image: linear-gradient(to bottom, transparent, #000 48px, #000 calc(100% - 48px), transparent);
-  mask-image: linear-gradient(to bottom, transparent, #000 48px, #000 calc(100% - 48px), transparent);
+  left: 50%;
+  top: 15px;
+  transform: translateX(-50%);
+  line-height: 0;
 }
-/* A card's interactive piece, across the sheet below the text (mobile.js
-   sets its top and height) */
-.sheet--piece {
+.info--body {
   position: absolute;
-  left: 0;
-  width: 402px;
-  border: 0;
-  background: transparent;
-}
-.sheet--text {
-  position: absolute;
-  left: 49.23px;
-  top: 112.23px;
+  left: 49px;
+  top: 89.25px;
   width: 301px;
   display: flex;
   flex-direction: column;
-  gap: 40px;
+  align-items: center;
+  gap: 33px;
+}
+.info--icon { position: relative; flex: none; }
+.info--text {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
   text-align: center;
   font-family: var(--font-display);
   font-size: 17px;
   letter-spacing: var(--tracking);
   line-height: normal;
 }
-.sheet--text p { margin: 0; }
-/* The white frame line: the tag sits on its top edge, Home on its bottom */
-.sheet--frame {
+.info--text p { margin: 0; }
+.info--claim {
   position: absolute;
-  left: 24.3px;
-  top: 39.9px;
-  display: block;
-  pointer-events: none;
-}
-.sheet--home {
-  position: absolute;
-  left: 129px;
-  top: 982px;
-  width: 144.26px;
-  height: 33.172px;
+  left: 127px;
+  top: 487px;
+  width: 158px;
+  height: 33px;
   padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
   background: var(--system-white);
   border: 0.771px solid var(--system-black);
   color: var(--system-black);
@@ -305,35 +288,45 @@ img { -webkit-user-drag: none; }
   letter-spacing: var(--tracking);
   cursor: pointer;
 }
-.sheet--tag {
+.info--claim img { display: block; }
+
+/* The ritual: the card's interactive piece, drawing or artwork */
+.play--piece {
   position: absolute;
-  left: 50%;
-  top: 28px;
-  transform: translateX(-50%);
-  line-height: 0;
-}
-/* Close: a bare ✕ at the top right, tucked inside the frame just under its
-   top edge (the button keeps the tag's height as its tap area) */
-.sheet--close {
-  position: absolute;
-  right: 40px;
-  top: 58px;
-  width: 33.172px;
-  height: 33.172px;
-  padding: 0;
-  background: none;
+  left: 0;
+  top: 0;
+  width: 402px;
+  height: 640px;
   border: 0;
-  cursor: pointer;
+  background: transparent;
 }
-.sheet--close::before,
-.sheet--close::after {
-  content: "";
+.panel--art {
+  background-repeat: no-repeat;
+  /* The artwork's cut edges melt into the card */
+  -webkit-mask-image:
+    linear-gradient(to bottom, transparent, #000 32px, #000 calc(100% - 32px), transparent),
+    linear-gradient(to right, transparent, #000 16px, #000 calc(100% - 16px), transparent);
+  -webkit-mask-composite: source-in;
+  mask-image:
+    linear-gradient(to bottom, transparent, #000 32px, #000 calc(100% - 32px), transparent),
+    linear-gradient(to right, transparent, #000 16px, #000 calc(100% - 16px), transparent);
+  mask-composite: intersect;
+}
+
+/* Drawings built from Figma layers: each part a box at its Figma spot, the
+   SVG filling it plus its stroke spill */
+.draw { position: relative; }
+.draw--part,
+.draw--knot {
   position: absolute;
-  left: 50%;
-  top: 50%;
-  width: 15px;
-  height: 1.5px;
-  background: var(--system-black);
-  transform: translate(-50%, -50%) rotate(45deg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
-.sheet--close::after { transform: translate(-50%, -50%) rotate(-45deg); }
+.draw--rot { position: relative; flex: none; }
+.draw--spill { position: absolute; }
+.draw--spill img { display: block; width: 100%; height: 100%; }
+.draw--knot {
+  border: 1px solid var(--system-black);
+  border-radius: 92px;
+}

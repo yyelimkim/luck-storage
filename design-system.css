@@ -85,3 +85,11 @@
   --tag-icon-end: url("assets/system/success-right.svg");
   --tag-size: 17.008px;
 }
+
+/* A tag carrying a card's name (Figma 341:2493): as wide as the name needs */
+.tag--named { width: auto; }
+.tag--named .tag--label {
+  flex: none;
+  padding: 0 24px;
+  font-size: 17px;
+}

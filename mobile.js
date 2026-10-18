@@ -257,21 +257,21 @@ const endSwipe = () => {
 fan.addEventListener('pointerup', endSwipe);
 fan.addEventListener('pointercancel', endSwipe);
 
-// Tapping the centre card turns it over into its sheet (Figma 331:1529): the
-// card's colour, full width from just under the status bar, rounded on top,
-// holding its category tag, name, notes and illustration. The card keeps its
-// own shape until it's edge-on halfway through the turn, so nothing is
-// cropped; only then does it take the sheet's shape. Home, or the strip
-// above the sheet, turns it back.
+// Tapping the centre card turns it over on a white overlay (Figma 341:2279):
+// its back is a card the width of the screen in the card's colour, with the
+// card's name on its tag, a small drawing, what the custom is and how to do
+// it, and Claim Luck. Claim Luck grows that card down past the bottom of the
+// screen into where the ritual is performed (340:2217): the card's
+// interaction alone. Tapping the white around it turns the card back.
 const FLIP_MS = 700;
 const FLIP_EASE = 'cubic-bezier(0.65, 0, 0.35, 1)';  // same as the desktop flip
-const SHEET_GAP = 24;     // px between the status bar and the sheet's top
-const SHEET_RADIUS = 37.13;  // the sheet's top corners
+const GROW_MS = 600;
+const PANEL_TOP = 26;      // px from the top of the screen (under the status bar)
+const INFO_H = 580;        // the turned-over card
+const PLAY_H = 937;        // ...grown for the ritual, running off the bottom
+const PANEL_RADIUS = 37.13;
 const overlay = document.getElementById('overlay');
 let flipBusy = false;
-
-// Preload backs so they're ready by the time a card turns over
-BACKS.forEach((name) => { new Image().src = backSrc(name); });
 
 // The card's on-screen box in stage px (it's upright when centred)
 function stageBox(el) {
@@ -283,30 +283,25 @@ function stageBox(el) {
   };
 }
 
-// The sheet: on a phone the real status bar sits above the page
-function sheetBox() {
-  const top = (document.documentElement.classList.contains('is-phone') ? 0 : 44) + SHEET_GAP;
-  return { left: 0, top, width: STAGE_W, height: stageH - top };
+// The panel at a given height: on a phone the real status bar sits above the page
+function panelBox(height) {
+  const top = (document.documentElement.classList.contains('is-phone') ? 0 : 44) + PANEL_TOP;
+  return { left: 0, top, width: STAGE_W, height };
 }
 
-// Halfway through the turn, when the card is edge-on: already the sheet's
-// full width, so the sheet never shows a gap at the sides, and halfway
-// between the two in height. Before that the card widens while turned away,
-// where the turn's own foreshortening hides it.
-function edgeOnBox(card, sheet) {
-  const height = (card.height + sheet.height) / 2;
-  const cy = (card.top + card.height / 2 + sheet.top + sheet.height / 2) / 2;
-  return { left: sheet.left, top: cy - height / 2, width: sheet.width, height };
-}
+const midBox = (a, b) => ({
+  left: (a.left + b.left) / 2, top: (a.top + b.top) / 2,
+  width: (a.width + b.width) / 2, height: (a.height + b.height) / 2,
+});
 
-// Card corners follow the artwork's own curve; the sheet's are round on top only
+// Card corners follow the artwork's own curve
 const cardRadius = (r) => `${r.width * 0.082}px / ${r.height * 0.0572}px`;  // matches .m-card
-const sheetRadius = `${SHEET_RADIUS}px ${SHEET_RADIUS}px 0 0`;
+const panelRadius = `${PANEL_RADIUS}px`;
+const px = (r) => ({ left: `${r.left}px`, top: `${r.top}px`, width: `${r.width}px`, height: `${r.height}px` });
 
 // boxes and radii run start → edge-on → end, alongside 0° → 90° → 180°
 function flipAnimate(boxes, fromDeg, radii) {
   const opts = { duration: FLIP_MS, easing: FLIP_EASE, fill: 'forwards' };
-  const px = (r) => ({ left: `${r.left}px`, top: `${r.top}px`, width: `${r.width}px`, height: `${r.height}px` });
   const move = flip.el.animate(boxes.map(px), opts);
   flip.el.firstElementChild.animate(
     [0, 90, 180].map((d) => ({ transform: `rotateY(${fromDeg + d}deg)` })), opts);
@@ -314,39 +309,85 @@ function flipAnimate(boxes, fromDeg, radii) {
   return move.finished;
 }
 
-// The sheet's contents, laid out at the Figma frame's size (402 wide) and
-// scrolled inside the sheet. Below the text is where the card's interaction
-// lives: its interactive piece if it has one (CANVAS_PAGES), otherwise the
-// card's own artwork inside its frame line, at the scale where the card is as
-// wide as the sheet.
-const ART_SCALE = STAGE_W / 1040;  // card artwork is 1040 x 1486
-const INTERACTION_GAP = 16;        // px between the end of the text and the interaction area
-const INTERACTION_BOTTOM = 974;    // ...which runs down to just above Home
-const ART_CROP = { left: 91, top: 116, right: 949, bottom: 1402 };  // inside the art's frame line
-function sheetHTML(name) {
-  const text = CARD_TEXT[name] || {};
+// Teru Teru Bozu's own drawings: a small line version for the info card
+// (341:2461) and the full doll for the ritual (340:2185). Layers are
+// [file, left, top, width, height, rotate, stroke spill (CSS inset)].
+const TERU_SMALL = [
+  ['string-small', 22.84, 0, 9.619, 49.638, 1.54, '-1.01% -6.03%', 8.292, 49.433],
+  ['body-small', 0, 87.76, 54.347, 41.879, 0, '-1.19% -0.92%'],
+  ['knot', 22.58, 37.62, 10.1, 4.108, 0, '', 0, 0, 1],
+  ['knot', 22.58, 41.04, 10.1, 4.108, 0, '', 0, 0, 1],
+  ['head-small', 5.11, 45.23, 44.436, 44.436, 0, ''],
+  ['neck-small', 11.82, 85.84, 31.01, 8.312, 0, '-6.02% -1.61%'],
+  ['shadow-small', 33.3, 91.29, 10.723, 2.523, 0, '-28.35% -4% -19.76% -0.77%'],
+  ['face-small', 7.2, 68.04, 22.058, 7.992, 0, ''],
+];
+const TERU_BIG = [
+  ['string', 177.89, 43, 31.458, 227.852, 1.54, '-0.25% -2.28%', 25.353, 227.252],
+  ['body', 110.09, 387.46, 166.172, 128.05, 0, '-0.45% -0.35%'],
+  ['knot', 179.13, 234.17, 30.881, 12.562, 0, '', 0, 0, 1.157],
+  ['knot', 179.13, 244.64, 30.881, 12.562, 0, '', 0, 0, 1.157],
+  ['head', 125.7, 257.44, 135.87, 135.87, 0, ''],
+  ['neck', 146.23, 381.6, 94.816, 25.415, 0, '-2.28% -0.61%'],
+  ['shadow', 211.92, 398.25, 32.786, 7.714, 0, ''],
+  ['face', 132.09, 327.19, 67.446, 24.435, 0, ''],
+];
+function drawing(layers, knotColor) {
+  return layers.map(([file, left, top, w, h, rot, spill, iw, ih, knot]) => {
+    const box = `left:${left}px; top:${top}px; width:${w}px; height:${h}px;`;
+    // The knot is two rounded bars, drawn rather than exported
+    if (file === 'knot') return `<span class="draw--knot" style="${box} background:${knotColor}; border-width:${knot}px"></span>`;
+    const img = `<img src="assets/teru/${file}.svg" alt="" draggable="false">`;
+    // A rotated layer sits centred in its box at its own size
+    const inner = rot
+      ? `<span class="draw--rot" style="width:${iw}px; height:${ih}px; transform:rotate(${rot}deg)"><span class="draw--spill" style="inset:${spill}">${img}</span></span>`
+      : `<span class="draw--spill" style="inset:${spill || 0}">${img}</span>`;
+    return `<span class="draw--part" style="${box}">${inner}</span>`;
+  }).join('');
+}
+
+const ICON_H = 129.639;  // the small drawing's height (Teru's, in Figma)
+
+// Cards without drawings of their own yet show their artwork instead: the
+// part inside the art's frame line, at the scale where the card is as wide
+// as the screen (or a given width)
+const ART_CROP = { left: 91, top: 116, right: 949, bottom: 1402 };
+const ARTWORK_RATIO = (ART_CROP.right - ART_CROP.left) / (ART_CROP.bottom - ART_CROP.top);
+function artCrop(name, width, extra = '') {
   const c = ART_CROP;
-  const art = `left:${c.left * ART_SCALE}px;
-    width:${(c.right - c.left) * ART_SCALE}px; height:${(c.bottom - c.top) * ART_SCALE}px;
+  const k = width / (c.right - c.left);
+  return `<div class="panel--art" style="width:${width}px; height:${(c.bottom - c.top) * k}px;
     background-image:url('${englishSrc(name)}');
-    background-size:${STAGE_W}px auto;
-    background-position:${-c.left * ART_SCALE}px ${-c.top * ART_SCALE}px;`;
+    background-size:${1040 * k}px auto;
+    background-position:${-c.left * k}px ${-c.top * k}px; ${extra}"></div>`;
+}
+
+function panelHTML(name) {
+  const text = CARD_TEXT[name] || {};
+  const title = ENGLISH[name].replace('.png', '');
+  const teru = name === '테루테루보즈.png';
+  const icon = teru
+    ? `<div class="info--icon draw" style="width:54.347px; height:129.639px">${drawing(TERU_SMALL, CARD_COLOR[name])}</div>`
+    : `<div class="info--icon">${artCrop(name, ICON_H * ARTWORK_RATIO)}</div>`;
+  const ritual = CANVAS_PAGES[name]
+    ? `<iframe class="play--piece" src="${CANVAS_PAGES[name]}&sheet" title="${title}"></iframe>`
+    : teru
+      ? `<div class="draw">${drawing(TERU_BIG, '#413636')}</div>`
+      : artCrop(name, STAGE_W - 2 * ART_CROP.left * (STAGE_W / 1040), `position:absolute; left:${ART_CROP.left * STAGE_W / 1040}px; top:20px;`);
   return `
-    <div class="sheet" style="--card-color: ${CARD_COLOR[name]}">
-      <div class="sheet--page">
-        <div class="sheet--paper"></div>
-        ${CANVAS_PAGES[name]
-          ? `<iframe class="sheet--piece" src="${CANVAS_PAGES[name]}&sheet" title="${ENGLISH[name].replace('.png', '')}"></iframe>`
-          : `<div class="sheet--art" style="${art}"></div>`}
-        <div class="sheet--text">
-          <p class="sheet--name">${ENGLISH[name].replace('.png', '')}</p>
-          ${text.about ? `<p>${text.about}</p>` : ''}
-          ${text.howTo ? `<p>${text.howTo}</p>` : ''}
+    <div class="panel" style="--card-color: ${CARD_COLOR[name]}">
+      <div class="panel--play">${ritual}</div>
+      <div class="panel--info">
+        <img class="info--frame" src="assets/system/info-frame.svg" width="354.069" height="531.104" alt="">
+        <div class="info--tag">${categoryTag(CATEGORY[name], title)}</div>
+        <div class="info--body">
+          ${icon}
+          <div class="info--text">
+            ${text.about ? `<p>${text.about}</p>` : ''}
+            ${text.howTo ? `<p>${text.howTo}</p>` : ''}
+          </div>
         </div>
-        <img class="sheet--frame" src="assets/system/sheet-frame.svg" width="353.321" height="963.98" alt="">
-        <button type="button" class="sheet--home">Home</button>
-        <div class="sheet--tag">${categoryTag(CATEGORY[name])}</div>
-        <button type="button" class="sheet--close" aria-label="Close"></button>
+        <button type="button" class="info--claim">Claim Luck <img src="assets/system/arrow-right.svg" width="19" height="19" alt=""></button>
       </div>
     </div>`;
 }
@@ -356,28 +397,32 @@ async function flipOpen(card) {
   flipBusy = true;
   const name = IMAGES[cards.indexOf(card)];
   const from = stageBox(card);
-  const to = sheetBox();
-  const mid = edgeOnBox(from, to);
+  const to = panelBox(INFO_H);
 
   const el = document.createElement('div');
   el.className = 'm-flip';
   el.innerHTML = `
     <div class="m-flip--inner">
       <div class="m-flip--face m-flip--front"><img src="${card.querySelector('img').src}" alt="" draggable="false"></div>
-      <div class="m-flip--face m-flip--back">${sheetHTML(name)}</div>
+      <div class="m-flip--face m-flip--back">${panelHTML(name)}</div>
     </div>`;
-  el.querySelectorAll('.sheet--home, .sheet--close').forEach((b) => b.addEventListener('click', flipClose));
+  el.querySelector('.info--claim').addEventListener('click', claim);
   stage.appendChild(el);
-  flip = { el, card };
-  // The interaction area starts just below the text, however long it runs
-  const text = el.querySelector('.sheet--text');
-  const top = text.offsetTop + text.offsetHeight + INTERACTION_GAP;
-  const area = el.querySelector('.sheet--piece, .sheet--art');
-  area.style.top = `${top}px`;
-  if (area.matches('.sheet--piece')) area.style.height = `${INTERACTION_BOTTOM - top}px`;
+  flip = { el, card, playing: false };
 
   document.documentElement.classList.add('is-flipped');
-  await flipAnimate([from, mid, to], 0, [cardRadius(from), cardRadius(mid), sheetRadius]);
+  await flipAnimate([from, midBox(from, to), to], 0, [cardRadius(from), cardRadius(midBox(from, to)), panelRadius]);
+  flipBusy = false;
+}
+
+// Claim Luck: the card grows into the ritual, the notes giving way to it
+async function claim() {
+  if (!flip || flipBusy || flip.playing) return;
+  flipBusy = true;
+  flip.playing = true;
+  flip.el.classList.add('is-playing');
+  await flip.el.animate([px(panelBox(INFO_H)), px(panelBox(PLAY_H))],
+    { duration: GROW_MS, easing: FLIP_EASE, fill: 'forwards' }).finished;
   flipBusy = false;
 }
 
@@ -385,14 +430,17 @@ async function flipClose() {
   if (!flip || flipBusy) return;
   flipBusy = true;
   document.documentElement.classList.remove('is-flipped');
+  // From the ritual, shrink back to the card first
+  if (flip.playing) {
+    flip.el.classList.remove('is-playing');
+    await flip.el.animate([px(panelBox(PLAY_H)), px(panelBox(INFO_H))],
+      { duration: GROW_MS * 0.6, easing: FLIP_EASE, fill: 'forwards' }).finished;
+  }
   flip.el.getAnimations({ subtree: true }).forEach((a) => a.cancel());
-  // Back to the top of the sheet, so it turns over the way it came
-  flip.el.querySelector('.sheet').scrollTop = 0;
   // The card is hidden but still laid out, so its box is where to land
-  const from = sheetBox();
+  const from = panelBox(INFO_H);
   const to = stageBox(flip.card);
-  const mid = edgeOnBox(to, from);
-  await flipAnimate([from, mid, to], 180, [sheetRadius, cardRadius(mid), cardRadius(to)]);
+  await flipAnimate([from, midBox(from, to), to], 180, [panelRadius, cardRadius(midBox(from, to)), cardRadius(to)]);
   flip.el.remove();
   flip = null;
   flipBusy = false;
