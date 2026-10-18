@@ -360,6 +360,10 @@ const ICONS = {
   '명태 액막이.png': ['pollock', 104, 100],      // 343:2694
   '촛불 한번에 불기.png': ['candles', 113, 101],  // 343:2565
   '걱정인형.png': ['worry-doll', 150, 96],        // 343:2693
+  '꽃잎 점.png': ['love-me', 91, 105],            // 344:3658
+  '돌팝 쌓기.png': ['stones', 103, 102],          // 344:3670
+  '부처님 배 만지기.png': ['buddha', 111, 109],    // 344:3680
+  '돼지꿈.png': ['pig', 91, 91],                  // 344:3718
 };
 
 // Cards without drawings of their own yet show their artwork instead: the
