@@ -315,17 +315,18 @@ function flipAnimate(boxes, fromDeg, radii) {
 }
 
 // The sheet's contents, laid out at the Figma frame's size (402 wide) and
-// scrolled inside the sheet. The lower part is where the card's interaction
+// scrolled inside the sheet. Below the text is where the card's interaction
 // lives: its interactive piece if it has one (CANVAS_PAGES), otherwise the
 // card's own artwork inside its frame line, at the scale where the card is as
 // wide as the sheet.
 const ART_SCALE = STAGE_W / 1040;  // card artwork is 1040 x 1486
-const ART_TOP = 433;               // where the artwork's top edge falls on the sheet
+const INTERACTION_GAP = 16;        // px between the end of the text and the interaction area
+const INTERACTION_BOTTOM = 956;    // ...which runs down to just above Home
 const ART_CROP = { left: 91, top: 116, right: 949, bottom: 1402 };  // inside the art's frame line
 function sheetHTML(name) {
   const text = CARD_TEXT[name] || {};
   const c = ART_CROP;
-  const art = `left:${c.left * ART_SCALE}px; top:${ART_TOP + c.top * ART_SCALE}px;
+  const art = `left:${c.left * ART_SCALE}px;
     width:${(c.right - c.left) * ART_SCALE}px; height:${(c.bottom - c.top) * ART_SCALE}px;
     background-image:url('${englishSrc(name)}');
     background-size:${STAGE_W}px auto;
@@ -335,14 +336,13 @@ function sheetHTML(name) {
       <div class="sheet--page">
         <div class="sheet--paper"></div>
         ${CANVAS_PAGES[name]
-          ? `<iframe class="sheet--piece" src="${CANVAS_PAGES[name]}" title="${ENGLISH[name].replace('.png', '')}"></iframe>`
+          ? `<iframe class="sheet--piece" src="${CANVAS_PAGES[name]}&sheet" title="${ENGLISH[name].replace('.png', '')}"></iframe>`
           : `<div class="sheet--art" style="${art}"></div>`}
         <div class="sheet--text">
           <p class="sheet--name">${ENGLISH[name].replace('.png', '')}</p>
           ${text.about ? `<p>${text.about}</p>` : ''}
           ${text.howTo ? `<p>${text.howTo}</p>` : ''}
         </div>
-        <img class="sheet--frame" src="assets/system/sheet-frame.svg" width="353.321" height="963.98" alt="">
         <button type="button" class="sheet--home">Home</button>
         <div class="sheet--tag">${categoryTag(CATEGORY[name])}</div>
       </div>
@@ -367,6 +367,12 @@ async function flipOpen(card) {
   el.querySelector('.sheet--home').addEventListener('click', flipClose);
   stage.appendChild(el);
   flip = { el, card };
+  // The interaction area starts just below the text, however long it runs
+  const text = el.querySelector('.sheet--text');
+  const top = text.offsetTop + text.offsetHeight + INTERACTION_GAP;
+  const area = el.querySelector('.sheet--piece, .sheet--art');
+  area.style.top = `${top}px`;
+  if (area.matches('.sheet--piece')) area.style.height = `${INTERACTION_BOTTOM - top}px`;
 
   document.documentElement.classList.add('is-flipped');
   await flipAnimate([from, mid, to], 0, [cardRadius(from), cardRadius(mid), sheetRadius]);

@@ -17,6 +17,10 @@ const PARTS = [
   { src: 'knot-top', box: [185.446, 161.614, 48.508, 44.172], inner: [48.508, 44.172], rot: 0, inset: '0', fish: 'over' },
 ];
 
+// On the phone the charm sits on a card's sheet (charm.html?sheet), where the
+// top of its string fades into the sheet like the other cards' artwork
+if (new URLSearchParams(location.search).has('sheet')) document.documentElement.classList.add('in-sheet');
+
 const charm = document.getElementById('charm');
 const fish = document.getElementById('fish');
 const layer = {};
@@ -46,6 +50,7 @@ PARTS.forEach((p) => {
   spill.appendChild(img);
   inner.appendChild(spill);
   part.appendChild(inner);
+  if (p.src === 'string-straight') part.classList.add('part--string');
   if (p.fish === false) charm.insertBefore(part, fish);
   else if (p.fish === 'over') charm.appendChild(part);
   else fish.appendChild(part);

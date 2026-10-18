@@ -252,18 +252,22 @@ img { -webkit-user-drag: none; }
 .sheet--art {
   position: absolute;
   background-repeat: no-repeat;
-  /* The artwork's top edge melts into the sheet */
-  -webkit-mask-image: linear-gradient(to bottom, transparent, #000 48px);
-  mask-image: linear-gradient(to bottom, transparent, #000 48px);
+  /* The artwork's cut edges (top and sides) melt into the sheet */
+  -webkit-mask-image:
+    linear-gradient(to bottom, transparent, #000 48px),
+    linear-gradient(to right, transparent, #000 24px, #000 calc(100% - 24px), transparent);
+  -webkit-mask-composite: source-in;
+  mask-image:
+    linear-gradient(to bottom, transparent, #000 48px),
+    linear-gradient(to right, transparent, #000 24px, #000 calc(100% - 24px), transparent);
+  mask-composite: intersect;
 }
-/* A card's interactive piece, across the lower part of the sheet; the frame
-   line is drawn over it */
+/* A card's interactive piece, across the sheet below the text (mobile.js
+   sets its top and height) */
 .sheet--piece {
   position: absolute;
   left: 0;
-  top: 420px;
   width: 402px;
-  height: 556px;
   border: 0;
   background: transparent;
 }
@@ -282,13 +286,6 @@ img { -webkit-user-drag: none; }
   line-height: normal;
 }
 .sheet--text p { margin: 0; }
-.sheet--frame {
-  position: absolute;
-  left: 24.3px;
-  top: 21.9px;
-  display: block;
-  pointer-events: none;
-}
 .sheet--home {
   position: absolute;
   left: 129px;

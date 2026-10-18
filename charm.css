@@ -66,3 +66,9 @@ html, body {
   height: 100%;
   overflow: visible;
 }
+
+/* On a phone card sheet: the top of the string fades out */
+.in-sheet .part--string {
+  -webkit-mask-image: linear-gradient(to bottom, transparent, #000 70px);
+  mask-image: linear-gradient(to bottom, transparent, #000 70px);
+}
