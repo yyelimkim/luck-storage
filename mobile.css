@@ -173,7 +173,7 @@ img { -webkit-user-drag: none; }
   position: absolute;
   inset: 0;
   z-index: 50;
-  background: rgba(255, 255, 255, 0.7);
+  background: rgba(255, 255, 255, 0.8);
   -webkit-backdrop-filter: blur(2px);
   backdrop-filter: blur(2px);
   opacity: 0;
@@ -335,7 +335,14 @@ img { -webkit-user-drag: none; }
   top: 18.5px;
   display: block;
   opacity: calc(1 - var(--p, 0));
+  animation: chevron-nudge 1.6s ease-in-out infinite;
 }
+/* The chevron keeps nudging down: there's more below */
+@keyframes chevron-nudge {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(5px); }
+}
+.sheet.is-full .sheet--chevron { animation: none; }
 .sheet--howto {
   position: absolute;
   left: 62.5px;  /* (402 - 277) / 2 */
@@ -356,6 +363,9 @@ img { -webkit-user-drag: none; }
   bottom: 0;
   display: grid;
   place-items: center;
+  /* Grows a touch as the sheet comes up */
+  transform: scale(calc(var(--ritual-scale) + (1 - var(--ritual-scale)) * var(--p, 0)));
+  transform-origin: 50% 0;
 }
 .sheet:not(.is-full) .sheet--ritual { pointer-events: none; }
 .ritual--piece {

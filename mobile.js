@@ -260,8 +260,8 @@ fan.addEventListener('pointercancel', endSwipe);
 // Tapping the centre card turns it over on a frosted overlay (Figma 350:3771):
 // its back carries the card's name, a small drawing and what the custom is.
 // Under it the ritual's sheet peeks up, saying how to perform it. Scrolling
-// down brings the sheet up to fill the screen (350:4794), growing and firming
-// up as it comes; the ritual is performed there. Once done the sheet says so
+// down brings the sheet up to fill the screen (350:4794), firming up and its
+// interaction growing as it comes; the ritual is performed there. Once done the sheet says so
 // (350:5111): Home, or Continue to keep at it. The back arrow steps back:
 // sheet down, then the card turned back over.
 const FLIP_MS = 700;
@@ -274,11 +274,10 @@ const PEEK = 180;          // how much of the sheet shows under the card
 const CARD_GAP = 52;       // least space between the card and the sheet
 const PANEL_RADIUS = 37.13;  // the card's corner at the screen's width
 const SHEET_RADIUS = 30;
-const SHEET_SCALE = 0.96;    // the peeking sheet's size...
-const SHEET_OPACITY = 0.7;   // ...and opacity, both 1 once it fills the screen
+const RITUAL_SCALE = 0.92;   // the peeking sheet's interaction size...
+const SHEET_OPACITY = 0.7;   // ...and the sheet's opacity, both 1 once it fills the screen
 const HOWTO_TOP = 64;        // the how-to line in the peeking sheet...
 const HOWTO_TOP_FULL = 17;   // ...and beside the back arrow once full
-const overlay = document.getElementById('overlay');
 const backBtn = document.getElementById('back');
 let flipBusy = false;
 
@@ -458,7 +457,7 @@ function setSheet(p) {
   const q = Math.max(0, p);  // below 0 the sheet is only arriving or leaving
   const r = SHEET_RADIUS * (1 - q);
   Object.assign(sheet.el.style, {
-    transform: `translateY(${sheetTop() * (1 - p)}px) scale(${lerp(SHEET_SCALE, 1, q)})`,
+    transform: `translateY(${sheetTop() * (1 - p)}px)`,
     opacity: lerp(SHEET_OPACITY, 1, q),
     borderRadius: `${r}px ${r}px 0 0`,
   });
@@ -557,6 +556,7 @@ async function flipOpen(card) {
   sh.style.setProperty('--card-color', CARD_COLOR[name]);
   sh.style.height = `${stageH}px`;
   sh.style.setProperty('--ritual-top', `${headTop() + INFO_TOP}px`);
+  sh.style.setProperty('--ritual-scale', RITUAL_SCALE);
   sh.innerHTML = sheetHTML(name);
   stage.appendChild(sh);
   sheet = { el: sh, p: -PEEK / sheetTop(), claimed: false };
@@ -615,7 +615,6 @@ async function goHome() {
 }
 
 backBtn.addEventListener('click', flipClose);
-overlay.addEventListener('click', () => { if (sheet && sheet.p === 0) flipClose(); });
 addEventListener('keydown', (e) => { if (e.key === 'Escape') flipClose(); });
 
 // Scrolling (wheel or a drag anywhere but the ritual itself) moves the sheet
