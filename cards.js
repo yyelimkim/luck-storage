@@ -170,7 +170,7 @@ const CARD_TEXT = {
   },
   '테루테루보즈.png': {
     about: 'A small handmade doll from Japan, hung outside the window the night before and believed to bring clear skies and keep the rain away.',
-    howTo: 'Drag it upward to hang it from the top of the screen — it dangles and sways gently once released.',
+    howTo: 'Drag it upward to hang it from the top of the screen.',
   },
   '포도 12알 먹기.png': {
     about: 'A Spanish New Year’s tradition of eating twelve grapes as the clock strikes midnight, one for each month of luck ahead.',
