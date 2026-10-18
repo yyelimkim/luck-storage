@@ -314,7 +314,7 @@ function flipAnimate(boxes, fromDeg, radii) {
   return move.finished;
 }
 
-// The sheet's contents, laid out at the Figma frame's size (402 x 1149) and
+// The sheet's contents, laid out at the Figma frame's size (402 wide) and
 // scrolled inside the sheet. The lower part is where the card's interaction
 // lives: its interactive piece if it has one (CANVAS_PAGES), otherwise the
 // card's own artwork inside its frame line, at the scale where the card is as

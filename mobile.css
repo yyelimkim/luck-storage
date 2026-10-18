@@ -226,11 +226,12 @@ img { -webkit-user-drag: none; }
 }
 .sheet::-webkit-scrollbar { display: none; }
 /* The Figma frame's contents at their own size, centred while the sheet is
-   still narrower mid-turn */
+   still narrower mid-turn. It ends 40px below Home (964 + 33), not at the
+   frame's full 1149. */
 .sheet--page {
   position: relative;
   width: 402px;
-  height: 1149px;
+  height: 1037px;
   margin-left: calc(50% - 201px);
   overflow: hidden;
   background: var(--card-color);
