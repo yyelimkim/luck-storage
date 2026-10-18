@@ -47,6 +47,11 @@ const ENGLISH = {
   '테루테루보즈.png': 'Teru Teru Bozu.png',
   '포도 12알 먹기.png': '12 Grapes at Midnight.png',
 };
+// A card's English name: its artwork's file name, unless renamed here
+const RENAMED = {
+  '촛불 한번에 불기.png': 'Blowing Candles',
+};
+const cardName = (name) => RENAMED[name] || ENGLISH[name].replace('.png', '');
 const englishSrc = (name) => `cards/english%20cards/${encodeURIComponent(ENGLISH[name])}?v=${IMAGES_VERSION}`;
 
 // Each card's category, as printed in its header (see the .tag component in

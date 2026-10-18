@@ -102,7 +102,7 @@ const cards = IMAGES.map((name, i) => {
   el.className = 'm-card';
   const img = document.createElement('img');
   img.src = englishSrc(name);
-  img.alt = ENGLISH[name].replace('.png', '');
+  img.alt = cardName(name);
   img.draggable = false;
   el.appendChild(img);
   fan.appendChild(el);
@@ -364,7 +364,7 @@ function artCrop(name, width, extra = '') {
 
 function panelHTML(name) {
   const text = CARD_TEXT[name] || {};
-  const title = ENGLISH[name].replace('.png', '');
+  const title = cardName(name);
   const teru = name === '테루테루보즈.png';
   const icon = teru
     ? `<div class="info--icon draw" style="width:54.347px; height:129.639px">${drawing(TERU_SMALL, CARD_COLOR[name])}</div>`
