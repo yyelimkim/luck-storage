@@ -125,8 +125,9 @@ img { -webkit-user-drag: none; }
   height: 388.182px;
   will-change: transform;
   cursor: pointer;
-  /* The artwork carries its own rounded edge; the shadow follows the same curve */
-  border-radius: 6.25% / 4.4%;
+  /* The artwork carries its own rounded edge (85px on the 1040 x 1486 English
+     cards); the shadow follows the same curve */
+  border-radius: 8.2% / 5.72%;
   box-shadow: 0 4.429px 4.429px rgba(0, 0, 0, calc(0.15 * var(--focus, 0)));
 }
 .m-card img {

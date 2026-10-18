@@ -288,7 +288,7 @@ function sheetBox() {
 }
 
 // Card corners follow the artwork's own curve; the sheet's are round on top only
-const cardRadius = (r) => `${r.width * 0.0625}px / ${r.height * 0.044}px`;
+const cardRadius = (r) => `${r.width * 0.082}px / ${r.height * 0.0572}px`;  // matches .m-card
 const sheetRadius = `${SHEET_RADIUS}px ${SHEET_RADIUS}px 0 0`;
 
 function flipAnimate(from, to, fromDeg, toDeg, fromRadius, toRadius) {
