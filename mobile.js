@@ -101,8 +101,8 @@ const cards = IMAGES.map((name, i) => {
   const el = document.createElement('div');
   el.className = 'm-card';
   const img = document.createElement('img');
-  img.src = `cards/${encodeURIComponent(name)}?v=${IMAGES_VERSION}`;
-  img.alt = name.replace('.png', '');
+  img.src = englishSrc(name);
+  img.alt = ENGLISH[name].replace('.png', '');
   img.draggable = false;
   el.appendChild(img);
   fan.appendChild(el);
