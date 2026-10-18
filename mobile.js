@@ -270,13 +270,13 @@ const SHEET_MS = 450;
 const INFO_W = 370;        // the turned-over card's width (350:3773)
 const INFO_H = 580;        // its height, laid out at the screen's width
 const INFO_TOP = 64;       // under the back arrow's row
-const PEEK = 180;          // how much of the sheet shows under the card
-const CARD_GAP = 52;       // least space between the card and the sheet
+const PEEK = 124;          // how much of the sheet shows under the card
+const CARD_GAP = 24;       // least space above and below the card
 const PANEL_RADIUS = 37.13;  // the card's corner at the screen's width
 const SHEET_RADIUS = 30;
 const RITUAL_SCALE = 0.92;   // the peeking sheet's interaction: its size...
 const RITUAL_OPACITY = 0.4;  // ...and opacity, both 1 once the sheet fills the screen
-const HOWTO_TOP = 64;        // the how-to line in the peeking sheet...
+const HOWTO_TOP = 52;        // the how-to line in the peeking sheet...
 const HOWTO_TOP_FULL = 17;   // ...and beside the back arrow once full
 const backBtn = document.getElementById('back');
 let flipBusy = false;
@@ -294,13 +294,16 @@ function stageBox(el) {
   };
 }
 
-// The turned-over card: 370 wide under the back arrow, smaller on screens too
-// short to fit it above the peeking sheet. k is its scale from 402 wide.
+// The turned-over card: 370 wide, centred between the back arrow's row and
+// the peeking sheet; smaller on screens too short to fit it there. k is its
+// scale from 402 wide.
 function infoBox() {
-  const top = headTop() + INFO_TOP;
-  const k = Math.min(INFO_W / STAGE_W, (sheetTop() - CARD_GAP - top) / INFO_H);
+  const above = headTop() + INFO_TOP;
+  const room = sheetTop() - above;
+  const k = Math.min(INFO_W / STAGE_W, (room - 2 * CARD_GAP) / INFO_H);
   const width = STAGE_W * k;
-  return { left: (STAGE_W - width) / 2, top, width, height: INFO_H * k, k };
+  const height = INFO_H * k;
+  return { left: (STAGE_W - width) / 2, top: above + (room - height) / 2, width, height, k };
 }
 
 const midBox = (a, b) => ({
