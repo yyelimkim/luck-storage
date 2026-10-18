@@ -211,6 +211,7 @@ img { -webkit-user-drag: none; }
 .m-flip--back {
   transform: rotateY(180deg);
   overflow: hidden;
+  /* Same line as the tags and Home button */
   border: 0.771px solid var(--system-black);
   border-bottom: 0;  /* runs off the bottom of the screen */
 }
@@ -304,7 +305,32 @@ img { -webkit-user-drag: none; }
 .sheet--tag {
   position: absolute;
   left: 50%;
-  top: 10.23px;
+  top: 28px;
   transform: translateX(-50%);
   line-height: 0;
 }
+/* Close: a bare ✕, level with the tag at the top right (the button keeps
+   the tag's height as its tap area) */
+.sheet--close {
+  position: absolute;
+  right: 16px;
+  top: 28px;
+  width: 33.172px;
+  height: 33.172px;
+  padding: 0;
+  background: none;
+  border: 0;
+  cursor: pointer;
+}
+.sheet--close::before,
+.sheet--close::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 15px;
+  height: 1.5px;
+  background: var(--system-black);
+  transform: translate(-50%, -50%) rotate(45deg);
+}
+.sheet--close::after { transform: translate(-50%, -50%) rotate(-45deg); }

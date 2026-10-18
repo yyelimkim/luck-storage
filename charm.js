@@ -19,7 +19,12 @@ const PARTS = [
 
 // On the phone the charm sits on a card's sheet (charm.html?sheet), where the
 // top of its string fades into the sheet like the other cards' artwork
-if (new URLSearchParams(location.search).has('sheet')) document.documentElement.classList.add('in-sheet');
+const IN_SHEET = new URLSearchParams(location.search).has('sheet');
+if (IN_SHEET) document.documentElement.classList.add('in-sheet');
+// The fade is a mask on the string's box, and a mask hides whatever lies
+// outside it, so there the box is grown well past the string (which stays
+// centred in it) to leave room for it to bow when slack
+const STRING_ROOM = [150, 20];  // px added each side, across and along
 
 const charm = document.getElementById('charm');
 const fish = document.getElementById('fish');
@@ -50,7 +55,15 @@ PARTS.forEach((p) => {
   spill.appendChild(img);
   inner.appendChild(spill);
   part.appendChild(inner);
-  if (p.src === 'string-straight') part.classList.add('part--string');
+  if (p.src === 'string-straight') {
+    part.classList.add('part--string');
+    if (IN_SHEET) {
+      const [rx, ry] = STRING_ROOM;
+      Object.assign(part.style, {
+        left: `${left - rx}px`, top: `${top - ry}px`, width: `${w + rx * 2}px`, height: `${h + ry * 2}px`,
+      });
+    }
+  }
   if (p.fish === false) charm.insertBefore(part, fish);
   else if (p.fish === 'over') charm.appendChild(part);
   else fish.appendChild(part);

@@ -345,6 +345,7 @@ function sheetHTML(name) {
         </div>
         <button type="button" class="sheet--home">Home</button>
         <div class="sheet--tag">${categoryTag(CATEGORY[name])}</div>
+        <button type="button" class="sheet--close" aria-label="Close"></button>
       </div>
     </div>`;
 }
@@ -364,7 +365,7 @@ async function flipOpen(card) {
       <div class="m-flip--face m-flip--front"><img src="${card.querySelector('img').src}" alt="" draggable="false"></div>
       <div class="m-flip--face m-flip--back">${sheetHTML(name)}</div>
     </div>`;
-  el.querySelector('.sheet--home').addEventListener('click', flipClose);
+  el.querySelectorAll('.sheet--home, .sheet--close').forEach((b) => b.addEventListener('click', flipClose));
   stage.appendChild(el);
   flip = { el, card };
   // The interaction area starts just below the text, however long it runs
