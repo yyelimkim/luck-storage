@@ -262,7 +262,8 @@ fan.addEventListener('pointercancel', endSwipe);
 // card's name on its tag, a small drawing, what the custom is and how to do
 // it, and Claim Luck. Claim Luck grows that card down past the bottom of the
 // screen into where the ritual is performed (340:2217): the card's
-// interaction alone. Tapping the white around it turns the card back.
+// interaction alone. Tapping the white around the card turns it back over;
+// the ritual's ✕ (or the white above it) drops it away, straight home.
 const FLIP_MS = 700;
 const FLIP_EASE = 'cubic-bezier(0.65, 0, 0.35, 1)';  // same as the desktop flip
 const GROW_MS = 600;
@@ -283,10 +284,15 @@ function stageBox(el) {
   };
 }
 
-// The panel at a given height: on a phone the real status bar sits above the page
-function panelBox(height) {
+// The grown card for the ritual, from near the top of the screen down: on a
+// phone the real status bar sits above the page
+function playBox() {
   const top = (document.documentElement.classList.contains('is-phone') ? 0 : 44) + PANEL_TOP;
-  return { left: 0, top, width: STAGE_W, height };
+  return { left: 0, top, width: STAGE_W, height: PLAY_H };
+}
+// The turned-over card, centred on the screen
+function infoBox() {
+  return { left: 0, top: (stageH - INFO_H) / 2, width: STAGE_W, height: INFO_H };
 }
 
 const midBox = (a, b) => ({
@@ -332,9 +338,10 @@ const TERU_BIG = [
   ['shadow', 211.92, 398.25, 32.786, 7.714, 0, ''],
   ['face', 132.09, 327.19, 67.446, 24.435, 0, ''],
 ];
-function drawing(layers, knotColor) {
+// [dx, dy] shifts every layer, so a drawing can start at its own top left
+function drawing(layers, knotColor, [dx, dy] = [0, 0]) {
   return layers.map(([file, left, top, w, h, rot, spill, iw, ih, knot]) => {
-    const box = `left:${left}px; top:${top}px; width:${w}px; height:${h}px;`;
+    const box = `left:${left - dx}px; top:${top - dy}px; width:${w}px; height:${h}px;`;
     // The knot is two rounded bars, drawn rather than exported
     if (file === 'knot') return `<span class="draw--knot" style="${box} background:${knotColor}; border-width:${knot}px"></span>`;
     const img = `<img src="assets/teru/${file}.svg" alt="" draggable="false">`;
@@ -369,14 +376,15 @@ function panelHTML(name) {
   const icon = teru
     ? `<div class="info--icon draw" style="width:54.347px; height:129.639px">${drawing(TERU_SMALL, CARD_COLOR[name])}</div>`
     : `<div class="info--icon">${artCrop(name, ICON_H * ARTWORK_RATIO)}</div>`;
+  // The ritual is centred in the part of the grown card that's on screen
   const ritual = CANVAS_PAGES[name]
     ? `<iframe class="play--piece" src="${CANVAS_PAGES[name]}&sheet" title="${title}"></iframe>`
     : teru
-      ? `<div class="draw">${drawing(TERU_BIG, '#413636')}</div>`
-      : artCrop(name, STAGE_W - 2 * ART_CROP.left * (STAGE_W / 1040), `position:absolute; left:${ART_CROP.left * STAGE_W / 1040}px; top:20px;`);
+      ? `<div class="draw" style="width:166.172px; height:472.5px">${drawing(TERU_BIG, '#413636', [110.09, 43])}</div>`
+      : artCrop(name, STAGE_W - 2 * ART_CROP.left * (STAGE_W / 1040));
   return `
     <div class="panel" style="--card-color: ${CARD_COLOR[name]}">
-      <div class="panel--play">${ritual}</div>
+      <div class="panel--play">${ritual}<button type="button" class="play--close" aria-label="Home"></button></div>
       <div class="panel--info">
         <img class="info--frame" src="assets/system/info-frame.svg" width="354.069" height="531.104" alt="">
         <div class="info--tag">${categoryTag(CATEGORY[name], title)}</div>
@@ -389,6 +397,7 @@ function panelHTML(name) {
         </div>
         <button type="button" class="info--claim">Claim Luck <img src="assets/system/arrow-right.svg" width="19" height="19" alt=""></button>
       </div>
+      <div class="panel--paper"></div>
     </div>`;
 }
 
@@ -397,7 +406,7 @@ async function flipOpen(card) {
   flipBusy = true;
   const name = IMAGES[cards.indexOf(card)];
   const from = stageBox(card);
-  const to = panelBox(INFO_H);
+  const to = infoBox();
 
   const el = document.createElement('div');
   el.className = 'm-flip';
@@ -407,6 +416,9 @@ async function flipOpen(card) {
       <div class="m-flip--face m-flip--back">${panelHTML(name)}</div>
     </div>`;
   el.querySelector('.info--claim').addEventListener('click', claim);
+  el.querySelector('.play--close').addEventListener('click', flipClose);
+  // The ritual fills what's on screen of the grown card
+  el.querySelector('.panel--play').style.height = `${stageH - playBox().top}px`;
   stage.appendChild(el);
   flip = { el, card, playing: false };
 
@@ -415,13 +427,13 @@ async function flipOpen(card) {
   flipBusy = false;
 }
 
-// Claim Luck: the card grows into the ritual, the notes giving way to it
+// Claim Luck: the card rises and grows into the ritual, the notes giving way to it
 async function claim() {
   if (!flip || flipBusy || flip.playing) return;
   flipBusy = true;
   flip.playing = true;
   flip.el.classList.add('is-playing');
-  await flip.el.animate([px(panelBox(INFO_H)), px(panelBox(PLAY_H))],
+  await flip.el.animate([px(infoBox()), px(playBox())],
     { duration: GROW_MS, easing: FLIP_EASE, fill: 'forwards' }).finished;
   flipBusy = false;
 }
@@ -430,15 +442,18 @@ async function flipClose() {
   if (!flip || flipBusy) return;
   flipBusy = true;
   document.documentElement.classList.remove('is-flipped');
-  // From the ritual, shrink back to the card first
+  // From the ritual, straight home: the card drops away, no turning back over
   if (flip.playing) {
-    flip.el.classList.remove('is-playing');
-    await flip.el.animate([px(panelBox(PLAY_H)), px(panelBox(INFO_H))],
-      { duration: GROW_MS * 0.6, easing: FLIP_EASE, fill: 'forwards' }).finished;
+    await flip.el.animate([{ transform: 'none' }, { transform: `translateY(${stageH}px)` }],
+      { duration: GROW_MS * 0.75, easing: 'cubic-bezier(0.4, 0, 1, 1)', fill: 'forwards' }).finished;
+    flip.el.remove();
+    flip = null;
+    flipBusy = false;
+    return;
   }
   flip.el.getAnimations({ subtree: true }).forEach((a) => a.cancel());
   // The card is hidden but still laid out, so its box is where to land
-  const from = panelBox(INFO_H);
+  const from = infoBox();
   const to = stageBox(flip.card);
   await flipAnimate([from, midBox(from, to), to], 180, [panelRadius, cardRadius(midBox(from, to)), cardRadius(to)]);
   flip.el.remove();

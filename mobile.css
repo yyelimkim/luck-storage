@@ -229,7 +229,27 @@ img { -webkit-user-drag: none; }
   transition: opacity 0.35s;
 }
 .panel--info { height: 580px; }
-.panel--play { height: 937px; opacity: 0; pointer-events: none; }
+/* Paper grain over everything on the back (Figma 332:1902): the photo,
+   flipped, twice down the card, multiplied over whatever is beneath */
+.panel--paper {
+  position: absolute;
+  left: calc(50% - 0.5px - 276.5px);
+  top: -62px;
+  width: 553px;
+  height: 1548px;
+  background: url("assets/system/paper.png") 0 0 / 553px 774px repeat-y;
+  transform: rotate(180deg);
+  mix-blend-mode: multiply;
+  pointer-events: none;
+}
+/* The ritual: as tall as the grown card's on-screen part (mobile.js), its
+   interaction centred in it */
+.panel--play {
+  display: grid;
+  place-items: center;
+  opacity: 0;
+  pointer-events: none;
+}
 .is-playing .panel--info { opacity: 0; pointer-events: none; }
 .is-playing .panel--play { opacity: 1; pointer-events: auto; transition-delay: 0.2s; }
 
@@ -290,13 +310,36 @@ img { -webkit-user-drag: none; }
 }
 .info--claim img { display: block; }
 
+/* The ritual's way out: a bare ✕ at the top right, straight home */
+.play--close {
+  position: absolute;
+  right: 24px;
+  top: 20px;
+  width: 33px;
+  height: 33px;
+  padding: 0;
+  background: none;
+  border: 0;
+  cursor: pointer;
+  z-index: 1;
+}
+.play--close::before,
+.play--close::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 15px;
+  height: 1.5px;
+  background: var(--system-black);
+  transform: translate(-50%, -50%) rotate(45deg);
+}
+.play--close::after { transform: translate(-50%, -50%) rotate(-45deg); }
+
 /* The ritual: the card's interactive piece, drawing or artwork */
 .play--piece {
-  position: absolute;
-  left: 0;
-  top: 0;
   width: 402px;
-  height: 640px;
+  height: 100%;
   border: 0;
   background: transparent;
 }

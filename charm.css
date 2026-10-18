@@ -67,10 +67,7 @@ html, body {
   overflow: visible;
 }
 
-/* On a phone card sheet the charm hangs from near the top of its area
-   rather than sitting centred, its string's top 20px down */
-.in-sheet .charm { top: calc(20px - var(--pin-y)); }
-/* ...and the top of the string fades out. The box is grown 20px above the
+/* On a phone card sheet the top of the string fades out. The box is grown 20px above the
    string (STRING_ROOM in charm.js), so the fade runs 120px down the string
    itself. Only the string, not its roomy box, takes taps. */
 .in-sheet .part--string {
