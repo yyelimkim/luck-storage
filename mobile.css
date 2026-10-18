@@ -1,16 +1,6 @@
 * { box-sizing: border-box; }
 
-@font-face {
-  font-family: "Paperlogy";
-  src: url("assets/fonts/Paperlogy-4Regular.ttf") format("truetype");
-  font-weight: 400;
-  font-display: swap;
-}
-
-:root {
-  --system-white: #f0f0f0;
-  --system-black: #272727;
-}
+/* Colours, type and the Paperlogy font come from design-system.css */
 
 html, body {
   margin: 0;
@@ -96,10 +86,10 @@ img { -webkit-user-drag: none; }
 .head--title,
 .head--count span {
   margin: 0;
-  font-family: "Paperlogy", sans-serif;
+  font-family: var(--font-display);
   font-weight: 400;
   font-size: 24px;
-  letter-spacing: -0.48px;
+  letter-spacing: var(--tracking);
   line-height: normal;
   white-space: nowrap;
 }
@@ -183,7 +173,7 @@ img { -webkit-user-drag: none; }
   position: absolute;
   inset: 0;
   z-index: 50;
-  background: rgba(240, 240, 240, 0.85);  /* --system-white */
+  background: color-mix(in srgb, var(--system-white) 85%, transparent);
   -webkit-backdrop-filter: blur(6px);
   backdrop-filter: blur(6px);
   opacity: 0;

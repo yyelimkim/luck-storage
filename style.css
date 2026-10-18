@@ -4,27 +4,14 @@ html, body {
   margin: 0;
   height: 100%;
   overflow: hidden;
-  background: #f0f0f0;
+  background: var(--system-white);
   color: #000;
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 
 a { color: inherit; text-decoration: none; }
 
-@font-face {
-  font-family: "Paperlogy";
-  src: url("assets/fonts/Paperlogy-4Regular.ttf") format("truetype");
-  font-weight: 400;
-  font-display: swap;
-}
-
-:root {
-  --system-white: #f0f0f0;
-  --system-black: #272727;
-  --yellow: #f0f2a1;
-  --blue: #11b2e4;
-  --hot-pink: #e22f83;
-}
+/* Colours, type and the Paperlogy font come from design-system.css */
 
 /* Top nav (Figma 100:1808) */
 .nav {
@@ -45,10 +32,10 @@ a { color: inherit; text-decoration: none; }
   left: 50%;
   transform: translateX(-50%);
   margin: 0;
-  font-family: "Paperlogy", sans-serif;
+  font-family: var(--font-display);
   font-weight: 400;
   font-size: 22.662px;
-  letter-spacing: -0.4532px;
+  letter-spacing: var(--tracking);
   line-height: normal;
   color: var(--system-black);
   white-space: nowrap;
@@ -66,7 +53,7 @@ a { color: inherit; text-decoration: none; }
 .nav--home img { display: block; }
 .nav--list,
 .nav--grid { border: 0.944px solid var(--system-black); }
-.nav--list { background: var(--blue); margin-right: 0; }
+.nav--list { background: var(--v2-blue); margin-right: 0; }
 .nav--grid { background: var(--hot-pink); }
 
 /* Three upright yellow pills */
