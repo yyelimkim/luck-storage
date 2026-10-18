@@ -50,6 +50,7 @@ const ENGLISH = {
 // A card's English name: its artwork's file name, unless renamed here
 const RENAMED = {
   '촛불 한번에 불기.png': 'Blowing Candles',
+  '명태 액막이.png': 'Pollock Charm',
 };
 const cardName = (name) => RENAMED[name] || ENGLISH[name].replace('.png', '');
 const englishSrc = (name) => `cards/english%20cards/${encodeURIComponent(ENGLISH[name])}?v=${IMAGES_VERSION}`;
