@@ -257,14 +257,16 @@ const endSwipe = () => {
 fan.addEventListener('pointerup', endSwipe);
 fan.addEventListener('pointercancel', endSwipe);
 
-// Tapping the centre card turns it over, and as it turns it grows into a
-// sheet: full width, from just under the status bar to the bottom edge, with
-// rounded top corners. Tapping the sheet or the strip above it turns it back
-// and drops it into the fan again.
+// Tapping the centre card turns it over into its sheet (Figma 331:1529): the
+// card's colour, full width from just under the status bar, rounded on top,
+// holding its category tag, name, notes and illustration. The card keeps its
+// own shape until it's edge-on halfway through the turn, so nothing is
+// cropped; only then does it take the sheet's shape. Home, or the strip
+// above the sheet, turns it back.
 const FLIP_MS = 700;
 const FLIP_EASE = 'cubic-bezier(0.65, 0, 0.35, 1)';  // same as the desktop flip
 const SHEET_GAP = 36;     // px between the status bar and the sheet's top
-const SHEET_RADIUS = 32;  // the sheet's top corners
+const SHEET_RADIUS = 37.13;  // the sheet's top corners
 const overlay = document.getElementById('overlay');
 let flipBusy = false;
 
@@ -287,19 +289,60 @@ function sheetBox() {
   return { left: 0, top, width: STAGE_W, height: stageH - top };
 }
 
+// Halfway through the turn, when the card is edge-on: still card-shaped,
+// halfway between the two in size and position
+function edgeOnBox(card, sheet) {
+  const height = (card.height + sheet.height) / 2;
+  const width = height * (card.width / card.height);
+  const cx = (card.left + card.width / 2 + sheet.left + sheet.width / 2) / 2;
+  const cy = (card.top + card.height / 2 + sheet.top + sheet.height / 2) / 2;
+  return { left: cx - width / 2, top: cy - height / 2, width, height };
+}
+
 // Card corners follow the artwork's own curve; the sheet's are round on top only
 const cardRadius = (r) => `${r.width * 0.082}px / ${r.height * 0.0572}px`;  // matches .m-card
 const sheetRadius = `${SHEET_RADIUS}px ${SHEET_RADIUS}px 0 0`;
 
-function flipAnimate(from, to, fromDeg, toDeg, fromRadius, toRadius) {
+// boxes and radii run start → edge-on → end, alongside 0° → 90° → 180°
+function flipAnimate(boxes, fromDeg, radii) {
   const opts = { duration: FLIP_MS, easing: FLIP_EASE, fill: 'forwards' };
   const px = (r) => ({ left: `${r.left}px`, top: `${r.top}px`, width: `${r.width}px`, height: `${r.height}px` });
-  const move = flip.el.animate([px(from), px(to)], opts);
+  const move = flip.el.animate(boxes.map(px), opts);
   flip.el.firstElementChild.animate(
-    [{ transform: `rotateY(${fromDeg}deg)` }, { transform: `rotateY(${toDeg}deg)` }], opts);
-  flip.el.querySelector('.m-flip--back').animate(
-    [{ borderRadius: fromRadius }, { borderRadius: toRadius }], opts);
+    [0, 90, 180].map((d) => ({ transform: `rotateY(${fromDeg + d}deg)` })), opts);
+  flip.el.querySelector('.m-flip--back').animate(radii.map((r) => ({ borderRadius: r })), opts);
   return move.finished;
+}
+
+// The sheet's contents, laid out at the Figma frame's size (402 x 1149) and
+// scrolled inside the sheet. The illustration is the card's own artwork inside
+// its frame line, at the scale where the card is as wide as the sheet.
+const ART_SCALE = STAGE_W / 1040;  // card artwork is 1040 x 1486
+const ART_TOP = 433;               // where the artwork's top edge falls on the sheet
+const ART_CROP = { left: 91, top: 116, right: 949, bottom: 1402 };  // inside the art's frame line
+function sheetHTML(name) {
+  const text = CARD_TEXT[name] || {};
+  const c = ART_CROP;
+  const art = `left:${c.left * ART_SCALE}px; top:${ART_TOP + c.top * ART_SCALE}px;
+    width:${(c.right - c.left) * ART_SCALE}px; height:${(c.bottom - c.top) * ART_SCALE}px;
+    background-image:url('${englishSrc(name)}');
+    background-size:${STAGE_W}px auto;
+    background-position:${-c.left * ART_SCALE}px ${-c.top * ART_SCALE}px;`;
+  return `
+    <div class="sheet" style="--card-color: ${CARD_COLOR[name]}">
+      <div class="sheet--page">
+        <div class="sheet--paper"></div>
+        <div class="sheet--art" style="${art}"></div>
+        <div class="sheet--text">
+          <p class="sheet--name">${ENGLISH[name].replace('.png', '')}</p>
+          ${text.about ? `<p>${text.about}</p>` : ''}
+          ${text.howTo ? `<p>${text.howTo}</p>` : ''}
+        </div>
+        <img class="sheet--frame" src="assets/system/sheet-frame.svg" width="353.321" height="963.98" alt="">
+        <button type="button" class="sheet--home">Home</button>
+        <div class="sheet--tag">${categoryTag(CATEGORY[name])}</div>
+      </div>
+    </div>`;
 }
 
 async function flipOpen(card) {
@@ -307,20 +350,22 @@ async function flipOpen(card) {
   flipBusy = true;
   const name = IMAGES[cards.indexOf(card)];
   const from = stageBox(card);
+  const to = sheetBox();
+  const mid = edgeOnBox(from, to);
 
   const el = document.createElement('div');
   el.className = 'm-flip';
-  const art = BACKS.has(name) ? `<img src="${backSrc(name)}" alt="" draggable="false">` : '';
   el.innerHTML = `
     <div class="m-flip--inner">
       <div class="m-flip--face m-flip--front"><img src="${card.querySelector('img').src}" alt="" draggable="false"></div>
-      <div class="m-flip--face m-flip--back">${art}</div>
+      <div class="m-flip--face m-flip--back">${sheetHTML(name)}</div>
     </div>`;
+  el.querySelector('.sheet--home').addEventListener('click', flipClose);
   stage.appendChild(el);
   flip = { el, card };
 
   document.documentElement.classList.add('is-flipped');
-  await flipAnimate(from, sheetBox(), 0, 180, cardRadius(from), sheetRadius);
+  await flipAnimate([from, mid, to], 0, [cardRadius(from), cardRadius(mid), sheetRadius]);
   flipBusy = false;
 }
 
@@ -329,16 +374,19 @@ async function flipClose() {
   flipBusy = true;
   document.documentElement.classList.remove('is-flipped');
   flip.el.getAnimations({ subtree: true }).forEach((a) => a.cancel());
+  // Back to the top of the sheet, so it turns over the way it came
+  flip.el.querySelector('.sheet').scrollTop = 0;
   // The card is hidden but still laid out, so its box is where to land
+  const from = sheetBox();
   const to = stageBox(flip.card);
-  await flipAnimate(sheetBox(), to, 180, 360, sheetRadius, cardRadius(to));
+  const mid = edgeOnBox(to, from);
+  await flipAnimate([from, mid, to], 180, [sheetRadius, cardRadius(mid), cardRadius(to)]);
   flip.el.remove();
   flip = null;
   flipBusy = false;
 }
 
 overlay.addEventListener('click', flipClose);
-stage.addEventListener('click', (e) => { if (flip && e.target.closest('.m-flip')) flipClose(); });
 addEventListener('keydown', (e) => { if (e.key === 'Escape') flipClose(); });
 
 // Arrow keys step through the cards, opening the dial while they do
