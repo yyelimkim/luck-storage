@@ -18,7 +18,7 @@ const IMAGES = [
   '테루테루보즈.png',
   '포도 12알 먹기.png',
 ];
-const IMAGES_VERSION = 4;  // bump when artwork files are replaced
+const IMAGES_VERSION = 5;  // bump when artwork files are replaced
 
 // Cards with back artwork in cards/backs/ (same file name as the front);
 // the rest flip to a blank back
