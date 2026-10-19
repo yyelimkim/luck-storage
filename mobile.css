@@ -431,11 +431,28 @@ img { -webkit-user-drag: none; }
 /* UI White text on Forest Green, as on the filter's Calm tile */
 .profile .profile--earned[style*="forest-green"] p { color: var(--ui-white); }
 .profile .profile--earned p { white-space: nowrap; }
+/* 44 x 44 tap targets (the usual minimum), 8 apart; pulled out by the
+   padding so the icons themselves still sit on the 16px margin */
 .head--tools {
   display: none;
-  gap: 6px;
+  gap: 8px;
+  margin-left: -8px;
 }
-.head--tools button { padding: 0; border: 0; background: none; cursor: pointer; }
+.head--tools button {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: none;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: background-color 0.15s, transform 0.15s;
+}
+.head--tools button:active { background: color-mix(in srgb, var(--system-black) 8%, transparent); transform: scale(0.94); }
+.head--tools button:focus-visible { outline: 1.5px solid var(--system-black); outline-offset: -2px; }
 .head--tools img { display: block; }
 [data-view="profile"] .head--tools { display: flex; }
 [data-view="profile"] .head--title { display: none; }
