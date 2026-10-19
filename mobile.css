@@ -306,8 +306,8 @@ img { -webkit-user-drag: none; }
 .filter--opt:active { transform: scale(0.96); }
 .filter--opt .tag { display: flex; }
 /* All Cards has no colour of its own, so it changes the classic way: unpicked
-   it's quiet (Dark Grey text and line on UI White), picked it's filled System
-   Black with UI White text in SemiBold */
+   it's quiet (Dark Grey text and line on UI White), picked it firms up to
+   System Black text in SemiBold and a System Black line on System White */
 .filter--opt-all {
   filter: none;
   color: var(--dark-grey);
@@ -315,9 +315,9 @@ img { -webkit-user-drag: none; }
   transition: background-color 0.25s, border-color 0.25s, color 0.25s, transform 0.25s cubic-bezier(0.3, 1.5, 0.5, 1);
 }
 .filter--opt-all[aria-pressed="true"] {
-  background: var(--system-black);
+  background: var(--system-white);
   border-color: var(--system-black);
-  color: var(--ui-white);
+  color: var(--system-black);
   font-weight: 600;
 }
 .filter--opt-all {
