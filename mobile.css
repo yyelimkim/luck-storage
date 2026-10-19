@@ -467,6 +467,9 @@ img { -webkit-user-drag: none; }
    White cards. Positions are the Figma frame's, less its 44px status bar. */
 .fortune {
   --top: 0px;
+  font-family: var(--font-display);
+  letter-spacing: var(--tracking);
+  color: var(--system-black);
   position: absolute;
   inset: 0;
   z-index: 65;
@@ -686,34 +689,17 @@ button.fortune--card:active { transform: scale(0.98); }
 .fortune--read {
   min-height: 267px;
   padding: 60px 24px 22px;
-  justify-content: space-between;
+  justify-content: flex-start;
 }
-.fortune--headline {
+.fortune .fortune--headline {
   font-weight: 500;
   font-size: 20px;
 }
-/* Clipped to its box until it's opened */
-.fortune--body {
-  margin: 12px 0 16px;
+/* The whole reading, from the start */
+.fortune .fortune--body {
+  margin-top: 12px;
   color: var(--dark-grey);
-  display: -webkit-box;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 4;
-  max-height: 75px;
-  overflow: hidden;
-  transition: max-height 0.45s cubic-bezier(0.2, 0.8, 0.2, 1);
 }
-.fortune--read[aria-expanded="true"] .fortune--body {
-  -webkit-line-clamp: unset;
-  max-height: 14em;
-}
-.fortune--more {
-  color: var(--dark-grey);
-  display: inline-block;
-  animation: fortune-nudge 1.4s ease-in-out infinite;
-}
-.fortune--read[aria-expanded="true"] .fortune--more { visibility: hidden; }
-@keyframes fortune-nudge { 50% { transform: translateX(4px); } }
 .fortune--tiles {
   display: grid;
   grid-template-columns: 180px 180px;

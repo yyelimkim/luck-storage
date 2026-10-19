@@ -929,7 +929,6 @@ const LUCKY_COLOURS = [
   ['Hot Pink', 'var(--hot-pink)'], ['Yellow', 'var(--yellow)'],
 ];
 const fortuneEl = document.getElementById('fortune');
-const fortuneRead = document.getElementById('fortune-read');
 const fortuneSee = document.getElementById('fortune-see');
 const birthInput = document.getElementById('fortune-birth-input');
 // The cards with line drawings, filled UI White like the tile they sit on.
@@ -986,7 +985,6 @@ function loadFortune() {
   fortuneTimer = setTimeout(() => fortuneStep('ready'), 2750);
 }
 function openFortune() {
-  fortuneRead.setAttribute('aria-expanded', 'false');
   fortuneEl.querySelector('.fortune--result').scrollTop = 0;
   loadFortune();
   fortuneEl.classList.add('is-open');
@@ -1010,10 +1008,6 @@ birthInput.addEventListener('change', () => {
   birthday = birthInput.value;
   try { localStorage.setItem('birthday', birthday); } catch (e) {}
   loadFortune();
-});
-// The reading opens up to its full length, and folds back
-fortuneRead.addEventListener('click', () => {
-  fortuneRead.setAttribute('aria-expanded', String(fortuneRead.getAttribute('aria-expanded') !== 'true'));
 });
 // Off to the home screen: the fan turns to today's lucky ritual and, once
 // it's settled in the middle (and Daily Fortune has slid away), the card
