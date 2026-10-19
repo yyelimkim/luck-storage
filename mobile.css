@@ -377,7 +377,7 @@ img { -webkit-user-drag: none; }
   box-sizing: border-box;
   border: 0.771px solid var(--system-black);
   border-radius: 16px;
-  background: var(--ui-white);
+  background: var(--system-white);
   box-shadow: 0 4px 4px rgba(168, 164, 164, 0.2);
   text-align: left;
   cursor: pointer;
