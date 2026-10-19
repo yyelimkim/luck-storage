@@ -18,7 +18,7 @@ const FIGMA_H = 874;
 const CARD_SCALE = 1.18;
 const CARD_DROP = 33;     // px the cards sit lower than in Figma, nearer the dial
 const DIAL_SCALE = 1.2;   // the dial is drawn this much bigger than in Figma
-const DIAL_DROP = 16;     // px the dial sits lower than in Figma
+const DIAL_DROP = 6;      // px the dial sits lower than in Figma
 
 // Figma's dialing fan is a circle round the dial's centre (radius ~464).
 // Dropping the cards shrinks that radius, so the arc shrinks with it.
@@ -41,15 +41,15 @@ const FIGMA_OPEN = {
 };
 // The fan and dial run from the opened centre card's top down to the bottom edge
 const FAN_TOP = FIGMA_REST.cy - (388.182 / 2) * CARD_SCALE * 1.12;
-const HEAD_H = 49;        // header row height
-const HEAD_GAP = 40;      // least space kept between header and cards
+const HEAD_H = 75;        // header row, 36 below the status bar, and its height
+const HEAD_GAP = 52;      // least space kept between header and cards
 
 const FOCUS_SCALE = 1.12;  // the centre card grows by this much over its neighbours
 const SIDE_OPACITY = 0.8;  // neighbours one slot out fade to this
 const LINE_STEP = 3.7; // degrees between the dial's lines, one per card
 const LINE_R = 200;    // the lines' arc: much wider than the dial, so flatter...
 const LINE_TOP = 96;   // ...with its top where the dial's own edge would be
-const NAV_SPACE = 60;  // the tab bar and its gaps, kept clear under the fan and dial
+const NAV_SPACE = 22;  // the fan and dial are laid out on a floor this far above the bottom (Figma 376:5463)
 const START = IMAGES.indexOf('테루테루보즈.png');  // centred in the Figma frames
 
 const N = IMAGES.length;
