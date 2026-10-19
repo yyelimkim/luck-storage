@@ -1504,3 +1504,291 @@ button.fortune--card:active { transform: scale(0.98); }
   bottom: 64px;
   font-size: 14px;
 }
+
+/* Writing a wish. The button sits over the tree, just above the tab bar, in
+   the System Black of the app's main actions, its price in a small pill */
+.tree--write {
+  position: absolute;
+  left: 50%;
+  bottom: calc(var(--nav-bottom, 42px) + 51px + 14px);
+  z-index: 36;
+  display: none;
+  align-items: center;
+  gap: 10px;
+  height: 44px;
+  padding: 0 8px 0 20px;
+  transform: translateX(-50%);
+  border: 0;
+  border-radius: 43px;
+  background: var(--system-black);
+  color: var(--system-white);
+  font-family: var(--font-display);
+  font-size: 17px;
+  letter-spacing: var(--tracking);
+  white-space: nowrap;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: transform 0.15s;
+}
+[data-view="tree"] .tree--write { display: flex; }
+.tree--write:active { transform: translateX(-50%) scale(0.96); }
+.is-reading .tree--write,
+.is-writing .tree--write { opacity: 0; pointer-events: none; }
+.tree--cost {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  height: 30px;
+  padding: 0 10px;
+  border-radius: 30px;
+  background: var(--ui-white);
+  color: var(--system-black);
+  font-size: 15px;
+}
+/* Once it's up */
+.tree--toast {
+  position: absolute;
+  left: 50%;
+  top: calc(44px + 54px + 8px);
+  z-index: 37;
+  margin: 0;
+  padding: 7px 18px;
+  border-radius: 36px;
+  background: var(--system-black);
+  color: var(--system-white);
+  font-family: var(--font-display);
+  font-size: 14px;
+  letter-spacing: var(--tracking);
+  white-space: nowrap;
+  transform: translate(-50%, -12px);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s, transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+.is-phone .tree--toast { top: calc(54px + 8px); }
+.tree--toast.is-shown { opacity: 1; transform: translate(-50%, 0); }
+.tree--hint { transition: opacity 0.3s; }
+.stage:has(.tree--toast.is-shown) .tree--hint { opacity: 0; }
+/* A new wish swings hard as it takes the weight, then settles to the sway */
+.tree--wish.is-new { animation: wish-hung 1.6s cubic-bezier(0.3, 0.6, 0.4, 1), wish-sway 4s 1.6s ease-in-out infinite alternate; }
+@keyframes wish-hung {
+  0% { rotate: 0deg; }
+  20% { rotate: 14deg; }
+  45% { rotate: -9deg; }
+  70% { rotate: 5deg; }
+  100% { rotate: -3deg; }
+}
+
+/* The sheet: UI White from the bottom, as the filter's */
+.wishform {
+  position: absolute;
+  inset: 0;
+  z-index: 60;
+  visibility: hidden;
+  transition: visibility 0s 0.42s;
+}
+.wishform.is-open { visibility: visible; transition: none; }
+.wishform--scrim {
+  position: absolute;
+  inset: 0;
+  background: color-mix(in srgb, var(--system-black) 45%, transparent);
+  opacity: 0;
+  transition: opacity 0.4s;
+}
+.wishform.is-open .wishform--scrim { opacity: 1; }
+.wishform--sheet {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 0;
+  padding: 0 16px 40px;
+  border-radius: 30px 30px 0 0;
+  background: var(--ui-white);
+  border-top: 0.771px solid var(--system-black);
+  transform: translateY(100%);
+  transition: transform 0.42s cubic-bezier(0.32, 0.72, 0, 1);
+}
+.wishform.is-open .wishform--sheet { transform: none; }
+.wishform--bar {
+  position: relative;
+  align-self: stretch;
+  display: grid;
+  place-items: center;
+  height: 60px;
+}
+.wishform--close {
+  position: absolute;
+  left: -8px;
+  top: 8px;
+  width: 44px;
+  height: 44px;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+}
+.wishform--title,
+.wishform--meta,
+.wishform--balance,
+.wishform--q,
+.wishform--a,
+.wishform--hang,
+.wishform--choices button,
+.wishform--fly-text,
+.wishform--slip textarea {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 400;
+  letter-spacing: var(--tracking);
+  line-height: normal;
+  color: var(--system-black);
+}
+.wishform--title { font-size: 17px; }
+/* Paper: three round swatches, the picked one ringed */
+.wishform--papers {
+  display: flex;
+  gap: 14px;
+  margin: 2px 0 16px;
+}
+.wishform--paper {
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border-radius: 50%;
+  border: 0.771px solid var(--system-black);
+  background: var(--swatch);
+  cursor: pointer;
+  transition: box-shadow 0.2s;
+}
+.wishform--paper[aria-checked="true"] { box-shadow: 0 0 0 3px var(--ui-white), 0 0 0 4.5px var(--system-black); }
+/* The blank slip, written on directly */
+.wishform--slip {
+  --paper: var(--system-white);
+  position: relative;
+  width: 200px;
+  height: 300px;
+  flex: none;
+}
+.wishform--slip .wish--hole { top: 16px; }
+.wishform--slip textarea {
+  position: absolute;
+  left: 18px;
+  right: 18px;
+  top: 46px;
+  height: 190px;
+  padding: 0;
+  border: 0;
+  background: none;
+  resize: none;
+  outline: none;
+  font-size: 20px;
+  line-height: 1.35;
+}
+.wishform--slip textarea::placeholder { color: var(--dark-grey); }
+.wishform--meta {
+  display: flex;
+  justify-content: space-between;
+  align-self: stretch;
+  margin: 14px 4px 18px;
+  font-size: 14px;
+  color: var(--dark-grey);
+}
+/* Hang it: System Black, the price in white; UI White and Dark Grey until
+   there's a wish to hang (or clovers to pay with) */
+.wishform--hang {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  max-width: 371px;
+  height: 51px;
+  padding: 0;
+  border-radius: 43px;
+  border: 1px solid var(--system-black);
+  background: var(--system-black);
+  color: var(--system-white);
+  font-size: 17px;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s, border-color 0.2s, transform 0.15s;
+}
+.wishform--hang:active { transform: scale(0.97); }
+.wishform--hang-cost { display: flex; align-items: center; gap: 2px; }
+.wishform--hang:disabled {
+  background: var(--ui-white);
+  border-color: var(--dark-grey);
+  color: var(--dark-grey);
+  cursor: default;
+}
+.wishform--hang:disabled .wishform--hang-cost img { filter: brightness(0.55); }
+.wishform--hang.is-short .wishform--hang-cost { display: none; }
+.wishform--balance {
+  margin-top: 10px;
+  font-size: 14px;
+  color: var(--dark-grey);
+  text-align: center;
+}
+/* Before the clovers go */
+.wishform--confirm {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: 0 32px;
+  background: color-mix(in srgb, var(--system-black) 35%, transparent);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.25s, visibility 0s 0.25s;
+}
+.wishform.is-confirming .wishform--confirm { opacity: 1; visibility: visible; transition: opacity 0.25s; }
+.wishform--card {
+  width: 100%;
+  padding: 26px 20px 20px;
+  box-sizing: border-box;
+  border-radius: 30px;
+  border: 0.771px solid var(--system-black);
+  background: var(--ui-white);
+  text-align: center;
+  transform: scale(0.94);
+  transition: transform 0.3s cubic-bezier(0.3, 1.4, 0.5, 1);
+}
+.wishform.is-confirming .wishform--card { transform: none; }
+.wishform--q { font-size: 20px; font-weight: 500; }
+.wishform--a { margin-top: 8px; font-size: 16px; color: var(--dark-grey); }
+.wishform--choices {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-top: 22px;
+}
+.wishform--choices button {
+  height: 51px;
+  border-radius: 43px;
+  border: 1px solid var(--system-black);
+  font-size: 17px;
+  cursor: pointer;
+}
+.wishform--no { background: var(--ui-white); }
+.wishform .wishform--yes { background: var(--system-black); color: var(--system-white); }
+/* The slip on its way up to the tree */
+.wishform--fly {
+  position: absolute;
+  z-index: 62;
+  transform-origin: 50% 50%;
+  pointer-events: none;
+}
+.wishform--fly-text {
+  position: absolute;
+  left: 18px;
+  right: 18px;
+  top: 46px;
+  font-size: 20px;
+  line-height: 1.35;
+  overflow: hidden;
+}

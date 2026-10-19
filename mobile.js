@@ -741,23 +741,27 @@ function flyClover(src) {
 }
 
 // The pill takes the clover in: it bumps, and the count rolls up by one
-function addLuck() {
-  luck += 1;
+// The count changes by d: the pill bumps and the number rolls, up as luck
+// comes in, down as it's spent (on wishes, see tree.js)
+function changeLuck(d) {
+  luck += d;
+  const dir = d > 0 ? 1 : -1;
   countIcon.animate([
-    { transform: 'scale(1.5) rotate(-20deg)' },
-    { transform: 'scale(0.9) rotate(8deg)', offset: 0.5 },
+    { transform: `scale(1.5) rotate(${-20 * dir}deg)` },
+    { transform: `scale(0.9) rotate(${8 * dir}deg)`, offset: 0.5 },
     { transform: 'none' },
   ], { duration: 420, easing: 'ease-out' });
   countEl.animate([
     { transform: 'scale(1)' }, { transform: 'scale(1.1)', offset: 0.35 }, { transform: 'scale(1)' },
   ], { duration: 420, easing: 'cubic-bezier(0.3, 1.6, 0.5, 1)' });
   const roll = { duration: 360, easing: 'cubic-bezier(0.2, 0.8, 0.2, 1)' };
-  countNum.animate([{ transform: 'none', opacity: 1 }, { transform: 'translateY(-60%)', opacity: 0 }], roll)
+  countNum.animate([{ transform: 'none', opacity: 1 }, { transform: `translateY(${-60 * dir}%)`, opacity: 0 }], roll)
     .finished.then(() => {
       countNum.textContent = String(luck);
-      countNum.animate([{ transform: 'translateY(60%)', opacity: 0 }, { transform: 'none', opacity: 1 }], roll);
+      countNum.animate([{ transform: `translateY(${60 * dir}%)`, opacity: 0 }, { transform: 'none', opacity: 1 }], roll);
     });
 }
+const addLuck = () => changeLuck(1);
 
 backBtn.addEventListener('click', flipClose);
 addEventListener('keydown', (e) => { if (e.key === 'Escape') flipClose(); });

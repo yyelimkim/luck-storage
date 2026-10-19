@@ -127,16 +127,24 @@
     return `<path d="M${-w / 2} 0H${w / 2}V${h}L0 ${h - n}L${-w / 2} ${h}Z" fill="${fill}" stroke="${INK}" stroke-width="${LINE}" stroke-linejoin="round"/>`
       + `<circle cx="0" cy="7" r="2" fill="${C.sky}" stroke="${INK}" stroke-width="${LINE * 0.8}"/>${writing}`;
   }
-  const strips = HANGS.map(([b, t, len, w, h], i) => {
+  // A strip on its string, hung at [branch, how far along, string, width, height]
+  function hung([b, t, len, w, h], fill, data) {
     const [x, y] = onBranch(BRANCHES[b], t);
-    const fill = PAPER[i % PAPER.length];
     const delay = (-rand() * 4).toFixed(2);
-    return `<g class="tree--wish" data-wish="${i}" data-fill="${fill}" tabindex="0" role="button" aria-label="Read a wish"
+    return `<g class="tree--wish" ${data} data-fill="${fill}" tabindex="0" role="button" aria-label="Read a wish"
       style="transform-origin: ${x.toFixed(1)}px ${y.toFixed(1)}px; animation-delay: ${delay}s">
       <path d="M${x.toFixed(1)} ${y.toFixed(1)}V${(y + len + 7).toFixed(1)}" stroke="${INK}" stroke-width="0.8"/>
       <g transform="translate(${x.toFixed(1)} ${(y + len).toFixed(1)})">${strip(w, h, fill)}</g>
     </g>`;
-  }).join('');
+  }
+  const strips = HANGS.map((hang, i) => hung(hang, PAPER[i % PAPER.length], `data-wish="${i}"`)).join('');
+  // Where wishes written here go, in turn: the spots the tree has left free
+  // (worked out so none touches a strip or string already there). Past
+  // these, new wishes hang over older ones.
+  const SPARE = [
+    [5, 0.4, 64, 20, 56], [6, 0.3, 52, 20, 56], [4, 0.25, 28, 20, 56], [8, 0.5, 106, 20, 56],
+    [7, 0.5, 106, 20, 56], [10, 0.3, 52, 20, 56], [7, 0.2, 10, 20, 56],
+  ];
 
   const scene = document.getElementById('tree-scene');
   scene.innerHTML = `<svg viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" aria-hidden="false">
@@ -160,9 +168,12 @@
   function transformFrom(a, b) {
     return `translate(${a.x + a.w / 2 - (b.x + b.w / 2)}px, ${a.y + a.h / 2 - (b.y + b.h / 2)}px) scale(${a.w / b.w}, ${a.h / b.h})`;
   }
+  const fromEl = reader.querySelector('.wish--from');
   function openWish(g) {
     const paper = g.querySelector('g > path');
-    text.textContent = WISHES[Number(g.dataset.wish) % WISHES.length];
+    const own = g.dataset.own != null;
+    text.textContent = own ? mine[Number(g.dataset.own)].text : WISHES[Number(g.dataset.wish) % WISHES.length];
+    fromEl.textContent = own ? 'Anonymous · yours' : 'Anonymous';
     slip.style.setProperty('--paper', g.dataset.fill);
     reader.classList.add('is-open');
     stageEl.classList.add('is-reading');
@@ -200,4 +211,126 @@
   reader.querySelector('.wish--scrim').addEventListener('click', closeWish);
   reader.querySelector('.wish--close').addEventListener('click', closeWish);
   addEventListener('keydown', (e) => { if (e.key === 'Escape') closeWish(); });
+
+  // --- Writing a wish: write it on a slip, spend clovers, hang it up ---
+  const COST = 3;
+  const MAX = 80;
+  const mine = [];
+  const form = document.getElementById('wishform');
+  const sheet = form.querySelector('.wishform--sheet');
+  const draft = form.querySelector('.wishform--slip');
+  const input = document.getElementById('wish-input');
+  const chars = document.getElementById('wish-chars');
+  const hang = document.getElementById('wish-hang');
+  const hangLabel = hang.querySelector('.wishform--hang-label');
+  const balance = document.getElementById('wish-balance');
+  const confirm = form.querySelector('.wishform--confirm');
+  const confirmText = document.getElementById('wish-confirm-text');
+  const papers = [...form.querySelectorAll('.wishform--paper')];
+  const toast = document.getElementById('wish-toast');
+  let paperFill = C.white;
+
+  const plural = (n) => `${n} clover${n === 1 ? '' : 's'}`;
+  // The button says what's missing: words, or clovers
+  function refresh() {
+    const n = input.value.trim().length;
+    chars.textContent = `${input.value.length}/${MAX}`;
+    const enough = luck >= COST;
+    hang.disabled = !enough || n < 3;
+    hangLabel.textContent = enough ? 'Hang it for' : 'Not enough clovers';
+    hang.classList.toggle('is-short', !enough);
+    balance.textContent = enough
+      ? `You have ${plural(luck)}`
+      : `You have ${plural(luck)}. Claim luck from a card to earn more.`;
+  }
+  function pickPaper(btn) {
+    papers.forEach((p) => p.setAttribute('aria-checked', String(p === btn)));
+    paperFill = btn.dataset.fill;
+    draft.style.setProperty('--paper', paperFill);
+  }
+  function openForm() {
+    input.value = '';
+    pickPaper(papers[0]);
+    refresh();
+    form.classList.add('is-open');
+    form.setAttribute('aria-hidden', 'false');
+    stageEl.classList.add('is-writing');
+    setTimeout(() => input.focus({ preventScroll: true }), 420);
+  }
+  function closeForm() {
+    form.classList.remove('is-open', 'is-confirming');
+    form.setAttribute('aria-hidden', 'true');
+    stageEl.classList.remove('is-writing');
+    input.blur();
+  }
+  document.getElementById('wish-write').addEventListener('click', openForm);
+  form.querySelector('.wishform--scrim').addEventListener('click', closeForm);
+  form.querySelector('.wishform--close').addEventListener('click', closeForm);
+  papers.forEach((p) => p.addEventListener('click', () => pickPaper(p)));
+  input.addEventListener('input', refresh);
+  addEventListener('keydown', (e) => {
+    if (e.key !== 'Escape' || !form.classList.contains('is-open')) return;
+    if (form.classList.contains('is-confirming')) form.classList.remove('is-confirming');
+    else closeForm();
+  });
+
+  // Asked once before the clovers go
+  sheet.addEventListener('submit', (e) => {
+    e.preventDefault();
+    if (hang.disabled) return;
+    confirmText.textContent = `This uses ${plural(COST)}. You’ll have ${luck - COST} left.`;
+    form.classList.add('is-confirming');
+    form.querySelector('.wishform--yes').focus({ preventScroll: true });
+  });
+  form.querySelector('.wishform--no').addEventListener('click', () => {
+    form.classList.remove('is-confirming');
+    input.focus({ preventScroll: true });
+  });
+
+  // Up it goes: the slip leaves the sheet and flies to its spot on the
+  // tree, shrinking into a strip, which swings as it takes the weight
+  form.querySelector('.wishform--yes').addEventListener('click', async () => {
+    const wish = { text: input.value.trim(), fill: paperFill };
+    const i = mine.push(wish) - 1;
+    const spot = SPARE[i % SPARE.length];
+    const group = scene.querySelector('.tree--wishes');
+    group.insertAdjacentHTML('beforeend', hung(spot, wish.fill, `data-own="${i}"`));
+    const g = group.lastElementChild;
+    g.classList.add('is-new');
+    g.style.visibility = 'hidden';
+
+    // The flying slip starts where the draft is
+    const start = toStage(draft.getBoundingClientRect());
+    const fly = draft.cloneNode(true);
+    fly.classList.add('wishform--fly');
+    fly.querySelector('textarea').replaceWith(Object.assign(document.createElement('p'), { className: 'wishform--fly-text', textContent: wish.text }));
+    Object.assign(fly.style, { left: `${start.x}px`, top: `${start.y}px`, width: `${start.w}px`, height: `${start.h}px` });
+    stageEl.appendChild(fly);
+    closeForm();
+    changeLuck(-COST);
+
+    // Bring the spot into view on short screens, then fly there
+    const tree = document.getElementById('tree');
+    const paper = g.querySelector('g > path');
+    const box0 = paper.getBoundingClientRect();
+    const tb = tree.getBoundingClientRect();
+    if (box0.top < tb.top + 120 || box0.bottom > tb.bottom - 160) {
+      tree.scrollTo({ top: tree.scrollTop + box0.top - tb.top - tb.height / 2, behavior: 'smooth' });
+      await new Promise((r) => setTimeout(r, 380));
+    }
+    const end = toStage(paper.getBoundingClientRect());
+    const dx = end.x + end.w / 2 - (start.x + start.w / 2);
+    const dy = end.y + end.h / 2 - (start.y + start.h / 2);
+    await fly.animate([
+      { transform: 'none' },
+      { transform: `translate(${dx * 0.4}px, ${dy * 0.55 - 40}px) scale(0.55) rotate(-6deg)`, offset: 0.45 },
+      { transform: `translate(${dx}px, ${dy}px) scale(${end.w / start.w}, ${end.h / start.h})` },
+    ], { duration: 900, easing: 'cubic-bezier(0.45, 0, 0.2, 1)', fill: 'forwards' }).finished;
+    fly.remove();
+    g.style.visibility = '';
+    g.focus({ preventScroll: true });
+    toast.classList.add('is-shown');
+    setTimeout(() => toast.classList.remove('is-shown'), 2600);
+    setTimeout(() => g.classList.remove('is-new'), 2600);
+  });
 }());
