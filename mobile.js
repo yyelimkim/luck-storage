@@ -49,7 +49,7 @@ const SIDE_OPACITY = 0.8;  // neighbours one slot out fade to this
 const LINE_STEP = 2.8; // degrees between the dial's lines, one per card
 const LINE_R = 260;    // the lines' arc: much wider than the dial, so flatter...
 const LINE_TOP = 96;   // ...with its top where the dial's own edge would be
-const NAV_SPACE = 100; // the tab bar and its gaps, kept clear under the fan and dial
+const NAV_SPACE = 60;  // the tab bar and its gaps, kept clear under the fan and dial
 const START = IMAGES.indexOf('테루테루보즈.png');  // centred in the Figma frames
 
 const N = IMAGES.length;
