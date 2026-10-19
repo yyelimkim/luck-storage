@@ -118,7 +118,7 @@ img { -webkit-user-drag: none; }
   /* The artwork carries its own rounded edge (85px on the 1040 x 1486 English
      cards); the shadow follows the same curve */
   border-radius: 8.2% / 5.72%;
-  box-shadow: 0 4.429px 4.429px rgba(0, 0, 0, calc(0.15 * var(--focus, 0)));
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
 }
 .m-card img {
   display: block;
@@ -126,30 +126,91 @@ img { -webkit-user-drag: none; }
   height: 100%;
 }
 
-/* Dial (Figma 97:729 at rest, 97:832 open). Drawn at its rest size; opening
-   it scales it up, and the ticks turn with the finger. */
-.dial {
+/* Line scroller: the desktop's, under the cards and over the tab bar.
+   Short vertical strokes packed tight; light grey, mid grey for the
+   current card's, which is a little longer. */
+.m-scroller {
   position: absolute;
-  left: 0;
-  top: 0;
-  width: 215px;
-  height: 215px;
-  border-radius: 50%;
+  left: 50%;
+  bottom: calc(28px + 64px);  /* over the tab bar */
+  height: 56px;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
   z-index: 30;
   touch-action: none;
-  cursor: grab;
-  outline: none;
-  will-change: transform;
+  user-select: none;
+  -webkit-user-select: none;
 }
-.dial:active { cursor: grabbing; }
-.dial--face { position: absolute; inset: 0; display: block; }
-.dial--ticks {
+.m-tick {
+  width: 12px;
+  height: 44px;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+  -webkit-tap-highlight-color: transparent;
+}
+.m-tick::before {
+  content: "";
+  width: 4px;
+  height: 16px;
+  background: #cfcfcf;
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='4' height='16' viewBox='0 0 4 16'%3E%3Cline x1='2' y1='0.75' x2='2' y2='15.25' stroke='black' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E") center / 100% 100% no-repeat;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='4' height='16' viewBox='0 0 4 16'%3E%3Cline x1='2' y1='0.75' x2='2' y2='15.25' stroke='black' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E") center / 100% 100% no-repeat;
+  transition: background-color 180ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+.m-tick[aria-current]::before {
+  height: 24px;
+  background: #8f8f8f;
+  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='4' height='24' viewBox='0 0 4 24'%3E%3Cline x1='2' y1='0.75' x2='2' y2='23.25' stroke='black' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E");
+  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='4' height='24' viewBox='0 0 4 24'%3E%3Cline x1='2' y1='0.75' x2='2' y2='23.25' stroke='black' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E");
+}
+
+/* Tab bar: a pill outlined in the design system's line, the current tab
+   on a grey pill of its own */
+.m-nav {
   position: absolute;
-  left: 0.64px;
-  top: 1.2px;
+  left: 16px;
+  right: 16px;
+  bottom: 28px;
+  height: 64px;
+  z-index: 30;
+  display: flex;
+  padding: 5px;
+  gap: 4px;
+  box-sizing: border-box;
+  background: #fff;
+  border: 0.771px solid var(--system-black);
+  border-radius: 999px;
+}
+.m-nav--tab {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1px;
+  padding: 0;
+  border: 0;
+  border-radius: 999px;
+  background: none;
+  color: var(--system-black);
+  font-family: var(--font-display);
+  font-size: 12px;
+  letter-spacing: var(--tracking);
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+.m-nav--tab[aria-current] { background: var(--system-white); }
+.m-nav--tab svg {
   display: block;
-  /* Turn about the dial's centre */
-  transform-origin: 106.86px 106.3px;
+  stroke: currentColor;
+  stroke-width: 1.5;
+  stroke-linejoin: round;
+  stroke-linecap: round;
 }
 
 /* Home indicator (Figma 97:726), preview only */
@@ -182,7 +243,8 @@ img { -webkit-user-drag: none; }
 }
 .is-flipped .overlay { opacity: 1; pointer-events: auto; }
 .is-flipped .fan,
-.is-flipped .dial { pointer-events: none; }
+.is-flipped .m-scroller,
+.is-flipped .m-nav { pointer-events: none; }
 /* The back arrow takes the header's place */
 .head { transition: opacity 0.3s; }
 .is-flipped .head { opacity: 0; }

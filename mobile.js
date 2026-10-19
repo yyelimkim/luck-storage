@@ -1,80 +1,36 @@
-// iPhone prototype: the dial at the bottom replaces the desktop's line scroller.
-// Two Figma states, blended by `open` (0 = rest, 1 = dialing):
-//   rest (97:630)    big cards 20° apart, small closed dial
-//   dialing (97:730) small cards 30° apart on a circle round the opened dial,
-//                    so turning the dial turns the fan with it
-// Card i sits `rel` slots from the centre; it lies at angle rel * step on an
-// arc below the centre card: x = A sin θ, y = B (1 − cos θ), tilted by θ.
+// iPhone prototype: the cards in a stack, scrolled like the desktop strip.
+// The current card is in front; the ones before it pile up behind it to the
+// left, the next one waits off to the right. Swiping the cards or scrubbing
+// the line scroller along the bottom moves through them.
 
 // Everything is laid out in Figma px: the screen is always 402 wide, and as
 // tall as the window allows (874 in the Figma frame and the desktop preview).
 const STAGE_W = 402;
 const FIGMA_H = 874;
 
-// Cards are drawn this much bigger than in Figma. At rest the fan spreads by
-// the same amount so the neighbours still peek out; while dialing the cards
-// stay on the dial's circle.
-const CARD_SCALE = 1.18;
-const CARD_DROP = 33;     // px the cards sit lower than in Figma, nearer the dial
-const DIAL_SCALE = 1.2;   // the dial is drawn this much bigger than in Figma
-const DIAL_DROP = 16;     // px the dial sits lower than in Figma
-
-// Figma's dialing fan is a circle round the dial's centre (radius ~464).
-// Dropping the cards shrinks that radius, so the arc shrinks with it.
-const OPEN_ARC = (834.74 - (370.77 + CARD_DROP)) / (834.74 - 370.77);
-
-// Both states as laid out on the 874-tall Figma frame
-const FIGMA_REST = {
-  cx: 201.68, cy: 396.9 + CARD_DROP,  // centre card's middle
-  a: 489.7 * CARD_SCALE,   // arc radii (Figma: side cards at ±167.5, +55.9, 20°)
-  b: 926.1 * CARD_SCALE,
-  step: 20, scale: CARD_SCALE,
-  dialX: 200.5, dialY: 853.5 + DIAL_DROP, dialScale: DIAL_SCALE,
-};
-const FIGMA_OPEN = {
-  cx: 201.02, cy: 370.77 + CARD_DROP,
-  a: 453.2 * OPEN_ARC,     // Figma: side cards at ±226.6, +63.2, 30°
-  b: 471.4 * OPEN_ARC,
-  step: 30, scale: (176.046 / 271.675) * CARD_SCALE,
-  dialX: 200.85, dialY: 834.74 + DIAL_DROP, dialScale: (278 / 215) * DIAL_SCALE,
-};
-// The fan and dial run from the opened centre card's top down to the bottom edge
-const FAN_TOP = FIGMA_REST.cy - (388.182 / 2) * CARD_SCALE * 1.12;
+const CARD_W = 271.675;   // the front card (.m-card), centred
+const CARD_H = 388.182;
+const NEXT_GAP = 24;      // between the front card and the next one, peeking in from the right
+const STACK_STEP = 19;    // how far each card behind the front one shows on the left
+const STACK_DEPTH = 3;    // cards showing behind it; the rest are hidden under them
 const HEAD_H = 49;        // header row height
-const HEAD_GAP = 40;      // least space kept between header and cards
-
-const FOCUS_SCALE = 1.12;  // the centre card grows by this much over its neighbours
-const SIDE_OPACITY = 0.8;  // neighbours one slot out fade to this
-const TICK_GAP = 45;  // the tick marks repeat every 45°
-const START = IMAGES.indexOf('테루테루보즈.png');  // centred in the Figma frames
+const SCROLLER_H = 56;    // the line scroller along the bottom...
+const NAV_H = 64;         // ...over the tab bar
+const NAV_BOTTOM = 28;    // the tab bar's gap to the screen's bottom edge
+const START = IMAGES.indexOf('테루테루보즈.png');
 
 const N = IMAGES.length;
 const stage = document.getElementById('stage');
 const fan = document.getElementById('fan');
-const dial = document.getElementById('dial');
-const ticks = document.getElementById('ticks');
-
-// The states for the current screen: pinned to the bottom edge, and shrunk
-// about the bottom centre when the screen is too short for the full fan
-let REST = FIGMA_REST;
-let OPEN = FIGMA_OPEN;
-let stageH = FIGMA_H;
-function place(st, h, f) {
-  return {
-    ...st,
-    cx: STAGE_W / 2 + (st.cx - STAGE_W / 2) * f,
-    cy: h - (FIGMA_H - st.cy) * f,
-    a: st.a * f, b: st.b * f, scale: st.scale * f,
-    dialX: STAGE_W / 2 + (st.dialX - STAGE_W / 2) * f,
-    dialY: h - (FIGMA_H - st.dialY) * f,
-    dialScale: st.dialScale * f,
-  };
-}
+const scroller = document.getElementById('scroller');
 
 // Phone-sized windows get the screen edge to edge, the header at the very top
 // (the real status bar is above the page). Anything wider shows the 402 x 874
 // frame in a phone-shaped preview.
 let fitScale = 1;
+let stageH = FIGMA_H;
+let cardY = 0;    // the cards' middle, between the header and the scroller
+let cardK = 1;    // the cards' scale, smaller on screens too short for them
 function fit() {
   const phone = innerWidth <= 500;
   document.documentElement.classList.toggle('is-phone', phone);
@@ -88,16 +44,15 @@ function fit() {
   }
   stage.style.height = `${stageH}px`;
   stage.style.transform = `scale(${fitScale})`;
-  const headTop = phone ? 0 : 44;
-  const room = stageH - headTop - HEAD_H - HEAD_GAP;
-  const f = Math.min(1, room / (FIGMA_H - FAN_TOP));
-  REST = place(FIGMA_REST, stageH, f);
-  OPEN = place(FIGMA_OPEN, stageH, f);
+  const top = (phone ? 0 : 44) + HEAD_H;
+  const bottom = stageH - NAV_BOTTOM - NAV_H - SCROLLER_H;
+  cardK = Math.min(1, (bottom - top - 32) / CARD_H);
+  cardY = (top + bottom) / 2;
 }
 fit();
 addEventListener('resize', fit);
 
-const cards = IMAGES.map((name, i) => {
+const cards = IMAGES.map((name) => {
   const el = document.createElement('div');
   el.className = 'm-card';
   const img = document.createElement('img');
@@ -109,58 +64,48 @@ const cards = IMAGES.map((name, i) => {
   return el;
 });
 
-// pos: which card is centred, fractional while moving. Never wrapped, so it
-// can run on forever in either direction; relOf() wraps per card.
+// Scroller: one line per card, as on desktop
+const ticks = cards.map((_, i) => {
+  const t = document.createElement('button');
+  t.type = 'button';
+  t.className = 'm-tick';
+  t.setAttribute('aria-label', cardName(IMAGES[i]));
+  scroller.appendChild(t);
+  return t;
+});
+
+// pos: which card is in front, fractional while moving
 let pos = START;
 let posTarget = START;
-let open = 0;
-let openTarget = 0;
 let dragging = false;
 let flip = null;  // the card lifted into the overlay: { el, card, box }
 
 const lerp = (a, b, t) => a + (b - a) * t;
-const ease = (t) => t * t * (3 - 2 * t);
-const rad = (d) => (d * Math.PI) / 180;
-const relOf = (i) => ((((i - pos) % N) + N + N / 2) % N) - N / 2;
-
-function goTo(p) { posTarget = Math.round(p); }
+const clampPos = (p) => Math.max(0, Math.min(N - 1, p));
+function goTo(p) { posTarget = clampPos(Math.round(p)); }
 
 function render() {
-  const t = ease(open);
-  const g = {};
-  for (const k in REST) g[k] = lerp(REST[k], OPEN[k], t);
-
+  const w = CARD_W * cardK;
   cards.forEach((el, i) => {
-    const rel = relOf(i);
-    const th = rel * g.step;
-    // Far cards are hidden, and so is a card lifted into the flip overlay
+    const rel = i - pos;
+    // In front and to the right: a card's width apart. Behind: a sliver each.
+    const x = rel >= 0
+      ? STAGE_W / 2 + rel * (w + NEXT_GAP)
+      : STAGE_W / 2 + Math.max(rel, -STACK_DEPTH) * STACK_STEP;
     const lifted = flip && flip.card === el;
-    el.style.visibility = Math.abs(th) > 100 || lifted ? 'hidden' : '';
-    if (Math.abs(th) > 100) return;
-    const x = g.cx + g.a * Math.sin(rad(th));
-    const y = g.cy + g.b * (1 - Math.cos(rad(th)));
-    const d = Math.abs(rel);
-    const focus = Math.max(0, 1 - d);
-    const scale = g.scale * lerp(1, FOCUS_SCALE, focus);
-    el.style.transform = `translate(${x}px, ${y}px) translate(-50%, -50%) rotate(${th}deg) scale(${scale})`;
-    el.style.zIndex = String(100 - Math.round(d * 10));
-    // Centre card full strength, neighbours dimmer, the next ones fade in from nothing
-    const opacity = d <= 1 ? lerp(1, SIDE_OPACITY, d) : SIDE_OPACITY * Math.max(0, 2 - d);
-    el.style.opacity = opacity.toFixed(3);
-    el.style.setProperty('--focus', focus.toFixed(3));
+    const hidden = rel < -STACK_DEPTH - 1 || rel > 2 || lifted;
+    el.style.visibility = hidden ? 'hidden' : '';
+    if (hidden) return;
+    el.style.transform = `translate(${x}px, ${cardY}px) translate(-50%, -50%) scale(${cardK})`;
+    el.style.zIndex = String(i);
+    // Cards far enough back fade into the pile
+    el.style.opacity = rel < -STACK_DEPTH ? String(Math.max(0, STACK_DEPTH + 1 + rel)) : '';
   });
-
-  dial.style.transform = `translate(${g.dialX - 107.5}px, ${g.dialY - 107.5}px) scale(${g.dialScale})`;
-  // Ticks stand upright (as in Figma) whenever a card is settled, and swing
-  // with the finger between cards. They repeat every 45°, so wrap to that.
-  const turn = -(pos - Math.round(pos)) * OPEN.step;
-  const tick = ((((turn + TICK_GAP / 2) % TICK_GAP) + TICK_GAP) % TICK_GAP) - TICK_GAP / 2;
-  ticks.style.transform = `rotate(${tick}deg)`;
-  dial.setAttribute('aria-valuenow', String(((Math.round(pos) % N) + N) % N + 1));
+  const at = Math.round(pos);
+  ticks.forEach((t, i) => t.toggleAttribute('aria-current', i === at));
 }
 
 (function frame() {
-  open += (openTarget - open) * 0.2;
   if (!dragging) pos += (posTarget - pos) * 0.16;
   render();
   requestAnimationFrame(frame);
@@ -190,38 +135,9 @@ function release() {
   vel = 0;
 }
 
-// Dial: press opens it, turning it turns the fan one card per 30°
-let lastAngle = 0;
-function angleAt(e) {
-  const p = stagePoint(e);
-  return (Math.atan2(p.y - OPEN.dialY, p.x - OPEN.dialX) * 180) / Math.PI;
-}
-dial.addEventListener('pointerdown', (e) => {
-  dial.setPointerCapture(e.pointerId);
-  dragging = true;
-  openTarget = 1;
-  lastAngle = angleAt(e);
-  lastT = performance.now();
-  vel = 0;
-});
-dial.addEventListener('pointermove', (e) => {
-  if (!dragging) return;
-  const a = angleAt(e);
-  let d = a - lastAngle;
-  if (d > 180) d -= 360;
-  if (d < -180) d += 360;
-  lastAngle = a;
-  // Clockwise brings the left-hand card to the centre
-  const dPos = -d / OPEN.step;
-  pos += dPos;
-  track(dPos);
-});
-const endDial = () => { if (!dragging) return; release(); openTarget = 0; };
-dial.addEventListener('pointerup', endDial);
-dial.addEventListener('pointercancel', endDial);
-
-// Swiping the cards sideways moves them too, at the rest spacing.
-// A tap without a swipe brings the tapped card to the centre.
+// Swiping the cards sideways moves through them, a card per card's width;
+// past either end they only give a little. A tap without a swipe brings the
+// tapped card to the front, or turns the front card over.
 let startX = 0;
 let lastX = 0;
 let moved = false;
@@ -239,7 +155,8 @@ fan.addEventListener('pointermove', (e) => {
   if (!dragging) return;
   const x = stagePoint(e).x;
   if (Math.abs(x - startX) > 6) moved = true;
-  const dPos = -(x - lastX) / (REST.a * Math.sin(rad(REST.step)));
+  let dPos = -(x - lastX) / (CARD_W * cardK + NEXT_GAP);
+  if (pos + dPos < 0 || pos + dPos > N - 1) dPos /= 3;
   lastX = x;
   pos += dPos;
   track(dPos);
@@ -249,15 +166,38 @@ const endSwipe = () => {
   if (moved) { release(); return; }
   dragging = false;
   if (!tapped) return;
-  const rel = relOf(cards.indexOf(tapped));
-  // The settled centre card turns over; a side card comes to the centre
-  if (Math.abs(rel) < 0.05 && open < 0.05) flipOpen(tapped);
-  else goTo(pos + rel);
+  const i = cards.indexOf(tapped);
+  if (i === posTarget && Math.abs(pos - i) < 0.05) flipOpen(tapped);
+  else goTo(i);
 };
 fan.addEventListener('pointerup', endSwipe);
 fan.addEventListener('pointercancel', endSwipe);
 
-// Tapping the centre card turns it over on a frosted overlay (Figma 350:3771):
+// Scrub: the line nearest the finger picks the card. Pressing and dragging
+// keeps scrubbing even if the finger wanders off the lines.
+let scrubbing = false;
+function scrubAt(x) {
+  let best = 0;
+  let bestD = Infinity;
+  ticks.forEach((t, i) => {
+    const r = t.getBoundingClientRect();
+    const d = Math.abs(x - (r.left + r.width / 2));
+    if (d < bestD) { bestD = d; best = i; }
+  });
+  goTo(best);
+}
+scroller.addEventListener('pointerdown', (e) => {
+  if (flip) return;
+  scrubbing = true;
+  scroller.setPointerCapture(e.pointerId);
+  scrubAt(e.clientX);
+});
+scroller.addEventListener('pointermove', (e) => { if (scrubbing) scrubAt(e.clientX); });
+const endScrub = () => { scrubbing = false; };
+scroller.addEventListener('pointerup', endScrub);
+scroller.addEventListener('pointercancel', endScrub);
+
+// Tapping the front card turns it over on a frosted overlay (Figma 350:3771):
 // its back carries the card's name, a small drawing and what the custom is.
 // Under it the ritual's sheet peeks up, saying how to perform it. Scrolling
 // down brings the sheet up to fill the screen (350:4794), its interaction
@@ -720,13 +660,16 @@ stage.addEventListener('wheel', (e) => {
   else wheelTimer = setTimeout(() => snapTo(Math.round(sheet.p)), 150);
 }, { passive: false });
 
-// Arrow keys step through the cards, opening the dial while they do
-let keyTimer = 0;
+// Arrow keys step through the cards
 addEventListener('keydown', (e) => {
   if (flip) return;
   if (e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') return;
   goTo(posTarget + (e.key === 'ArrowRight' ? 1 : -1));
-  openTarget = 1;
-  clearTimeout(keyTimer);
-  keyTimer = setTimeout(() => { openTarget = 0; }, 600);
 });
+
+// Tab bar: only Home is built so far, so the others just take the highlight
+const tabs = [...document.querySelectorAll('.m-nav--tab')];
+tabs.forEach((t) => t.addEventListener('click', () => {
+  tabs.forEach((o) => o.toggleAttribute('aria-current', o === t));
+  if (t === tabs[0]) t.setAttribute('aria-current', 'page');
+}));
