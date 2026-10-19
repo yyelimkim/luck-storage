@@ -466,9 +466,12 @@ function sheetHTML(name) {
     <div class="sheet--claimed">
       <div class="claimed--glow"></div>
       <div class="claimed--body">
-        <p class="claimed--title">Luck Claimed!</p>
+        <div class="claimed--text">
+          <img class="claimed--clover" src="assets/system/clover-claimed.svg" width="76.6022" height="76.6022" alt="">
+          <p class="claimed--title">Luck Claimed!</p>
+          <p class="claimed--sub">Come back tomorrow to claim luck again!</p>
+        </div>
         <button type="button" class="claimed--btn" data-act="home">Home</button>
-        <button type="button" class="claimed--btn claimed--btn-alt" data-act="continue">Continue</button>
       </div>
     </div>`;
 }
@@ -611,14 +614,7 @@ async function flipOpen(card) {
   setSheet(sheet.p);
   teruRitual(sh, fitRitual(sh));
   sh.querySelector('.ritual--art')?.addEventListener('click', claimed);
-  sh.querySelectorAll('.claimed--btn').forEach((b) => b.addEventListener('click', () => {
-    if (b.dataset.act === 'home') goHome();
-    else {
-      sh.classList.remove('is-claimed');
-      sheet.claimed = false;
-      sh.querySelector('iframe')?.contentWindow.postMessage('luck-continue', '*');
-    }
-  }));
+  sh.querySelector('.claimed--btn').addEventListener('click', goHome);
 
   document.documentElement.classList.add('is-flipped');
   await flipAnimate([from, midBox(from, to), to], 0,
@@ -648,10 +644,12 @@ async function flipClose() {
   flipBusy = false;
 }
 
-// Home from the full or claimed sheet: it all fades away, no turning back over
+// Home from the full or claimed sheet: it all fades away, no turning back over.
+// Luck claimed, its clover stays behind and flies into the header's count.
 async function goHome() {
   if (!flip || flipBusy) return;
   flipBusy = true;
+  const flight = sheet.claimed && flyClover(sheet.el.querySelector('.claimed--clover'));
   document.documentElement.classList.remove('is-flipped');
   const fade = { duration: SHEET_MS, easing: 'ease-out', fill: 'forwards' };
   await Promise.all([sheet.el, flip.el].map((e) =>
@@ -661,6 +659,66 @@ async function goHome() {
   sheet = null;
   flip = null;
   flipBusy = false;
+  if (flight) { await flight; addLuck(); }
+}
+
+// The luck claimed so far, counted in the header's pill
+const countEl = document.getElementById('count');
+const countIcon = countEl.querySelector('img');
+const countNum = document.getElementById('count-num');
+let luck = Number(countNum.textContent);
+
+const CLOVER_FLY_MS = 820;
+// The claimed clover lifts off, shrinks along a curve up to the header's
+// clover, unwinding its tilt and turning from white to the header's ink
+function flyClover(src) {
+  // Its box untilted: the tilted one's centre, at its own size
+  const tilted = stageBox(src);
+  const size = src.offsetWidth;
+  const from = {
+    left: tilted.left + (tilted.width - size) / 2, top: tilted.top + (tilted.height - size) / 2,
+    width: size, height: size,
+  };
+  const to = stageBox(countIcon);
+  const fly = document.createElement('div');
+  fly.className = 'clover-fly';
+  fly.innerHTML = `<img src="assets/system/clover-claimed.svg" alt=""><img src="${countIcon.getAttribute('src')}" alt="">`;
+  Object.assign(fly.style, px(from));
+  stage.appendChild(fly);
+  src.style.visibility = 'hidden';
+  // Scale and move from the clover's box to the icon's, bowing out sideways
+  const k = to.width / from.width;
+  const dx = to.left + to.width / 2 - (from.left + from.width / 2);
+  const dy = to.top + to.height / 2 - (from.top + from.height / 2);
+  const at = (t, bow) => `translate(${dx * t + bow}px, ${dy * t * t}px) scale(${lerp(1, k, t)})`;
+  const opts = { duration: CLOVER_FLY_MS, easing: 'cubic-bezier(0.5, 0, 0.2, 1)', fill: 'forwards' };
+  const move = fly.animate([
+    { transform: `${at(0, 0)} rotate(15deg)` },
+    { transform: `${at(0, 0)} scale(1.12) rotate(5deg)`, offset: 0.14 },
+    { transform: `${at(0.55, dx * 0.25)} rotate(-25deg)`, offset: 0.6 },
+    { transform: `${at(1, 0)} rotate(0deg)` },
+  ], opts);
+  fly.lastElementChild.animate([{ opacity: 0 }, { opacity: 0, offset: 0.55 }, { opacity: 1 }], opts);
+  return move.finished.then(() => fly.remove());
+}
+
+// The pill takes the clover in: it bumps, and the count rolls up by one
+function addLuck() {
+  luck += 1;
+  countIcon.animate([
+    { transform: 'scale(1.5) rotate(-20deg)' },
+    { transform: 'scale(0.9) rotate(8deg)', offset: 0.5 },
+    { transform: 'none' },
+  ], { duration: 420, easing: 'ease-out' });
+  countEl.animate([
+    { transform: 'scale(1)' }, { transform: 'scale(1.1)', offset: 0.35 }, { transform: 'scale(1)' },
+  ], { duration: 420, easing: 'cubic-bezier(0.3, 1.6, 0.5, 1)' });
+  const roll = { duration: 360, easing: 'cubic-bezier(0.2, 0.8, 0.2, 1)' };
+  countNum.animate([{ transform: 'none', opacity: 1 }, { transform: 'translateY(-60%)', opacity: 0 }], roll)
+    .finished.then(() => {
+      countNum.textContent = String(luck);
+      countNum.animate([{ transform: 'translateY(60%)', opacity: 0 }, { transform: 'none', opacity: 1 }], roll);
+    });
 }
 
 backBtn.addEventListener('click', flipClose);

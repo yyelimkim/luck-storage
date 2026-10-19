@@ -533,42 +533,61 @@ img { -webkit-user-drag: none; }
   transition: opacity 0.5s;
 }
 .is-claimed .sheet--claimed { opacity: 1; pointer-events: auto; }
+/* Figma 350:5220: a deep blue glow rising from the bottom edge, 557 tall */
 .claimed--glow {
   position: absolute;
-  inset: 0;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  height: 557px;
   /* Figma's colour is #006ace on V2 Blue; each card gets its own deep shade */
-  background: linear-gradient(to top,
-    color-mix(in oklch, var(--card-color) 70%, #000) 4%,
-    transparent 90%);
-  -webkit-backdrop-filter: blur(2px);
-  backdrop-filter: blur(2px);
+  background: radial-gradient(ellipse 100% 100% at 50% 100%,
+    color-mix(in oklch, var(--card-color) 70%, #000) 18.2%,
+    transparent 100%);
+  -webkit-backdrop-filter: blur(3.15px);
+  backdrop-filter: blur(3.15px);
+  -webkit-mask-image: linear-gradient(to top, #000 60%, transparent);
+  mask-image: linear-gradient(to top, #000 60%, transparent);
 }
+/* Figma 350:5221: clover, title and line, then the way home */
 .claimed--body {
   position: absolute;
-  left: 70px;
-  top: 144px;  /* 90 higher than Figma's 234 */
-  width: 277px;
+  left: 24px;
+  top: 59px;
+  width: 371px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 18px;
+}
+.claimed--text {
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 13px;
-  transform: translateY(16px);
-  transition: transform 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
+  width: 100%;
 }
-.is-claimed .claimed--body { transform: none; }
-.claimed--title {
+.claimed--clover {
+  display: block;
+  margin: 7.48px 0;  /* its 91.567 box, tilted 15° */
+  transform: rotate(15deg);
+}
+.claimed--title,
+.claimed--sub {
   margin: 0;
   font-family: var(--font-display);
-  font-weight: 600;
-  font-size: 22px;
   letter-spacing: var(--tracking);
   line-height: normal;
+  text-align: center;
   color: #fff;
 }
+.claimed--title { font-weight: 600; font-size: 22px; }
+.claimed--sub { font-weight: 400; font-size: 16px; }
 .claimed--btn {
-  width: 231px;
-  padding: 10px;
-  background: var(--system-white);
+  width: 371px;
+  padding: 15px;
+  border-radius: 43px;
+  background: #fafafa;
   border: 1px solid var(--system-black);
   color: var(--system-black);
   font-family: var(--font-display);
@@ -576,8 +595,41 @@ img { -webkit-user-drag: none; }
   letter-spacing: var(--tracking);
   line-height: normal;
   cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: transform 0.15s, background-color 0.15s;
 }
-.claimed--btn-alt { background: #dcdcdc; }
+.claimed--btn:active { transform: scale(0.97); background: var(--system-white); }
+
+/* Claimed: the clover pops in with a twist, then the words and button rise
+   in one after another */
+.is-claimed .claimed--clover { animation: clover-pop 0.7s cubic-bezier(0.3, 1.5, 0.5, 1) both; }
+.is-claimed .claimed--title { animation: claimed-rise 0.5s 0.18s cubic-bezier(0.2, 0.8, 0.2, 1) both; }
+.is-claimed .claimed--sub { animation: claimed-rise 0.5s 0.28s cubic-bezier(0.2, 0.8, 0.2, 1) both; }
+.is-claimed .claimed--btn { animation: claimed-rise 0.5s 0.4s cubic-bezier(0.2, 0.8, 0.2, 1) both; }
+@keyframes clover-pop {
+  from { opacity: 0; transform: scale(0.2) rotate(-90deg); }
+  to { opacity: 1; transform: rotate(15deg); }
+}
+@keyframes claimed-rise {
+  from { opacity: 0; transform: translateY(14px); }
+  to { opacity: 1; transform: none; }
+}
+
+/* The claimed clover on its way to the header's count */
+.clover-fly {
+  position: absolute;
+  z-index: 90;
+  pointer-events: none;
+  transform-origin: 50% 50%;
+}
+.clover-fly img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+.head--count img { transform-origin: 50% 50%; }
+.head--count span { display: inline-block; }
 
 /* Artwork standing in for a drawing: its cut edges melt into the card */
 .panel--art {
