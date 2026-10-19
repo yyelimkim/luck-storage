@@ -267,8 +267,8 @@ fan.addEventListener('pointercancel', endSwipe);
 const FLIP_MS = 700;
 const FLIP_EASE = 'cubic-bezier(0.65, 0, 0.35, 1)';  // same as the desktop flip
 const SHEET_MS = 450;
-const INFO_W = 370;        // the turned-over card's width (350:3773)
-const INFO_H = 580;        // its height, laid out at the screen's width
+const INFO_MARGIN = 16;    // the turned-over card's side margins on screen (350:3773)
+const INFO_H = 580;        // its height at most, laid out at the screen's width
 const INFO_TOP = 64;       // under the back arrow's row
 const PEEK = 148;          // how much of the sheet shows under the card
 const CARD_GAP = 24;       // least space above and below the card
@@ -295,17 +295,19 @@ function stageBox(el) {
   };
 }
 
-// The turned-over card: 370 wide, in the space between the back arrow's row
-// and the peeking sheet, nearer the top (INFO_DROP of the spare room above
-// it); smaller on screens too short to fit it there. k is its scale from
-// 402 wide.
+// The turned-over card: the screen's width less 16px either side on any
+// phone, in the space between the back arrow's row and the peeking sheet,
+// nearer the top (INFO_DROP of the spare room above it). On screens too
+// short for all of it, it's shorter rather than narrower. k is its scale
+// from 402 wide; h its height laid out at that width.
 function infoBox() {
   const above = headTop() + INFO_TOP;
   const room = sheetTop() - above;
-  const k = Math.min(INFO_W / STAGE_W, (room - 2 * CARD_GAP) / INFO_H);
-  const width = STAGE_W * k;
-  const height = INFO_H * k;
-  return { left: (STAGE_W - width) / 2, top: above + (room - height) * INFO_DROP, width, height, k };
+  const margin = document.documentElement.classList.contains('is-phone') ? INFO_MARGIN / fitScale : INFO_MARGIN;
+  const width = STAGE_W - 2 * margin;
+  const k = width / STAGE_W;
+  const height = Math.min(INFO_H * k, room - 2 * CARD_GAP);
+  return { left: margin, top: above + (room - height) * INFO_DROP, width, height, k, h: height / k };
 }
 
 const midBox = (a, b) => ({
@@ -405,7 +407,7 @@ function panelHTML(name) {
   return `
     <div class="panel" style="--card-color: ${CARD_COLOR[name]}">
       <div class="panel--info">
-        <img class="info--frame" src="assets/system/info-frame.svg" width="354.069" height="531.104" alt="">
+        <div class="info--frame"></div>
         <div class="info--tag">${categoryTag(CATEGORY[name], cardName(name))}</div>
         <div class="info--body">
           ${icon}
@@ -568,6 +570,7 @@ async function flipOpen(card) {
   const el = document.createElement('div');
   el.className = 'm-flip';
   el.style.setProperty('--k', to.k);
+  el.style.setProperty('--info-h', `${to.h}px`);
   el.innerHTML = `
     <div class="m-flip--inner">
       <div class="m-flip--face m-flip--front"><img src="${card.querySelector('img').src}" alt="" draggable="false"></div>
