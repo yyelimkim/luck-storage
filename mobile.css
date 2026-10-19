@@ -1440,6 +1440,8 @@ button.fortune--card:active { transform: scale(0.98); }
   transition: opacity 0.3s;
 }
 .is-phone .wish--close { top: 10px; }
+.wish--close:focus-visible,
+.wishform--close:focus-visible { outline: 1.5px solid var(--system-black); outline-offset: -2px; }
 .wish.is-open .wish--close { opacity: 1; }
 .wish--slip {
   --paper: var(--system-white);

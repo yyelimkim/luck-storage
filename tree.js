@@ -37,119 +37,95 @@
   let seed = 7;
   const rand = () => { seed = (seed * 16807) % 2147483647; return (seed - 1) / 2147483646; };
 
-  // A branch: a tapered, gently bent limb from (x1, y1) to (x2, y2)
-  const BRANCHES = [
-    [192, 670, 62, 480, 22, 7, -18],
-    [208, 662, 342, 470, 22, 7, 18],
-    [197, 640, 112, 360, 16, 6, -14],
-    [203, 640, 292, 350, 16, 6, 14],
-    [200, 630, 204, 280, 15, 5, 6],
-    [112, 360, 52, 306, 6, 2.5, -6],
-    [292, 350, 354, 300, 6, 2.5, 6],
-    [62, 480, 16, 446, 7, 2.5, -4],
-    [342, 470, 388, 436, 7, 2.5, 4],
-    [204, 280, 164, 228, 5, 2, -4],
-    [204, 280, 250, 232, 5, 2, 4],
-  ];
-  const onBranch = ([x1, y1, x2, y2, , , bend], t) => {
-    const nx = -(y2 - y1), ny = x2 - x1;
-    const len = Math.hypot(nx, ny);
-    const cx = (x1 + x2) / 2 + (nx / len) * bend, cy = (y1 + y2) / 2 + (ny / len) * bend;
-    const u = 1 - t;
-    return [u * u * x1 + 2 * u * t * cx + t * t * x2, u * u * y1 + 2 * u * t * cy + t * t * y2];
-  };
-  function branchPath(b) {
-    const [x1, y1, x2, y2, w1, w2] = b;
-    const pts = [];
-    for (let i = 0; i <= 12; i++) {
-      const t = i / 12;
-      const [x, y] = onBranch(b, t);
-      const [xa, ya] = onBranch(b, Math.min(1, t + 0.01));
-      const [xb, yb] = onBranch(b, Math.max(0, t - 0.01));
-      const dx = xa - xb, dy = ya - yb, d = Math.hypot(dx, dy) || 1;
-      const w = (w1 + (w2 - w1) * t) / 2;
-      pts.push([x - (dy / d) * w, y + (dx / d) * w, x + (dy / d) * w, y - (dx / d) * w]);
-    }
-    const left = pts.map((p) => `${p[0].toFixed(1)} ${p[1].toFixed(1)}`);
-    const right = pts.map((p) => `${p[2].toFixed(1)} ${p[3].toFixed(1)}`).reverse();
-    const [ex, ey] = onBranch(b, 1);
-    return `M${left.join(' L')} Q${(ex + (x2 - x1) * 0.02).toFixed(1)} ${(ey + (y2 - y1) * 0.02).toFixed(1)} ${right.join(' L')} Z`;
-  }
+  // The willow (Figma 408:16532, 411:16547, 412:16550): a Yellow-Green
+  // crown over Forest Green curtains whose lobes droop like the reference,
+  // the trunk sweeping out to the right at its foot. Outlines stay the
+  // cards' weight whatever each shape is scaled by.
+  const DOME = 'M226 2.5C349.436 2.5 449.5 102.564 449.5 226V413.122C402.62 387.334 368.949 340.509 361.198 285.375L360.821 282.689L358.175 283.283C345.893 286.041 333.118 287.5 320 287.5C299.229 287.5 279.316 283.848 260.862 277.158L258.638 276.352L257.71 278.529C228.392 347.344 165.553 398.444 89.7119 411.331L87.9131 411.637L87.6562 413.443C81.8593 454.177 46.836 485.5 4.5 485.5C3.83143 485.5 3.16477 485.49 2.5 485.475V226C2.5 118.173 78.8609 28.1751 180.457 7.14355L182.927 6.64551L182.928 6.64648C196.863 3.92604 211.264 2.5 226 2.5Z';
+  const CURTAIN = 'M456 406.5C456 417.27 447.27 426 436.5 426C425.73 426 417 417.27 417 406.5V354.335C412.201 357.292 406.55 359 400.5 359C390.307 359 381.247 354.157 375.489 346.648C372.377 369.852 355.306 388.634 333 394.267V447.5C333 489.75 298.75 524 256.5 524C235.167 524 215.875 515.267 202 501.182V549C202 580.48 176.48 606 145 606C127.839 606 112.45 598.416 102 586.417V622C102 643.539 84.5391 661 63 661C41.4609 661 24 643.539 24 622V547.009C9.90671 541.131 8.49318e-08 527.223 0 511V0H456V406.5Z';
+  const TRUNK = 'M41.3662 279.475C44.7782 312.379 71.9217 388.827 152.729 440.081C258.392 478.896 302.747 580.659 311.857 629.408L311.969 630H0L1.61621 629.067C39.5278 607.179 53.6667 570.2 55.916 532.782C58.1659 495.355 48.5095 457.556 38.9033 434.19L38.6201 433.5H39.207C28.1753 412.555 8.36621 356.244 8.36621 279.5V0H41.3662V279.475Z';
+  const mass = (d, fill, t) => `<g transform="${t}"><path d="${d}" fill="${fill}" stroke="${INK}" stroke-width="2" vector-effect="non-scaling-stroke"/></g>`;
+  // The curtains hang behind the crown, their squared tops tucked under it
+  // (and off the screen's edges); the crown's carved rim drapes over them
+  const canopy = mass(CURTAIN, C.yellowGreen, 'translate(-36 300) scale(0.5)')
+    + mass(CURTAIN, C.yellowGreen, 'translate(438 300) scale(-0.5 0.5)')
+    + mass(DOME, C.forest, 'translate(9 110) scale(0.85)');
+  const trunk = `<g transform="translate(150 330) scale(0.71)"><path d="${TRUNK}" fill="${INK}"/></g>`;
 
   // A leaf: pointed at both ends, turned a degrees
   const leaf = (x, y, r, a, fill) => `<path d="M0 ${-r}Q${r * 0.75} 0 0 ${r}Q${-r * 0.75} 0 0 ${-r}Z" transform="translate(${x.toFixed(1)} ${y.toFixed(1)}) rotate(${a.toFixed(0)})" fill="${fill}" stroke="${INK}" stroke-width="${LINE}"/>`;
   // A four-pointed sparkle, as on the cards
   const sparkle = (x, y, r) => `<path d="M${x} ${y - r}Q${x + r * 0.18} ${y - r * 0.18} ${x + r} ${y}Q${x + r * 0.18} ${y + r * 0.18} ${x} ${y + r}Q${x - r * 0.18} ${y + r * 0.18} ${x - r} ${y}Q${x - r * 0.18} ${y - r * 0.18} ${x} ${y - r}Z" fill="${C.white}" stroke="${INK}" stroke-width="${LINE}"/>`;
 
-  // Canopy clumps, outlined as one shape: every circle's line first, then
-  // every circle's fill over the inside of the lines
-  const CLUMPS = [
-    [48, 404, 92], [130, 292, 100], [232, 238, 108], [340, 300, 96], [394, 424, 74],
-    [8, 524, 66], [110, 486, 76], [300, 474, 82], [205, 372, 86], [158, 186, 66], [292, 192, 68],
-    [124, 590, 54], [286, 584, 58], [366, 548, 52], [40, 610, 40],
+  // Willow strands: a line swaying down from the canopy, leaves either side
+  const STRANDS = [
+    [168, 388, 150], [206, 392, 104], [242, 400, 168], [300, 450, 126], [356, 470, 146],
+    [30, 512, 118], [92, 538, 146], [130, 498, 96], [386, 490, 106], [264, 428, 86],
   ];
-  const clumps = CLUMPS.map(([x, y, r]) => `<circle cx="${x}" cy="${y}" r="${r}" fill="none" stroke="${INK}" stroke-width="${LINE * 2}"/>`).join('')
-    + CLUMPS.map(([x, y, r]) => `<circle cx="${x}" cy="${y}" r="${r}" fill="${C.forest}"/>`).join('');
-
-  // Yellow-Green leaves round the clumps' edges
-  let leaves = '';
-  CLUMPS.forEach(([x, y, r]) => {
-    for (let i = 0; i < 2; i++) {
-      const a = rand() * Math.PI * 2;
-      const d = r * (0.7 + rand() * 0.3);
-      leaves += leaf(x + Math.cos(a) * d, y + Math.sin(a) * d, 13 + rand() * 7, rand() * 180, rand() < 0.7 ? C.yellowGreen : C.forest);
+  let strands = '';
+  for (const [x, y, len] of STRANDS) {
+    const sway = 5 + rand() * 4;
+    strands += `<path d="M${x} ${y}q${sway.toFixed(1)} ${(len / 2).toFixed(1)} 0 ${len}" fill="none" stroke="${INK}" stroke-width="1" stroke-linecap="round"/>`;
+    for (let t = 0.22; t < 0.98; t += 0.24) {
+      const px = x + sway * Math.sin(Math.PI * t) * 0.75 + (t * 400 % 2 < 1 ? 4 : -4);
+      strands += leaf(px, y + len * t, 5.5 + rand() * 2, -18 + rand() * 36, rand() < 0.7 ? C.yellowGreen : C.forest);
     }
-  });
+  }
+  // A few big leaves resting on the canopy itself
+  let leaves = '';
+  for (const [x, y] of [[90, 200], [200, 170], [300, 210], [48, 420], [355, 400], [150, 480], [260, 500], [110, 330], [295, 330], [180, 250], [250, 300], [330, 300], [60, 300], [140, 390], [230, 430], [320, 380], [200, 540], [100, 540], [300, 520]]) {
+    leaves += leaf(x, y, 12 + rand() * 6, rand() * 180, rand() < 0.5 ? C.forest : C.yellowGreen);
+  }
 
-  // Narrowing up into the branches, so where they meet doesn't show
-  const trunk = `<path d="M146 884C172 800 184 720 193 600L207 600C216 720 228 800 256 884Z" fill="${INK}"/>`;
-  const branches = BRANCHES.map((b) => `<path d="${branchPath(b)}" fill="${INK}"/>`).join('');
-  const hill = `<path d="M-10 812Q100 770 201 776Q302 770 412 812L412 884L-10 884Z" fill="${C.yellowGreen}" stroke="${INK}" stroke-width="${LINE}"/>`;
+  // The hill, with little mounds resting on it as in the reference
+  const hill = `<path d="M-10 812Q100 770 201 776Q302 770 412 812L412 884L-10 884Z" fill="${C.yellowGreen}" stroke="${INK}" stroke-width="${LINE}"/>`
+    + `<path d="M28 806Q52 764 90 798" fill="${C.forest}" stroke="${INK}" stroke-width="${LINE}"/>`
+    + `<path d="M318 798Q352 760 384 800" fill="${C.forest}" stroke="${INK}" stroke-width="${LINE}"/>`
+    + `<path d="M120 794Q140 772 162 790" fill="${C.yellowGreen}" stroke="${INK}" stroke-width="${LINE}"/>`;
   const sparkles = [[22, 704, 8], [382, 700, 10], [48, 764, 5], [352, 760, 6]].map((s) => sparkle(...s)).join('');
 
-  // Where each strip hangs: on which branch, how far along, its string and size
+  // Where the slips hang: [x, y] on a canopy edge or strand, string length,
+  // then the tag's width and height
   const HANGS = [
-    [0, 0.5, 34, 26, 92], [0, 0.82, 22, 24, 78], [1, 0.48, 40, 26, 96], [1, 0.84, 18, 24, 80],
-    [2, 0.5, 30, 24, 84], [2, 0.86, 54, 22, 70], [3, 0.52, 26, 24, 86], [3, 0.88, 50, 22, 72],
-    [4, 0.62, 30, 26, 90], [4, 0.9, 64, 22, 70], [5, 0.9, 30, 22, 66], [6, 0.9, 26, 22, 70],
-    [7, 0.85, 36, 22, 74], [8, 0.85, 30, 22, 76], [9, 0.9, 22, 20, 62], [10, 0.92, 40, 20, 64],
-    [0, 0.3, 30, 24, 78], [1, 0.28, 26, 24, 76],
+    [28, 505, 26, 24, 70], [70, 528, 60, 24, 72], [112, 560, 22, 24, 70], [152, 470, 36, 24, 78],
+    [190, 392, 120, 24, 74], [228, 398, 60, 24, 76], [266, 428, 100, 24, 72], [300, 452, 40, 24, 72],
+    [338, 468, 56, 24, 58], [378, 488, 30, 24, 68], [55, 460, 18, 22, 62], [135, 548, 90, 24, 64],
+    [215, 430, 150, 24, 68], [248, 420, 20, 22, 84], [318, 440, 130, 24, 64], [368, 430, 16, 22, 54],
+    [90, 470, 14, 22, 62], [180, 560, 70, 24, 66],
   ];
-  // A strip, its top centre at (0, 0): a hole, a few lines of writing, a notched tail
+  // A tag (the reference slips): top corners clipped, a hole, lines of writing
   function strip(w, h, fill) {
-    const n = Math.min(10, w * 0.4);
+    const c = Math.min(8, w * 0.3);
     let writing = '';
-    for (let y = 18; y < h - n - 10; y += 9) {
+    for (let y = 17; y < h - 9; y += 9) {
       const len = w * (0.35 + rand() * 0.35);
       const x = -w / 2 + 5;
       writing += `<path d="M${x.toFixed(1)} ${y}q${(len / 4).toFixed(1)} -2 ${(len / 2).toFixed(1)} 0t${(len / 2).toFixed(1)} 0" fill="none" stroke="${INK}" stroke-width="0.7" stroke-linecap="round"/>`;
     }
-    return `<path d="M${-w / 2} 0H${w / 2}V${h}L0 ${h - n}L${-w / 2} ${h}Z" fill="${fill}" stroke="${INK}" stroke-width="${LINE}" stroke-linejoin="round"/>`
-      + `<circle cx="0" cy="7" r="2" fill="${C.sky}" stroke="${INK}" stroke-width="${LINE * 0.8}"/>${writing}`;
+    return `<path d="M${-w / 2} ${c}L${-w / 2 + c} 0H${w / 2 - c}L${w / 2} ${c}V${h}H${-w / 2}Z" fill="${fill}" stroke="${INK}" stroke-width="${LINE}" stroke-linejoin="round"/>`
+      + `<circle cx="0" cy="${c + 1}" r="2.2" fill="${C.sky}" stroke="${INK}" stroke-width="${LINE * 0.8}"/>${writing}`;
   }
-  // A strip on its string, hung at [branch, how far along, string, width, height]
-  function hung([b, t, len, w, h], fill, data) {
-    const [x, y] = onBranch(BRANCHES[b], t);
+  // A tag on its string, hung at [x, y, string, width, height]
+  function hung([x, y, len, w, h], fill, data) {
     const delay = (-rand() * 4).toFixed(2);
     return `<g class="tree--wish" ${data} data-fill="${fill}" tabindex="0" role="button" aria-label="Read a wish"
       style="transform-origin: ${x.toFixed(1)}px ${y.toFixed(1)}px; animation-delay: ${delay}s">
-      <path d="M${x.toFixed(1)} ${y.toFixed(1)}V${(y + len + 7).toFixed(1)}" stroke="${INK}" stroke-width="0.8"/>
+      <path d="M${x.toFixed(1)} ${y.toFixed(1)}V${(y + len + 6).toFixed(1)}" stroke="${INK}" stroke-width="0.8"/>
       <g transform="translate(${x.toFixed(1)} ${(y + len).toFixed(1)})">${strip(w, h, fill)}</g>
     </g>`;
   }
   const strips = HANGS.map((hang, i) => hung(hang, PAPER[i % PAPER.length], `data-wish="${i}"`)).join('');
-  // Where wishes written here go, in turn: the spots the tree has left free
-  // (worked out so none touches a strip or string already there). Past
-  // these, new wishes hang over older ones.
+  // Where wishes written here go, in turn: spots the willow has left free.
+  // Past these, new wishes hang over older ones.
   const SPARE = [
-    [5, 0.4, 64, 20, 56], [6, 0.3, 52, 20, 56], [4, 0.25, 28, 20, 56], [8, 0.5, 106, 20, 56],
-    [7, 0.5, 106, 20, 56], [10, 0.3, 52, 20, 56], [7, 0.2, 10, 20, 56],
+    [242, 470, 110, 20, 56], [350, 540, 60, 20, 56], [18, 560, 70, 20, 56], [105, 600, 80, 20, 56],
+    [300, 560, 120, 20, 56], [60, 520, 160, 20, 56], [385, 540, 130, 20, 56],
   ];
 
   const scene = document.getElementById('tree-scene');
   scene.innerHTML = `<svg viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" aria-hidden="false">
     <rect width="${W}" height="${H}" fill="${C.sky}"/>
-    ${sparkles}${clumps}${trunk}${branches}${leaves}${hill}
+    ${sparkles}${trunk}${canopy}${leaves}${strands}${hill}
     <g class="tree--wishes">${strips}</g>
   </svg>`;
 
