@@ -997,7 +997,39 @@ function closeFortune() {
 }
 document.querySelector('.profile--fortune').addEventListener('click', openFortune);
 fortuneEl.querySelector('.fortune--back').addEventListener('click', closeFortune);
-fortuneSee.addEventListener('click', () => fortuneStep('result'));
+// The date pill carries over to the reading: it rises and shrinks into its
+// place there, its line and text easing to Dark Grey on the way
+function flyPill() {
+  const [a, b] = fortuneEl.querySelectorAll('.fortune--today');
+  const box = fortuneEl.getBoundingClientRect();
+  const k = box.width / fortuneEl.offsetWidth;
+  const r1 = a.getBoundingClientRect();
+  const r2 = b.getBoundingClientRect();
+  const end = getComputedStyle(b);
+  const fly = a.cloneNode(true);
+  fly.className = 'fortune--pill';
+  Object.assign(fly.style, {
+    position: 'absolute', zIndex: 4, margin: 0,
+    left: `${(r1.left - box.left) / k}px`, top: `${(r1.top - box.top) / k}px`,
+  });
+  fortuneEl.appendChild(fly);
+  a.style.visibility = 'hidden';
+  b.style.visibility = 'hidden';
+  const dx = (r2.left + r2.width / 2 - r1.left - r1.width / 2) / k;
+  const dy = (r2.top + r2.height / 2 - r1.top - r1.height / 2) / k;
+  fly.animate([
+    { transform: 'none' },
+    { transform: `translate(${dx}px, ${dy}px) scale(${r2.width / r1.width})`, borderColor: end.borderTopColor, color: end.color },
+  ], { duration: 600, easing: 'cubic-bezier(0.3, 0.8, 0.2, 1)', fill: 'forwards' }).finished.then(() => {
+    fly.remove();
+    a.style.visibility = '';
+    b.style.visibility = '';
+  });
+}
+fortuneSee.addEventListener('click', () => {
+  flyPill();
+  fortuneStep('result');
+});
 // A new birthday reads the fortune again
 fortuneEl.querySelector('.fortune--birth').addEventListener('click', (e) => {
   e.preventDefault();
