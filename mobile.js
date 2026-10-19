@@ -10,8 +10,10 @@ const FIGMA_H = 874;
 
 const CARD_W = 271.675;   // the front card (.m-card), centred
 const CARD_H = 388.182;
-const NEXT_GAP = 24;      // between the front card and the next one, peeking in from the right
-const STACK_STEP = 19;    // how far each card behind the front one shows on the left
+const CARD_SIZE = 1.1;    // drawn this much bigger than .m-card where the screen allows
+const NEXT_GAP = 20;      // between the front card and the next one, peeking in from the right
+const STACK_STEP = 14;    // how far each card behind the front one shows on the left
+const STACK_LEFT = 12;    // the furthest card back, from the screen's left edge
 const STACK_DEPTH = 3;    // cards showing behind it; the rest are hidden under them
 const HEAD_H = 49;        // header row height
 const SCROLLER_H = 56;    // the line scroller along the bottom...
@@ -46,7 +48,7 @@ function fit() {
   stage.style.transform = `scale(${fitScale})`;
   const top = (phone ? 0 : 44) + HEAD_H;
   const bottom = stageH - NAV_BOTTOM - NAV_H - SCROLLER_H;
-  cardK = Math.min(1, (bottom - top - 32) / CARD_H);
+  cardK = Math.min(CARD_SIZE, (bottom - top - 32) / CARD_H);
   cardY = (top + bottom) / 2;
 }
 fit();
@@ -74,34 +76,39 @@ const ticks = cards.map((_, i) => {
   return t;
 });
 
-// pos: which card is in front, fractional while moving
+// pos: which card is in front, fractional while moving. Never wrapped, so
+// the stack runs on forever either way; relOf() wraps per card.
 let pos = START;
 let posTarget = START;
 let dragging = false;
 let flip = null;  // the card lifted into the overlay: { el, card, box }
 
 const lerp = (a, b, t) => a + (b - a) * t;
-const clampPos = (p) => Math.max(0, Math.min(N - 1, p));
-function goTo(p) { posTarget = clampPos(Math.round(p)); }
+const wrap = (i) => ((i % N) + N) % N;
+// Card i's place relative to the front one, the shorter way round
+const relOf = (i) => wrap(i - pos + N / 2) - N / 2;
+function goTo(p) { posTarget = Math.round(p); }
 
 function render() {
   const w = CARD_W * cardK;
+  // The pile behind sits just in from the left edge, the front card after it
+  const cx = STACK_LEFT + STACK_DEPTH * STACK_STEP + w / 2;
   cards.forEach((el, i) => {
-    const rel = i - pos;
+    const rel = relOf(i);
     // In front and to the right: a card's width apart. Behind: a sliver each.
     const x = rel >= 0
-      ? STAGE_W / 2 + rel * (w + NEXT_GAP)
-      : STAGE_W / 2 + Math.max(rel, -STACK_DEPTH) * STACK_STEP;
+      ? cx + rel * (w + NEXT_GAP)
+      : cx + Math.max(rel, -STACK_DEPTH) * STACK_STEP;
     const lifted = flip && flip.card === el;
     const hidden = rel < -STACK_DEPTH - 1 || rel > 2 || lifted;
     el.style.visibility = hidden ? 'hidden' : '';
     if (hidden) return;
     el.style.transform = `translate(${x}px, ${cardY}px) translate(-50%, -50%) scale(${cardK})`;
-    el.style.zIndex = String(i);
+    el.style.zIndex = String(100 + Math.round(rel * 10));
     // Cards far enough back fade into the pile
     el.style.opacity = rel < -STACK_DEPTH ? String(Math.max(0, STACK_DEPTH + 1 + rel)) : '';
   });
-  const at = Math.round(pos);
+  const at = wrap(Math.round(pos));
   ticks.forEach((t, i) => t.toggleAttribute('aria-current', i === at));
 }
 
@@ -135,8 +142,8 @@ function release() {
   vel = 0;
 }
 
-// Swiping the cards sideways moves through them, a card per card's width;
-// past either end they only give a little. A tap without a swipe brings the
+// Swiping the cards sideways moves through them, a card per card's width,
+// round and round. A tap without a swipe brings the
 // tapped card to the front, or turns the front card over.
 let startX = 0;
 let lastX = 0;
@@ -156,7 +163,6 @@ fan.addEventListener('pointermove', (e) => {
   const x = stagePoint(e).x;
   if (Math.abs(x - startX) > 6) moved = true;
   let dPos = -(x - lastX) / (CARD_W * cardK + NEXT_GAP);
-  if (pos + dPos < 0 || pos + dPos > N - 1) dPos /= 3;
   lastX = x;
   pos += dPos;
   track(dPos);
@@ -166,9 +172,9 @@ const endSwipe = () => {
   if (moved) { release(); return; }
   dragging = false;
   if (!tapped) return;
-  const i = cards.indexOf(tapped);
-  if (i === posTarget && Math.abs(pos - i) < 0.05) flipOpen(tapped);
-  else goTo(i);
+  const rel = relOf(cards.indexOf(tapped));
+  if (Math.abs(rel) < 0.05) flipOpen(tapped);
+  else goTo(pos + rel);
 };
 fan.addEventListener('pointerup', endSwipe);
 fan.addEventListener('pointercancel', endSwipe);
@@ -184,7 +190,8 @@ function scrubAt(x) {
     const d = Math.abs(x - (r.left + r.width / 2));
     if (d < bestD) { bestD = d; best = i; }
   });
-  goTo(best);
+  // Along the lines, not round the loop, so the cards run the way the finger does
+  goTo(posTarget + best - wrap(posTarget));
 }
 scroller.addEventListener('pointerdown', (e) => {
   if (flip) return;
