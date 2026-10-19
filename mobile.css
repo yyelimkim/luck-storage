@@ -1338,7 +1338,10 @@ button.fortune--card:active { transform: scale(0.98); }
   color: var(--system-black);
 }
 [data-view="tree"] .head--title { display: none; }
-[data-view="tree"] .head--page { display: block; }
+[data-view="tree"] .head--page { display: block; color: var(--system-white); }
+/* Over the dark canopy the status bar turns white */
+[data-view="tree"] .status--time { color: var(--system-white); }
+[data-view="tree"] .status--right { filter: invert(1) brightness(2); }
 .tree {
   position: absolute;
   inset: 0;
@@ -1346,7 +1349,7 @@ button.fortune--card:active { transform: scale(0.98); }
   display: flex;
   flex-direction: column;
   overflow-y: auto;
-  background: var(--v2-blue);
+  background: #16313f;  /* the painting's night canopy, where the scene runs out */
   scrollbar-width: none;
   opacity: 0;
   visibility: hidden;
@@ -1371,6 +1374,7 @@ button.fortune--card:active { transform: scale(0.98); }
   inset: 0;
   background: url("assets/system/paper.png") 0 0 / 402px auto;
   mix-blend-mode: multiply;
+  opacity: 0.6;
   pointer-events: none;
 }
 /* The strips sway on their strings, each in its own time */
