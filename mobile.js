@@ -61,7 +61,7 @@ let deckName = 'all';
 const stage = document.getElementById('stage');
 const fan = document.getElementById('fan');
 const dial = document.getElementById('dial');
-// The dial's lines, one per card; render() turns them with the cards
+// The dial's lines, as many as the full deck's cards; render() turns them with the cards
 const lines = IMAGES.map(() => {
   const el = document.createElement('span');
   el.className = 'dial--line';
@@ -175,12 +175,14 @@ function render() {
   dial.style.transform = `translate(${g.dialX - 107.5}px, ${g.dialY - 107.5}px) scale(${g.dialScale})`;
   // Lines run round the top of the dial with the cards, the centre card's
   // upright; they fade out towards the ends, where they wrap round
+  // There are always as many lines as in the full deck, so a small deck's
+  // dial is as full; they step one per card and loop on their own
+  const L = lines.length;
   lines.forEach((el, j) => {
-    if (j >= N) { el.style.opacity = 0; el.classList.remove('is-current'); return; }
-    const rel = relOfSlot(j);
+    const rel = ((((j - pos) % L) + L + L / 2) % L) - L / 2;
     el.style.top = `calc(50% + ${LINE_R - LINE_TOP}px)`;
     el.style.transform = `rotate(${rel * LINE_STEP}deg) translateY(calc(-${LINE_R}px - 100%))`;
-    el.style.opacity = wrapFade(rel).toFixed(3);
+    el.style.opacity = Math.max(0, Math.min(1, (L / 2 - Math.abs(rel)) / 2)).toFixed(3);
     el.classList.toggle('is-current', Math.abs(rel) < 0.5);
   });
   dial.setAttribute('aria-valuenow', String(((Math.round(pos) % N) + N) % N + 1));
