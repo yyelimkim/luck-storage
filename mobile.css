@@ -337,6 +337,201 @@ img { -webkit-user-drag: none; }
 [data-view="profile"] .head--tools { display: flex; }
 [data-view="profile"] .head--title { display: none; }
 
+/* Daily Fortune: slides in over the profile. A V2 Blue sky fading to System
+   White, the character, then the reading and today's lucky things on UI
+   White cards in the system's line. */
+.profile--fortune { cursor: pointer; transition: transform 0.15s; }
+.profile--fortune:active { transform: scale(0.98); }
+.fortune {
+  --top: 44px;
+  position: absolute;
+  inset: 0;
+  z-index: 65;
+  background: linear-gradient(to bottom, var(--v2-blue), var(--system-white) 52%);
+  transform: translateX(100%);
+  visibility: hidden;
+  transition: transform 0.45s cubic-bezier(0.32, 0.72, 0, 1), visibility 0s 0.45s;
+}
+.is-phone .fortune { --top: 0px; }
+.fortune.is-open {
+  transform: none;
+  visibility: visible;
+  transition: transform 0.45s cubic-bezier(0.32, 0.72, 0, 1);
+}
+.fortune--bar {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: var(--top);
+  height: 56px;
+  display: grid;
+  place-items: center;
+  z-index: 2;
+}
+.fortune--back {
+  position: absolute;
+  left: 12px;
+  top: 14px;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+}
+.fortune--back img { display: block; }
+.fortune--title,
+.fortune--meta,
+.fortune--headline,
+.fortune--body,
+.fortune--more,
+.fortune--label,
+.fortune--number,
+.fortune--swatch-name,
+.fortune--ritual-name,
+.fortune--go {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: 16px;
+  letter-spacing: var(--tracking);
+  line-height: normal;
+  color: var(--system-black);
+}
+.fortune--title { font-size: 17px; }
+.fortune--scroll {
+  position: absolute;
+  inset: calc(var(--top) + 56px) 0 0;
+  overflow-y: auto;
+  padding: 0 16px 120px;  /* clear of the claim button */
+  scrollbar-width: none;
+}
+.fortune--meta {
+  display: flex;
+  justify-content: space-between;
+  padding: 6px 4px 0;
+}
+.fortune--avatar {
+  display: block;
+  margin: 18px auto -44px;  /* stands on the reading's card */
+  position: relative;
+  z-index: 1;
+}
+.fortune.is-open .fortune--avatar { animation: fortune-hop 0.6s 0.3s cubic-bezier(0.3, 1.5, 0.5, 1) both; }
+@keyframes fortune-hop {
+  from { transform: translateY(16px); opacity: 0; }
+}
+.fortune--card {
+  display: block;
+  box-sizing: border-box;
+  width: 100%;
+  border-radius: 30px;
+  background: var(--ui-white);
+  border: 0.771px solid var(--system-black);
+  text-align: center;
+}
+button.fortune--card {
+  font: inherit;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: transform 0.15s;
+}
+button.fortune--card:active { transform: scale(0.98); }
+.fortune--read { padding: 60px 24px 22px; }
+.fortune--headline {
+  font-weight: 500;
+  font-size: 20px;
+  margin-bottom: 14px;
+}
+/* Two lines, fading out, until it's opened */
+.fortune--body {
+  color: var(--dark-grey);
+  max-height: 2.5em;
+  overflow: hidden;
+  -webkit-mask-image: linear-gradient(to bottom, #000 40%, transparent);
+  mask-image: linear-gradient(to bottom, #000 40%, transparent);
+  transition: max-height 0.45s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+.fortune--read[aria-expanded="true"] .fortune--body {
+  max-height: 12em;
+  -webkit-mask-image: none;
+  mask-image: none;
+}
+.fortune--more {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 12px;
+  color: var(--dark-grey);
+  font-size: 14px;
+}
+.fortune--more img { animation: nudge 1.4s ease-in-out infinite; }
+.fortune--read[aria-expanded="true"] .fortune--more { display: none; }
+@keyframes nudge { 50% { transform: translateX(4px); } }
+.fortune--tiles {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-top: 10px;
+}
+.fortune--tile {
+  height: 170px;
+  padding-top: 22px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.fortune--label { color: var(--dark-grey); display: block; }
+.fortune--number {
+  margin-top: 26px;
+  font-size: 56px;
+  font-weight: 500;
+}
+.fortune--swatch {
+  width: 72px;
+  height: 72px;
+  margin-top: 16px;
+  border-radius: 50%;
+  border: 0.771px solid var(--system-black);
+}
+.fortune--swatch-name { margin-top: 8px; font-size: 14px; }
+.fortune--ritual {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-top: 10px;
+  padding: 14px 18px;
+  text-align: left;
+}
+.fortune--thumb {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  border: 0.771px solid var(--system-black);
+  object-fit: cover;
+  object-position: 50% 30%;
+}
+.fortune--ritual-name { display: block; margin-top: 2px; font-size: 17px; }
+/* Where the tab bar sits on the home screen */
+.fortune--go {
+  position: absolute;
+  left: 16px;
+  right: 16px;
+  bottom: 42px;
+  height: 51px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  border-radius: 43px;
+  background: var(--yellow);
+  border: 1px solid var(--system-black);
+  font-size: 17px;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: transform 0.15s;
+}
+.fortune--go:active { transform: scale(0.97); }
+.fortune--go img { animation: nudge 1.4s ease-in-out infinite; }
+
 /* Filter: a dimmed screen and a sheet rising from the bottom, its options in
    the design system's button style (the Luck Claimed button), the picked one
    on System White with a firmer line */

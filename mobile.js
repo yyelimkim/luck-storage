@@ -906,3 +906,71 @@ async function setDeck(name) {
   const month = now.toLocaleDateString('en-US', { month: 'long' });
   document.getElementById('today').innerHTML = `${day},<br>${month} ${d}${th}`;
 }());
+
+// Daily Fortune (from the profile's fortune card): today's reading, a lucky
+// number, colour and ritual, all picked by the date so they hold all day
+const FORTUNES = [
+  ['Worries ease, goals land, and your work grows today.',
+    'Things fall into place more easily than usual. You’ll have energy to spare and a clear head, so plans that stalled should start moving again. A good day to pick back up whatever you set aside.'],
+  ['A small kindness comes back to you twice.',
+    'Something you do without thinking makes someone’s day, and it finds its way back to you before evening. Say yes to the small favour; it opens a bigger door.'],
+  ['Good news is closer than it looks.',
+    'A message you’ve been waiting on is on its way. Keep your plans light this afternoon so you can move quickly when it comes.'],
+  ['A steady day that rewards patience.',
+    'Nothing rushes today, and that’s the gift. Finish one thing properly instead of starting three; the care you put in now pays off later this week.'],
+  ['Luck follows you somewhere new.',
+    'Take the other route, try the other café, sit somewhere different. A change of scene brings a chance meeting or an idea worth keeping.'],
+];
+const LUCKY_COLOURS = [
+  ['Yellow-Green', 'var(--yellow-green)'], ['Forest Green', 'var(--forest-green)'],
+  ['v2 Blue', 'var(--v2-blue)'], ['Light Pink', 'var(--light-pink)'],
+  ['Hot Pink', 'var(--hot-pink)'], ['Yellow', 'var(--yellow)'],
+];
+const fortuneEl = document.getElementById('fortune');
+const fortuneRead = document.getElementById('fortune-read');
+let luckyCard = START;
+
+function fillFortune() {
+  const now = new Date();
+  const day = Math.floor((now - new Date(now.getFullYear(), 0, 0)) / 864e5);
+  const [headline, body] = FORTUNES[day % FORTUNES.length];
+  const [colourName, colour] = LUCKY_COLOURS[(day * 7) % LUCKY_COLOURS.length];
+  luckyCard = (day * 5) % IMAGES.length;
+  const month = now.toLocaleDateString('en-US', { month: 'long' });
+  document.getElementById('fortune-date').textContent = `${month} ${now.getDate()} Fortune`;
+  document.getElementById('fortune-headline').textContent = headline;
+  document.getElementById('fortune-body').textContent = body;
+  document.getElementById('fortune-number').textContent = String((day * 13) % 99 + 1).padStart(2, '0');
+  document.getElementById('fortune-swatch').style.background = colour;
+  document.getElementById('fortune-colour').textContent = colourName;
+  document.getElementById('fortune-thumb').src = englishSrc(IMAGES[luckyCard]);
+  document.getElementById('fortune-ritual-name').textContent = cardName(IMAGES[luckyCard]);
+}
+function openFortune() {
+  fillFortune();
+  fortuneRead.setAttribute('aria-expanded', 'false');
+  fortuneEl.querySelector('.fortune--scroll').scrollTop = 0;
+  fortuneEl.classList.add('is-open');
+  fortuneEl.setAttribute('aria-hidden', 'false');
+}
+function closeFortune() {
+  fortuneEl.classList.remove('is-open');
+  fortuneEl.setAttribute('aria-hidden', 'true');
+}
+document.querySelector('.profile--fortune').addEventListener('click', openFortune);
+fortuneEl.querySelector('.fortune--back').addEventListener('click', closeFortune);
+// The reading opens up to its full length, and folds back
+fortuneRead.addEventListener('click', () => {
+  fortuneRead.setAttribute('aria-expanded', String(fortuneRead.getAttribute('aria-expanded') !== 'true'));
+});
+// Off to the home screen, today's lucky ritual waiting in the middle
+function goClaim() {
+  closeFortune();
+  if (deckName !== 'all') setDeck('all');
+  tabs.forEach((o) => o.toggleAttribute('aria-current', o.dataset.tab === 'home'));
+  stage.dataset.view = 'home';
+  const rel = relOfSlot(slotOf[luckyCard]);
+  goTo(pos + rel);
+}
+document.getElementById('fortune-go').addEventListener('click', goClaim);
+document.getElementById('fortune-ritual').addEventListener('click', goClaim);

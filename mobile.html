@@ -7,7 +7,7 @@
   <meta name="theme-color" content="#f0f0f0">
   <title>행운보관소</title>
   <link rel="stylesheet" href="design-system.css?v=7">
-  <link rel="stylesheet" href="mobile.css?v=87">
+  <link rel="stylesheet" href="mobile.css?v=88">
 </head>
 <body>
   <!-- iPhone 17 screen (Figma 97:630 at rest, 97:730 while dialing), laid out at
@@ -62,6 +62,49 @@
       </div>
     </section>
 
+    <!-- Daily Fortune: opened from the profile's fortune card -->
+    <section class="fortune" id="fortune" aria-label="Daily Fortune" aria-hidden="true">
+      <div class="fortune--bar">
+        <button type="button" class="fortune--back" aria-label="Back">
+          <img src="assets/system/arrow-back.svg" width="28" height="28" alt="">
+        </button>
+        <h2 class="fortune--title">Daily Fortune</h2>
+      </div>
+      <div class="fortune--scroll">
+        <div class="fortune--meta">
+          <span id="fortune-date"></span>
+          <span>@yyelimkim</span>
+        </div>
+        <img class="fortune--avatar" src="assets/profile/avatar.svg" width="108" height="190.5" alt="">
+        <button type="button" class="fortune--card fortune--read" id="fortune-read" aria-expanded="false">
+          <p class="fortune--headline" id="fortune-headline"></p>
+          <p class="fortune--body" id="fortune-body"></p>
+          <span class="fortune--more">Tap to read <img src="assets/system/arrow-right.svg" width="19" height="19" alt=""></span>
+        </button>
+        <div class="fortune--tiles">
+          <div class="fortune--card fortune--tile">
+            <p class="fortune--label">Lucky Number</p>
+            <p class="fortune--number" id="fortune-number"></p>
+          </div>
+          <div class="fortune--card fortune--tile">
+            <p class="fortune--label">Lucky Colour</p>
+            <span class="fortune--swatch" id="fortune-swatch"></span>
+            <p class="fortune--swatch-name" id="fortune-colour"></p>
+          </div>
+        </div>
+        <button type="button" class="fortune--card fortune--ritual" id="fortune-ritual">
+          <img class="fortune--thumb" id="fortune-thumb" alt="">
+          <span>
+            <span class="fortune--label">Lucky Ritual</span>
+            <span class="fortune--ritual-name" id="fortune-ritual-name"></span>
+          </span>
+        </button>
+      </div>
+      <button type="button" class="fortune--go" id="fortune-go">
+        Claim today’s luck <img src="assets/system/arrow-right.svg" width="19" height="19" alt="">
+      </button>
+    </section>
+
     <!-- Tab bar (Figma 376:5524): icons only, the current one filled -->
     <nav class="m-nav" aria-label="Sections">
       <button type="button" class="m-nav--tab" data-tab="tree" aria-label="Tree">
@@ -109,6 +152,6 @@
   </div>
 
   <script src="cards.js?v=21"></script>
-  <script src="mobile.js?v=74"></script>
+  <script src="mobile.js?v=75"></script>
 </body>
 </html>
