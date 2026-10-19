@@ -241,6 +241,97 @@ img { -webkit-user-drag: none; }
 }
 .is-preview .homebar { display: block; }
 
+/* Filter: a dimmed screen and a sheet rising from the bottom, its options in
+   the design system's button style (the Luck Claimed button), the picked one
+   on System White with a firmer line */
+.head--title img { transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1); }
+.head--title[aria-expanded="true"] img { transform: rotate(180deg); }
+.filter {
+  position: absolute;
+  inset: 0;
+  z-index: 60;
+  pointer-events: none;
+}
+.filter.is-open { pointer-events: auto; }
+.filter--scrim {
+  position: absolute;
+  inset: 0;
+  background: rgba(39, 39, 39, 0.4);
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+.filter.is-open .filter--scrim { opacity: 1; }
+.filter--sheet {
+  position: absolute;
+  left: 8px;
+  right: 8px;
+  bottom: 8px;
+  padding: 24px 16px 26px;
+  border-radius: 40px;
+  background: #fafafa;
+  border: 0.771px solid var(--system-black);
+  transform: translateY(calc(100% + 16px));
+  transition: transform 0.42s cubic-bezier(0.32, 0.72, 0, 1);
+}
+.filter.is-open .filter--sheet { transform: none; }
+.filter--label {
+  margin: 0 0 12px 4px;
+  font-family: var(--font-display);
+  font-size: 16px;
+  letter-spacing: var(--tracking);
+  line-height: normal;
+  color: #878787;
+}
+.filter--options {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+.filter--opt {
+  display: grid;
+  place-items: center;
+  height: 56px;
+  padding: 0;
+  border-radius: 43px;
+  background: #fafafa;
+  border: 1px solid #dcdcdc;
+  color: var(--system-black);
+  font-family: var(--font-display);
+  font-size: 17px;
+  letter-spacing: var(--tracking);
+  line-height: normal;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: transform 0.15s, background-color 0.2s, border-color 0.2s;
+}
+.filter--opt-all { grid-column: 1 / -1; }
+.filter--opt[aria-pressed="true"] {
+  background: var(--system-white);
+  border-color: var(--system-black);
+}
+.filter--opt:active { transform: scale(0.97); }
+/* The category tag, a size down to sit in its button */
+.filter--opt .tag { transform: scale(0.78); transition: transform 0.25s cubic-bezier(0.3, 1.5, 0.5, 1); }
+.filter--opt[aria-pressed="true"] .tag { transform: scale(0.84); }
+.filter--done {
+  display: block;
+  width: 100%;
+  margin-top: 18px;
+  padding: 15px;
+  border-radius: 43px;
+  background: var(--system-black);
+  border: 1px solid var(--system-black);
+  color: #fafafa;
+  font-family: var(--font-display);
+  font-size: 17px;
+  letter-spacing: var(--tracking);
+  line-height: normal;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: transform 0.15s;
+}
+.filter--done:active { transform: scale(0.97); }
+
 /* Opened card: the screen frosted over, the card turned over on top */
 .overlay {
   position: absolute;

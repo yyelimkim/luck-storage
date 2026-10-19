@@ -7,7 +7,7 @@
   <meta name="theme-color" content="#f0f0f0">
   <title>행운보관소</title>
   <link rel="stylesheet" href="design-system.css?v=5">
-  <link rel="stylesheet" href="mobile.css?v=64">
+  <link rel="stylesheet" href="mobile.css?v=66">
 </head>
 <body>
   <!-- iPhone 17 screen (Figma 97:630 at rest, 97:730 while dialing), laid out at
@@ -21,7 +21,7 @@
 
     <!-- Header (Figma 376:5496): which cards, and the luck claimed so far -->
     <header class="head">
-      <button type="button" class="head--title">
+      <button type="button" class="head--title" aria-haspopup="dialog" aria-expanded="false">
         <h1>All Cards</h1>
         <img src="assets/mobile/chevron.svg" width="13.3333" height="7.33333" alt="">
       </button>
@@ -54,6 +54,16 @@
       </button>
     </nav>
 
+    <!-- Filter (the header's deck name): pick a category, then Done -->
+    <div class="filter" id="filter" aria-hidden="true">
+      <div class="filter--scrim"></div>
+      <div class="filter--sheet" role="dialog" aria-label="Categories">
+        <p class="filter--label">Categories</p>
+        <div class="filter--options" id="filter-options"></div>
+        <button type="button" class="filter--done">Done</button>
+      </div>
+    </div>
+
     <!-- Frosts the screen behind an opened card -->
     <div class="overlay" id="overlay"></div>
 
@@ -67,7 +77,7 @@
     <div class="homebar"></div>
   </div>
 
-  <script src="cards.js?v=20"></script>
-  <script src="mobile.js?v=68"></script>
+  <script src="cards.js?v=21"></script>
+  <script src="mobile.js?v=69"></script>
 </body>
 </html>

@@ -52,7 +52,12 @@ const LINE_TOP = 96;   // ...with its top where the dial's own edge would be
 const NAV_SPACE = 22;  // the fan and dial are laid out on a floor this far above the bottom (Figma 376:5463)
 const START = IMAGES.indexOf('테루테루보즈.png');  // centred in the Figma frames
 
-const N = IMAGES.length;
+// The deck being shown: all the cards, or one category's (see the filter).
+// Slots run round the deck; slotOf maps a card to its slot, -1 if left out.
+let deck = IMAGES.map((_, i) => i);
+let N = deck.length;
+let slotOf = deck.slice();
+let deckName = 'all';
 const stage = document.getElementById('stage');
 const fan = document.getElementById('fan');
 const dial = document.getElementById('dial');
@@ -133,7 +138,11 @@ let flip = null;  // the card lifted into the overlay: { el, card, box }
 const lerp = (a, b, t) => a + (b - a) * t;
 const ease = (t) => t * t * (3 - 2 * t);
 const rad = (d) => (d * Math.PI) / 180;
-const relOf = (i) => ((((i - pos) % N) + N + N / 2) % N) - N / 2;
+const relOfSlot = (s) => ((((s - pos) % N) + N + N / 2) % N) - N / 2;
+const relOf = (i) => relOfSlot(slotOf[i]);
+// Fades things out towards the slot opposite the centre, where the deck wraps
+// round, so a small deck's cards don't jump from one side to the other
+const wrapFade = (rel) => Math.max(0, Math.min(1, (N / 2 - Math.abs(rel)) / Math.min(2, N / 4)));
 
 function goTo(p) { posTarget = Math.round(p); }
 
@@ -143,6 +152,7 @@ function render() {
   for (const k in REST) g[k] = lerp(REST[k], OPEN[k], t);
 
   cards.forEach((el, i) => {
+    if (slotOf[i] < 0) { el.style.visibility = 'hidden'; return; }
     const rel = relOf(i);
     const th = rel * g.step;
     // Far cards are hidden, and so is a card lifted into the flip overlay
@@ -158,18 +168,19 @@ function render() {
     el.style.zIndex = String(100 - Math.round(d * 10));
     // Centre card full strength, neighbours dimmer, the next ones fade in from nothing
     const opacity = d <= 1 ? lerp(1, SIDE_OPACITY, d) : SIDE_OPACITY * Math.max(0, 2 - d);
-    el.style.opacity = opacity.toFixed(3);
+    el.style.opacity = (opacity * wrapFade(rel)).toFixed(3);
     el.style.setProperty('--focus', focus.toFixed(3));
   });
 
   dial.style.transform = `translate(${g.dialX - 107.5}px, ${g.dialY - 107.5}px) scale(${g.dialScale})`;
   // Lines run round the top of the dial with the cards, the centre card's
   // upright; they fade out towards the ends, where they wrap round
-  lines.forEach((el, i) => {
-    const rel = relOf(i);
+  lines.forEach((el, j) => {
+    if (j >= N) { el.style.opacity = 0; el.classList.remove('is-current'); return; }
+    const rel = relOfSlot(j);
     el.style.top = `calc(50% + ${LINE_R - LINE_TOP}px)`;
     el.style.transform = `rotate(${rel * LINE_STEP}deg) translateY(calc(-${LINE_R}px - 100%))`;
-    el.style.opacity = Math.max(0, Math.min(1, (N / 2 - 0.5 - Math.abs(rel)) / 2)).toFixed(3);
+    el.style.opacity = wrapFade(rel).toFixed(3);
     el.classList.toggle('is-current', Math.abs(rel) < 0.5);
   });
   dial.setAttribute('aria-valuenow', String(((Math.round(pos) % N) + N) % N + 1));
@@ -814,3 +825,60 @@ const tabs = [...document.querySelectorAll('.m-nav--tab')];
 tabs.forEach((t) => t.addEventListener('click', () => {
   tabs.forEach((o) => o.toggleAttribute('aria-current', o === t));
 }));
+
+// Filter (the header's deck name): a sheet of the categories, picked one at a
+// time and applied with Done; the fan swaps decks in a quick fade
+const filterEl = document.getElementById('filter');
+const filterOpts = document.getElementById('filter-options');
+const deckTitle = document.querySelector('.head--title');
+const DECKS = ['all', 'protection', 'calm', 'luck', 'success'];
+let picked = deckName;
+filterOpts.innerHTML = DECKS.map((d) =>
+  `<button type="button" class="filter--opt${d === 'all' ? ' filter--opt-all' : ''}" data-deck="${d}">
+    ${d === 'all' ? 'All Cards' : categoryTag(d)}</button>`).join('');
+const opts = [...filterOpts.children];
+const showPicked = () => opts.forEach((o) => o.setAttribute('aria-pressed', String(o.dataset.deck === picked)));
+opts.forEach((o) => o.addEventListener('click', () => { picked = o.dataset.deck; showPicked(); }));
+
+function openFilter() {
+  picked = deckName;
+  showPicked();
+  filterEl.classList.add('is-open');
+  filterEl.setAttribute('aria-hidden', 'false');
+  deckTitle.setAttribute('aria-expanded', 'true');
+}
+function closeFilter() {
+  filterEl.classList.remove('is-open');
+  filterEl.setAttribute('aria-hidden', 'true');
+  deckTitle.setAttribute('aria-expanded', 'false');
+}
+deckTitle.addEventListener('click', openFilter);
+filterEl.querySelector('.filter--scrim').addEventListener('click', closeFilter);
+filterEl.querySelector('.filter--done').addEventListener('click', () => {
+  closeFilter();
+  if (picked !== deckName) setDeck(picked);
+});
+addEventListener('keydown', (e) => { if (e.key === 'Escape') closeFilter(); });
+
+async function setDeck(name) {
+  const centred = deck[((Math.round(posTarget) % N) + N) % N];
+  const out = { duration: 180, easing: 'ease-in', fill: 'forwards' };
+  // The fan sinks as it fades; the dial (placed by its own transform) just fades
+  const lift = (el, y) => (el === fan ? { transform: `translateY(${y}px)` } : {});
+  await Promise.all([fan, dial].map((el) =>
+    el.animate([{ opacity: 1 }, { opacity: 0, ...lift(el, 12) }], out).finished));
+  deckName = name;
+  deck = IMAGES.map((_, i) => i).filter((i) => name === 'all' || CATEGORY[IMAGES[i]] === name);
+  N = deck.length;
+  slotOf = IMAGES.map((_, i) => deck.indexOf(i));
+  // Keep the centred card if it's in the new deck, else start at its top
+  pos = posTarget = Math.max(0, slotOf[centred]);
+  deckTitle.querySelector('h1').textContent =
+    name === 'all' ? 'All Cards' : name[0].toUpperCase() + name.slice(1);
+  render();
+  [fan, dial].forEach((el) => {
+    el.getAnimations().forEach((a) => a.cancel());
+    el.animate([{ opacity: 0, ...lift(el, 12) }, { opacity: 1, ...lift(el, 0) }],
+      { duration: 380, easing: 'cubic-bezier(0.2, 0.8, 0.2, 1)' });
+  });
+}
