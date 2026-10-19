@@ -318,7 +318,7 @@ img { -webkit-user-drag: none; }
   line-height: normal;
   color: var(--system-black);
 }
-.filter--label { margin: 35px 26px 14px; }
+.filter--label { margin: 20px 26px 14px; }
 /* Tiles, three to a row: outlined in the design system's line, a deck's
    icon over its name. Picked, a tile fills with its category's colour and
    its icon colours in; the rest stay System White. */
