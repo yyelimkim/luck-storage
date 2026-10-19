@@ -207,6 +207,27 @@ img { -webkit-user-drag: none; }
 .is-phone .m-back { top: 10px; }
 .m-back img { display: block; }
 .is-flipped .m-back { opacity: 1; pointer-events: auto; }
+/* The opened card's name, centred in the back arrow's row */
+.m-title {
+  position: absolute;
+  left: 60px;
+  right: 60px;
+  top: 54px;
+  height: 44px;  /* the back arrow's height */
+  margin: 0;
+  z-index: 70;
+  display: grid;
+  place-items: center;
+  font-family: var(--font-display);
+  font-size: 17px;
+  letter-spacing: var(--tracking);
+  color: var(--system-black);
+  white-space: nowrap;
+  visibility: hidden;
+  pointer-events: none;
+}
+.is-phone .m-title { top: 10px; }
+.is-flipped .m-title { visibility: visible; }
 
 .m-flip {
   position: absolute;

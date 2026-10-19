@@ -280,6 +280,7 @@ const RITUAL_OPACITY = 0.4;  // ...and opacity, both 1 once the sheet fills the 
 const HOWTO_TOP = 52;        // the how-to line in the peeking sheet...
 const HOWTO_TOP_FULL = 17;   // ...and beside the back arrow once full
 const backBtn = document.getElementById('back');
+const titleEl = document.getElementById('title');
 let flipBusy = false;
 
 const headTop = () => (document.documentElement.classList.contains('is-phone') ? 0 : 44);
@@ -408,7 +409,7 @@ function panelHTML(name) {
     <div class="panel" style="--card-color: ${CARD_COLOR[name]}">
       <div class="panel--info">
         <div class="info--frame"></div>
-        <div class="info--tag">${categoryTag(CATEGORY[name], cardName(name))}</div>
+        <div class="info--tag">${categoryTag(CATEGORY[name])}</div>
         <div class="info--body">
           ${icon}
           ${text.about ? `<p class="info--text">${text.about}</p>` : ''}
@@ -472,6 +473,8 @@ function setSheet(p) {
   sheet.el.style.setProperty('--p', q);
   sheet.el.querySelector('.sheet--howto').style.top = `${lerp(HOWTO_TOP, headTop() + HOWTO_TOP_FULL, q)}px`;
   sheet.el.classList.toggle('is-full', p === 1);
+  // The card's name gives way to the how-to as the sheet takes the top
+  titleEl.style.opacity = 1 - q;
   // The card scrolls up with it
   flip.el.style.transform = `translateY(${-sheetTop() * Math.max(0, p)}px)`;
 }
@@ -571,6 +574,7 @@ async function flipOpen(card) {
   el.className = 'm-flip';
   el.style.setProperty('--k', to.k);
   el.style.setProperty('--info-h', `${to.h}px`);
+  titleEl.textContent = cardName(name);
   el.innerHTML = `
     <div class="m-flip--inner">
       <div class="m-flip--face m-flip--front"><img src="${card.querySelector('img').src}" alt="" draggable="false"></div>
