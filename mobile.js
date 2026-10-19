@@ -206,7 +206,10 @@ function release() {
   vel = 0;
 }
 
-// Dial: press opens it, turning it turns the fan one card per 30°
+// Dial: press opens it, turning it turns the fan one card per DIAL_DEG, far
+// less than the cards' own 30° spacing, so a short turn runs through several
+// cards while the fan and lines stay spread out
+const DIAL_DEG = 12;
 let lastAngle = 0;
 function angleAt(e) {
   const p = stagePoint(e);
@@ -228,7 +231,7 @@ dial.addEventListener('pointermove', (e) => {
   if (d < -180) d += 360;
   lastAngle = a;
   // Clockwise brings the left-hand card to the centre
-  const dPos = -d / OPEN.step;
+  const dPos = -d / DIAL_DEG;
   pos += dPos;
   track(dPos);
 });
