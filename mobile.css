@@ -430,7 +430,6 @@ img { -webkit-user-drag: none; }
   left: 2.5px;
   top: 2.5px;
   color: var(--system-black);
-  transform: rotate(27.19deg);
 }
 .fortune--arc path {
   stroke-dasharray: 100;
