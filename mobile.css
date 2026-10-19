@@ -313,6 +313,16 @@ img { -webkit-user-drag: none; }
   height: calc(355px - var(--up));
   background: url("assets/profile/hero.svg") center bottom / 402px 355px no-repeat;
 }
+/* Paper grain over the background, as on the card backs: multiplied, under
+   the character */
+.profile--hero::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: url("assets/system/paper.png") center bottom / 402px auto;
+  mix-blend-mode: multiply;
+  pointer-events: none;
+}
 .profile p,
 .profile--name,
 .profile--label,
@@ -321,14 +331,14 @@ img { -webkit-user-drag: none; }
   font-family: var(--font-display);
   font-weight: 400;
   font-size: 16px;
-  letter-spacing: -0.04em;
+  letter-spacing: var(--tracking);
   line-height: normal;
   color: var(--system-black);
 }
 .profile--hello { position: absolute; left: 16px; top: calc(261px - var(--up)); }
 .profile--name {
   position: absolute;
-  left: 17px;
+  left: 16px;
   top: calc(291.91px - var(--up));
   display: flex;
   align-items: flex-end;
@@ -351,21 +361,23 @@ img { -webkit-user-drag: none; }
 .profile--body {
   display: flex;
   flex-direction: column;
-  margin: 40px 15px 0;
+  margin: 40px 16px 0;
 }
-.profile--label { margin-bottom: 11px; }
+/* One rhythm: 12 from a label to its cards (as between the Daily Fortune
+   cards), 32 between sections */
+.profile--label { margin-bottom: 12px; }
 .profile--fortune {
   position: relative;
   overflow: hidden;
   display: flex;
   flex-direction: column;
   gap: 33px;
-  width: 371px;
+  width: 370px;
   padding: 21px 16px 23px;
   box-sizing: border-box;
-  border: 1px solid var(--system-black);
+  border: 0.771px solid var(--system-black);
   border-radius: 16px;
-  background: var(--system-white);
+  background: var(--ui-white);
   box-shadow: 0 4px 4px rgba(168, 164, 164, 0.2);
   text-align: left;
   cursor: pointer;
@@ -374,14 +386,14 @@ img { -webkit-user-drag: none; }
 }
 .profile--fortune:active { transform: scale(0.98); }
 .profile--clouds, .profile--dial, .profile--go { position: absolute; display: block; }
-.profile--clouds { left: -1px; top: -1px; }
-.profile--dial { left: 223px; top: -1px; }
+.profile--clouds { left: -0.771px; top: -0.771px; }
+.profile--dial { left: 222px; top: -0.771px; }
 /* The arrow shows only on hover (or press), sliding in from the left */
 .profile--go {
-  left: 333px;
-  top: 95px;
-  width: 28px;
-  height: 28px;
+  left: 332px;
+  top: 98px;
+  width: 22px;
+  height: 22px;
   opacity: 0;
   transform: translateX(-8px);
   transition: opacity 0.2s, transform 0.25s cubic-bezier(0.2, 0.8, 0.2, 1);
@@ -393,16 +405,16 @@ img { -webkit-user-drag: none; }
 .profile--fortune .profile--find { position: relative; }
 .profile--fortune .profile--date { font-size: 14px; white-space: pre; }
 .profile--fortune .profile--find { width: 181px; font-size: 20px; }
-.profile--fortune + .profile--label { margin: 32px 0 9px; }
+.profile--fortune + .profile--label { margin-top: 32px; }
 /* Edge to edge, so the row runs off the screen */
 .profile--recent {
   display: flex;
-  gap: 8px;
-  margin: 0 -15px;
-  padding: 0 15px 6px;
+  gap: 10px;
+  margin: 0 -16px;
+  padding: 0 16px 6px;
   overflow-x: auto;
   scroll-snap-type: x mandatory;
-  scroll-padding: 0 15px;
+  scroll-padding: 0 16px;
   scrollbar-width: none;
   filter: drop-shadow(0 4px 2px rgba(168, 164, 164, 0.2));
 }
@@ -410,18 +422,22 @@ img { -webkit-user-drag: none; }
   flex: none;
   display: flex;
   flex-direction: column;
-  gap: 21px;
+  justify-content: space-between;
+  align-items: flex-start;
   width: 180px;
   height: 180px;
-  padding: 18px 19px 19px 16px;
+  padding: 18px 16px;
   box-sizing: border-box;
-  border: 1px solid var(--system-black);
+  border: 0.771px solid var(--system-black);
   border-radius: 16px;
-  background: var(--yellow-green);
+  background: var(--earned, var(--yellow-green));
   scroll-snap-align: start;
 }
-.profile--earned img { display: block; }
-.profile .profile--earned p { letter-spacing: var(--tracking); white-space: nowrap; }
+/* Each card's line drawing, in the card's own colour, at one height */
+.profile--earned img { display: block; flex: none; width: auto; height: 85px; }
+/* UI White text on Forest Green, as on the filter's Calm tile */
+.profile .profile--earned[style*="forest-green"] p { color: var(--ui-white); }
+.profile .profile--earned p { white-space: nowrap; }
 .head--tools {
   display: none;
   gap: 6px;
@@ -436,8 +452,6 @@ img { -webkit-user-drag: none; }
    turn Yellow-Green and the button goes System Black ("See Fortune!"). That
    opens the reading: a V2 Blue sky, the pig, and today's lucky things on UI
    White cards. Positions are the Figma frame's, less its 44px status bar. */
-.profile--fortune { cursor: pointer; transition: transform 0.15s; }
-.profile--fortune:active { transform: scale(0.98); }
 .fortune {
   --top: 0px;
   position: absolute;
