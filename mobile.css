@@ -226,7 +226,7 @@ img { -webkit-user-drag: none; }
 .m-nav {
   position: absolute;
   left: 91px;
-  bottom: 42px;
+  bottom: var(--nav-bottom, 42px);
   width: 220px;
   height: 51px;
   z-index: 40;
@@ -589,7 +589,7 @@ img { -webkit-user-drag: none; }
 .fortune .fortune--see {
   position: absolute;
   left: 16px;
-  bottom: 122px;
+  bottom: calc(var(--nav-bottom, 42px) + 80px);
   width: 371px;
   height: 51px;
   display: grid;
@@ -619,7 +619,7 @@ img { -webkit-user-drag: none; }
   position: absolute;
   left: 0;
   right: 0;
-  top: calc(var(--top) + 729px);
+  bottom: calc(var(--nav-bottom, 42px) + 42px);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -1211,7 +1211,7 @@ button.fortune--card:active { transform: scale(0.98); }
   position: absolute;
   left: 24px;
   top: 66px;
-  bottom: 36px;  /* + the panel's own 6 = 42 */
+  bottom: calc(var(--nav-bottom, 42px) - 6px);  /* + the panel's own 6: the tab bar's height */
   width: 371px;
   display: flex;
   flex-direction: column;

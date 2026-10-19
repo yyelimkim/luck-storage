@@ -49,7 +49,14 @@ const SIDE_OPACITY = 0.8;  // neighbours one slot out fade to this
 const LINE_STEP = 3.7; // degrees between the dial's lines, one per card
 const LINE_R = 200;    // the lines' arc: much wider than the dial, so flatter...
 const LINE_TOP = 96;   // ...with its top where the dial's own edge would be
-const NAV_SPACE = 22;  // the fan and dial are laid out on a floor this far above the bottom (Figma 376:5463)
+// The tab bar: 51 tall, 42 off the bottom in Figma (376:5463); lower on a
+// phone, where the browser's own bar is already below it
+const NAV_H = 51;
+const NAV_BOTTOM = { preview: 42, phone: 24 };
+// The dial's lowest line, in the Figma frame, and the space always kept
+// between it and the tab bar, so both can be used
+const LINES_Y = 778.8;
+const LINE_GAP = 32;
 const START = IMAGES.indexOf('테루테루보즈.png');  // centred in the Figma frames
 
 // The deck being shown: all the cards, or one category's (see the filter).
@@ -69,19 +76,19 @@ const lines = IMAGES.map(() => {
   return el;
 });
 
-// The states for the current screen: pinned to the bottom edge, and shrunk
-// about the bottom centre when the screen is too short for the full fan
+// The states for the current screen: the dial's lowest line pinned at y, and
+// everything shrunk about there when the screen is too short for the full fan
 let REST = FIGMA_REST;
 let OPEN = FIGMA_OPEN;
 let stageH = FIGMA_H;
-function place(st, h, f) {
+function place(st, y, f) {
   return {
     ...st,
     cx: STAGE_W / 2 + (st.cx - STAGE_W / 2) * f,
-    cy: h - (FIGMA_H - st.cy) * f,
+    cy: y - (LINES_Y - st.cy) * f,
     a: st.a * f, b: st.b * f, scale: st.scale * f,
     dialX: STAGE_W / 2 + (st.dialX - STAGE_W / 2) * f,
-    dialY: h - (FIGMA_H - st.dialY) * f,
+    dialY: y - (LINES_Y - st.dialY) * f,
     dialScale: st.dialScale * f,
   };
 }
@@ -104,12 +111,15 @@ function fit() {
   stage.style.height = `${stageH}px`;
   stage.style.transform = `scale(${fitScale})`;
   const headTop = phone ? 0 : 44;
-  // The fan and dial sit on the tab bar rather than the screen's bottom edge
-  const floor = stageH - NAV_SPACE;
-  const room = floor - headTop - HEAD_H - HEAD_GAP;
-  const f = Math.min(1, room / (FIGMA_H - FAN_TOP));
-  REST = place(FIGMA_REST, floor, f);
-  OPEN = place(FIGMA_OPEN, floor, f);
+  // The tab bar (and every button at its height, through --nav-bottom), then
+  // the dial's lines LINE_GAP above it, then the fan in what's left
+  const navBottom = phone ? NAV_BOTTOM.phone : NAV_BOTTOM.preview;
+  stage.style.setProperty('--nav-bottom', `${navBottom}px`);
+  const linesY = stageH - navBottom - NAV_H - LINE_GAP;
+  const room = linesY - headTop - HEAD_H - HEAD_GAP;
+  const f = Math.min(1, room / (LINES_Y - FAN_TOP));
+  REST = place(FIGMA_REST, linesY, f);
+  OPEN = place(FIGMA_OPEN, linesY, f);
 }
 fit();
 addEventListener('resize', fit);
