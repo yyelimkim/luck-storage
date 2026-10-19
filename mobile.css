@@ -113,7 +113,7 @@ img { -webkit-user-drag: none; }
   gap: 2px;
   padding: 9px 18px;
   border-radius: 36px;
-  background: #fafafa;
+  background: var(--ui-white);
   filter: drop-shadow(0 4px 2px rgba(168, 164, 164, 0.2));
   color: #000;
 }
@@ -208,7 +208,7 @@ img { -webkit-user-drag: none; }
 }
 .m-nav--tab[aria-current] {
   background: var(--system-white);
-  border-color: #878787;
+  border-color: var(--dark-grey);
 }
 /* Each icon sits in a 28px square in the tab's middle, placed as in Figma */
 .m-nav--tab img {
@@ -268,7 +268,7 @@ img { -webkit-user-drag: none; }
   bottom: 0;
   padding: 24px 16px 42px;  /* clear of the home indicator */
   border-radius: 40px 40px 0 0;
-  background: #fafafa;
+  background: var(--ui-white);
   border-top: 0.771px solid var(--system-black);
   transform: translateY(100%);
   transition: transform 0.42s cubic-bezier(0.32, 0.72, 0, 1);
@@ -280,7 +280,7 @@ img { -webkit-user-drag: none; }
   font-size: 16px;
   letter-spacing: var(--tracking);
   line-height: normal;
-  color: #878787;
+  color: var(--dark-grey);
 }
 .filter--options {
   display: grid;
@@ -310,7 +310,7 @@ img { -webkit-user-drag: none; }
   grid-column: 1 / -1;
   justify-self: stretch;
   height: 33.172px;
-  background: #fafafa;  /* UI White */
+  background: var(--ui-white);
   border: 0.771px solid var(--system-black);
   font-family: var(--font-display);
   font-size: 18.515px;
@@ -325,7 +325,7 @@ img { -webkit-user-drag: none; }
   border-radius: 43px;
   background: var(--system-black);
   border: 1px solid var(--system-black);
-  color: #fafafa;
+  color: var(--ui-white);
   font-family: var(--font-display);
   font-size: 17px;
   letter-spacing: var(--tracking);
@@ -682,7 +682,7 @@ img { -webkit-user-drag: none; }
   width: 371px;
   padding: 15px;
   border-radius: 43px;
-  background: #fafafa;
+  background: var(--ui-white);
   border: 1px solid var(--system-black);
   color: var(--system-black);
   font-family: var(--font-display);
