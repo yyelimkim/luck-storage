@@ -312,7 +312,9 @@ const SHEET_MS = 450;
 const INFO_MARGIN = 16;    // the turned-over card's side margins on screen (350:3773)
 const CARD_RATIO = 1486 / 1040;  // the card artwork's height to width
 const INFO_TOP = 64;       // under the back arrow's row
-const PEEK = 148;          // how much of the sheet shows under the card
+const PEEK = 148;          // how much of the sheet shows under the card...
+const MIN_PEEK = 48;       // ...at least, so its arrow always shows...
+const PEEK_GAP = 16;       // ...when it gives way to keep this clear of the card
 const INFO_DROP = 0.25;    // share of the card's spare room that goes above it
 const PANEL_RADIUS = 37.13;  // the card's corner at the screen's width
 const SHEET_RADIUS = 30;
@@ -325,7 +327,15 @@ const titleEl = document.getElementById('title');
 let flipBusy = false;
 
 const headTop = () => (document.documentElement.classList.contains('is-phone') ? 0 : 44);
-const sheetTop = () => stageH - PEEK;
+// The turned-over card's width: the screen's less 16px either side
+const infoWidth = () => STAGE_W - 2 * (document.documentElement.classList.contains('is-phone') ? INFO_MARGIN / fitScale : INFO_MARGIN);
+// The sheet peeks PEEK under the card; on screens where that would cover
+// the card it drops to PEEK_GAP below it, but never below MIN_PEEK
+const peek = () => {
+  const free = stageH - (headTop() + INFO_TOP) - infoWidth() * CARD_RATIO - PEEK_GAP;
+  return Math.max(MIN_PEEK, Math.min(PEEK, free));
+};
+const sheetTop = () => stageH - peek();
 
 // The card's on-screen box in stage px (it's upright when centred)
 function stageBox(el) {
@@ -346,8 +356,8 @@ function stageBox(el) {
 function infoBox() {
   const above = headTop() + INFO_TOP;
   const room = sheetTop() - above;
-  const margin = document.documentElement.classList.contains('is-phone') ? INFO_MARGIN / fitScale : INFO_MARGIN;
-  const width = STAGE_W - 2 * margin;
+  const width = infoWidth();
+  const margin = (STAGE_W - width) / 2;
   const k = width / STAGE_W;
   // Always the card's own proportions at that width
   const height = width * CARD_RATIO;
@@ -638,7 +648,7 @@ async function flipOpen(card) {
   sh.style.setProperty('--ritual-opacity', RITUAL_OPACITY);
   sh.innerHTML = sheetHTML(name);
   stage.appendChild(sh);
-  sheet = { el: sh, p: -PEEK / sheetTop(), claimed: false };
+  sheet = { el: sh, p: -peek() / sheetTop(), claimed: false };
   setSheet(sheet.p);
   teruRitual(sh, fitRitual(sh));
   sh.querySelector('.ritual--art')?.addEventListener('click', claimed);
@@ -658,7 +668,7 @@ async function flipClose() {
   if (sheet.p > 0) { goHome(); return; }
   flipBusy = true;
   document.documentElement.classList.remove('is-flipped');
-  await sheetTo(-PEEK / sheetTop(), SHEET_MS * 0.6);
+  await sheetTo(-peek() / sheetTop(), SHEET_MS * 0.6);
   sheet.el.remove();
   sheet = null;
   flip.el.getAnimations({ subtree: true }).forEach((a) => a.cancel());
