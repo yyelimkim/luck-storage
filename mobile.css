@@ -304,20 +304,21 @@ img { -webkit-user-drag: none; }
   gap: 3px;
   color: var(--system-black);
   font-family: var(--font-display);
-  font-weight: 500;
-  font-size: 14px;
+  font-weight: 400;
+  font-size: 17px;
   letter-spacing: var(--tracking);
   line-height: normal;
 }
 .filter--confirm img { display: block; }
+/* Set like the rest of the app's text: Paperlogy 17, Regular */
 .filter--title,
 .filter--label {
   margin: 0;
   font-family: var(--font-display);
-  font-weight: 500;
-  font-size: 16px;
+  font-weight: 400;
+  font-size: 17px;
   letter-spacing: var(--tracking);
-  line-height: 16px;
+  line-height: normal;
   color: var(--system-black);
 }
 .filter--label { margin: 35px 26px 14px; }
