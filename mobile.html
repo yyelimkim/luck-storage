@@ -7,7 +7,7 @@
   <meta name="theme-color" content="#f0f0f0">
   <title>행운보관소</title>
   <link rel="stylesheet" href="design-system.css?v=7">
-  <link rel="stylesheet" href="mobile.css?v=85">
+  <link rel="stylesheet" href="mobile.css?v=86">
 </head>
 <body>
   <!-- iPhone 17 screen (Figma 97:630 at rest, 97:730 while dialing), laid out at
@@ -21,6 +21,11 @@
 
     <!-- Header (Figma 376:5496): which cards, and the luck claimed so far -->
     <header class="head">
+      <!-- On the profile, settings and the wardrobe take the deck name's place -->
+      <div class="head--tools">
+        <button type="button" aria-label="Settings"><img src="assets/profile/settings.svg" width="28" height="28" alt=""></button>
+        <button type="button" aria-label="Wardrobe"><img src="assets/profile/hanger.svg" width="28" height="28" alt=""></button>
+      </div>
       <button type="button" class="head--title" aria-haspopup="dialog" aria-expanded="false">
         <h1>All Cards</h1>
         <img src="assets/mobile/chevron.svg" width="13.3333" height="7.33333" alt="">
@@ -37,6 +42,25 @@
     <!-- Dial: press to open it, turn it to spin the cards -->
     <div class="dial" id="dial" role="slider" aria-label="Cards" tabindex="0">
     </div>
+
+    <!-- Profile (Figma 389:6712): who you are, today's fortune, recent luck -->
+    <section class="profile" id="profile" aria-label="Profile">
+      <div class="profile--hero">
+        <p class="profile--hello" id="hello">Good Morning,</p>
+        <h2 class="profile--name">Yelim <button type="button" aria-label="Edit name"><img src="assets/profile/pencil.svg" width="21" height="21" alt=""></button></h2>
+        <img class="profile--avatar" src="assets/profile/avatar.svg" width="144" height="254" alt="">
+      </div>
+      <p class="profile--handle">@yyelimkim</p>
+      <h3 class="profile--label">Daily Fortune</h3>
+      <div class="profile--card profile--fortune">
+        <p class="profile--date" id="today"></p>
+      </div>
+      <h3 class="profile--label">Recently Earned Luck</h3>
+      <div class="profile--recent">
+        <div class="profile--card"><p>Daily Fortune + Lucky Item</p></div>
+        <div class="profile--card"></div>
+      </div>
+    </section>
 
     <!-- Tab bar (Figma 376:5524): icons only, the current one filled -->
     <nav class="m-nav" aria-label="Sections">
@@ -85,6 +109,6 @@
   </div>
 
   <script src="cards.js?v=21"></script>
-  <script src="mobile.js?v=73"></script>
+  <script src="mobile.js?v=74"></script>
 </body>
 </html>

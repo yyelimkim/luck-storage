@@ -826,6 +826,8 @@ addEventListener('keydown', (e) => {
 const tabs = [...document.querySelectorAll('.m-nav--tab')];
 tabs.forEach((t) => t.addEventListener('click', () => {
   tabs.forEach((o) => o.toggleAttribute('aria-current', o === t));
+  // Profile swaps the cards for the profile; Tree isn't built yet
+  stage.dataset.view = t.dataset.tab === 'profile' ? 'profile' : 'home';
 }));
 
 // Filter (the header's deck name): a sheet of the categories, picked one at a
@@ -891,3 +893,16 @@ async function setDeck(name) {
       { duration: 380, easing: 'cubic-bezier(0.2, 0.8, 0.2, 1)' });
   });
 }
+
+// Profile: greeted for the time of day, with today's date on the fortune card
+(function profileText() {
+  const now = new Date();
+  const h = now.getHours();
+  document.getElementById('hello').textContent =
+    `Good ${h < 12 ? 'Morning' : h < 18 ? 'Afternoon' : 'Evening'},`;
+  const d = now.getDate();
+  const th = d % 10 === 1 && d !== 11 ? 'st' : d % 10 === 2 && d !== 12 ? 'nd' : d % 10 === 3 && d !== 13 ? 'rd' : 'th';
+  const day = now.toLocaleDateString('en-US', { weekday: 'long' });
+  const month = now.toLocaleDateString('en-US', { month: 'long' });
+  document.getElementById('today').innerHTML = `${day},<br>${month} ${d}${th}`;
+}());
