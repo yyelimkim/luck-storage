@@ -107,17 +107,20 @@ img { -webkit-user-drag: none; }
 }
 .head--title h1 { font-size: 24px; }
 .head--title img { display: block; }
+/* As tall as the header's 44px buttons */
 .head--count {
   display: flex;
   align-items: center;
-  gap: 2px;
-  padding: 9px 18px;
+  gap: 3px;
+  height: 44px;
+  padding: 0 18px;
+  box-sizing: border-box;
   border-radius: 36px;
   background: var(--ui-white);
   filter: drop-shadow(0 4px 2px rgba(168, 164, 164, 0.2));
   color: var(--system-black);
 }
-.head--count span { font-size: 16px; }
+.head--count span { font-size: 17px; }
 .head--count img { display: block; }
 
 /* Cards: placed every frame by mobile.js */
