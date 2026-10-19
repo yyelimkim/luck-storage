@@ -894,17 +894,19 @@ async function setDeck(name) {
   });
 }
 
+// "October 19th"
+const ordinal = (d) => d + (d % 10 === 1 && d !== 11 ? 'st' : d % 10 === 2 && d !== 12 ? 'nd' : d % 10 === 3 && d !== 13 ? 'rd' : 'th');
+const longDate = (date) => `${date.toLocaleDateString('en-US', { month: 'long' })} ${ordinal(date.getDate())}, ${date.getFullYear()}`;
+
 // Profile: greeted for the time of day, with today's date on the fortune card
 (function profileText() {
   const now = new Date();
   const h = now.getHours();
   document.getElementById('hello').textContent =
     `Good ${h < 12 ? 'Morning' : h < 18 ? 'Afternoon' : 'Evening'},`;
-  const d = now.getDate();
-  const th = d % 10 === 1 && d !== 11 ? 'st' : d % 10 === 2 && d !== 12 ? 'nd' : d % 10 === 3 && d !== 13 ? 'rd' : 'th';
   const day = now.toLocaleDateString('en-US', { weekday: 'long' });
   const month = now.toLocaleDateString('en-US', { month: 'long' });
-  document.getElementById('today').innerHTML = `${day},<br>${month} ${d}${th}`;
+  document.getElementById('today').innerHTML = `${day},<br>${month} ${ordinal(now.getDate())}`;
 }());
 
 // Daily Fortune (from the profile's fortune card): today's reading, a lucky
@@ -928,37 +930,83 @@ const LUCKY_COLOURS = [
 ];
 const fortuneEl = document.getElementById('fortune');
 const fortuneRead = document.getElementById('fortune-read');
+const fortuneSee = document.getElementById('fortune-see');
+const birthInput = document.getElementById('fortune-birth-input');
+// Ritual line art, where a card has it; the rest show their artwork
+const RITUAL_ART = {
+  '돼지꿈.png': '<img src="assets/fortune/pig-line.svg" width="90.5824" height="87.2394" alt="">',
+};
 let luckyCard = START;
+let fortuneTimer;
+
+// The birthday seeds the fortune with the date: kept in this browser only
+let birthday = '2006-04-15';
+try { birthday = localStorage.getItem('birthday') || birthday; } catch (e) {}
+const birthDate = () => new Date(`${birthday}T00:00`);
 
 function fillFortune() {
   const now = new Date();
+  const b = birthDate();
   const day = Math.floor((now - new Date(now.getFullYear(), 0, 0)) / 864e5);
-  const [headline, body] = FORTUNES[day % FORTUNES.length];
-  const [colourName, colour] = LUCKY_COLOURS[(day * 7) % LUCKY_COLOURS.length];
-  luckyCard = (day * 5) % IMAGES.length;
-  const month = now.toLocaleDateString('en-US', { month: 'long' });
-  document.getElementById('fortune-date').textContent = `${month} ${now.getDate()} Fortune`;
+  const seed = day + b.getMonth() * 31 + b.getDate();
+  const [headline, body] = FORTUNES[seed % FORTUNES.length];
+  const [colourName, colour] = LUCKY_COLOURS[(seed * 7) % LUCKY_COLOURS.length];
+  luckyCard = (seed * 5) % IMAGES.length;
+  const card = IMAGES[luckyCard];
+  fortuneEl.querySelectorAll('.fortune--today').forEach((p) => { p.textContent = longDate(now); });
+  document.getElementById('fortune-birth').textContent = longDate(b);
+  birthInput.value = birthday;
   document.getElementById('fortune-headline').textContent = headline;
   document.getElementById('fortune-body').textContent = body;
-  document.getElementById('fortune-number').textContent = String((day * 13) % 99 + 1).padStart(2, '0');
   document.getElementById('fortune-swatch').style.background = colour;
   document.getElementById('fortune-colour').textContent = colourName;
-  document.getElementById('fortune-thumb').src = englishSrc(IMAGES[luckyCard]);
-  document.getElementById('fortune-ritual-name').textContent = cardName(IMAGES[luckyCard]);
+  document.getElementById('fortune-art').innerHTML = RITUAL_ART[card]
+    || `<img class="fortune--thumb" src="${englishSrc(card)}" alt="">`;
+  document.getElementById('fortune-ritual-name').textContent = cardName(card);
+}
+// Step by step: the ring fills (loading), the clovers turn (ready), then the
+// reading (result)
+function fortuneStep(step) {
+  fortuneEl.dataset.step = step;
+  fortuneSee.disabled = step === 'loading';
+}
+function loadFortune() {
+  clearTimeout(fortuneTimer);
+  fillFortune();
+  fortuneStep('loading');
+  // Replay the ring's fill from empty
+  const arc = fortuneEl.querySelector('.fortune--arc path');
+  arc.style.animation = 'none';
+  void arc.getBoundingClientRect();
+  arc.style.animation = '';
+  fortuneTimer = setTimeout(() => fortuneStep('ready'), 2750);
 }
 function openFortune() {
-  fillFortune();
   fortuneRead.setAttribute('aria-expanded', 'false');
-  fortuneEl.querySelector('.fortune--scroll').scrollTop = 0;
+  fortuneEl.querySelector('.fortune--result').scrollTop = 0;
+  loadFortune();
   fortuneEl.classList.add('is-open');
   fortuneEl.setAttribute('aria-hidden', 'false');
 }
 function closeFortune() {
+  clearTimeout(fortuneTimer);
   fortuneEl.classList.remove('is-open');
   fortuneEl.setAttribute('aria-hidden', 'true');
 }
 document.querySelector('.profile--fortune').addEventListener('click', openFortune);
 fortuneEl.querySelector('.fortune--back').addEventListener('click', closeFortune);
+fortuneSee.addEventListener('click', () => fortuneStep('result'));
+// A new birthday reads the fortune again
+fortuneEl.querySelector('.fortune--birth').addEventListener('click', (e) => {
+  e.preventDefault();
+  try { birthInput.showPicker(); } catch (err) { birthInput.focus(); }
+});
+birthInput.addEventListener('change', () => {
+  if (!birthInput.value) return;
+  birthday = birthInput.value;
+  try { localStorage.setItem('birthday', birthday); } catch (e) {}
+  loadFortune();
+});
 // The reading opens up to its full length, and folds back
 fortuneRead.addEventListener('click', () => {
   fortuneRead.setAttribute('aria-expanded', String(fortuneRead.getAttribute('aria-expanded') !== 'true'));
@@ -972,5 +1020,4 @@ function goClaim() {
   const rel = relOfSlot(slotOf[luckyCard]);
   goTo(pos + rel);
 }
-document.getElementById('fortune-go').addEventListener('click', goClaim);
 document.getElementById('fortune-ritual').addEventListener('click', goClaim);

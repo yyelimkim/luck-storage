@@ -7,7 +7,7 @@
   <meta name="theme-color" content="#f0f0f0">
   <title>행운보관소</title>
   <link rel="stylesheet" href="design-system.css?v=7">
-  <link rel="stylesheet" href="mobile.css?v=88">
+  <link rel="stylesheet" href="mobile.css?v=91">
 </head>
 <body>
   <!-- iPhone 17 screen (Figma 97:630 at rest, 97:730 while dialing), laid out at
@@ -62,47 +62,67 @@
       </div>
     </section>
 
-    <!-- Daily Fortune: opened from the profile's fortune card -->
-    <section class="fortune" id="fortune" aria-label="Daily Fortune" aria-hidden="true">
+    <!-- Daily Fortune (Figma 395:7512, 395:7550, 397:208): opened from the
+         profile's fortune card. The clover ring fills while today's fortune
+         loads, the clovers turn yellow and "See Fortune!" opens the reading. -->
+    <section class="fortune" id="fortune" aria-label="Daily Fortune" aria-hidden="true" data-step="loading">
       <div class="fortune--bar">
         <button type="button" class="fortune--back" aria-label="Back">
-          <img src="assets/system/arrow-back.svg" width="28" height="28" alt="">
+          <img src="assets/fortune/back.svg" width="28" height="28" alt="">
         </button>
         <h2 class="fortune--title">Daily Fortune</h2>
       </div>
-      <div class="fortune--scroll">
-        <div class="fortune--meta">
-          <span id="fortune-date"></span>
-          <span>@yyelimkim</span>
+      <div class="fortune--intro">
+        <p class="fortune--pill fortune--today"></p>
+        <div class="fortune--ring" aria-hidden="true">
+          <img class="fortune--ring-line" src="assets/fortune/ring.svg" width="253" height="253" alt="">
+          <svg class="fortune--arc" width="248" height="248" viewBox="0 0 248 248" fill="none">
+            <path d="M244.5 124C244.5 97.7037 235.898 72.1293 220.007 51.1782C204.115 30.227 181.806 15.0494 156.483 7.96078C131.16 0.872137 104.214 2.26161 79.7543 11.9172C55.2949 21.5728 34.6654 38.9645 21.0129 61.439C7.36044 83.9136 1.43454 110.237 4.13923 136.394C6.84392 162.551 18.0307 187.105 35.993 206.31C53.9553 225.516 77.707 238.318 103.625 242.765C129.542 247.211 156.203 243.058 179.54 230.938" pathLength="100" stroke="currentColor" stroke-width="7" stroke-linecap="round"/>
+          </svg>
+          <span class="fortune--clover fortune--clover-big">
+            <img class="is-off" src="assets/fortune/clover-big-off.svg" width="88.1547" height="88.1547" alt="">
+            <img class="is-on" src="assets/fortune/clover-big-on.svg?v=2" width="88.1547" height="88.1547" alt="">
+          </span>
+          <span class="fortune--clover fortune--clover-small">
+            <img class="is-off" src="assets/fortune/clover-small-off.svg" width="31.6444" height="31.6444" alt="">
+            <img class="is-on" src="assets/fortune/clover-small-on.svg?v=2" width="31.6444" height="31.6444" alt="">
+          </span>
         </div>
-        <img class="fortune--avatar" src="assets/profile/avatar.svg" width="108" height="190.5" alt="">
+        <button type="button" class="fortune--see" id="fortune-see" disabled>
+          <span class="is-off">Loading...</span><span class="is-on">See Fortune!</span>
+        </button>
+        <label class="fortune--birth">
+          <span id="fortune-birth"></span>
+          <img src="assets/fortune/pencil.svg" width="14" height="14" alt="">
+          <input type="date" id="fortune-birth-input" aria-label="Birthday">
+        </label>
+      </div>
+      <div class="fortune--result">
+        <p class="fortune--pill fortune--today"></p>
+        <div class="fortune--hero" aria-hidden="true">
+          <img class="fortune--coin fortune--coin-left" src="assets/fortune/coin-left.svg" width="48.916" height="48.916" alt="">
+          <img class="fortune--coin fortune--coin-right" src="assets/fortune/coin-right.svg" width="103.076" height="103.076" alt="">
+          <img class="fortune--pig-shadow" src="assets/fortune/pig-shadow.svg" width="142.885" height="10.4335" alt="">
+          <img class="fortune--pig" src="assets/fortune/pig.svg" width="188.837" height="182.295" alt="">
+        </div>
         <button type="button" class="fortune--card fortune--read" id="fortune-read" aria-expanded="false">
-          <p class="fortune--headline" id="fortune-headline"></p>
-          <p class="fortune--body" id="fortune-body"></p>
-          <span class="fortune--more">Tap to read <img src="assets/system/arrow-right.svg" width="19" height="19" alt=""></span>
+          <span class="fortune--headline" id="fortune-headline"></span>
+          <span class="fortune--body" id="fortune-body"></span>
+          <span class="fortune--more">Read Full→</span>
         </button>
         <div class="fortune--tiles">
-          <div class="fortune--card fortune--tile">
-            <p class="fortune--label">Lucky Number</p>
-            <p class="fortune--number" id="fortune-number"></p>
-          </div>
-          <div class="fortune--card fortune--tile">
-            <p class="fortune--label">Lucky Colour</p>
+          <button type="button" class="fortune--card fortune--tile fortune--ritual" id="fortune-ritual">
+            <span class="fortune--label">Lucky Ritual</span>
+            <span class="fortune--art" id="fortune-art"></span>
+            <span class="fortune--ritual-name"><span id="fortune-ritual-name"></span><img src="assets/fortune/arrow.svg" width="18" height="18" alt=""></span>
+          </button>
+          <div class="fortune--card fortune--tile fortune--colour">
+            <span class="fortune--label">Lucky Color</span>
             <span class="fortune--swatch" id="fortune-swatch"></span>
-            <p class="fortune--swatch-name" id="fortune-colour"></p>
+            <span class="fortune--swatch-name" id="fortune-colour"></span>
           </div>
         </div>
-        <button type="button" class="fortune--card fortune--ritual" id="fortune-ritual">
-          <img class="fortune--thumb" id="fortune-thumb" alt="">
-          <span>
-            <span class="fortune--label">Lucky Ritual</span>
-            <span class="fortune--ritual-name" id="fortune-ritual-name"></span>
-          </span>
-        </button>
       </div>
-      <button type="button" class="fortune--go" id="fortune-go">
-        Claim today’s luck <img src="assets/system/arrow-right.svg" width="19" height="19" alt="">
-      </button>
     </section>
 
     <!-- Tab bar (Figma 376:5524): icons only, the current one filled -->
@@ -152,6 +172,6 @@
   </div>
 
   <script src="cards.js?v=21"></script>
-  <script src="mobile.js?v=75"></script>
+  <script src="mobile.js?v=76"></script>
 </body>
 </html>
