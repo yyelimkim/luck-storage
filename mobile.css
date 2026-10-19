@@ -178,8 +178,9 @@ img { -webkit-user-drag: none; }
 }
 .dial--line.is-current { height: 20px; background: var(--dark-grey); }
 
-/* Behind the tab bar: a progressive blur, each layer stronger and lower
-   down, over the faintest wash of System White */
+/* Behind the tab bar: mostly a System White gradient, with a light blur
+   that builds up towards the bar. The blur stops short of the bottom so it
+   never reaches the frame's rounded corners. */
 .m-navfade {
   position: absolute;
   left: 0;
@@ -188,36 +189,31 @@ img { -webkit-user-drag: none; }
   height: 150px;
   z-index: 35;
   pointer-events: none;
-  background: linear-gradient(to bottom, transparent, color-mix(in srgb, var(--system-white) 55%, transparent));
+  background: linear-gradient(to bottom,
+    transparent,
+    color-mix(in srgb, var(--system-white) 55%, transparent) 50%,
+    color-mix(in srgb, var(--system-white) 92%, transparent));
 }
 .m-navfade i {
   position: absolute;
-  inset: 0;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 60px;
 }
 .m-navfade i:nth-child(1) {
   -webkit-backdrop-filter: blur(1px);
   backdrop-filter: blur(1px);
-  -webkit-mask-image: linear-gradient(to bottom, transparent, #000 25%, #000 50%, transparent 75%);
-  mask-image: linear-gradient(to bottom, transparent, #000 25%, #000 50%, transparent 75%);
+  -webkit-mask-image: linear-gradient(to bottom, transparent, #000 35%, #000 70%, transparent);
+  mask-image: linear-gradient(to bottom, transparent, #000 35%, #000 70%, transparent);
 }
 .m-navfade i:nth-child(2) {
   -webkit-backdrop-filter: blur(2px);
   backdrop-filter: blur(2px);
-  -webkit-mask-image: linear-gradient(to bottom, transparent 25%, #000 50%, #000 75%, transparent);
-  mask-image: linear-gradient(to bottom, transparent 25%, #000 50%, #000 75%, transparent);
+  -webkit-mask-image: linear-gradient(to bottom, transparent 35%, #000 70%, transparent);
+  mask-image: linear-gradient(to bottom, transparent 35%, #000 70%, transparent);
 }
-.m-navfade i:nth-child(3) {
-  -webkit-backdrop-filter: blur(4px);
-  backdrop-filter: blur(4px);
-  -webkit-mask-image: linear-gradient(to bottom, transparent 50%, #000 75%);
-  mask-image: linear-gradient(to bottom, transparent 50%, #000 75%);
-}
-.m-navfade i:nth-child(4) {
-  -webkit-backdrop-filter: blur(8px);
-  backdrop-filter: blur(8px);
-  -webkit-mask-image: linear-gradient(to bottom, transparent 75%, #000);
-  mask-image: linear-gradient(to bottom, transparent 75%, #000);
-}
+.m-navfade i:nth-child(n+3) { display: none; }
 
 /* Tab bar (Figma 376:5524): a white pill of icons, the current tab on a
    grey pill of its own with its icon filled */
@@ -229,7 +225,7 @@ img { -webkit-user-drag: none; }
   height: 51px;
   z-index: 40;
   display: flex;
-  padding: 4px 11px;
+  padding: 4px;  /* even all round, so the end tabs nest in the bar's curve */
   gap: 4px;
   box-sizing: border-box;
   background: var(--ui-white);
