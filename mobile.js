@@ -1,4 +1,5 @@
-// iPhone prototype: the dial at the bottom replaces the desktop's line scroller.
+// iPhone prototype: the dial at the bottom is the desktop's line scroller
+// bent onto an arc, one line per card, round and round. A tab bar sits under it.
 // Two Figma states, blended by `open` (0 = rest, 1 = dialing):
 //   rest (97:630)    big cards 20° apart, small closed dial
 //   dialing (97:730) small cards 30° apart on a circle round the opened dial,
@@ -45,14 +46,22 @@ const HEAD_GAP = 40;      // least space kept between header and cards
 
 const FOCUS_SCALE = 1.12;  // the centre card grows by this much over its neighbours
 const SIDE_OPACITY = 0.8;  // neighbours one slot out fade to this
-const TICK_GAP = 45;  // the tick marks repeat every 45°
+const LINE_STEP = 9;   // degrees between the dial's lines, one per card
+const LINE_R = 96;     // the lines' inner radius on the dial (215 across)
+const NAV_SPACE = 100; // the tab bar and its gaps, kept clear under the fan and dial
 const START = IMAGES.indexOf('테루테루보즈.png');  // centred in the Figma frames
 
 const N = IMAGES.length;
 const stage = document.getElementById('stage');
 const fan = document.getElementById('fan');
 const dial = document.getElementById('dial');
-const ticks = document.getElementById('ticks');
+// The dial's lines, one per card; render() turns them with the cards
+const lines = IMAGES.map(() => {
+  const el = document.createElement('span');
+  el.className = 'dial--line';
+  dial.appendChild(el);
+  return el;
+});
 
 // The states for the current screen: pinned to the bottom edge, and shrunk
 // about the bottom centre when the screen is too short for the full fan
@@ -89,10 +98,12 @@ function fit() {
   stage.style.height = `${stageH}px`;
   stage.style.transform = `scale(${fitScale})`;
   const headTop = phone ? 0 : 44;
-  const room = stageH - headTop - HEAD_H - HEAD_GAP;
+  // The fan and dial sit on the tab bar rather than the screen's bottom edge
+  const floor = stageH - NAV_SPACE;
+  const room = floor - headTop - HEAD_H - HEAD_GAP;
   const f = Math.min(1, room / (FIGMA_H - FAN_TOP));
-  REST = place(FIGMA_REST, stageH, f);
-  OPEN = place(FIGMA_OPEN, stageH, f);
+  REST = place(FIGMA_REST, floor, f);
+  OPEN = place(FIGMA_OPEN, floor, f);
 }
 fit();
 addEventListener('resize', fit);
@@ -151,11 +162,14 @@ function render() {
   });
 
   dial.style.transform = `translate(${g.dialX - 107.5}px, ${g.dialY - 107.5}px) scale(${g.dialScale})`;
-  // Ticks stand upright (as in Figma) whenever a card is settled, and swing
-  // with the finger between cards. They repeat every 45°, so wrap to that.
-  const turn = -(pos - Math.round(pos)) * OPEN.step;
-  const tick = ((((turn + TICK_GAP / 2) % TICK_GAP) + TICK_GAP) % TICK_GAP) - TICK_GAP / 2;
-  ticks.style.transform = `rotate(${tick}deg)`;
+  // Lines run round the top of the dial with the cards, the centre card's
+  // upright; they fade out towards the ends, where they wrap round
+  lines.forEach((el, i) => {
+    const rel = relOf(i);
+    el.style.transform = `rotate(${rel * LINE_STEP}deg) translateY(calc(-${LINE_R}px - 100%))`;
+    el.style.opacity = Math.max(0, Math.min(1, (N / 2 - 0.5 - Math.abs(rel)) / 2)).toFixed(3);
+    el.classList.toggle('is-current', Math.abs(rel) < 0.5);
+  });
   dial.setAttribute('aria-valuenow', String(((Math.round(pos) % N) + N) % N + 1));
 }
 
@@ -730,3 +744,9 @@ addEventListener('keydown', (e) => {
   clearTimeout(keyTimer);
   keyTimer = setTimeout(() => { openTarget = 0; }, 600);
 });
+
+// Tab bar: only Home is built so far, so the others just take the highlight
+const tabs = [...document.querySelectorAll('.m-nav--tab')];
+tabs.forEach((t) => t.addEventListener('click', () => {
+  tabs.forEach((o) => o.toggleAttribute('aria-current', o === t));
+}));
