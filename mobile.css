@@ -263,14 +263,14 @@ img { -webkit-user-drag: none; }
 .filter.is-open .filter--scrim { opacity: 1; }
 .filter--sheet {
   position: absolute;
-  left: 8px;
-  right: 8px;
-  bottom: 8px;
-  padding: 24px 16px 26px;
-  border-radius: 40px;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: 24px 16px 42px;  /* clear of the home indicator */
+  border-radius: 40px 40px 0 0;
   background: #fafafa;
-  border: 0.771px solid var(--system-black);
-  transform: translateY(calc(100% + 16px));
+  border-top: 0.771px solid var(--system-black);
+  transform: translateY(100%);
   transition: transform 0.42s cubic-bezier(0.32, 0.72, 0, 1);
 }
 .filter.is-open .filter--sheet { transform: none; }
@@ -285,34 +285,37 @@ img { -webkit-user-drag: none; }
 .filter--options {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 10px;
+  gap: 14px 10px;
+  justify-items: center;
 }
+/* Options are the design system's own pieces, unwrapped: the category tags,
+   and for All Cards a plain box drawn like a tag's label. The picked one is
+   at full strength, the rest faded back. */
 .filter--opt {
-  display: grid;
-  place-items: center;
-  height: 56px;
+  display: block;
   padding: 0;
-  border-radius: 43px;
-  background: #fafafa;
-  border: 1px solid #dcdcdc;
+  border: 0;
+  background: none;
   color: var(--system-black);
+  cursor: pointer;
+  opacity: 0.4;
+  -webkit-tap-highlight-color: transparent;
+  transition: opacity 0.2s, transform 0.25s cubic-bezier(0.3, 1.5, 0.5, 1);
+}
+.filter--opt[aria-pressed="true"] { opacity: 1; }
+.filter--opt:active { transform: scale(0.96); }
+.filter--opt .tag { display: flex; }
+.filter--opt-all {
+  grid-column: 1 / -1;
+  justify-self: stretch;
+  height: 33.172px;
+  background: var(--system-white);
+  border: 0.771px solid var(--system-black);
   font-family: var(--font-display);
-  font-size: 17px;
+  font-size: 18.515px;
   letter-spacing: var(--tracking);
   line-height: normal;
-  cursor: pointer;
-  -webkit-tap-highlight-color: transparent;
-  transition: transform 0.15s, background-color 0.2s, border-color 0.2s;
 }
-.filter--opt-all { grid-column: 1 / -1; }
-.filter--opt[aria-pressed="true"] {
-  background: var(--system-white);
-  border-color: var(--system-black);
-}
-.filter--opt:active { transform: scale(0.97); }
-/* The category tag, a size down to sit in its button */
-.filter--opt .tag { transform: scale(0.78); transition: transform 0.25s cubic-bezier(0.3, 1.5, 0.5, 1); }
-.filter--opt[aria-pressed="true"] .tag { transform: scale(0.84); }
 .filter--done {
   display: block;
   width: 100%;
