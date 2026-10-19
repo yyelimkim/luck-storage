@@ -109,6 +109,14 @@ const CARD_COLOR = {
   '포도 12알 먹기.png': 'var(--hot-pink)',
 };
 
+// The deep shade of each card colour, glowing behind "Luck Claimed!"
+const GLOW_COLOR = {
+  'var(--v2-blue)': '#016acd',
+  'var(--forest-green)': '#077947',
+  'var(--hot-pink)': '#a40245',
+  'var(--yellow-green)': '#c99f05',
+};
+
 // What each card's sheet says under its name: what the custom is, and how
 // to perform it
 const CARD_TEXT = {

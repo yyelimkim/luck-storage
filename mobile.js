@@ -608,6 +608,7 @@ async function flipOpen(card) {
   const sh = document.createElement('div');
   sh.className = 'sheet';
   sh.style.setProperty('--card-color', CARD_COLOR[name]);
+  sh.style.setProperty('--glow-color', GLOW_COLOR[CARD_COLOR[name]]);
   sh.style.height = `${stageH}px`;
   sh.style.setProperty('--ritual-scale', RITUAL_SCALE);
   sh.style.setProperty('--ritual-opacity', RITUAL_OPACITY);
