@@ -625,14 +625,14 @@ async function flipClose() {
   flipBusy = false;
 }
 
-// Home from the full or claimed sheet: it all drops away, no turning back over
+// Home from the full or claimed sheet: it all fades away, no turning back over
 async function goHome() {
   if (!flip || flipBusy) return;
   flipBusy = true;
   document.documentElement.classList.remove('is-flipped');
-  const drop = { duration: SHEET_MS, easing: 'cubic-bezier(0.4, 0, 1, 1)', fill: 'forwards' };
+  const fade = { duration: SHEET_MS, easing: 'ease-out', fill: 'forwards' };
   await Promise.all([sheet.el, flip.el].map((e) =>
-    e.animate([{ translate: '0 0' }, { translate: `0 ${stageH}px` }], drop).finished));
+    e.animate([{ opacity: 1 }, { opacity: 0 }], fade).finished));
   sheet.el.remove();
   flip.el.remove();
   sheet = null;
