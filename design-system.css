@@ -12,6 +12,12 @@
 }
 @font-face {
   font-family: "Paperlogy";
+  src: url("assets/fonts/Paperlogy-5Medium.ttf") format("truetype");
+  font-weight: 500;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Paperlogy";
   src: url("assets/fonts/Paperlogy-6SemiBold.ttf") format("truetype");
   font-weight: 600;
   font-display: swap;
