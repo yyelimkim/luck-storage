@@ -282,10 +282,10 @@ img { -webkit-user-drag: none; }
 }
 .is-preview .homebar { display: block; }
 
-/* Profile (Figma 389:6712), laid out on the 874 frame; on a phone, without
-   the fake status bar, everything under the hero's top edge moves up 44.
-   The sketch's grey blocks are drawn as design-system surfaces: a soft grey
-   hero, and cards on UI White in the system's line. */
+/* Profile (Figma 390:6966), laid out on the 874 frame; on a phone, without
+   the fake status bar, everything on the hero moves up 44. A Yellow-Green
+   hero with the character, then the fortune card and the luck you've earned
+   in a row that scrolls sideways. */
 .profile {
   --up: 0px;
   position: absolute;
@@ -294,6 +294,7 @@ img { -webkit-user-drag: none; }
   overflow-y: auto;
   padding-bottom: 116px;  /* clear of the tab bar */
   box-sizing: border-box;
+  background: var(--ui-white);
   opacity: 0;
   visibility: hidden;
   transform: translateY(10px);
@@ -313,62 +314,107 @@ img { -webkit-user-drag: none; }
 .fan, .dial, .head--title { transition: opacity 0.3s; }
 .profile--hero {
   position: relative;
-  height: calc(333px - var(--up));
-  background: color-mix(in srgb, var(--dark-grey) 25%, var(--system-white));
+  height: calc(355px - var(--up));
+  background: url("assets/profile/hero.svg") center bottom / 402px 355px no-repeat;
 }
-.profile--hello,
+.profile p,
 .profile--name,
-.profile--handle,
 .profile--label,
-.profile--card p {
+.profile--fortune span {
   margin: 0;
   font-family: var(--font-display);
   font-weight: 400;
   font-size: 16px;
-  letter-spacing: var(--tracking);
+  letter-spacing: -0.04em;
   line-height: normal;
   color: var(--system-black);
 }
-.profile--hello { position: absolute; left: 15px; top: calc(221px - var(--up)); }
+.profile--hello { position: absolute; left: 16px; top: calc(261px - var(--up)); }
 .profile--name {
   position: absolute;
-  left: 16px;
-  top: calc(251.91px - var(--up));
+  left: 17px;
+  top: calc(291.91px - var(--up));
   display: flex;
-  align-items: center;
-  gap: 4px;
-  font-size: 36.076px;
+  align-items: flex-end;
+  gap: 2px;
+  font-size: 38px;
 }
-.profile--name button { padding: 0; border: 0; background: none; cursor: pointer; margin-top: 6px; }
+.profile--name button { padding: 0; border: 0; background: none; cursor: pointer; margin-bottom: 8px; }
 .profile--name img { display: block; }
+/* The character stands over the hero's edge, and grows in a touch each time
+   the page opens */
 .profile--avatar {
   position: absolute;
   left: 227.74px;
-  top: calc(137.77px - var(--up));
+  top: calc(160.77px - var(--up));
   z-index: 1;
+  transform-origin: 50% 100%;
 }
-.profile--handle { margin: 12px 15px 0; }
-.profile--label { margin: 38px 26px 5px; }
-.profile--label + .profile--card { margin-top: 0; }
-.profile--recent + * { margin-top: 0; }
-.profile--card {
+[data-view="profile"] .profile--avatar { animation: profile-grow 0.6s cubic-bezier(0.3, 1.4, 0.5, 1) both; }
+@keyframes profile-grow { from { transform: scale(0.9); } }
+.profile--body {
+  display: flex;
+  flex-direction: column;
+  margin: 40px 15px 0;
+}
+.profile--label { margin-bottom: 11px; }
+.profile--fortune {
   position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  gap: 33px;
+  width: 371px;
+  padding: 21px 16px 23px;
   box-sizing: border-box;
+  border: 1px solid var(--system-black);
   border-radius: 16px;
-  background: var(--ui-white);
-  border: 0.771px solid var(--system-black);
+  background: var(--system-white);
+  box-shadow: 0 4px 4px rgba(168, 164, 164, 0.2);
+  text-align: left;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: transform 0.15s;
 }
-.profile--fortune { height: 129px; margin: 0 16px; }
-.profile--date { position: absolute; left: 197px; top: 53px; }
-.profile--fortune + .profile--label { margin-top: 19px; }
+.profile--fortune:active { transform: scale(0.98); }
+.profile--clouds, .profile--dial, .profile--go { position: absolute; display: block; }
+.profile--clouds { left: -1px; top: -1px; }
+.profile--dial { left: 223px; top: -1px; }
+.profile--go { left: 338px; top: 100px; transition: transform 0.2s; }
+.profile--fortune:hover .profile--go { transform: translateX(3px); }
+.profile--fortune .profile--date,
+.profile--fortune .profile--find { position: relative; }
+.profile--fortune .profile--date { font-size: 14px; white-space: pre; }
+.profile--fortune .profile--find { width: 181px; font-size: 20px; }
+.profile--fortune + .profile--label { margin: 32px 0 9px; }
+/* Edge to edge, so the row runs off the screen */
 .profile--recent {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 6px;
-  margin: 0 16px;
+  display: flex;
+  gap: 8px;
+  margin: 0 -15px;
+  padding: 0 15px 6px;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scroll-padding: 0 15px;
+  scrollbar-width: none;
+  filter: drop-shadow(0 4px 2px rgba(168, 164, 164, 0.2));
 }
-.profile--recent .profile--card { height: 156px; }
-.profile--recent p { position: absolute; left: 28px; top: 59px; width: 129px; }
+.profile--earned {
+  flex: none;
+  display: flex;
+  flex-direction: column;
+  gap: 21px;
+  width: 180px;
+  height: 180px;
+  padding: 18px 19px 19px 16px;
+  box-sizing: border-box;
+  border: 1px solid var(--system-black);
+  border-radius: 16px;
+  background: var(--yellow-green);
+  scroll-snap-align: start;
+}
+.profile--earned img { display: block; }
+.profile .profile--earned p { letter-spacing: var(--tracking); white-space: nowrap; }
 .head--tools {
   display: none;
   gap: 6px;

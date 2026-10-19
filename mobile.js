@@ -906,7 +906,7 @@ const longDate = (date) => `${date.toLocaleDateString('en-US', { month: 'long' }
     `Good ${h < 12 ? 'Morning' : h < 18 ? 'Afternoon' : 'Evening'},`;
   const day = now.toLocaleDateString('en-US', { weekday: 'long' });
   const month = now.toLocaleDateString('en-US', { month: 'long' });
-  document.getElementById('today').innerHTML = `${day},<br>${month} ${ordinal(now.getDate())}`;
+  document.getElementById('today').textContent = `${day},  ${month} ${ordinal(now.getDate())}`;
 }());
 
 // Daily Fortune (from the profile's fortune card): today's reading, a lucky
