@@ -1015,13 +1015,22 @@ birthInput.addEventListener('change', () => {
 fortuneRead.addEventListener('click', () => {
   fortuneRead.setAttribute('aria-expanded', String(fortuneRead.getAttribute('aria-expanded') !== 'true'));
 });
-// Off to the home screen, today's lucky ritual waiting in the middle
+// Off to the home screen: the fan turns to today's lucky ritual and, once
+// it's settled in the middle (and Daily Fortune has slid away), the card
+// flips over to its back
 function goClaim() {
   closeFortune();
   if (deckName !== 'all') setDeck('all');
   tabs.forEach((o) => o.toggleAttribute('aria-current', o.dataset.tab === 'home'));
   stage.dataset.view = 'home';
-  const rel = relOfSlot(slotOf[luckyCard]);
-  goTo(pos + rel);
+  goTo(pos + relOfSlot(slotOf[luckyCard]));
+  const start = performance.now();
+  (function waitToFlip() {
+    if (performance.now() - start < 500 || Math.abs(posTarget - pos) > 0.01) {
+      requestAnimationFrame(waitToFlip);
+      return;
+    }
+    flipOpen(cards[luckyCard]);
+  }());
 }
 document.getElementById('fortune-ritual').addEventListener('click', goClaim);
