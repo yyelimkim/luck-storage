@@ -41,8 +41,8 @@ const FIGMA_OPEN = {
 };
 // The fan and dial run from the opened centre card's top down to the bottom edge
 const FAN_TOP = FIGMA_REST.cy - (388.182 / 2) * CARD_SCALE * 1.12;
-const HEAD_H = 75;        // header row, 36 below the status bar, and its height
-const HEAD_GAP = 52;      // least space kept between header and cards
+const HEAD_H = 54;        // header row, 10 below the status bar, and its height
+const HEAD_GAP = 73;      // least space kept between header and cards
 
 const FOCUS_SCALE = 1.12;  // the centre card grows by this much over its neighbours
 const SIDE_OPACITY = 0.8;  // neighbours one slot out fade to this

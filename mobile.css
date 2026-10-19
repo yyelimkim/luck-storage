@@ -43,7 +43,7 @@ img { -webkit-user-drag: none; }
   margin: 0;
   transform-origin: 0 0;
 }
-.is-phone .head { top: 36px; }
+.is-phone .head { top: 10px; }
 
 /* Status bar (Figma 97:716), preview only */
 .status {
@@ -73,9 +73,12 @@ img { -webkit-user-drag: none; }
 
 /* Header (Figma 376:5496): the deck's name with a chevron, and a pill
    counting the luck claimed */
+/* Every screen's top row is the same: 44 tall, 10 under the status bar
+   (as the opened card's back arrow and title, and Daily Fortune's bar) */
 .head {
   position: absolute;
-  top: 80px;
+  top: 54px;
+  min-height: 44px;
   left: 0;
   width: 402px;
   display: flex;
@@ -489,17 +492,17 @@ img { -webkit-user-drag: none; }
   position: absolute;
   left: 0;
   right: 0;
-  top: var(--top);
-  height: 56px;
+  top: calc(var(--top) + 10px);
+  height: 44px;
   display: grid;
   place-items: center;
   z-index: 3;
 }
 .fortune--back {
   position: absolute;
-  left: 12px;
-  top: 14px;
-  padding: 0;
+  left: 8px;
+  top: 0;
+  padding: 8px;
   border: 0;
   background: none;
   cursor: pointer;
