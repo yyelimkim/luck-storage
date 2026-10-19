@@ -266,91 +266,127 @@ img { -webkit-user-drag: none; }
   left: 0;
   right: 0;
   bottom: 0;
-  padding: 24px 16px 42px;  /* clear of the home indicator */
-  border-radius: 40px 40px 0 0;
+  padding: 0 0 48px;  /* clear of the home indicator */
+  border-radius: 30px 30px 0 0;
   background: var(--ui-white);
   border-top: 0.771px solid var(--system-black);
   transform: translateY(100%);
   transition: transform 0.42s cubic-bezier(0.32, 0.72, 0, 1);
 }
 .filter.is-open .filter--sheet { transform: none; }
-.filter--label {
-  margin: 0 0 18px 4px;
-  font-family: var(--font-display);
-  font-size: 16px;
-  letter-spacing: var(--tracking);
-  line-height: normal;
-  color: var(--dark-grey);
-}
-.filter--options {
+/* Top bar: close, the sheet's name, and Confirm, over a System White rule */
+.filter--bar {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 22px 16px;
-  justify-items: center;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  height: 71px;
+  padding: 6px 20px 0;
+  box-sizing: border-box;
+  border-bottom: 1px solid var(--system-white);
 }
-/* Options are the design system's own pieces, unwrapped: the category tags,
-   and for All Cards a plain box drawn like a tag's label. Unpicked tags lose
-   their colour; the All Cards box goes from UI White to System White. */
-.filter--opt {
-  display: block;
+.filter--close,
+.filter--confirm {
   padding: 0;
   border: 0;
   background: none;
-  color: var(--system-black);
-  cursor: pointer;
-  filter: grayscale(1);
-  -webkit-tap-highlight-color: transparent;
-  transition: filter 0.25s, background-color 0.25s, transform 0.25s cubic-bezier(0.3, 1.5, 0.5, 1);
-}
-.filter--opt[aria-pressed="true"] { filter: none; }
-/* Whichever option is picked, its name is set in Medium */
-.filter--opt[aria-pressed="true"] .tag--label { font-weight: 500; }
-.filter--opt:active { transform: scale(0.96); }
-.filter--opt .tag { display: flex; }
-/* All Cards has no colour of its own, so it changes the classic way: unpicked
-   it's quiet (Dark Grey text and line on UI White), picked it firms up to
-   System Black text in Medium and a System Black line on System White */
-.filter--opt-all {
-  filter: none;
-  color: var(--dark-grey);
-  border-color: color-mix(in srgb, var(--dark-grey) 40%, transparent);
-  transition: background-color 0.25s, border-color 0.25s, color 0.25s, transform 0.25s cubic-bezier(0.3, 1.5, 0.5, 1);
-}
-.filter--opt-all[aria-pressed="true"] {
-  background: var(--system-white);
-  border-color: var(--system-black);
-  color: var(--system-black);
-  font-weight: 500;
-}
-.filter--opt-all {
-  grid-column: 1 / -1;
-  justify-self: stretch;
-  height: 33.172px;
-  background: var(--ui-white);
-  border: 0.771px solid var(--system-black);
-  font-family: var(--font-display);
-  font-size: 18.515px;
-  letter-spacing: var(--tracking);
-  line-height: normal;
-}
-.filter--done {
-  display: block;
-  width: 100%;
-  margin-top: 32px;
-  padding: 15px;
-  border-radius: 43px;
-  background: var(--system-black);
-  border: 1px solid var(--system-black);
-  color: var(--ui-white);
-  font-family: var(--font-display);
-  font-size: 17px;
-  letter-spacing: var(--tracking);
-  line-height: normal;
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
   transition: transform 0.15s;
 }
-.filter--done:active { transform: scale(0.97); }
+.filter--close:active,
+.filter--confirm:active { transform: scale(0.92); }
+.filter--close { justify-self: start; }
+.filter--close img { display: block; }
+.filter--confirm {
+  justify-self: end;
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  color: var(--system-black);
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: 14px;
+  letter-spacing: var(--tracking);
+  line-height: normal;
+}
+.filter--confirm img { display: block; }
+.filter--title,
+.filter--label {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: 16px;
+  letter-spacing: var(--tracking);
+  line-height: 16px;
+  color: var(--system-black);
+}
+.filter--label { margin: 35px 26px 14px; }
+/* Tiles, three to a row: outlined in the design system's line, a deck's
+   icon over its name. Picked, a tile fills with its category's colour and
+   its icon colours in; the rest stay System White. */
+.filter--options {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 13px 10px;
+  padding: 0 26px;
+}
+.filter--opt {
+  --tile: var(--system-white);
+  --ink: var(--system-black);
+  aspect-ratio: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 0;
+  border: 0.771px solid var(--system-black);
+  border-radius: 15px;
+  background: var(--system-white);
+  color: var(--system-black);
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: background-color 0.25s, color 0.25s, transform 0.25s cubic-bezier(0.3, 1.5, 0.5, 1);
+}
+.filter--opt:active { transform: scale(0.95); }
+.filter--opt[data-deck="all"] { --tile: var(--light-pink); }
+.filter--opt[data-deck="protection"] { --tile: var(--protection); --ink: var(--ui-white); }
+.filter--opt[data-deck="calm"] { --tile: var(--calm); --ink: var(--ui-white); }
+.filter--opt[data-deck="luck"] { --tile: var(--luck); }
+.filter--opt[data-deck="success"] { --tile: var(--success); --ink: var(--ui-white); }
+.filter--opt[aria-pressed="true"] {
+  background: var(--tile);
+  color: var(--ink);
+}
+.filter--icon {
+  position: relative;
+  width: 40px;
+  height: 40px;
+}
+.filter--icon img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  transition: opacity 0.25s;
+}
+.filter--opt .is-on,
+.filter--opt[aria-pressed="true"] .is-off { opacity: 0; }
+.filter--opt[aria-pressed="true"] .is-on { opacity: 1; }
+/* Picked, the icon gives a little hop */
+.filter--opt[aria-pressed="true"] .filter--icon { animation: tile-hop 0.4s cubic-bezier(0.3, 1.6, 0.5, 1); }
+@keyframes tile-hop {
+  40% { transform: scale(1.15) rotate(-8deg); }
+}
+.filter--name {
+  font-family: var(--font-display);
+  font-size: 14px;
+  letter-spacing: var(--tracking);
+  line-height: normal;
+  white-space: nowrap;
+}
+/* Whichever tile is picked, its name is set in Medium */
+.filter--opt[aria-pressed="true"] .filter--name { font-weight: 500; }
 
 /* Opened card: the screen frosted over, the card turned over on top */
 .overlay {

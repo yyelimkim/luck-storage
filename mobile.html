@@ -7,7 +7,7 @@
   <meta name="theme-color" content="#f0f0f0">
   <title>행운보관소</title>
   <link rel="stylesheet" href="design-system.css?v=7">
-  <link rel="stylesheet" href="mobile.css?v=75">
+  <link rel="stylesheet" href="mobile.css?v=76">
 </head>
 <body>
   <!-- iPhone 17 screen (Figma 97:630 at rest, 97:730 while dialing), laid out at
@@ -57,10 +57,18 @@
     <!-- Filter (the header's deck name): pick a category, then Done -->
     <div class="filter" id="filter" aria-hidden="true">
       <div class="filter--scrim"></div>
-      <div class="filter--sheet" role="dialog" aria-label="Categories">
+      <div class="filter--sheet" role="dialog" aria-labelledby="filter-title">
+        <div class="filter--bar">
+          <button type="button" class="filter--close" aria-label="Close">
+            <img src="assets/filter/close.svg" width="26" height="26" alt="">
+          </button>
+          <p class="filter--title" id="filter-title">Filter</p>
+          <button type="button" class="filter--confirm">
+            Confirm <img src="assets/filter/check.svg" width="10" height="7.3773" alt="">
+          </button>
+        </div>
         <p class="filter--label">Categories</p>
         <div class="filter--options" id="filter-options"></div>
-        <button type="button" class="filter--done">Done</button>
       </div>
     </div>
 
@@ -78,6 +86,6 @@
   </div>
 
   <script src="cards.js?v=21"></script>
-  <script src="mobile.js?v=70"></script>
+  <script src="mobile.js?v=71"></script>
 </body>
 </html>

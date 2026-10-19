@@ -835,9 +835,16 @@ const filterOpts = document.getElementById('filter-options');
 const deckTitle = document.querySelector('.head--title');
 const DECKS = ['all', 'protection', 'calm', 'luck', 'success'];
 let picked = deckName;
+const deckLabel = (d) => (d === 'all' ? 'All Cards' : d[0].toUpperCase() + d.slice(1));
+// A tile per deck: its icon over its name, in colour once picked
 filterOpts.innerHTML = DECKS.map((d) =>
-  `<button type="button" class="filter--opt${d === 'all' ? ' filter--opt-all' : ''}" data-deck="${d}">
-    ${d === 'all' ? 'All Cards' : categoryTag(d)}</button>`).join('');
+  `<button type="button" class="filter--opt" data-deck="${d}">
+    <span class="filter--icon">
+      <img class="is-off" src="assets/filter/${d}-off.svg" alt="">
+      <img class="is-on" src="assets/filter/${d}-on.svg" alt="">
+    </span>
+    <span class="filter--name">${deckLabel(d)}</span>
+  </button>`).join('');
 const opts = [...filterOpts.children];
 const showPicked = () => opts.forEach((o) => o.setAttribute('aria-pressed', String(o.dataset.deck === picked)));
 opts.forEach((o) => o.addEventListener('click', () => { picked = o.dataset.deck; showPicked(); }));
@@ -856,7 +863,8 @@ function closeFilter() {
 }
 deckTitle.addEventListener('click', openFilter);
 filterEl.querySelector('.filter--scrim').addEventListener('click', closeFilter);
-filterEl.querySelector('.filter--done').addEventListener('click', () => {
+filterEl.querySelector('.filter--close').addEventListener('click', closeFilter);
+filterEl.querySelector('.filter--confirm').addEventListener('click', () => {
   closeFilter();
   if (picked !== deckName) setDeck(picked);
 });
@@ -875,8 +883,7 @@ async function setDeck(name) {
   slotOf = IMAGES.map((_, i) => deck.indexOf(i));
   // Keep the centred card if it's in the new deck, else start at its top
   pos = posTarget = Math.max(0, slotOf[centred]);
-  deckTitle.querySelector('h1').textContent =
-    name === 'all' ? 'All Cards' : name[0].toUpperCase() + name.slice(1);
+  deckTitle.querySelector('h1').textContent = deckLabel(name);
   render();
   [fan, dial].forEach((el) => {
     el.getAnimations().forEach((a) => a.cancel());
