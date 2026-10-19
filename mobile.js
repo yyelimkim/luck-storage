@@ -300,10 +300,9 @@ const FLIP_MS = 700;
 const FLIP_EASE = 'cubic-bezier(0.65, 0, 0.35, 1)';  // same as the desktop flip
 const SHEET_MS = 450;
 const INFO_MARGIN = 16;    // the turned-over card's side margins on screen (350:3773)
-const INFO_H = 580;        // its height at most, laid out at the screen's width
+const CARD_RATIO = 1486 / 1040;  // the card artwork's height to width
 const INFO_TOP = 64;       // under the back arrow's row
 const PEEK = 148;          // how much of the sheet shows under the card
-const CARD_GAP = 24;       // least space above and below the card
 const INFO_DROP = 0.25;    // share of the card's spare room that goes above it
 const PANEL_RADIUS = 37.13;  // the card's corner at the screen's width
 const SHEET_RADIUS = 30;
@@ -330,17 +329,19 @@ function stageBox(el) {
 
 // The turned-over card: the screen's width less 16px either side on any
 // phone, in the space between the back arrow's row and the peeking sheet,
-// nearer the top (INFO_DROP of the spare room above it). On screens too
-// short for all of it, it's shorter rather than narrower. k is its scale
-// from 402 wide; h its height laid out at that width.
+// nearer the top (INFO_DROP of the spare room above it). It keeps the
+// card's proportions at that width; on screens too short for all of it, it
+// runs under the peeking sheet. k is its scale from 402 wide; h its height
+// laid out at that width.
 function infoBox() {
   const above = headTop() + INFO_TOP;
   const room = sheetTop() - above;
   const margin = document.documentElement.classList.contains('is-phone') ? INFO_MARGIN / fitScale : INFO_MARGIN;
   const width = STAGE_W - 2 * margin;
   const k = width / STAGE_W;
-  const height = Math.min(INFO_H * k, room - 2 * CARD_GAP);
-  return { left: margin, top: above + (room - height) * INFO_DROP, width, height, k, h: height / k };
+  // Always the card's own proportions at that width
+  const height = width * CARD_RATIO;
+  return { left: margin, top: above + Math.max(0, room - height) * INFO_DROP, width, height, k, h: height / k };
 }
 
 const midBox = (a, b) => ({
