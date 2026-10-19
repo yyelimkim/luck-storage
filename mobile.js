@@ -840,8 +840,8 @@ const deckLabel = (d) => (d === 'all' ? 'All Cards' : d[0].toUpperCase() + d.sli
 filterOpts.innerHTML = DECKS.map((d) =>
   `<button type="button" class="filter--opt" data-deck="${d}">
     <span class="filter--icon">
-      <img class="is-off" src="assets/filter/${d}-off.svg" alt="">
-      <img class="is-on" src="assets/filter/${d}-on.svg" alt="">
+      <img class="is-off" src="assets/filter/${d}-off.svg?v=2" alt="">
+      <img class="is-on" src="assets/filter/${d}-on.svg?v=2" alt="">
     </span>
     <span class="filter--name">${deckLabel(d)}</span>
   </button>`).join('');
