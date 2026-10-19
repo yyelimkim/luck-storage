@@ -388,19 +388,12 @@ img { -webkit-user-drag: none; }
 .profile--clouds, .profile--dial, .profile--go { position: absolute; display: block; }
 .profile--clouds { left: -0.771px; top: -0.771px; }
 .profile--dial { left: 222px; top: -0.771px; }
-/* The arrow shows only on hover (or press), sliding in from the left */
 .profile--go {
   left: 332px;
   top: 98px;
   width: 22px;
   height: 22px;
-  opacity: 0;
-  transform: translateX(-8px);
-  transition: opacity 0.2s, transform 0.25s cubic-bezier(0.2, 0.8, 0.2, 1);
 }
-.profile--fortune:hover .profile--go,
-.profile--fortune:active .profile--go,
-.profile--fortune:focus-visible .profile--go { opacity: 1; transform: none; }
 .profile--fortune .profile--date,
 .profile--fortune .profile--find { position: relative; }
 .profile--fortune .profile--date { font-size: 14px; white-space: pre; }
