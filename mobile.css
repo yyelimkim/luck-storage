@@ -305,15 +305,6 @@ img { -webkit-user-drag: none; }
   left: 227.74px;
   top: calc(137.77px - var(--up));
   z-index: 1;
-  transform-origin: 50% 0;
-}
-[data-view="profile"] .profile--avatar { animation: avatar-sway 1.6s 0.15s cubic-bezier(0.3, 0.7, 0.4, 1) both; }
-@keyframes avatar-sway {
-  0% { transform: rotate(0); }
-  25% { transform: rotate(-3deg); }
-  55% { transform: rotate(2deg); }
-  80% { transform: rotate(-0.8deg); }
-  100% { transform: rotate(0); }
 }
 .profile--handle { margin: 12px 15px 0; }
 .profile--label { margin: 38px 26px 5px; }
