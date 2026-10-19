@@ -604,10 +604,11 @@ async function flipOpen(card) {
   flipBusy = false;
 }
 
-// Back: the sheet down if it's up, otherwise the card turned back over
+// Back to the home screen: from the full sheet everything drops away,
+// otherwise the card turns back over into the fan
 async function flipClose() {
   if (!flip || flipBusy) return;
-  if (sheet.p > 0) { snapTo(0); return; }
+  if (sheet.p > 0) { goHome(); return; }
   flipBusy = true;
   document.documentElement.classList.remove('is-flipped');
   await sheetTo(-PEEK / sheetTop(), SHEET_MS * 0.6);
@@ -624,7 +625,7 @@ async function flipClose() {
   flipBusy = false;
 }
 
-// Home from the claimed sheet: it all drops away, no turning back over
+// Home from the full or claimed sheet: it all drops away, no turning back over
 async function goHome() {
   if (!flip || flipBusy) return;
   flipBusy = true;
