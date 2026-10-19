@@ -305,7 +305,21 @@ img { -webkit-user-drag: none; }
 .filter--opt[aria-pressed="true"] { filter: none; }
 .filter--opt:active { transform: scale(0.96); }
 .filter--opt .tag { display: flex; }
-.filter--opt-all[aria-pressed="true"] { background: var(--system-white); }
+/* All Cards has no colour of its own, so it changes the classic way: unpicked
+   it's quiet (Dark Grey text and line on UI White), picked it's filled System
+   Black with UI White text in SemiBold */
+.filter--opt-all {
+  filter: none;
+  color: var(--dark-grey);
+  border-color: color-mix(in srgb, var(--dark-grey) 40%, transparent);
+  transition: background-color 0.25s, border-color 0.25s, color 0.25s, transform 0.25s cubic-bezier(0.3, 1.5, 0.5, 1);
+}
+.filter--opt-all[aria-pressed="true"] {
+  background: var(--system-black);
+  border-color: var(--system-black);
+  color: var(--ui-white);
+  font-weight: 600;
+}
 .filter--opt-all {
   grid-column: 1 / -1;
   justify-self: stretch;
