@@ -721,15 +721,7 @@ button.fortune--card:active { transform: scale(0.98); }
 .fortune--label { color: var(--dark-grey); }
 .fortune--ritual { gap: 26px; }
 .fortune--art { display: block; height: 90px; }
-.fortune--art img { display: block; }
-.fortune--art .fortune--thumb {
-  width: 88px;
-  height: 88px;
-  border-radius: 50%;
-  border: 0.771px solid var(--system-black);
-  object-fit: cover;
-  object-position: 50% 30%;
-}
+.fortune--art img { display: block; width: auto; height: 87px; }
 .fortune--ritual-name {
   display: flex;
   align-items: center;

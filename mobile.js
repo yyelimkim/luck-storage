@@ -932,10 +932,15 @@ const fortuneEl = document.getElementById('fortune');
 const fortuneRead = document.getElementById('fortune-read');
 const fortuneSee = document.getElementById('fortune-see');
 const birthInput = document.getElementById('fortune-birth-input');
-// Ritual line art, where a card has it; the rest show their artwork
+// The cards with line drawings, filled UI White like the tile they sit on.
+// Today's ritual is always one of these.
 const RITUAL_ART = {
-  '돼지꿈.png': '<img src="assets/fortune/pig-line.svg" width="90.5824" height="87.2394" alt="">',
+  '명태 액막이.png': 'assets/fortune/ritual-pollock.svg',
+  '돌팝 쌓기.png': 'assets/fortune/ritual-stones.svg',
+  '부처님 배 만지기.png': 'assets/fortune/ritual-buddha.svg',
+  '돼지꿈.png': 'assets/fortune/pig-line.svg',
 };
+const RITUALS = Object.keys(RITUAL_ART);
 let luckyCard = START;
 let fortuneTimer;
 
@@ -951,8 +956,8 @@ function fillFortune() {
   const seed = day + b.getMonth() * 31 + b.getDate();
   const [headline, body] = FORTUNES[seed % FORTUNES.length];
   const [colourName, colour] = LUCKY_COLOURS[(seed * 7) % LUCKY_COLOURS.length];
-  luckyCard = (seed * 5) % IMAGES.length;
-  const card = IMAGES[luckyCard];
+  const card = RITUALS[(seed * 5) % RITUALS.length];
+  luckyCard = IMAGES.indexOf(card);
   fortuneEl.querySelectorAll('.fortune--today').forEach((p) => { p.textContent = longDate(now); });
   document.getElementById('fortune-birth').textContent = longDate(b);
   birthInput.value = birthday;
@@ -960,8 +965,7 @@ function fillFortune() {
   document.getElementById('fortune-body').textContent = body;
   document.getElementById('fortune-swatch').style.background = colour;
   document.getElementById('fortune-colour').textContent = colourName;
-  document.getElementById('fortune-art').innerHTML = RITUAL_ART[card]
-    || `<img class="fortune--thumb" src="${englishSrc(card)}" alt="">`;
+  document.getElementById('fortune-art').innerHTML = `<img src="${RITUAL_ART[card]}" alt="">`;
   document.getElementById('fortune-ritual-name').textContent = cardName(card);
 }
 // Step by step: the ring fills (loading), the clovers turn (ready), then the
