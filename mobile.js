@@ -1042,22 +1042,27 @@ birthInput.addEventListener('change', () => {
   try { localStorage.setItem('birthday', birthday); } catch (e) {}
   loadFortune();
 });
-// Off to the home screen: the fan turns to today's lucky ritual and, once
-// it's settled in the middle (and Daily Fortune has slid away), the card
-// flips over to its back
-function goClaim() {
+// Off to the home screen to open a card: the fan turns to it and, once it's
+// settled in the middle (and whatever was over Home has gone), it flips
+// over to its back
+function openOnHome(i) {
   closeFortune();
   if (deckName !== 'all') setDeck('all');
   tabs.forEach((o) => o.toggleAttribute('aria-current', o.dataset.tab === 'home'));
   stage.dataset.view = 'home';
-  goTo(pos + relOfSlot(slotOf[luckyCard]));
+  goTo(pos + relOfSlot(slotOf[i]));
   const start = performance.now();
   (function waitToFlip() {
     if (performance.now() - start < 500 || Math.abs(posTarget - pos) > 0.01) {
       requestAnimationFrame(waitToFlip);
       return;
     }
-    flipOpen(cards[luckyCard]);
+    flipOpen(cards[i]);
   }());
 }
+// Today's lucky ritual, and the profile's recently earned luck
+const goClaim = () => openOnHome(luckyCard);
+document.querySelectorAll('.profile--earned').forEach((b) => {
+  b.addEventListener('click', () => openOnHome(IMAGES.indexOf(b.dataset.card)));
+});
 document.getElementById('fortune-ritual').addEventListener('click', goClaim);

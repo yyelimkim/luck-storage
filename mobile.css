@@ -431,7 +431,13 @@ img { -webkit-user-drag: none; }
   border-radius: 16px;
   background: var(--earned, var(--yellow-green));
   scroll-snap-align: start;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: transform 0.15s;
 }
+.profile--earned:active { transform: scale(0.97); }
 /* Each card's line drawing, in the card's own colour, at one height */
 .profile--earned img { display: block; flex: none; width: auto; height: 85px; }
 /* UI White text on Forest Green, as on the filter's Calm tile */

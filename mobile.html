@@ -7,7 +7,7 @@
   <meta name="theme-color" content="#f0f0f0">
   <title>행운보관소</title>
   <link rel="stylesheet" href="design-system.css?v=7">
-  <link rel="stylesheet" href="mobile.css?v=109">
+  <link rel="stylesheet" href="mobile.css?v=110">
 </head>
 <body>
   <!-- iPhone 17 screen (Figma 97:630 at rest, 97:730 while dialing), laid out at
@@ -61,22 +61,22 @@
         </button>
         <h3 class="profile--label">Recently Earned Luck</h3>
         <div class="profile--recent">
-          <div class="profile--earned" style="--earned: var(--yellow-green)">
+          <button type="button" class="profile--earned" data-card="명태 액막이.png" style="--earned: var(--yellow-green)">
             <img src="assets/profile/pollock.svg" width="88" height="85" alt="">
             <p>Pollock Protection<br>Charm</p>
-          </div>
-          <div class="profile--earned" style="--earned: var(--v2-blue)">
+          </button>
+          <button type="button" class="profile--earned" data-card="돌팝 쌓기.png" style="--earned: var(--v2-blue)">
             <img src="assets/profile/stones.svg" width="103" height="102" alt="">
             <p>Stacking<br>Stones</p>
-          </div>
-          <div class="profile--earned" style="--earned: var(--forest-green)">
+          </button>
+          <button type="button" class="profile--earned" data-card="부처님 배 만지기.png" style="--earned: var(--forest-green)">
             <img src="assets/profile/buddha.svg" width="111" height="109" alt="">
             <p>Rubbing<br>Buddha’s Belly</p>
-          </div>
-          <div class="profile--earned" style="--earned: var(--v2-blue)">
+          </button>
+          <button type="button" class="profile--earned" data-card="돼지꿈.png" style="--earned: var(--v2-blue)">
             <img src="assets/profile/pig.svg" width="90.58" height="87.24" alt="">
             <p>Pig<br>Dreams</p>
-          </div>
+          </button>
         </div>
       </div>
     </section>
@@ -193,6 +193,6 @@
   </div>
 
   <script src="cards.js?v=21"></script>
-  <script src="mobile.js?v=83"></script>
+  <script src="mobile.js?v=84"></script>
 </body>
 </html>
