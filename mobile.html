@@ -7,7 +7,7 @@
   <meta name="theme-color" content="#f0f0f0">
   <title>행운보관소</title>
   <link rel="stylesheet" href="design-system.css?v=7">
-  <link rel="stylesheet" href="mobile.css?v=112">
+  <link rel="stylesheet" href="mobile.css?v=117">
 </head>
 <body>
   <!-- iPhone 17 screen (Figma 97:630 at rest, 97:730 while dialing), laid out at
@@ -30,6 +30,7 @@
         <h1>All Cards</h1>
         <img src="assets/mobile/chevron.svg" width="13.3333" height="7.33333" alt="">
       </button>
+      <h1 class="head--page">Wish Tree</h1>
       <div class="head--count" id="count">
         <img src="assets/mobile/clover-outline.svg" width="22" height="22" alt="">
         <span id="count-num">12</span>
@@ -80,6 +81,25 @@
         </div>
       </div>
     </section>
+
+    <!-- Wish Tree (the Tree tab): anonymous wishes hanging on a tree; tap one
+         to read it. The scene is drawn by tree.js. -->
+    <section class="tree" id="tree" aria-label="Wish Tree">
+      <div class="tree--scene" id="tree-scene"></div>
+      <p class="tree--hint">Tap a wish to read it</p>
+    </section>
+    <div class="wish" id="wish" aria-hidden="true">
+      <div class="wish--scrim"></div>
+      <button type="button" class="wish--close" aria-label="Close"><img src="assets/filter/close.svg" alt=""></button>
+      <div class="wish--slip" role="dialog" aria-label="A wish">
+        <svg class="wish--paper" viewBox="0 0 240 440" preserveAspectRatio="none" aria-hidden="true">
+          <path d="M0.6 0.6H239.4V439.4L120 404L0.6 439.4Z" vector-effect="non-scaling-stroke"/>
+        </svg>
+        <span class="wish--hole"></span>
+        <p class="wish--text" id="wish-text"></p>
+        <p class="wish--from">Anonymous</p>
+      </div>
+    </div>
 
     <!-- Daily Fortune (Figma 395:7512, 395:7550, 397:208): opened from the
          profile's fortune card. The clover ring fills while today's fortune
@@ -193,6 +213,7 @@
   </div>
 
   <script src="cards.js?v=21"></script>
-  <script src="mobile.js?v=86"></script>
+  <script src="mobile.js?v=87"></script>
+  <script src="tree.js?v=4"></script>
 </body>
 </html>

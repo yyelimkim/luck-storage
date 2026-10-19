@@ -313,7 +313,9 @@ img { -webkit-user-drag: none; }
 }
 [data-view="profile"] .fan,
 [data-view="profile"] .dial,
-[data-view="profile"] .head--title { opacity: 0; pointer-events: none; }
+[data-view="profile"] .head--title,
+[data-view="tree"] .fan,
+[data-view="tree"] .dial { opacity: 0; pointer-events: none; }
 .fan, .dial, .head--title { transition: opacity 0.3s; }
 .profile--hero {
   position: relative;
@@ -1320,4 +1322,185 @@ button.fortune--card:active { transform: scale(0.98); }
 .draw--knot {
   border: 1px solid var(--system-black);
   border-radius: 92px;
+}
+
+/* Wish Tree (the Tree tab): the scene fills the screen, its ground on the
+   bottom edge, scrolling if the screen is shorter than it. Paper grain over
+   it, as on the cards. */
+.head--page {
+  display: none;
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: 24px;
+  letter-spacing: var(--tracking);
+  line-height: normal;
+  color: var(--system-black);
+}
+[data-view="tree"] .head--title { display: none; }
+[data-view="tree"] .head--page { display: block; }
+.tree {
+  position: absolute;
+  inset: 0;
+  z-index: 15;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  background: var(--v2-blue);
+  scrollbar-width: none;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s, visibility 0s 0.3s;
+}
+[data-view="tree"] .tree {
+  opacity: 1;
+  visibility: visible;
+  transition: opacity 0.3s;
+}
+.tree--scene {
+  position: relative;
+  flex: none;
+  margin-top: auto;  /* on the bottom edge, still scrollable when taller */
+  width: 402px;
+  height: 874px;
+}
+.tree--scene svg { display: block; }
+.tree--scene::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: url("assets/system/paper.png") 0 0 / 402px auto;
+  mix-blend-mode: multiply;
+  pointer-events: none;
+}
+/* The strips sway on their strings, each in its own time */
+.tree--wish {
+  cursor: pointer;
+  outline: none;
+  animation: wish-sway 4s ease-in-out infinite alternate;
+}
+.tree--wish:focus-visible path:first-of-type { stroke-dasharray: 2 2; }
+@keyframes wish-sway {
+  from { rotate: -3deg; }
+  to { rotate: 3deg; }
+}
+.tree--hint {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: calc(44px + 54px + 8px);
+  width: max-content;
+  margin: 0 auto;
+  padding: 7px 18px;
+  border-radius: 36px;
+  background: var(--system-white);
+  border: 0.771px solid var(--system-black);
+  font-family: var(--font-display);
+  font-size: 14px;
+  letter-spacing: var(--tracking);
+  color: var(--system-black);
+  z-index: 1;
+  pointer-events: none;
+}
+.is-phone .tree--hint { top: calc(54px + 8px); }
+
+/* A wish up close: the strip, much bigger, over a dimmed tree */
+.wish {
+  position: absolute;
+  inset: 0;
+  z-index: 60;
+  visibility: hidden;
+  transition: visibility 0s 0.52s;
+}
+.wish.is-open { visibility: visible; transition: none; }
+.wish--scrim {
+  position: absolute;
+  inset: 0;
+  background: color-mix(in srgb, var(--system-black) 45%, transparent);
+  opacity: 0;
+  transition: opacity 0.4s;
+}
+.wish.is-open .wish--scrim { opacity: 1; }
+/* The header makes way for the close button while a wish is open */
+.is-reading .head { opacity: 0; pointer-events: none; }
+.wish--close {
+  position: absolute;
+  right: 8px;
+  top: 54px;
+  width: 44px;
+  height: 44px;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: var(--system-white);
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+.is-phone .wish--close { top: 10px; }
+.wish.is-open .wish--close { opacity: 1; }
+.wish--slip {
+  --paper: var(--system-white);
+  position: absolute;
+  left: 81px;  /* (402 - 240) / 2 */
+  top: 50%;
+  width: 240px;
+  height: 440px;
+  margin-top: -220px;
+  box-sizing: border-box;
+  padding: 64px 26px 0;
+  transform-origin: 50% 50%;
+}
+.wish:not(.is-open) .wish--slip { opacity: 0; }
+/* Its string runs up off the screen */
+.wish--slip::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: calc(100% - 26px);
+  width: 1px;
+  height: 100vh;
+  background: var(--system-black);
+}
+.wish--paper {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+.wish--paper path {
+  fill: var(--paper);
+  stroke: var(--system-black);
+  stroke-width: 1.2px;
+  stroke-linejoin: round;
+}
+.wish--hole {
+  position: absolute;
+  left: calc(50% - 6px);
+  top: 20px;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--v2-blue);
+  border: 1.2px solid var(--system-black);
+  box-sizing: border-box;
+}
+.wish--text,
+.wish--from {
+  position: relative;
+  margin: 0;
+  font-family: var(--font-display);
+  letter-spacing: var(--tracking);
+  line-height: 1.35;
+  color: var(--system-black);
+}
+.wish--text { font-size: 22px; }
+.wish--from {
+  position: absolute;
+  left: 26px;
+  bottom: 64px;
+  font-size: 14px;
 }

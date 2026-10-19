@@ -847,8 +847,8 @@ addEventListener('keydown', (e) => {
 const tabs = [...document.querySelectorAll('.m-nav--tab')];
 tabs.forEach((t) => t.addEventListener('click', () => {
   tabs.forEach((o) => o.toggleAttribute('aria-current', o === t));
-  // Profile swaps the cards for the profile; Tree isn't built yet
-  stage.dataset.view = t.dataset.tab === 'profile' ? 'profile' : 'home';
+  // Profile and Tree swap the cards for their own page
+  stage.dataset.view = t.dataset.tab;
 }));
 
 // Filter (the header's deck name): a sheet of the categories, picked one at a
