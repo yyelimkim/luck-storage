@@ -351,7 +351,7 @@ img { -webkit-user-drag: none; }
 .filter--opt[data-deck="protection"] { --tile: var(--protection); --ink: var(--ui-white); }
 .filter--opt[data-deck="calm"] { --tile: var(--calm); --ink: var(--ui-white); }
 .filter--opt[data-deck="luck"] { --tile: var(--luck); }
-.filter--opt[data-deck="success"] { --tile: var(--success); --ink: var(--ui-white); }
+.filter--opt[data-deck="success"] { --tile: var(--success); }
 .filter--opt[aria-pressed="true"] {
   background: var(--tile);
   color: var(--ink);
@@ -696,16 +696,18 @@ img { -webkit-user-drag: none; }
   -webkit-mask-image: linear-gradient(to top, #000 60%, transparent);
   mask-image: linear-gradient(to top, #000 60%, transparent);
 }
-/* Figma 350:5221: clover, title and line, then the way home */
+/* Figma 350:5221: clover, title and line, then the way home, which sits
+   where the home screen's tab bar does (42 above the bottom edge, 51 tall) */
 .claimed--body {
   position: absolute;
   left: 24px;
   top: 66px;
+  bottom: 36px;  /* + the panel's own 6 = 42 */
   width: 371px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 45px;
+  justify-content: space-between;
 }
 .claimed--text {
   display: flex;
@@ -732,7 +734,8 @@ img { -webkit-user-drag: none; }
 .claimed--sub { font-weight: 400; font-size: 16px; }
 .claimed--btn {
   width: 371px;
-  padding: 15px;
+  height: 51px;
+  padding: 0 15px;
   border-radius: 43px;
   background: var(--ui-white);
   border: 1px solid var(--system-black);
