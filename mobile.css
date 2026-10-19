@@ -616,9 +616,9 @@ img { -webkit-user-drag: none; }
 .sheet--claimed {
   position: absolute;
   left: -8px;
-  bottom: 0;
+  bottom: 6px;
   width: 417px;
-  height: 404px;
+  height: 414px;
   opacity: 0;
   pointer-events: none;
   transition: opacity 0.5s;
@@ -628,7 +628,7 @@ img { -webkit-user-drag: none; }
 .claimed--glow {
   position: absolute;
   left: 0;
-  bottom: 0;
+  bottom: -14px;
   width: 100%;
   height: 557px;
   /* Each card colour has its own deep shade (GLOW_COLOR in cards.js) */
@@ -644,18 +644,18 @@ img { -webkit-user-drag: none; }
 .claimed--body {
   position: absolute;
   left: 24px;
-  top: 59px;
+  top: 66px;
   width: 371px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 18px;
+  gap: 45px;
 }
 .claimed--text {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 13px;
+  gap: 14px;
   width: 100%;
 }
 .claimed--clover {
