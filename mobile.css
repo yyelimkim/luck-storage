@@ -185,14 +185,15 @@ img { -webkit-user-drag: none; }
 .dial--line.is-current { height: 20px; background: var(--dark-grey); }
 
 /* Behind the tab bar: mostly a System White gradient, with a light blur
-   that builds up towards the bar. The blur stops short of the bottom so it
-   never reaches the frame's rounded corners. */
+   that builds up towards the bar. It reaches 24px above the bar; the blur
+   stops at the bar's bottom edge so it never reaches the frame's rounded
+   corners. */
 .m-navfade {
   position: absolute;
   left: 0;
   right: 0;
   bottom: 0;
-  height: 150px;
+  height: calc(var(--nav-bottom, 42px) + 51px + 24px);
   z-index: 35;
   pointer-events: none;
   background: linear-gradient(to bottom,
@@ -205,7 +206,7 @@ img { -webkit-user-drag: none; }
   left: 0;
   right: 0;
   top: 0;
-  bottom: 60px;
+  bottom: var(--nav-bottom, 42px);
 }
 .m-navfade i:nth-child(1) {
   -webkit-backdrop-filter: blur(1px);
