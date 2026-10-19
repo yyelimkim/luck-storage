@@ -156,7 +156,7 @@ img { -webkit-user-drag: none; }
   pointer-events: none;
   transition: background-color 180ms cubic-bezier(0.22, 1, 0.36, 1), height 180ms cubic-bezier(0.22, 1, 0.36, 1);
 }
-.dial--line.is-current { height: 24px; background: #8f8f8f; }
+.dial--line.is-current { height: 20px; background: #8f8f8f; }
 
 /* Tab bar: a pill outlined in the design system's line, the current tab
    on a grey pill of its own */

@@ -46,8 +46,9 @@ const HEAD_GAP = 40;      // least space kept between header and cards
 
 const FOCUS_SCALE = 1.12;  // the centre card grows by this much over its neighbours
 const SIDE_OPACITY = 0.8;  // neighbours one slot out fade to this
-const LINE_STEP = 9;   // degrees between the dial's lines, one per card
-const LINE_R = 96;     // the lines' inner radius on the dial (215 across)
+const LINE_STEP = 3.8; // degrees between the dial's lines, one per card
+const LINE_R = 260;    // the lines' arc: much wider than the dial, so flatter...
+const LINE_TOP = 96;   // ...with its top where the dial's own edge would be
 const NAV_SPACE = 100; // the tab bar and its gaps, kept clear under the fan and dial
 const START = IMAGES.indexOf('테루테루보즈.png');  // centred in the Figma frames
 
@@ -166,6 +167,7 @@ function render() {
   // upright; they fade out towards the ends, where they wrap round
   lines.forEach((el, i) => {
     const rel = relOf(i);
+    el.style.top = `calc(50% + ${LINE_R - LINE_TOP}px)`;
     el.style.transform = `rotate(${rel * LINE_STEP}deg) translateY(calc(-${LINE_R}px - 100%))`;
     el.style.opacity = Math.max(0, Math.min(1, (N / 2 - 0.5 - Math.abs(rel)) / 2)).toFixed(3);
     el.classList.toggle('is-current', Math.abs(rel) < 0.5);
