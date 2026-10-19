@@ -301,7 +301,7 @@ img { -webkit-user-drag: none; }
   justify-self: end;
   display: flex;
   align-items: center;
-  gap: 3px;
+  gap: 5px;
   color: var(--system-black);
   font-family: var(--font-display);
   font-weight: 400;
