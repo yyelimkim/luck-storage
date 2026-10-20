@@ -131,11 +131,13 @@
     const own = g.dataset.own != null;
     text.textContent = own ? mine[Number(g.dataset.own)].text : WISHES[Number(g.dataset.wish) % WISHES.length];
     fromEl.textContent = own ? 'Anonymous · yours' : 'Anonymous';
+    slip.classList.remove('is-twist', 'is-pressing');
     slip.style.setProperty('--paper', g.dataset.fill);
     reader.classList.add('is-open');
     stageEl.classList.add('is-reading');
     reader.setAttribute('aria-hidden', 'false');
     from = { g, box: toStage(paper.getBoundingClientRect()) };
+    showSent(key());
     // The tree leans in towards the slip that was tapped
     const sb = scene.getBoundingClientRect(), pb = paper.getBoundingClientRect();
     const k = sb.width / scene.offsetWidth;
@@ -171,6 +173,43 @@
     const g = e.target.closest('.tree--wish');
     if (g && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); openWish(g); }
   });
+  // Hold an open wish to send it good luck: the outline draws in white as
+  // it's held; held long enough, the slip twists round and the luck is sent
+  const HOLD_MS = 650;
+  const hold = document.getElementById('wish-hold');
+  const sent = new Set();
+  let holdTimer = 0;
+  const key = () => from && (from.g.dataset.own != null ? `own${from.g.dataset.own}` : `w${from.g.dataset.wish}`);
+  function showSent(k) {
+    const done = sent.has(k);
+    slip.classList.toggle('is-sent', done);
+    hold.textContent = done ? 'Good luck sent ✦' : 'Hold to send good luck';
+  }
+  slip.addEventListener('pointerdown', (e) => {
+    if (!from || sent.has(key())) return;
+    e.preventDefault();
+    Sounds.unlock();
+    slip.classList.add('is-pressing');
+    clearTimeout(holdTimer);
+    holdTimer = setTimeout(() => {
+      const k = key();
+      sent.add(k);
+      slip.classList.remove('is-pressing');
+      slip.classList.remove('is-twist');
+      void slip.offsetWidth;
+      slip.classList.add('is-twist');
+      Sounds.chime();
+      showSent(k);
+      hold.classList.remove('is-sent');
+      void hold.offsetWidth;
+      hold.classList.add('is-sent');
+    }, HOLD_MS);
+  });
+  const letGo = () => { clearTimeout(holdTimer); slip.classList.remove('is-pressing'); };
+  slip.addEventListener('pointerup', letGo);
+  slip.addEventListener('pointerleave', letGo);
+  slip.addEventListener('pointercancel', letGo);
+  slip.addEventListener('contextmenu', (e) => e.preventDefault());
   reader.querySelector('.wish--scrim').addEventListener('click', closeWish);
   reader.querySelector('.wish--close').addEventListener('click', closeWish);
   addEventListener('keydown', (e) => { if (e.key === 'Escape') closeWish(); });

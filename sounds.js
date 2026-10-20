@@ -152,21 +152,24 @@ const Sounds = (() => {
     n.start(t);
   }
 
-  // A button or tab pressed: a light, short tick
+  // A button or tab pressed: a soft, rounded wooden tock
   function tap() {
     const a = audio();
     const t = a.currentTime;
     const o = a.createOscillator();
     const g = a.createGain();
-    o.type = 'sine';
-    o.frequency.setValueAtTime(1400, t);
-    o.frequency.exponentialRampToValueAtTime(700, t + 0.04);
+    const lp = a.createBiquadFilter();
+    lp.type = 'lowpass';
+    lp.frequency.value = 1800;
+    o.type = 'triangle';
+    o.frequency.setValueAtTime(560, t);
+    o.frequency.exponentialRampToValueAtTime(360, t + 0.05);
     g.gain.setValueAtTime(0.001, t);
-    g.gain.exponentialRampToValueAtTime(0.09, t + 0.004);
-    g.gain.exponentialRampToValueAtTime(0.001, t + 0.06);
-    o.connect(g).connect(a.destination);
+    g.gain.exponentialRampToValueAtTime(0.16, t + 0.004);
+    g.gain.exponentialRampToValueAtTime(0.001, t + 0.08);
+    o.connect(lp).connect(g).connect(a.destination);
     o.start(t);
-    o.stop(t + 0.07);
+    o.stop(t + 0.09);
   }
 
   // A grape eaten: a juicy pop — a quick rising blip with a crunchy crackle

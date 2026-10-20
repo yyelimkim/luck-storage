@@ -1606,6 +1606,33 @@ button.fortune--card:active { transform: scale(0.98); }
   transform-origin: 50% 50%;
 }
 .wish:not(.is-open) .wish--slip { opacity: 0; }
+/* Held, the slip's outline draws in white; let go before it's done and it
+   fades back. Held long enough, it twists round and sends good luck. */
+.wish--slip { touch-action: none; -webkit-user-select: none; user-select: none; cursor: pointer; }
+.wish--slip.is-pressing .wish--paper path { stroke: var(--system-white); stroke-width: 3px; transition: stroke 0.6s, stroke-width 0.6s; }
+.wish--slip.is-sent .wish--paper path { stroke: var(--system-white); stroke-width: 3px; }
+.wish--slip.is-twist { animation: twist 0.9s cubic-bezier(0.3, 0.8, 0.3, 1); }
+@keyframes twist {
+  0% { rotate: y 0deg; }
+  100% { rotate: y 360deg; }
+}
+.wish--hold {
+  position: absolute;
+  left: 16px;
+  right: 16px;
+  top: calc(50% + 236px);
+  margin: 0;
+  text-align: center;
+  font-family: var(--font-display);
+  font-size: 15px;
+  letter-spacing: var(--tracking);
+  color: var(--system-white);
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+.wish.is-open .wish--hold { opacity: 1; transition-delay: 0.3s; }
+.wish--hold.is-sent { animation: hold-rise 0.45s cubic-bezier(0.2, 0.8, 0.2, 1); }
+@keyframes hold-rise { from { opacity: 0; translate: 0 10px; } }
 /* Its string runs up off the screen */
 .wish--slip::before {
   content: "";
@@ -1762,6 +1789,7 @@ button.fortune--card:active { transform: scale(0.98); }
   position: absolute;
   left: 0;
   right: 0;
+  top: 54px;  /* nearly the whole screen: just under the header's row */
   bottom: 0;
   display: flex;
   flex-direction: column;
@@ -1774,6 +1802,7 @@ button.fortune--card:active { transform: scale(0.98); }
   transform: translateY(100%);
   transition: transform 0.42s cubic-bezier(0.32, 0.72, 0, 1);
 }
+.is-preview .wishform--sheet { top: 98px; }
 .wishform.is-open .wishform--sheet { transform: none; }
 .wishform--bar {
   position: relative;
@@ -1835,9 +1864,9 @@ button.fortune--card:active { transform: scale(0.98); }
 .wishform--slip {
   --paper: var(--system-white);
   position: relative;
-  width: 200px;
-  height: 300px;
-  flex: none;
+  width: min(272px, 72vw);
+  flex: 1 1 auto;  /* as tall as the sheet allows */
+  min-height: 220px;
 }
 .wishform--slip .wish--hole { top: 16px; }
 .wishform--slip .wish--paper { --hole-y: 22px; }
@@ -1845,14 +1874,14 @@ button.fortune--card:active { transform: scale(0.98); }
   position: absolute;
   left: 18px;
   right: 18px;
-  top: 46px;
-  height: 190px;
+  top: 52px;
+  bottom: 40px;
   padding: 0;
   border: 0;
   background: none;
   resize: none;
   outline: none;
-  font-size: 20px;
+  font-size: 22px;  /* as the wish reads on the open slip */
   line-height: 1.35;
 }
 .wishform--slip textarea::placeholder { color: var(--dark-grey); }
@@ -1862,7 +1891,6 @@ button.fortune--card:active { transform: scale(0.98); }
   align-self: stretch;
   margin: 14px 4px 18px;
   font-size: 14px;
-  color: var(--dark-grey);
 }
 /* Hang it: System Black, the price in white; UI White and Dark Grey until
    there's a wish to hang (or clovers to pay with) */
@@ -1896,7 +1924,6 @@ button.fortune--card:active { transform: scale(0.98); }
 .wishform--balance {
   margin-top: 10px;
   font-size: 14px;
-  color: var(--dark-grey);
   text-align: center;
 }
 /* Before the clovers go */
