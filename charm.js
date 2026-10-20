@@ -311,10 +311,29 @@ function step(now) {
 // empty canvas drops it again.
 const stage = document.getElementById('stage');
 let press = null;
-const HITS_TO_CLAIM = 3;
+const HITS_TO_CLAIM = 5;
 let hits = 0;
+// The bar under the instructions fills a step with every hit
+const progress = document.getElementById('progress');
+const progressFill = document.getElementById('progress-fill');
+const progressClover = document.getElementById('progress-clover');
+function showProgress() {
+  progressFill.style.width = `${(Math.min(hits, HITS_TO_CLAIM) / HITS_TO_CLAIM) * 100}%`;
+  progress.setAttribute('aria-valuenow', String(Math.min(hits, HITS_TO_CLAIM)));
+  progress.classList.toggle('is-full', hits >= HITS_TO_CLAIM);
+}
+// "+ Luck" rises from where the charm was hit, and fades
+function plusLuck(x, y) {
+  const el = document.createElement('span');
+  el.className = 'plus-luck';
+  el.textContent = '+ Luck';
+  el.style.left = `${x}px`;
+  el.style.top = `${y}px`;
+  document.body.appendChild(el);
+  el.addEventListener('animationend', () => el.remove());
+}
 // The sheet's Continue starts the count again
-addEventListener('message', (e) => { if (e.data === 'luck-continue') hits = 0; });
+addEventListener('message', (e) => { if (e.data === 'luck-continue') { hits = 0; showProgress(); } });
 
 stage.addEventListener('pointerdown', (e) => {
   if (e.button !== 0) return;
@@ -351,8 +370,14 @@ function release() {
       omega += side * HIT;
       omegaPhi -= side * HIT * 1.5;
       snap(0.6);
-      // Enough hits knock the bad luck loose: tell the page holding the sheet
-      if (IN_SHEET && ++hits === HITS_TO_CLAIM) parent.postMessage('luck-claimed', '*');
+      // Each hit knocks some bad luck loose; enough fills the bar, and the
+      // page holding the sheet is told the luck is claimed
+      if (hits < HITS_TO_CLAIM) {
+        hits++;
+        plusLuck(press.x, press.y);
+        showProgress();
+        if (hits === HITS_TO_CLAIM && IN_SHEET) setTimeout(() => parent.postMessage('luck-claimed', '*'), 700);
+      }
     } else {
       drop();
     }

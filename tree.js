@@ -63,11 +63,12 @@
   ];
   const STRING = 14.7;
   const TAG_DROP = 12.9;  // from the string's top to the tag's
+  const SLIP_SCALE = 1.25;  // the tags, a touch bigger than in the frame
 
   // A slip on its string from (x, y): the string, the tag, and a wider
   // invisible hit area, since the slips are small
   function hung([x, y, kind], fill, data) {
-    const t = TAGS[kind];
+    const t = { ...TAGS[kind], w: TAGS[kind].w * SLIP_SCALE, h: TAGS[kind].h * SLIP_SCALE };
     const delay = (-rand() * 4).toFixed(2);
     const left = x - t.w / 2;
     return `<g class="tree--wish" ${data} data-fill="${fill}" tabindex="0" role="button" aria-label="Read a wish"
