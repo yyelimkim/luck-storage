@@ -51,6 +51,7 @@ STONES.forEach((s) => {
   place(slot, s.x, s.y, s.w, s.h);
   slot.innerHTML = svg(s.w, s.h, s.d, 'stone--dash');
   slot.setAttribute('role', 'button');
+  slot.dataset.silent = '';  // it thuds as its stone lands instead
   slot.setAttribute('aria-label', 'Drop a stone here');
   slot.tabIndex = 0;
   // only the outline's own shape takes the tap, as they overlap

@@ -133,6 +133,31 @@ const Sounds = (() => {
     n.start(t);
   }
 
+  // A button or tab pressed: a light, short tick
+  function tap() {
+    const a = audio();
+    const t = a.currentTime;
+    const o = a.createOscillator();
+    const g = a.createGain();
+    o.type = 'sine';
+    o.frequency.setValueAtTime(1400, t);
+    o.frequency.exponentialRampToValueAtTime(700, t + 0.04);
+    g.gain.setValueAtTime(0.001, t);
+    g.gain.exponentialRampToValueAtTime(0.09, t + 0.004);
+    g.gain.exponentialRampToValueAtTime(0.001, t + 0.06);
+    o.connect(g).connect(a.destination);
+    o.start(t);
+    o.stop(t + 0.07);
+  }
+
   const unlock = () => { audio(); };
-  return { hit, swoosh, flip, chime, stone, unlock };
+  return { hit, swoosh, flip, chime, stone, tap, unlock };
 })();
+
+// Every button, tab and link ticks when pressed (anything with its own
+// sound opts out with data-silent)
+addEventListener('click', (e) => {
+  const el = e.target.closest('button, [role="button"], a');
+  if (!el || el.disabled || el.closest('[data-silent]')) return;
+  Sounds.tap();
+}, true);
