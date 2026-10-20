@@ -18,8 +18,7 @@ html, body {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 60px;
-  padding: 0 16px;
+  padding: 0 16px 166px;  /* the words sit below, at the rituals' spot */
   font-family: var(--font-display);
   letter-spacing: var(--tracking);
   color: var(--system-white);
@@ -201,8 +200,12 @@ html, body {
 
 /* The words under the cake, one step at a time */
 .candles--words {
-  width: min(320px, 100%);
-  min-height: 96px;
+  position: absolute;
+  left: 16px;
+  right: 16px;
+  top: calc(100% - 166px);  /* the same spot in every ritual */
+  margin: 0 auto;
+  max-width: 320px;
   text-align: center;
 }
 .candles--words > * { display: none; margin: 0; }

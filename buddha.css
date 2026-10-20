@@ -162,7 +162,7 @@ html, body {
   position: absolute;
   left: 16px;
   right: 16px;
-  bottom: 28px;
+  top: calc(100% - 166px);  /* the same spot in every ritual */
   z-index: 5;
   min-height: 26px;
   text-align: center;

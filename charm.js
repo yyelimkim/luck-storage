@@ -377,7 +377,7 @@ function release() {
         hits++;
         plusLuck(press.x, press.y);
         showProgress();
-        if (hits === HITS_TO_CLAIM && IN_SHEET) setTimeout(() => parent.postMessage('luck-claimed', '*'), 700);
+        if (hits === HITS_TO_CLAIM && IN_SHEET) setTimeout(() => parent.postMessage('luck-claimed', '*'), 350);  // no words to read first, so sooner
       }
     } else {
       drop();

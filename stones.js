@@ -74,7 +74,7 @@ STONES.forEach((s) => {
 // what the words under it leave
 const under = () => document.querySelector(root.dataset.step === 'stack' ? '.stones--stack' : '.stones--ask');
 function fit() {
-  const room = innerHeight - (under()?.offsetHeight || 120) - 28 - 40;
+  const room = innerHeight - 166 - 24 - 40;  // the words' spot below
   const w = Math.min(300, innerWidth - 24, room * BOX_W / BOX_H);
   root.style.setProperty('--w', `${Math.max(120, w)}px`);
 }

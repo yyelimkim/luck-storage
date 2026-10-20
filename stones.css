@@ -17,8 +17,7 @@ html, body {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 28px;
-  padding: 0 16px;
+  padding: 0 16px 166px;  /* the words sit below, at the rituals' spot */
   font-family: var(--font-display);
   letter-spacing: var(--tracking);
   color: var(--system-black);
@@ -94,8 +93,12 @@ html, body {
 .stones--ask,
 .stones--stack,
 .stones--done {
-  width: min(371px, 100%);
-  min-height: 120px;
+  position: absolute;
+  left: 16px;
+  right: 16px;
+  top: calc(100% - 166px);  /* the same spot in every ritual */
+  margin: 0 auto;
+  max-width: 371px;
   display: none;
   flex-direction: column;
   align-items: center;

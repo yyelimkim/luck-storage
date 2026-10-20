@@ -199,31 +199,20 @@ const Sounds = (() => {
     n.start(t);
   }
 
-  // A clock's second ticking down: a clear wooden tick, the tock a little lower
+  // A clock's second ticking down: a tiny dry tick (a little lower on the tock)
   let tock = false;
   function tick() {
     const a = audio();
     const t = a.currentTime;
-    const f = (tock = !tock) ? 1900 : 1500;
-    const o = a.createOscillator();
+    const n = noise(a, 0.03);
+    const bp = a.createBiquadFilter();
+    bp.type = 'bandpass';
+    bp.frequency.value = (tock = !tock) ? 3200 : 2600;
+    bp.Q.value = 6;
     const g = a.createGain();
-    o.type = 'triangle';
-    o.frequency.setValueAtTime(f, t);
-    o.frequency.exponentialRampToValueAtTime(f * 0.6, t + 0.03);
-    g.gain.setValueAtTime(0.001, t);
-    g.gain.exponentialRampToValueAtTime(0.32, t + 0.002);
-    g.gain.exponentialRampToValueAtTime(0.001, t + 0.05);
-    o.connect(g).connect(a.destination);
-    o.start(t);
-    o.stop(t + 0.06);
-    const n = noise(a, 0.02);
-    const hp = a.createBiquadFilter();
-    hp.type = 'highpass';
-    hp.frequency.value = 3000;
-    const ng = a.createGain();
-    ng.gain.setValueAtTime(0.25, t);
-    ng.gain.exponentialRampToValueAtTime(0.001, t + 0.02);
-    n.connect(hp).connect(ng).connect(a.destination);
+    g.gain.setValueAtTime(0.5, t);
+    g.gain.exponentialRampToValueAtTime(0.001, t + 0.03);
+    n.connect(bp).connect(g).connect(a.destination);
     n.start(t);
   }
 

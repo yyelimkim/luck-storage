@@ -631,7 +631,7 @@ function teruRitual(el, k) {
     set(0);
     doll.animate(['0deg', '5deg', '-3.5deg', '2deg', '-1deg', '0deg'].map((d) => ({ transform: `rotate(${d})` })),
       { duration: 1800, easing: 'ease-out' });
-    setTimeout(claimed, 700);
+    setTimeout(claimed, 400);  // no words to read first, so sooner
   };
   doll.addEventListener('pointerup', letGo);
   doll.addEventListener('pointercancel', letGo);

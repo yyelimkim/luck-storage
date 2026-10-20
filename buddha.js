@@ -20,7 +20,7 @@ const spark = document.getElementById('spark');
 // width there, and which point of it is at the middle of the screen
 const PLACES = {
   intro: { w: 321, at: [W / 2, H / 2] },
-  rub: { w: 520.9, at: BELLY },
+  rub: { w: 470, at: BELLY },  // a touch smaller than the frame's 520.9
   done: { w: 365, at: [W / 2, H / 2] },
 };
 function place() {
@@ -30,7 +30,8 @@ function place() {
   let k = (p.w / W) * (innerWidth / 402);
   if (root.dataset.step !== 'rub') k = Math.min(k, (innerHeight - 140) / H, (innerWidth - 24) / W);
   const x = innerWidth / 2 - p.at[0] * k;
-  const y = innerHeight / 2 - p.at[1] * k;
+  // centred in the space above the words (up close, on the belly)
+  const y = (root.dataset.step === 'rub' ? innerHeight * 0.44 : (innerHeight - 126) / 2) - p.at[1] * k;
   figure.style.transform = `translate(${x}px, ${y}px) scale(${k})`;
 }
 addEventListener('resize', place);
