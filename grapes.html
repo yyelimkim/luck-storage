@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>12 Grapes</title>
+  <link rel="stylesheet" href="design-system.css?v=7">
+  <link rel="stylesheet" href="grapes.css?v=2">
+</head>
+<body>
+  <!-- 12 Grapes at Midnight (Figma 436:8975): eat all twelve before the
+       twelve seconds run out. The bar is the timer. -->
+  <main class="grapes" id="grapes" data-step="ready">
+    <!-- The timer, in the progress bar's style: full at 12, draining -->
+    <div class="timer" role="timer" aria-label="Seconds left">
+      <div class="timer--track"><span class="timer--fill" id="fill"></span></div>
+      <span class="timer--secs" id="secs">12</span>
+    </div>
+
+    <div class="grapes--bunch" id="bunch">
+      <img class="grapes--stem" src="assets/grapes/stem.svg" alt="">
+      <svg class="grapes--svg" id="svg" viewBox="0 0 352 499" aria-label="A bunch of twelve grapes"></svg>
+    </div>
+
+    <p class="grapes--hint" id="hint" role="status">Tap a grape to start the clock</p>
+  </main>
+  <script src="sounds.js?v=7"></script>
+  <script src="grapes.js?v=1"></script>
+</body>
+</html>

@@ -1,0 +1,104 @@
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  height: 100%;
+  overflow: hidden;
+  background: transparent;  /* sits on the desktop canvas or the phone's card sheet */
+}
+
+/* The bunch at the centre, the timer above it, the words under it */
+.grapes {
+  --w: 260px;  /* set by grapes.js to fit the screen */
+  position: fixed;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 28px;
+  padding: 0 16px;
+  font-family: var(--font-display);
+  letter-spacing: var(--tracking);
+  color: var(--system-black);
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+/* The timer: the pollock charm's progress bar — a rounded track in the
+   system's line, filled System Black — the seconds left at its end */
+.timer {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: min(370px, 100%);
+}
+.timer--track {
+  flex: 1;
+  height: 14px;
+  padding: 2px;
+  border-radius: 999px;
+  border: 0.771px solid var(--system-black);
+  background: var(--ui-white);
+}
+.timer--fill {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border-radius: 999px;
+  background: var(--system-black);
+  transition: width 0.25s linear;
+}
+.timer--secs {
+  flex: none;
+  min-width: 28px;
+  font-size: 17px;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+}
+/* The last three seconds: the number pulses */
+.grapes.is-hurry .timer--secs { animation: hurry 1s ease-in-out infinite; }
+@keyframes hurry { 30% { scale: 1.3; } }
+
+/* The bunch (436:8975, 352 x 499): the stem behind, the twelve grapes */
+.grapes--bunch {
+  position: relative;
+  flex: none;
+  width: var(--w);
+  height: calc(var(--w) * 499 / 352);
+}
+.grapes--stem {
+  position: absolute;
+  left: calc(139.4 / 352 * 100%);
+  top: 0;
+  width: calc(119 / 352 * 100%);
+  pointer-events: none;
+}
+.grapes--svg { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+.grape {
+  fill: var(--yellow-green);
+  stroke: var(--system-black);
+  stroke-width: 1.5px;
+  cursor: pointer;
+  transform-box: fill-box;
+  transform-origin: center;
+  -webkit-tap-highlight-color: transparent;
+}
+.grape:focus { outline: none; }
+.grape:focus-visible { stroke-width: 3px; }
+/* Eaten: it swells, then pops away */
+.grape.is-eaten { pointer-events: none; animation: pop 0.28s cubic-bezier(0.3, 1.4, 0.5, 1) forwards; }
+@keyframes pop {
+  40% { scale: 1.18; opacity: 1; }
+  100% { scale: 0.2; opacity: 0; }
+}
+/* Back on the bunch for another try */
+.grape.is-back { animation: back 0.4s cubic-bezier(0.3, 1.4, 0.5, 1) both; }
+@keyframes back { from { scale: 0.2; opacity: 0; } }
+
+.grapes--hint { margin: 0; min-height: 26px; font-size: 20px; line-height: 1.3; text-align: center; }
+.grapes--hint.is-missed { animation: miss 0.45s; }
+@keyframes miss {
+  20%, 60% { translate: -6px 0; }
+  40%, 80% { translate: 6px 0; }
+}

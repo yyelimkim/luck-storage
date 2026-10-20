@@ -211,14 +211,15 @@ const CARD_TEXT = {
   },
   '포도 12알 먹기.png': {
     about: 'A Spanish New Year’s tradition of eating twelve grapes as the clock strikes midnight, one for each month of luck ahead.',
-    howTo: 'Rapid-tap all 12 grapes before a short countdown runs out.',
+    howTo: 'Tap all 12 grapes before the 12 seconds run out.',
   },
 };
 
 // Interactive pieces: on desktop they fill the canvas beside an opened card;
 // on the phone they take the illustration's place on the card's sheet
 const CANVAS_PAGES = {
-  '명태 액막이.png': 'charm.html?v=16',  // the fish charm
-  '촛불 한번에 불기.png': 'candles.html?v=10',  // make a wish, blow them all out
-  '돌팝 쌓기.png': 'stones.html?v=9',  // drop the stones in, the wish on top
+  '명태 액막이.png': 'charm.html?v=17',  // the fish charm
+  '촛불 한번에 불기.png': 'candles.html?v=11',  // make a wish, blow them all out
+  '포도 12알 먹기.png': 'grapes.html?v=2',  // eat all twelve before the clock runs out
+  '돌팝 쌓기.png': 'stones.html?v=10',  // drop the stones in, the wish on top
 };

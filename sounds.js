@@ -85,9 +85,9 @@ const Sounds = (() => {
     n.start(t);
   }
 
-  // Luck added: a quick bright sparkle — four notes climbing (C, E, G, C),
-  // each a short plucked triangle, the last ringing a little longer
-  function chime() {
+  // Luck received (Luck Claimed): a quick bright sparkle — four notes
+  // climbing (C, E, G, C), each a short plucked triangle, the last ringing on
+  function claim() {
     const a = audio();
     const t = a.currentTime;
     [[1046.5, 0, 0.18], [1318.5, 0.055, 0.18], [1568, 0.11, 0.2], [2093, 0.165, 0.5]].forEach(([f, d, len]) => {
@@ -101,6 +101,25 @@ const Sounds = (() => {
       o.connect(g).connect(a.destination);
       o.start(t + d);
       o.stop(t + d + len + 0.02);
+    });
+  }
+
+  // Luck counted (the clover lands in the count): subtle and low, two soft
+  // round notes a fifth apart
+  function chime() {
+    const a = audio();
+    const t = a.currentTime;
+    [[392, 0], [587.3, 0.07]].forEach(([f, d]) => {
+      const o = a.createOscillator();
+      const g = a.createGain();
+      o.type = 'sine';
+      o.frequency.value = f;
+      g.gain.setValueAtTime(0.001, t + d);
+      g.gain.exponentialRampToValueAtTime(0.07, t + d + 0.02);
+      g.gain.exponentialRampToValueAtTime(0.001, t + d + 0.45);
+      o.connect(g).connect(a.destination);
+      o.start(t + d);
+      o.stop(t + d + 0.47);
     });
   }
 
@@ -150,8 +169,52 @@ const Sounds = (() => {
     o.stop(t + 0.07);
   }
 
+  // A grape eaten: a juicy pop — a quick rising blip with a crunchy crackle
+  function eat() {
+    const a = audio();
+    const t = a.currentTime;
+    const o = a.createOscillator();
+    const g = a.createGain();
+    o.type = 'sine';
+    o.frequency.setValueAtTime(320 + Math.random() * 80, t);
+    o.frequency.exponentialRampToValueAtTime(900, t + 0.05);
+    g.gain.setValueAtTime(0.001, t);
+    g.gain.exponentialRampToValueAtTime(0.25, t + 0.008);
+    g.gain.exponentialRampToValueAtTime(0.001, t + 0.09);
+    o.connect(g).connect(a.destination);
+    o.start(t);
+    o.stop(t + 0.1);
+    const n = noise(a, 0.12);
+    const hp = a.createBiquadFilter();
+    hp.type = 'highpass';
+    hp.frequency.value = 2200;
+    const ng = a.createGain();
+    ng.gain.setValueAtTime(0.001, t + 0.02);
+    ng.gain.exponentialRampToValueAtTime(0.16, t + 0.03);
+    ng.gain.exponentialRampToValueAtTime(0.001, t + 0.12);
+    n.connect(hp).connect(ng).connect(a.destination);
+    n.start(t);
+  }
+
+  // A clock's second ticking down: a tiny dry tick (a little lower on the tock)
+  let tock = false;
+  function tick() {
+    const a = audio();
+    const t = a.currentTime;
+    const n = noise(a, 0.03);
+    const bp = a.createBiquadFilter();
+    bp.type = 'bandpass';
+    bp.frequency.value = (tock = !tock) ? 3200 : 2600;
+    bp.Q.value = 6;
+    const g = a.createGain();
+    g.gain.setValueAtTime(0.5, t);
+    g.gain.exponentialRampToValueAtTime(0.001, t + 0.03);
+    n.connect(bp).connect(g).connect(a.destination);
+    n.start(t);
+  }
+
   const unlock = () => { audio(); };
-  return { hit, swoosh, flip, chime, stone, tap, unlock };
+  return { hit, swoosh, flip, claim, chime, stone, tap, eat, tick, unlock };
 })();
 
 // Every button, tab and link ticks when pressed (anything with its own
