@@ -44,24 +44,25 @@
   const LAYERS = ['back', 'front', 'light'];
   // The slips (Figma 426:4296): four hand-drawn tags, each hung on a string
   const TAGS = {
-    a: { src: 'assets/wishtree/slip-217.svg', w: 12, h: 21 },
-    b: { src: 'assets/wishtree/slip-216.svg', w: 14, h: 22 },
-    c: { src: 'assets/wishtree/slip-220.svg', w: 14, h: 30 },
-    d: { src: 'assets/wishtree/slip-219.svg', w: 14, h: 39 },
+    a: { src: 'assets/wishtree/slip-217.svg', w: 11.9, h: 21.6 },
+    b: { src: 'assets/wishtree/slip-216.svg', w: 15.1, h: 22.7 },
+    c: { src: 'assets/wishtree/slip-220.svg', w: 15.1, h: 33.4 },
+    d: { src: 'assets/wishtree/slip-219.svg', w: 15.1, h: 41 },
   };
   // Where each slip hangs in the frame: the top of its string on a branch,
   // and which tag
   const HANGS = [
-    [301.3, 375, 'a'], [43.3, 494, 'c'], [260.3, 396, 'c'], [294.3, 546, 'b'], [153.3, 576, 'b'],
-    [193.3, 444, 'c'], [103.3, 506, 'd'], [323.3, 496, 'd'], [150.3, 482, 'a'], [61.3, 476, 'c'],
+    [308.2, 331.6, 'a'], [29.9, 460, 'c'], [264, 354.3, 'c'], [300.7, 516.1, 'b'], [148.6, 548.5, 'b'],
+    [191.7, 406.1, 'c'], [94.6, 473, 'd'], [332, 462.2, 'd'], [145.3, 447.1, 'a'], [49.3, 440.6, 'c'],
   ];
   // Where wishes written here go, in turn: the underside of the long left
   // branch, found clear of the slips already there. Past these, new wishes
   // hang over older ones.
   const SPARE = [
-    [74, 545, 'b'], [94, 563, 'c'], [114, 574, 'a'], [134, 579, 'd'], [170, 581, 'c'], [190, 581, 'b'], [210, 587, 'a'],
+    [62, 514, 'b'], [82, 533, 'c'], [102, 545, 'a'], [122, 551, 'd'], [166, 554, 'c'], [186, 554, 'b'], [206, 559, 'a'],
   ];
-  const STRING = 13.6;
+  const STRING = 14.7;
+  const TAG_DROP = 12.9;  // from the string's top to the tag's
 
   // A slip on its string from (x, y): the string, the tag, and a wider
   // invisible hit area, since the slips are small
@@ -71,9 +72,9 @@
     const left = x - t.w / 2;
     return `<g class="tree--wish" ${data} data-fill="${fill}" tabindex="0" role="button" aria-label="Read a wish"
       style="transform-origin: ${x}px ${y}px; animation-delay: ${delay}s">
-      <rect x="${x - 14}" y="${y - 4}" width="28" height="${STRING + t.h + 10}" fill="transparent"/>
+      <rect x="${x - 14}" y="${y - 4}" width="28" height="${TAG_DROP + t.h + 10}" fill="transparent"/>
       <path d="M${x} ${y}V${y + STRING}" stroke="#272727" stroke-width="0.5"/>
-      <image class="tree--paper" href="${t.src}" x="${left}" y="${y + STRING - 2}" width="${t.w}" height="${t.h}"/>
+      <image class="tree--paper" href="${t.src}" x="${left}" y="${y + TAG_DROP}" width="${t.w}" height="${t.h}"/>
     </g>`;
   }
   const strips = HANGS.map((hang, i) => hung(hang, C.white, `data-wish="${i}"`)).join('');
@@ -87,7 +88,7 @@
   </div>`;
   // Each layer's ids get its own prefix, since the three exports share names
   for (const name of LAYERS) {
-    fetch(`assets/wishtree/${name}.svg?v=1`).then((r) => r.text()).then((svg) => {
+    fetch(`assets/wishtree/${name}.svg?v=2`).then((r) => r.text()).then((svg) => {
       const layer = scene.querySelector(`[data-layer="${name}"]`);
       layer.innerHTML = svg
         .replace(/id="([^"]+)"/g, `id="${name}-$1"`)
@@ -103,7 +104,7 @@
       // Each beam of the moving light sways and breathes on its own
       layer.querySelectorAll('[id="light-Vector"], [id="light-Vector_2"], [id="light-light"]').forEach((b, i) => {
         b.classList.add('tree--beam');
-        b.style.animationDuration = `${[7, 9.5, 12][i]}s, ${[5, 6.5, 8][i]}s`;
+        b.style.animationDuration = `${[4.5, 6, 7.5][i]}s, ${[3.2, 4.4, 5.6][i]}s`;
       });
     });
   }

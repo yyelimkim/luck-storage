@@ -18,7 +18,7 @@ for (let i = COUNT - 1; i >= 0; i--) {
   card.className = 'card';
   card.dataset.name = IMAGES[i % IMAGES.length];
   const img = document.createElement('img');
-  img.src = `cards/${encodeURIComponent(IMAGES[i % IMAGES.length])}?v=${IMAGES_VERSION}`;
+  img.src = englishSrc(IMAGES[i % IMAGES.length]);
   img.alt = '';
   img.draggable = false;
   card.appendChild(img);

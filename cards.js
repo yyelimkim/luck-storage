@@ -1,5 +1,6 @@
-// Card artwork in cards/ (slide2.png is not a card). Shared by the desktop
-// page (script.js) and the iPhone prototype (mobile.js).
+// The cards, keyed by their Korean names; their artwork is the English set
+// in cards/english cards/. Shared by the desktop page (script.js) and the
+// iPhone prototype (mobile.js).
 const IMAGES = [
   '걱정인형.png',
   '꽃잎 점.png',
@@ -18,7 +19,7 @@ const IMAGES = [
   '테루테루보즈.png',
   '포도 12알 먹기.png',
 ];
-const IMAGES_VERSION = 5;  // bump when artwork files are replaced
+const IMAGES_VERSION = 6;  // bump when artwork files are replaced
 
 // Cards with back artwork in cards/backs/ (same file name as the front);
 // the rest flip to a blank back
@@ -57,6 +58,34 @@ const RENAMED = {
   '부처님 배 만지기.png': 'Buddha’s Belly',
 };
 const cardName = (name) => RENAMED[name] || ENGLISH[name].replace('.png', '');
+
+// Each card's small drawing (Figma 428:7921, 428:7922): in colour, filled in
+// the card's own colour, for its back and the profile's earned luck; and in
+// white line, for the Daily Fortune's lucky ritual. [file, width, height]
+const MINI = {
+  '걱정인형.png': ['worry-doll', 150, 96],
+  '꽃잎 점.png': ['love-me', 91, 105],
+  '네잎 클로버 찾기.png': ['clover', 106, 114],
+  '돌팝 쌓기.png': ['stones', 103, 102],
+  '돼지꿈.png': ['pig', 91, 91],
+  '드림캐쳐.png': ['dreamcatcher', 67, 160],
+  '명태 액막이.png': ['pollock', 104, 100],
+  '민들레 소원 빌기.png': ['dandelion', 107, 114],
+  '부처님 배 만지기.png': ['buddha', 111, 109],
+  '빨간 옷 입기.png': ['red', 97, 65],
+  '손바닥의 인 쓰기.png': ['palm', 99, 113],
+  '시험 전 날 떡 먹기.png': ['rice-cake', 94, 78],
+  '악마의 눈.png': ['evil-eye', 53, 159],
+  '촛불 한번에 불기.png': ['candles', 113, 101],
+  '테루테루보즈.png': ['teru', 56, 131],
+  '포도 12알 먹기.png': ['grapes', 86, 118],
+};
+// <img> of a card's mini drawing, 'color' or 'line', at most h tall
+function miniImg(name, kind, h, cls = '') {
+  const [file, w0, h0] = MINI[name];
+  const k = Math.min(1, h / h0);
+  return `<img class="${cls}" src="assets/minis/${kind}/${file}.svg" width="${Math.round(w0 * k)}" height="${Math.round(h0 * k)}" alt="">`;
+}
 const englishSrc = (name) => `cards/english%20cards/${encodeURIComponent(ENGLISH[name])}?v=${IMAGES_VERSION}`;
 
 // Each card's category, as printed in its header (see the .tag component in

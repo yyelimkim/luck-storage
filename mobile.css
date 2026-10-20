@@ -1371,13 +1371,10 @@ button.fortune--card:active { transform: scale(0.98); }
 /* While a wish is open, the tree zooms in a little towards it */
 .tree--scene { transition: transform 0.6s cubic-bezier(0.3, 0.8, 0.2, 1); }
 .tree--scene.is-zoomed { transform: scale(1.22); }
-/* The whole picture, a touch bigger and higher than the Figma frame; still
-   covering the screen top to bottom */
+/* The whole picture, as laid out in the Figma frame */
 .tree--art {
   position: absolute;
   inset: 0;
-  transform: translateY(-30px) scale(1.12);
-  transform-origin: 50% 60%;
 }
 /* The Figma frame's layers, stacked exactly: back, the slips, the front of
    the trees over them, then the light. Only the slips take taps. */
@@ -1403,14 +1400,16 @@ button.fortune--card:active { transform: scale(0.98); }
   animation-direction: alternate;
 }
 @keyframes beam-swing {
-  from { rotate: -2.2deg; }
-  to { rotate: 2.4deg; }
+  0% { rotate: -6deg; translate: -18px 0; }
+  50% { rotate: 2deg; translate: 6px 8px; }
+  100% { rotate: 6.5deg; translate: 20px -4px; }
 }
 @keyframes beam-breathe {
-  0% { opacity: 0.55; }
-  40% { opacity: 1; }
-  70% { opacity: 0.75; }
-  100% { opacity: 0.95; }
+  0% { opacity: 0.25; }
+  35% { opacity: 1; }
+  60% { opacity: 0.45; }
+  85% { opacity: 0.9; }
+  100% { opacity: 0.35; }
 }
 /* Hanging strands of leaves drift slightly from their tops */
 .tree--strand {

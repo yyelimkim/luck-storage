@@ -383,19 +383,8 @@ function flipAnimate(boxes, fromDeg, radii) {
   return move.finished;
 }
 
-// Teru Teru Bozu's own drawings: a small line version for the info card
-// (341:2461) and the full doll for the ritual (340:2185). Layers are
+// Teru Teru Bozu's full doll, for the ritual (340:2185). Layers are
 // [file, left, top, width, height, rotate, stroke spill (CSS inset)].
-const TERU_SMALL = [
-  ['string-small', 22.84, 0, 9.619, 49.638, 1.54, '-1.01% -6.03%', 8.292, 49.433],
-  ['body-small', 0, 87.76, 54.347, 41.879, 0, '-1.19% -0.92%'],
-  ['knot', 22.58, 37.62, 10.1, 4.108, 0, '', 0, 0, 1],
-  ['knot', 22.58, 41.04, 10.1, 4.108, 0, '', 0, 0, 1],
-  ['head-small', 5.11, 45.23, 44.436, 44.436, 0, ''],
-  ['neck-small', 11.82, 85.84, 31.01, 8.312, 0, '-6.02% -1.61%'],
-  ['shadow-small', 33.3, 91.29, 10.723, 2.523, 0, '-28.35% -4% -19.76% -0.77%'],
-  ['face-small', 7.2, 68.04, 22.058, 7.992, 0, ''],
-];
 const TERU_BIG = [
   ['string', 177.89, 43, 31.458, 227.852, 1.54, '-0.25% -2.28%', 25.353, 227.252],
   ['body', 110.09, 387.46, 166.172, 128.05, 0, '-0.45% -0.35%'],
@@ -421,25 +410,11 @@ function drawing(layers, knotColor, [dx, dy] = [0, 0]) {
   }).join('');
 }
 
-const ICON_H = 129.639;  // the small drawing's height (Teru's, in Figma)
+const ICON_H = 160;  // the tallest a small drawing on the card's back is drawn
 
-// Other cards' small drawings, exported whole from Figma and re-framed so
-// the centre of their black linework is the middle: [file, width, height]
-const ICONS = {
-  '명태 액막이.png': ['pollock', 108.18, 100],      // 343:2694
-  '촛불 한번에 불기.png': ['candles', 120.5, 101],  // 343:2565
-  '걱정인형.png': ['worry-doll', 147.76, 96],        // 343:2693
-  '꽃잎 점.png': ['love-me', 98.98, 105],            // 344:3658
-  '돌팝 쌓기.png': ['stones', 96.54, 102],          // 344:3670
-  '부처님 배 만지기.png': ['buddha', 112.34, 109],    // 344:3680
-  '돼지꿈.png': ['pig', 98.14, 91],                  // 344:3718
-};
-
-// Cards without drawings of their own yet show their artwork instead: the
-// part inside the art's frame line, at the scale where the card is as wide
-// as the screen (or a given width)
+// A card's artwork, the part inside its frame line, at the scale where the
+// card is as wide as the screen (or a given width)
 const ART_CROP = { left: 91, top: 116, right: 949, bottom: 1402 };
-const ARTWORK_RATIO = (ART_CROP.right - ART_CROP.left) / (ART_CROP.bottom - ART_CROP.top);
 function artCrop(name, width, extra = '') {
   const c = ART_CROP;
   const k = width / (c.right - c.left);
@@ -452,12 +427,8 @@ function artCrop(name, width, extra = '') {
 // The back of the card: name, small drawing, what the custom is
 function panelHTML(name) {
   const text = CARD_TEXT[name] || {};
-  const drawn = ICONS[name];
-  const icon = name === '테루테루보즈.png'
-    ? `<div class="info--icon draw" style="width:54.347px; height:129.639px">${drawing(TERU_SMALL, CARD_COLOR[name])}</div>`
-    : drawn
-      ? `<img class="info--icon" src="assets/icons/${drawn[0]}.svg" width="${drawn[1]}" height="${drawn[2]}" alt="">`
-      : `<div class="info--icon">${artCrop(name, ICON_H * ARTWORK_RATIO)}</div>`;
+  // Its mini drawing, in colour (Figma 428:7921)
+  const icon = miniImg(name, 'color', ICON_H, 'info--icon');
   return `
     <div class="panel" style="--card-color: ${CARD_COLOR[name]}">
       <div class="panel--info">
@@ -956,15 +927,9 @@ const LUCKY_COLOURS = [
 const fortuneEl = document.getElementById('fortune');
 const fortuneSee = document.getElementById('fortune-see');
 const birthInput = document.getElementById('fortune-birth-input');
-// The cards with line drawings, filled UI White like the tile they sit on.
-// Today's ritual is always one of these.
-const RITUAL_ART = {
-  '명태 액막이.png': 'assets/fortune/ritual-pollock.svg',
-  '돌팝 쌓기.png': 'assets/fortune/ritual-stones.svg',
-  '부처님 배 만지기.png': 'assets/fortune/ritual-buddha.svg',
-  '돼지꿈.png': 'assets/fortune/pig-line.svg',
-};
-const RITUALS = Object.keys(RITUAL_ART);
+// Every card has a white line drawing (Figma 428:7922) for the ritual tile,
+// so today's ritual can be any of them
+const RITUALS = IMAGES;
 let luckyCard = START;
 let fortuneTimer;
 
@@ -989,7 +954,7 @@ function fillFortune() {
   document.getElementById('fortune-body').textContent = body;
   document.getElementById('fortune-swatch').style.background = colour;
   document.getElementById('fortune-colour').textContent = colourName;
-  document.getElementById('fortune-art').innerHTML = `<img src="${RITUAL_ART[card]}" alt="">`;
+  document.getElementById('fortune-art').innerHTML = miniImg(card, 'line', 87);
   document.getElementById('fortune-ritual-name').textContent = cardName(card);
 }
 // Step by step: the ring fills (loading), the clovers turn (ready), then the
