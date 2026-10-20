@@ -1226,6 +1226,13 @@ button.fortune--card:active { transform: scale(0.98); }
   display: block;
   pointer-events: none;
 }
+/* The clouds drift slowly side to side, in bad weather and good, out of step */
+.teru--scene[src*="cloud"] { animation: cloud-drift 7s ease-in-out infinite alternate; }
+.teru--scene[src*="cloud-right"] { animation-duration: 9s; animation-delay: -4s; }
+@keyframes cloud-drift {
+  from { translate: -14px 0; }
+  to { translate: 14px 0; }
+}
 
 /* Luck Claimed (Figma 350:5219): the bottom of the sheet deepens and blurs,
    with the way on */
