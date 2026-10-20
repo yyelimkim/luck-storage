@@ -1127,6 +1127,10 @@ button.fortune--card:active { transform: scale(0.98); }
   letter-spacing: var(--tracking);
   line-height: normal;
 }
+/* On a dark card colour, white words; and the back arrow too, once the
+   sheet fills the screen behind it */
+.sheet[data-ink="light"] .sheet--howto { color: var(--system-white); }
+.stage:has(.sheet.is-full[data-ink="light"]) .m-back img { filter: brightness(0) invert(1); }
 /* The interaction, centred under the back arrow's row; only live once full */
 .sheet--ritual {
   position: absolute;

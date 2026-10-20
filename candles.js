@@ -1,9 +1,9 @@
-// Blowing out the candles in one go (card 248:3069), after the sketch:
-// 1. write a wish, 2. swipe across every flame in a single stroke — all go
-// out together or none do — 3. smoke rises, the star bursts, the wish comes
-// true and the card's luck is claimed.
+// Blowing out the candles (Figma 436:8748, 436:8802, 438:289, 436:8856,
+// 436:8907): 1. the cake, 2. write a wish over it, 3. the cake comes close
+// and a hand shows the swipe — every flame in one stroke, all out together
+// or none — 4. smoke rises, the wish comes true and the luck is claimed.
 
-// The flames, cut from the card's cake (Group 110, 482 x 429): [file, x, y, w, h]
+// The flames, cut from the card's cake (482 x 429): [file, x, y, w, h]
 const FLAMES = [
   ['flame-4', 148.5, 22.3, 29, 38],
   ['flame-5', 184.2, 54, 29, 37.8],
@@ -11,10 +11,12 @@ const FLAMES = [
   ['flame-3', 274.2, 52.4, 29, 37.9],
   ['flame-2', 340.1, 45.9, 29.2, 36.6],
 ];
+// The smoke curls over each wick (436:8907), in the cake's units
+const SMOKE = [[155.5, -49.5], [189.7, -15.3], [233.2, -70.6], [279.3, -15.3], [345.2, -19.2]];
 const W = 482;
 const H = 429;
 const IN_SHEET = new URLSearchParams(location.search).has('sheet');
-const HIT_R = 26;          // px: how near the stroke must pass a flame's middle
+const HIT_R = 30;          // px: how near the stroke must pass a flame
 const STROKE_MS = 1400;    // a single breath: longer than this and it's two
 
 const root = document.getElementById('candles');
@@ -36,8 +38,10 @@ const flames = FLAMES.map(([file, x, y, w, h]) => {
 });
 
 function step(name) { root.dataset.step = name; }
+// 1 → 2: the cake on its own a moment, then the wish
+setTimeout(() => { step('wish'); input.focus({ preventScroll: true }); }, 1100);
 
-// 1: the wish
+// 2: the wish
 input.addEventListener('input', () => { send.disabled = !input.value.trim(); });
 form.addEventListener('submit', (e) => {
   e.preventDefault();
@@ -47,10 +51,9 @@ form.addEventListener('submit', (e) => {
   step('blow');
 });
 
-// 2: the breath — a single stroke across the flames
+// 3: the breath — a single stroke across the flames
 let stroke = null;
 const centre = (el) => { const r = el.getBoundingClientRect(); return [r.left + r.width / 2, r.top + r.height * 0.55]; };
-// Distance from point p to the segment a–b
 function nearSegment(p, a, b) {
   const dx = b[0] - a[0], dy = b[1] - a[1];
   const t = Math.max(0, Math.min(1, ((p[0] - a[0]) * dx + (p[1] - a[1]) * dy) / (dx * dx + dy * dy || 1)));
@@ -72,11 +75,10 @@ scene.addEventListener('pointermove', (e) => {
       stroke.hit.add(i);
       f.classList.remove('is-relit');
       f.classList.add('is-hit');
-      f.style.rotate = `${dir * 24}deg`;  // the breath bends it over
+      f.style.rotate = `${dir * (45 + Math.random() * 14)}deg`;  // bent right over, as in 436:8856
     }
   });
   stroke.last = p;
-  // Every flame in one breath: they all go out together
   if (stroke.hit.size === flames.length && performance.now() - stroke.t0 < STROKE_MS) {
     stroke = null;
     root.classList.remove('is-blowing');
@@ -97,7 +99,7 @@ const endStroke = () => {
     void f.offsetWidth;
     f.classList.add('is-relit');
   });
-  hint.textContent = 'So close! They have to go out all at once — one swipe across every flame';
+  hint.textContent = 'So close! Every flame in one go';
   hint.classList.remove('is-missed');
   void hint.offsetWidth;
   hint.classList.add('is-missed');
@@ -105,21 +107,22 @@ const endStroke = () => {
 scene.addEventListener('pointerup', endStroke);
 scene.addEventListener('pointercancel', endStroke);
 
-// 3: out they go, smoke curls up from each wick, and the wish comes true
+// 4: out they go, smoke curls up from each wick, and the wish comes true
 function blownOut() {
-  flames.forEach((f, i) => {
+  flames.forEach((f) => {
     f.classList.remove('is-hit', 'is-relit');
     f.classList.add('is-out');
-    const [, x, y, w] = FLAMES[i];
-    const smoke = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-    smoke.setAttribute('class', 'candles--smoke');
-    smoke.setAttribute('viewBox', '0 0 20 60');
-    Object.assign(smoke.style, { left: pct(x + w / 2 - 10, W), top: pct(y - 22, H), width: pct(20, W), height: pct(60, H) });
-    smoke.innerHTML = `<path d="M10 58c-6-8 6-14 0-22s6-14 0-22s4-10 2-14" style="animation-delay:${i * 0.06}s"/>`;
-    scene.appendChild(smoke);
+  });
+  SMOKE.forEach(([x, y], i) => {
+    const s = document.createElement('img');
+    s.className = 'candles--smoke';
+    s.src = 'assets/candles/smoke.svg';
+    s.alt = '';
+    Object.assign(s.style, { left: pct(x, W), top: pct(y, H), width: pct(15.8, W), height: pct(60, H), animationDelay: `${0.15 + i * 0.07}s` });
+    scene.appendChild(s);
   });
   step('done');
-  if (IN_SHEET) setTimeout(() => parent.postMessage('luck-claimed', '*'), 2600);
+  if (IN_SHEET) setTimeout(() => parent.postMessage('luck-claimed', '*'), 2800);
 }
 
 // The sheet's Continue lights the candles for another wish
@@ -129,6 +132,6 @@ addEventListener('message', (e) => {
   flames.forEach((f) => { f.className = 'candles--flame is-relit'; f.style.rotate = ''; });
   input.value = '';
   send.disabled = true;
-  hint.textContent = 'Blow them all out in one go — swipe across every flame at once';
+  hint.textContent = 'Blow them all out in one go!';
   step('wish');
 });

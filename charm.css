@@ -71,14 +71,15 @@ html, body {
    string (STRING_ROOM in charm.js), so the fade runs 120px down the string
    itself. Only the string, not its roomy box, takes taps. */
 .in-sheet .part--string {
-  -webkit-mask-image: linear-gradient(to bottom, transparent 20px, #000 140px);
-  mask-image: linear-gradient(to bottom, transparent 20px, #000 140px);
+  -webkit-mask-image: linear-gradient(to bottom, transparent 110px, #000 175px);
+  mask-image: linear-gradient(to bottom, transparent 110px, #000 175px);
   pointer-events: none;
 }
 .in-sheet .part--string svg { pointer-events: auto; }
 
 /* The progress bar (sketch): a rounded track in the system's line, filled
-   System Black a step at a time, the clover at its end. It sits at the top,
+   System Black a step at a time, the header's clover (same icon, same 22px)
+   at its end. It sits at the top,
    just under the sheet's instructions. */
 .progress {
   position: fixed;
@@ -94,10 +95,10 @@ html, body {
 }
 .progress--track {
   flex: 1;
-  height: 16px;
+  height: 14px;
   padding: 2px;
   border-radius: 999px;
-  border: 1px solid var(--system-black);
+  border: 0.771px solid var(--system-black);  /* the system's line */
   background: var(--ui-white);
 }
 .progress--fill {
@@ -134,5 +135,8 @@ html, body {
   0% { opacity: 0; translate: 0 6px; }
   15% { opacity: 1; }
   60% { opacity: 1; }
-  100% { opacity: 0; translate: 0 -64px; color: var(--dark-grey); }
+  100% { opacity: 0; translate: 0 -64px; }
 }
+
+/* With less of the string showing, the charm sits that much higher */
+.in-sheet .charm { margin-top: -45px; }

@@ -203,7 +203,7 @@ const CARD_TEXT = {
   },
   '촛불 한번에 불기.png': {
     about: 'A widespread Western birthday custom. Blowing out every candle in a single breath is believed to make your wish come true.',
-    howTo: 'Swipe across the candles in one motion (mimics blowing). All flames go out together or not at all.',
+    howTo: 'Swipe across the candles in one motion to blow them out!',
   },
   '테루테루보즈.png': {
     about: 'A small handmade doll from Japan, hung outside the window the night before and believed to bring clear skies and keep the rain away.',
@@ -218,7 +218,7 @@ const CARD_TEXT = {
 // Interactive pieces: on desktop they fill the canvas beside an opened card;
 // on the phone they take the illustration's place on the card's sheet
 const CANVAS_PAGES = {
-  '명태 액막이.png': 'charm.html?v=9',  // the fish charm
-  '촛불 한번에 불기.png': 'candles.html?v=2',  // make a wish, blow them all out
+  '명태 액막이.png': 'charm.html?v=10',  // the fish charm
+  '촛불 한번에 불기.png': 'candles.html?v=3',  // make a wish, blow them all out
   '돌팝 쌓기.png': 'stones.html?v=1',  // drop the stones in, the wish on top
 };

@@ -613,6 +613,8 @@ async function flipOpen(card) {
   const sh = document.createElement('div');
   sh.className = 'sheet';
   sh.style.setProperty('--card-color', CARD_COLOR[name]);
+  // On the darker card colours the sheet's words are white (Figma 436:8748)
+  if (CARD_COLOR[name] === 'var(--forest-green)') sh.dataset.ink = 'light';
   sh.style.setProperty('--glow-color', GLOW_COLOR[CARD_COLOR[name]]);
   sh.style.height = `${stageH}px`;
   sh.style.setProperty('--ritual-scale', RITUAL_SCALE);
