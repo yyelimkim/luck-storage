@@ -1368,6 +1368,9 @@ button.fortune--card:active { transform: scale(0.98); }
   height: 874px;
 }
 .tree--scene svg { display: block; }
+/* While a wish is open, the tree zooms in a little towards it */
+.tree--scene { transition: transform 0.6s cubic-bezier(0.3, 0.8, 0.2, 1); }
+.tree--scene.is-zoomed { transform: scale(1.22); }
 /* The whole picture, a touch bigger and higher than the Figma frame; still
    covering the screen top to bottom */
 .tree--art {
@@ -1389,21 +1392,50 @@ button.fortune--card:active { transform: scale(0.98); }
 .tree--layer[data-layer="front"],
 .tree--layer[data-layer="light"] { pointer-events: none; }
 .tree--layer svg { overflow: visible; }
-/* The moving light drifts and breathes */
-.tree--layer[data-layer="light"] { animation: tree-light 9s ease-in-out infinite alternate; }
-@keyframes tree-light {
-  from { transform: translate(-10px, -6px); opacity: 0.8; }
-  to { transform: translate(12px, 8px); opacity: 1; }
+/* The moving light: each beam swings slowly from the top left, as light
+   does through moving leaves, and brightens and dims as it goes */
+.tree--beam {
+  transform-box: view-box;
+  transform-origin: 0 0;
+  animation-name: beam-swing, beam-breathe;
+  animation-timing-function: ease-in-out;
+  animation-iteration-count: infinite;
+  animation-direction: alternate;
 }
-.tree--scene::after {
-  content: "";
+@keyframes beam-swing {
+  from { rotate: -2.2deg; }
+  to { rotate: 2.4deg; }
+}
+@keyframes beam-breathe {
+  0% { opacity: 0.55; }
+  40% { opacity: 1; }
+  70% { opacity: 0.75; }
+  100% { opacity: 0.95; }
+}
+/* Hanging strands of leaves drift slightly from their tops */
+.tree--strand {
+  transform-box: fill-box;
+  transform-origin: 50% 0;
+  animation: strand-drift 5.5s ease-in-out infinite alternate;
+}
+@keyframes strand-drift {
+  from { rotate: -1.6deg; }
+  to { rotate: 1.6deg; }
+}
+/* Paper grain over the whole Wish Tree screen, as on the cards: over the
+   scene and the header's title, under every button (the header's pill is
+   above it, as are the Write button, the tab bar and the open slip's ×) */
+.m-grain {
   position: absolute;
   inset: 0;
+  z-index: 18;
+  display: none;
   background: url("assets/system/paper.png") 0 0 / 402px auto;
   mix-blend-mode: multiply;
   opacity: 0.6;
   pointer-events: none;
 }
+[data-view="tree"] .m-grain { display: block; }
 /* The strips sway on their strings, each in its own time */
 .tree--wish {
   cursor: pointer;
@@ -1411,9 +1443,13 @@ button.fortune--card:active { transform: scale(0.98); }
   animation: wish-sway 4s ease-in-out infinite alternate;
 }
 .tree--wish:focus-visible path:first-of-type { stroke-dasharray: 2 2; }
+/* The slips swing on their strings, unevenly, as in a light breeze */
 @keyframes wish-sway {
-  from { rotate: -3deg; }
-  to { rotate: 3deg; }
+  0% { rotate: -5deg; }
+  30% { rotate: 4deg; }
+  55% { rotate: -2deg; }
+  80% { rotate: 6deg; }
+  100% { rotate: -1deg; }
 }
 .tree--hint {
   position: absolute;
@@ -1465,11 +1501,13 @@ button.fortune--card:active { transform: scale(0.98); }
   padding: 0;
   border: 0;
   border-radius: 50%;
-  background: var(--system-white);
+  background: none;
   cursor: pointer;
   opacity: 0;
   transition: opacity 0.3s;
 }
+/* Just the ×, in white over the dimmed tree */
+.wish--close img { filter: brightness(0) invert(1); }
 .is-phone .wish--close { top: 10px; }
 .wish--close:focus-visible,
 .wishform--close:focus-visible { outline: 1.5px solid var(--system-black); outline-offset: -2px; }
@@ -1497,7 +1535,24 @@ button.fortune--card:active { transform: scale(0.98); }
   height: 100vh;
   background: var(--system-black);
 }
+/* The hole is cut out of the paper, so what's behind shows through it */
+/* The open slip is paper too */
+.wish--slip::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: url("assets/system/paper.png") 0 0 / 402px auto;
+  mix-blend-mode: multiply;
+  opacity: 0.6;
+  pointer-events: none;
+  -webkit-mask: radial-gradient(circle 6px at 50% 26px, transparent 5.4px, #000 5.9px);
+  mask: radial-gradient(circle 6px at 50% 26px, transparent 5.4px, #000 5.9px);
+  clip-path: polygon(0 40px, 40px 0, calc(100% - 40px) 0, 100% 40px, 100% 100%, 0 100%);
+}
 .wish--paper {
+  --hole-y: 26px;
+  -webkit-mask: radial-gradient(circle 6px at 50% var(--hole-y), transparent 5.4px, #000 5.9px);
+  mask: radial-gradient(circle 6px at 50% var(--hole-y), transparent 5.4px, #000 5.9px);
   position: absolute;
   inset: 0;
   width: 100%;
@@ -1517,7 +1572,7 @@ button.fortune--card:active { transform: scale(0.98); }
   width: 12px;
   height: 12px;
   border-radius: 50%;
-  background: var(--v2-blue);
+  background: none;
   border: 1.2px solid var(--system-black);
   box-sizing: border-box;
 }
@@ -1711,6 +1766,7 @@ button.fortune--card:active { transform: scale(0.98); }
   flex: none;
 }
 .wishform--slip .wish--hole { top: 16px; }
+.wishform--slip .wish--paper { --hole-y: 22px; }
 .wishform--slip textarea {
   position: absolute;
   left: 18px;

@@ -88,9 +88,23 @@
   // Each layer's ids get its own prefix, since the three exports share names
   for (const name of LAYERS) {
     fetch(`assets/wishtree/${name}.svg?v=1`).then((r) => r.text()).then((svg) => {
-      scene.querySelector(`[data-layer="${name}"]`).innerHTML = svg
+      const layer = scene.querySelector(`[data-layer="${name}"]`);
+      layer.innerHTML = svg
         .replace(/id="([^"]+)"/g, `id="${name}-$1"`)
         .replace(/url\(#([^)]+)\)/g, `url(#${name}-$1)`);
+      // The hanging strands (a stem line with leaves down it) drift from
+      // their tops, each in its own time
+      layer.querySelectorAll('g').forEach((g) => {
+        if (!g.querySelector(':scope > line')) return;
+        g.classList.add('tree--strand');
+        g.style.animationDelay = `${(-rand() * 6).toFixed(2)}s`;
+        g.style.animationDuration = `${(4.5 + rand() * 3).toFixed(2)}s`;
+      });
+      // Each beam of the moving light sways and breathes on its own
+      layer.querySelectorAll('[id="light-Vector"], [id="light-Vector_2"], [id="light-light"]').forEach((b, i) => {
+        b.classList.add('tree--beam');
+        b.style.animationDuration = `${[7, 9.5, 12][i]}s, ${[5, 6.5, 8][i]}s`;
+      });
     });
   }
 
@@ -120,11 +134,16 @@
     stageEl.classList.add('is-reading');
     reader.setAttribute('aria-hidden', 'false');
     from = { g, box: toStage(paper.getBoundingClientRect()) };
+    // The tree leans in towards the slip that was tapped
+    const sb = scene.getBoundingClientRect(), pb = paper.getBoundingClientRect();
+    const k = sb.width / scene.offsetWidth;
+    scene.style.transformOrigin = `${(pb.left + pb.width / 2 - sb.left) / k}px ${(pb.top + pb.height / 2 - sb.top) / k}px`;
+    scene.classList.add('is-zoomed');
     g.style.visibility = 'hidden';
     const to = toStage(slip.getBoundingClientRect());
     slip.animate([{ transform: `${transformFrom(from.box, to)} rotate(0deg)`, opacity: 0.9 },
       { transform: 'none', opacity: 1 }], OPTS);
-    reader.querySelector('.wish--close').focus({ preventScroll: true });
+    reader.querySelector('.wish--close').focus({ preventScroll: true, focusVisible: false });
   }
   function closeWish() {
     if (!from) return;
@@ -133,6 +152,7 @@
     const to = toStage(slip.getBoundingClientRect());
     reader.classList.remove('is-open');
     stageEl.classList.remove('is-reading');
+    scene.classList.remove('is-zoomed');
     reader.setAttribute('aria-hidden', 'true');
     slip.animate([{ transform: 'none', opacity: 1 }, { transform: transformFrom(box, to), opacity: 0.9 }], OPTS)
       .finished.then(() => {

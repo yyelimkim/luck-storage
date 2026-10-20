@@ -7,7 +7,7 @@
   <meta name="theme-color" content="#f0f0f0">
   <title>행운보관소</title>
   <link rel="stylesheet" href="design-system.css?v=7">
-  <link rel="stylesheet" href="mobile.css?v=124">
+  <link rel="stylesheet" href="mobile.css?v=129">
 </head>
 <body>
   <!-- iPhone 17 screen (Figma 97:630 at rest, 97:730 while dialing), laid out at
@@ -88,6 +88,8 @@
       <div class="tree--scene" id="tree-scene"></div>
       <p class="tree--hint">Tap a wish to read it</p>
     </section>
+    <!-- Paper grain over the whole Wish Tree screen, under its buttons -->
+    <div class="m-grain" aria-hidden="true"></div>
     <!-- Writing a wish: the button, the sheet with a blank slip, a check
          before the clovers are spent, then a note once it's up -->
     <button type="button" class="tree--write" id="wish-write">
@@ -258,6 +260,6 @@
 
   <script src="cards.js?v=21"></script>
   <script src="mobile.js?v=88"></script>
-  <script src="tree.js?v=16"></script>
+  <script src="tree.js?v=19"></script>
 </body>
 </html>
