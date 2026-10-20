@@ -10,7 +10,7 @@ html, body {
 /* The cake, and under it the words for each step, all in white on the
    card's green (Figma 436:8748 …) */
 .candles {
-  --w: min(358px, 89vw);   /* the cake as wide as in the frames */
+  --w: min(358px, 89vw);   /* set by candles.js to fit the screen at each step */
   --ease: cubic-bezier(0.3, 0.8, 0.2, 1);
   position: fixed;
   inset: 0;
@@ -32,6 +32,7 @@ html, body {
   flex: none;
   width: var(--w);
   height: calc(var(--w) * 429 / 482);
+  transition: width 0.7s var(--ease), height 0.7s var(--ease);
 }
 
 /* The cake from the card (482 x 429), its flames laid over it. It comes
@@ -41,11 +42,7 @@ html, body {
   position: absolute;
   inset: 0;
   touch-action: none;
-  transform-origin: 50% 100%;
-  transition: transform 0.7s var(--ease);
 }
-[data-step="blow"] .candles--scene { transform: translateY(-24px) scale(1.39); }
-[data-step="done"] .candles--scene { transform: translateY(14px) scale(1.02); }
 .candles--cake {
   position: absolute;
   inset: 0;
@@ -57,40 +54,51 @@ html, body {
 .candles--flame {
   position: absolute;
   z-index: 2;
-  transform-origin: 50% 92%;
+  transform-origin: 50% 95%;
   pointer-events: none;
-  animation: flicker 1.3s ease-in-out infinite alternate;
   transition: opacity 0.25s, scale 0.25s, rotate 0.2s;
 }
-.candles--flame img { display: block; width: 100%; height: 100%; }
-@keyframes flicker {
-  0% { scale: 1 1; }
-  40% { scale: 0.94 1.06; }
-  70% { scale: 1.04 0.96; }
-  100% { scale: 0.97 1.04; }
+/* A flame wavers: its base stays put while the tip sways and licks from
+   side to side, unevenly, never bouncing */
+.candles--flame img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  transform-origin: 50% 95%;
+  animation: waver 1.9s linear infinite;
+}
+@keyframes waver {
+  0%   { transform: skewX(0deg)    scaleY(1); }
+  15%  { transform: skewX(-6deg)   scaleY(1.03); }
+  32%  { transform: skewX(3deg)    scaleY(0.98); }
+  48%  { transform: skewX(-2deg)   scaleY(1.04); }
+  63%  { transform: skewX(7deg)    scaleY(1); }
+  80%  { transform: skewX(-4deg)   scaleY(1.02); }
+  100% { transform: skewX(0deg)    scaleY(1); }
 }
 /* Swept by the breath, a flame bends right over (436:8856: about 50°) */
 .candles--flame.is-hit { scale: 0.8; }
-.candles--flame.is-relit { animation: relight 0.6s ease-out, flicker 1.3s 0.6s ease-in-out infinite alternate; }
+.candles--flame.is-relit { animation: relight 0.6s ease-out; }
 @keyframes relight {
   0% { scale: 0.3; opacity: 0.4; }
   60% { scale: 1.15; opacity: 1; }
   100% { scale: 1; }
 }
-.candles--flame.is-out { opacity: 0; scale: 0.2 0.5; transition: opacity 0.18s, scale 0.18s; animation: none; }
+.candles--flame.is-out { opacity: 0; scale: 0.2 0.5; transition: opacity 0.18s, scale 0.18s; }
 
 /* Smoke: two white curls rising from each wick (436:8907) */
 .candles--smoke {
   position: absolute;
   z-index: 2;
   pointer-events: none;
-  animation: smoke 2.4s ease-out both;
+  animation: smoke 2.1s ease-out both;
 }
+/* It curls up, drifts higher and dissolves: gone before Luck Claimed */
 @keyframes smoke {
   0% { opacity: 0; translate: 0 14px; clip-path: inset(100% 0 0 0); }
-  30% { opacity: 1; }
-  70% { clip-path: inset(0 0 0 0); }
-  100% { opacity: 1; translate: 0 0; clip-path: inset(0 0 0 0); }
+  25% { opacity: 1; }
+  50% { opacity: 1; clip-path: inset(0 0 0 0); }
+  100% { opacity: 0; translate: 2px -30px; clip-path: inset(0 0 0 0); filter: blur(2px); }
 }
 
 /* The swipe band over the flames (438:289): a dashed System White line

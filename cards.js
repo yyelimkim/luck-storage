@@ -219,6 +219,6 @@ const CARD_TEXT = {
 // on the phone they take the illustration's place on the card's sheet
 const CANVAS_PAGES = {
   '명태 액막이.png': 'charm.html?v=13',  // the fish charm
-  '촛불 한번에 불기.png': 'candles.html?v=4',  // make a wish, blow them all out
+  '촛불 한번에 불기.png': 'candles.html?v=6',  // make a wish, blow them all out
   '돌팝 쌓기.png': 'stones.html?v=1',  // drop the stones in, the wish on top
 };

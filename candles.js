@@ -31,13 +31,26 @@ const pct = (v, of) => `${(v / of) * 100}%`;
 const flames = FLAMES.map(([file, x, y, w, h]) => {
   const el = document.createElement('div');
   el.className = 'candles--flame';
-  Object.assign(el.style, { left: pct(x, W), top: pct(y, H), width: pct(w, W), height: pct(h, H), animationDelay: `${-Math.random() * 1.3}s` });
-  el.innerHTML = `<img src="assets/candles/${file}.svg" alt="">`;
+  Object.assign(el.style, { left: pct(x, W), top: pct(y, H), width: pct(w, W), height: pct(h, H) });
+  // each flame wavers in its own time
+  el.innerHTML = `<img src="assets/candles/${file}.svg" alt="" style="animation-delay:${(-Math.random() * 1.9).toFixed(2)}s; animation-duration:${(1.6 + Math.random() * 0.7).toFixed(2)}s">`;
   scene.appendChild(el);
   return el;
 });
 
-function step(name) { root.dataset.step = name; }
+// The cake as big as each step asks (Figma: 358 wide, 498.7 close up for
+// the blowing, 366 once done), but never wider or taller than the screen
+// leaves it, so nothing is ever cut off
+const ZOOM = { intro: 1, wish: 1, blow: 1.39, done: 1.02 };
+const words = document.querySelector('.candles--words');
+function fit() {
+  const room = innerHeight - words.offsetHeight - 60 - 40;  // the gap, and the band above the cake
+  const w = Math.min(358 * (ZOOM[root.dataset.step] || 1), innerWidth - 24, room * W / H);
+  root.style.setProperty('--w', `${Math.max(120, w)}px`);
+}
+addEventListener('resize', fit);
+function step(name) { root.dataset.step = name; fit(); }
+fit();
 // 1 → 2: the cake on its own a moment, then the wish
 setTimeout(() => { step('wish'); input.focus({ preventScroll: true }); }, 1100);
 
