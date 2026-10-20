@@ -1368,6 +1368,25 @@ button.fortune--card:active { transform: scale(0.98); }
   height: 874px;
 }
 .tree--scene svg { display: block; }
+/* The Figma frame's layers, stacked exactly: back, the slips, the front of
+   the trees over them, then the light. Only the slips take taps. */
+.tree--layer,
+.tree--slips {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 402px;
+  height: 874px;
+}
+.tree--layer[data-layer="front"],
+.tree--layer[data-layer="light"] { pointer-events: none; }
+.tree--layer svg { overflow: visible; }
+/* The moving light drifts and breathes */
+.tree--layer[data-layer="light"] { animation: tree-light 9s ease-in-out infinite alternate; }
+@keyframes tree-light {
+  from { transform: translate(-10px, -6px); opacity: 0.8; }
+  to { transform: translate(12px, 8px); opacity: 1; }
+}
 .tree--scene::after {
   content: "";
   position: absolute;
@@ -1657,8 +1676,10 @@ button.fortune--card:active { transform: scale(0.98); }
 }
 .wishform--title { font-size: 17px; }
 /* Paper: three round swatches, the picked one ringed */
+/* The slips in the tree are all white (Figma 426:4296), so there's no
+   paper to pick */
 .wishform--papers {
-  display: flex;
+  display: none;
   gap: 14px;
   margin: 2px 0 16px;
 }
