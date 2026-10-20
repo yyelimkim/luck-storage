@@ -1,0 +1,229 @@
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  height: 100%;
+  overflow: hidden;
+  background: transparent;  /* sits on the desktop canvas or the phone's card sheet */
+}
+
+/* The cake above, and under it whichever step we're on */
+.candles {
+  --w: min(300px, 78vw);
+  position: fixed;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 34px;
+  padding: 0 16px;
+  font-family: var(--font-display);
+  letter-spacing: var(--tracking);
+  color: var(--system-black);
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+/* The cake from the card (Group 110, 482 x 429), its flames laid over it */
+.candles--scene {
+  position: relative;
+  flex: none;
+  width: var(--w);
+  height: calc(var(--w) * 429 / 482);
+  touch-action: none;
+}
+.candles--cake {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+  pointer-events: none;
+}
+.candles--flame {
+  position: absolute;
+  z-index: 2;
+  transform-origin: 50% 92%;
+  pointer-events: none;
+  animation: flicker 1.3s ease-in-out infinite alternate;
+  transition: opacity 0.25s, scale 0.25s;
+}
+.candles--flame img { display: block; width: 100%; height: 100%; }
+@keyframes flicker {
+  0% { scale: 1 1; }
+  40% { scale: 0.94 1.06; }
+  70% { scale: 1.04 0.96; }
+  100% { scale: 0.97 1.04; }
+}
+/* Swept by the breath, a flame leans and shrinks; it springs back if the
+   breath didn't take them all */
+.candles--flame.is-hit { opacity: 0.55; scale: 0.7; }
+.candles--flame.is-relit { animation: relight 0.6s ease-out, flicker 1.3s 0.6s ease-in-out infinite alternate; }
+@keyframes relight {
+  0% { scale: 0.3; opacity: 0.4; }
+  60% { scale: 1.15; opacity: 1; }
+  100% { scale: 1; }
+}
+.candles--flame.is-out { opacity: 0; scale: 0.2 0.5; transition: opacity 0.18s, scale 0.18s; animation: none; }
+
+/* Smoke curling up from each wick once they're out */
+.candles--smoke {
+  position: absolute;
+  z-index: 2;
+  overflow: visible;
+  pointer-events: none;
+}
+.candles--smoke path {
+  fill: none;
+  stroke: var(--dark-grey);
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-dasharray: 80;
+  stroke-dashoffset: 80;
+  animation: smoke 1.8s ease-out forwards;
+}
+@keyframes smoke {
+  0% { stroke-dashoffset: 80; opacity: 0.9; transform: translateY(0); }
+  60% { stroke-dashoffset: 0; opacity: 0.8; }
+  100% { stroke-dashoffset: -60; opacity: 0; transform: translateY(-26px); }
+}
+
+/* The card's star burst, behind the cake: it bursts open when the wish comes true */
+.candles--star {
+  position: absolute;
+  left: 3%;
+  top: -48%;
+  width: 94%;
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0;
+  scale: 0.2;
+  rotate: -30deg;
+}
+[data-step="done"] .candles--star {
+  animation: star-burst 0.9s cubic-bezier(0.3, 1.5, 0.5, 1) forwards, star-turn 24s 0.9s linear infinite;
+}
+@keyframes star-burst {
+  to { opacity: 1; scale: 1; rotate: 0deg; }
+}
+@keyframes star-turn {
+  from { opacity: 1; scale: 1; rotate: 0deg; }
+  to { opacity: 1; scale: 1; rotate: 360deg; }
+}
+[data-step="done"] .candles--cake { animation: cake-hop 0.6s 0.1s cubic-bezier(0.3, 1.6, 0.5, 1); }
+@keyframes cake-hop { 40% { translate: 0 -10px; } }
+
+/* The swipe zone: a soft band over the flames, a fingertip showing the way */
+.candles--band {
+  position: absolute;
+  left: 26%;
+  top: -3%;
+  width: 56%;
+  height: 25%;
+  z-index: 3;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--system-black) 9%, transparent);
+  opacity: 0;
+  transition: opacity 0.3s;
+  pointer-events: none;
+}
+[data-step="blow"] .candles--band { opacity: 1; }
+.candles.is-blowing .candles--band { opacity: 0.4; }
+.candles--finger {
+  position: absolute;
+  left: 8%;
+  top: 50%;
+  width: 22px;
+  height: 22px;
+  margin: -11px 0 0 -11px;
+  border-radius: 50%;
+  background: var(--ui-white);
+  border: 0.771px solid var(--system-black);
+  box-shadow: 0 4px 4px rgba(168, 164, 164, 0.2);
+}
+[data-step="blow"] .candles--finger { animation: finger 1.8s 0.4s cubic-bezier(0.45, 0, 0.3, 1) infinite; }
+.candles.is-blowing .candles--finger { animation: none; opacity: 0; }
+@keyframes finger {
+  0% { left: 8%; opacity: 0; }
+  12% { opacity: 1; }
+  70% { left: 92%; opacity: 1; }
+  85%, 100% { left: 92%; opacity: 0; }
+}
+
+/* The steps under the cake share one spot */
+.candles--wish,
+.candles--hint,
+.candles--done {
+  width: min(371px, 100%);
+  min-height: 96px;
+  margin: 0;
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+[data-step="wish"] .candles--wish,
+[data-step="blow"] .candles--hint,
+[data-step="done"] .candles--done { display: flex; animation: rise 0.45s cubic-bezier(0.2, 0.8, 0.2, 1); }
+@keyframes rise { from { opacity: 0; translate: 0 10px; } }
+
+/* 1: the wish, written in a pill like the app's buttons, sent with an arrow */
+.candles--ask { font-size: 20px; margin-bottom: 14px; }
+.candles--field {
+  position: relative;
+  width: 100%;
+  height: 51px;
+}
+.candles--field input {
+  width: 100%;
+  height: 100%;
+  padding: 0 58px 0 22px;
+  border-radius: 43px;
+  border: 0.771px solid var(--system-black);
+  background: var(--ui-white);
+  font: inherit;
+  font-size: 17px;
+  letter-spacing: var(--tracking);
+  color: var(--system-black);
+  outline: none;
+  -webkit-user-select: text;
+  user-select: text;
+}
+.candles--field input::placeholder { color: var(--dark-grey); }
+.candles--field input:focus-visible { box-shadow: 0 0 0 2px var(--system-black); }
+.candles--send {
+  position: absolute;
+  right: 7px;
+  top: 7px;
+  width: 37px;
+  height: 37px;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: var(--system-black);
+  color: var(--system-white);
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s, transform 0.15s;
+}
+.candles--send:disabled { background: var(--system-white); color: var(--dark-grey); cursor: default; }
+.candles--send:not(:disabled):active { transform: scale(0.92); }
+
+/* 2: what to do; it shakes when the breath misses a candle */
+.candles--hint {
+  justify-content: center;
+  font-size: 17px;
+  line-height: 1.35;
+  max-width: 300px;
+}
+.candles--hint.is-missed { animation: miss 0.45s; }
+@keyframes miss {
+  20%, 60% { translate: -6px 0; }
+  40%, 80% { translate: 6px 0; }
+}
+
+/* 3: it came true */
+.candles--congrats { margin: 0; font-size: 22px; line-height: 1.3; max-width: 290px; }
+.candles--echo { margin: 10px 0 0; font-size: 15px; color: var(--dark-grey); }

@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Blowing Candles</title>
+  <link rel="stylesheet" href="design-system.css?v=7">
+  <link rel="stylesheet" href="candles.css?v=1">
+</head>
+<body>
+  <!-- Blowing out the candles (card 248:3069), after the sketch: make a wish,
+       blow every candle out in one go, and the wish comes true. -->
+  <main class="candles" id="candles" data-step="wish">
+    <div class="candles--scene" id="scene">
+      <img class="candles--star" src="assets/candles/star.svg" alt="">
+      <img class="candles--cake" src="assets/candles/cake.svg" alt="A birthday cake with five lit candles">
+      <!-- The swipe zone over the flames -->
+      <div class="candles--band" aria-hidden="true"><span class="candles--finger"></span></div>
+    </div>
+
+    <!-- 1: the wish -->
+    <form class="candles--wish" id="wish-form">
+      <label class="candles--ask" for="wish">What’s your wish?</label>
+      <div class="candles--field">
+        <input id="wish" type="text" maxlength="60" placeholder="I wish…" autocomplete="off">
+        <button type="submit" class="candles--send" id="send" aria-label="Make the wish" disabled>
+          <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 13V3M3.5 7.5L8 3l4.5 4.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+      </div>
+    </form>
+
+    <!-- 2: blow them out -->
+    <p class="candles--hint" id="hint" role="status">Blow them all out in one go — swipe across every flame at once</p>
+
+    <!-- 3: it came true -->
+    <div class="candles--done" role="status">
+      <p class="candles--congrats">Congratulations, your wish came true</p>
+      <p class="candles--echo" id="echo"></p>
+    </div>
+  </main>
+  <script src="candles.js?v=2"></script>
+</body>
+</html>
