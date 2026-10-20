@@ -38,8 +38,9 @@ const grapes = GRAPES.map(([cx, cy, r], i) => {
 // As big as fits: never wider than the screen, nor taller than what the
 // timer and words leave
 function fit() {
-  const room = innerHeight - timer.offsetHeight - hint.offsetHeight - 2 * 28 - 40;
-  const w = Math.min(260, innerWidth - 24, room * 352 / 499);
+  // the timer sits at the top, clear of the bunch
+  const room = innerHeight - (14 + timer.offsetHeight + 24) - hint.offsetHeight - 28 - 24;
+  const w = Math.min(340, innerWidth - 24, room * 352 / 499);
   root.style.setProperty('--w', `${Math.max(120, w)}px`);
 }
 addEventListener('resize', fit);

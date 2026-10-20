@@ -9,7 +9,7 @@ html, body {
 
 /* The bunch at the centre, the timer above it, the words under it */
 .grapes {
-  --w: 260px;  /* set by grapes.js to fit the screen */
+  --w: 300px;  /* set by grapes.js to fit the screen */
   position: fixed;
   inset: 0;
   display: flex;
@@ -25,13 +25,19 @@ html, body {
   user-select: none;
 }
 
-/* The timer: the pollock charm's progress bar — a rounded track in the
-   system's line, filled System Black — the seconds left at its end */
+/* The timer: the pollock charm's progress bar, in the same place at the
+   top — a rounded track in the system's line, filled System Black — the
+   seconds left at its end */
 .timer {
+  position: absolute;
+  left: 50%;
+  top: 14px;
+  z-index: 2;
   display: flex;
   align-items: center;
   gap: 12px;
-  width: min(370px, 100%);
+  width: min(370px, calc(100% - 32px));
+  transform: translateX(-50%);
 }
 .timer--track {
   flex: 1;
