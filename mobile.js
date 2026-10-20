@@ -386,8 +386,8 @@ function flipAnimate(boxes, fromDeg, radii) {
 // Teru Teru Bozu's full doll, for the ritual (340:2185). Layers are
 // [file, left, top, width, height, rotate, stroke spill (CSS inset)].
 const TERU_BIG = [
-  // the string, 100 shorter than in Figma (its straight middle taken out)
-  ['string-short', 177.89, 143, 31.458, 127.852, 1.54, '-0.45% -2.28%', 25.353, 127.252],
+  // the string, 55 shorter than in Figma (its straight middle taken out)
+  ['string-short', 177.89, 98, 31.458, 172.852, 1.54, '-0.33% -2.28%', 25.353, 172.252],
   ['body', 110.09, 387.46, 166.172, 128.05, 0, '-0.45% -0.35%'],
   ['knot', 179.13, 234.17, 30.881, 12.562, 0, '', 0, 0, 1.157],
   ['knot', 179.13, 244.64, 30.881, 12.562, 0, '', 0, 0, 1.157],
@@ -454,16 +454,15 @@ const TERU_SCENE = [
 
 // The ritual's sheet: how to perform it, the card's interaction, and what
 // shows once the luck is claimed
-function sheetHTML(name) {
-  const text = CARD_TEXT[name] || {};
+function ritualHTML(name) {
   const title = cardName(name);
-  const ritual = CANVAS_PAGES[name]
+  return CANVAS_PAGES[name]
     ? `<iframe class="ritual--piece" src="${CANVAS_PAGES[name]}&sheet" title="${title}"></iframe>`
     : name === '테루테루보즈.png'
       // Bad weather until it's hung: a grey sky, no sun, a sad doll. The
       // hint (Blowing Candles' band and hand) shows where to take hold.
       ? `<div class="ritual--teru is-gloomy">
-          <div class="teru--doll draw">${drawing(TERU_BIG, 'var(--system-black)', [110.09, 143])}
+          <div class="teru--doll draw">${drawing(TERU_BIG, 'var(--system-black)', [110.09, 98])}
             <span class="teru--grip" aria-hidden="true"></span>
             <img class="teru--hand" src="assets/candles/hand.svg" alt="">
           </div>
@@ -472,6 +471,11 @@ function sheetHTML(name) {
         </div>`
       // No interaction of its own yet: the artwork, tapped to claim
       : `<button type="button" class="ritual--art" aria-label="Claim luck">${artCrop(name, STAGE_W - 2 * ART_CROP.left * (STAGE_W / 1040))}</button>`;
+}
+
+function sheetHTML(name) {
+  const text = CARD_TEXT[name] || {};
+  const ritual = ritualHTML(name);
   return `
     <div class="sheet--fade"></div>
     <img class="sheet--chevron" src="assets/system/chevron-down.svg" width="53.001" height="12.095" alt="">
@@ -482,10 +486,13 @@ function sheetHTML(name) {
       <div class="claimed--body">
         <div class="claimed--text">
           <img class="claimed--clover" src="assets/system/clover-claimed.svg" width="76.6022" height="76.6022" alt="">
-          <p class="claimed--title">Luck Claimed!</p>
+          <p class="claimed--title">${playedToday(name) ? 'Already claimed today' : 'Luck Claimed!'}</p>
           <p class="claimed--sub">Come back tomorrow to claim luck again!</p>
         </div>
-        <button type="button" class="claimed--btn" data-act="home">Home</button>
+        <div class="claimed--btns">
+          <button type="button" class="claimed--btn" data-act="home">Home</button>
+          <button type="button" class="claimed--btn" data-act="replay">Replay</button>
+        </div>
       </div>
     </div>`;
 }
@@ -547,10 +554,40 @@ function fitRitual(sh) {
   return k;
 }
 
+// Each card's luck can be claimed once a day; played again the same day, it
+// still finishes, but nothing more is added. Kept in this browser only.
+const today = () => new Date().toDateString();
+function playedSet() {
+  try {
+    const v = JSON.parse(localStorage.getItem('played') || '{}');
+    return v.day === today() ? new Set(v.cards) : new Set();
+  } catch (e) { return new Set(); }
+}
+const played = playedSet();
+const playedToday = (name) => played.has(name);
+function markPlayed(name) {
+  played.add(name);
+  try { localStorage.setItem('played', JSON.stringify({ day: today(), cards: [...played] })); } catch (e) {}
+}
+
 function claimed() {
   if (!sheet || sheet.claimed) return;
   sheet.claimed = true;
+  // The first time today it counts; after that it's only a replay
+  sheet.counts = !playedToday(sheet.name);
+  if (sheet.counts) markPlayed(sheet.name);
+  sheet.el.querySelector('.claimed--title').textContent = sheet.counts ? 'Luck Claimed!' : 'Already claimed today';
   sheet.el.classList.add('is-claimed');
+}
+// Replay: the ritual starts again from the beginning, on the same sheet
+function replay() {
+  if (!sheet || !sheet.claimed) return;
+  sheet.claimed = false;
+  sheet.el.classList.remove('is-claimed');
+  const holder = sheet.el.querySelector('.sheet--ritual');
+  holder.innerHTML = ritualHTML(sheet.name);
+  teruRitual(sheet.el, fitRitual(sheet.el));
+  holder.querySelector('.ritual--art')?.addEventListener('click', claimed);
 }
 addEventListener('message', (e) => { if (e.data === 'luck-claimed') claimed(); });
 
@@ -564,15 +601,15 @@ function teruRitual(el, k) {
   let hung = false;
   const set = (o) => { off = o; doll.style.transform = `translateY(${o}px)`; };
   set(TERU_DROP);
-  const TERU_H = 372.5;  // the doll's drawn height
+  const TERU_H = 417.5;  // the doll's drawn height
   const GRIP = 70;       // it can only be taken by the top of its string
   doll.addEventListener('pointerdown', (e) => {
     if (hung) return;
     const r = doll.getBoundingClientRect();
     if ((e.clientY - r.top) / (r.height / TERU_H) > GRIP) return;
-    el.querySelector('.ritual--teru').classList.add('is-held');
     doll.setPointerCapture(e.pointerId);
     doll.getAnimations().forEach((a) => a.cancel());
+    el.querySelector('.ritual--teru').classList.add('is-held');  // after, so its sway isn't cancelled
     grab = { y: e.clientY, off };
   });
   doll.addEventListener('pointermove', (e) => {
@@ -582,6 +619,7 @@ function teruRitual(el, k) {
   const letGo = async () => {
     if (!grab) return;
     grab = null;
+    el.querySelector('.ritual--teru')?.classList.remove('is-held');
     if (off > TERU_DROP * 0.4) {
       await doll.animate([{ transform: `translateY(${off}px)` }, { transform: `translateY(${TERU_DROP}px)` }],
         { duration: 400, easing: 'cubic-bezier(0.3, 1.4, 0.5, 1)' }).finished;
@@ -635,11 +673,12 @@ async function flipOpen(card) {
   sh.style.setProperty('--ritual-opacity', RITUAL_OPACITY);
   sh.innerHTML = sheetHTML(name);
   stage.appendChild(sh);
-  sheet = { el: sh, p: -peek() / sheetTop(), claimed: false };
+  sheet = { el: sh, name, p: -peek() / sheetTop(), claimed: false };
   setSheet(sheet.p);
   teruRitual(sh, fitRitual(sh));
   sh.querySelector('.ritual--art')?.addEventListener('click', claimed);
-  sh.querySelector('.claimed--btn').addEventListener('click', goHome);
+  sh.querySelector('[data-act="home"]').addEventListener('click', goHome);
+  sh.querySelector('[data-act="replay"]').addEventListener('click', replay);
 
   document.documentElement.classList.add('is-flipped');
   await flipAnimate([from, midBox(from, to), to], 0,
@@ -674,7 +713,8 @@ async function flipClose() {
 async function goHome() {
   if (!flip || flipBusy) return;
   flipBusy = true;
-  const flight = sheet.claimed && flyClover(sheet.el.querySelector('.claimed--clover'));
+  // The clover only flies to the count the first time today
+  const flight = sheet.claimed && sheet.counts && flyClover(sheet.el.querySelector('.claimed--clover'));
   document.documentElement.classList.remove('is-flipped');
   const fade = { duration: SHEET_MS, easing: 'ease-out', fill: 'forwards' };
   await Promise.all([sheet.el, flip.el].map((e) =>

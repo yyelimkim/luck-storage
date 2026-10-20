@@ -1,6 +1,7 @@
 // Small sounds for the rituals, made on the spot with Web Audio (no files):
-// hit() a soft wooden knock, swoosh() a quick breath of air. Both are quiet,
-// and only ever play in answer to a tap or swipe, as browsers require.
+// hit() a soft wooden knock, swoosh() a quick breath of air. Browsers only
+// let sound start from a press or tap — not from a finger moving — so a
+// swipe calls unlock() as the finger goes down, before its swoosh.
 const Sounds = (() => {
   let ctx = null;
   const audio = () => {
@@ -66,5 +67,6 @@ const Sounds = (() => {
     n.start(t);
   }
 
-  return { hit, swoosh };
+  const unlock = () => { audio(); };
+  return { hit, swoosh, unlock };
 })();

@@ -33,7 +33,7 @@ const flames = FLAMES.map(([file, x, y, w, h]) => {
   el.className = 'candles--flame';
   Object.assign(el.style, { left: pct(x, W), top: pct(y, H), width: pct(w, W), height: pct(h, H) });
   // each flame wavers in its own time
-  el.innerHTML = `<img src="assets/candles/${file}.svg" alt="" style="animation-delay:${(-Math.random() * 1.9).toFixed(2)}s; animation-duration:${(1.6 + Math.random() * 0.7).toFixed(2)}s">`;
+  el.innerHTML = `<img src="assets/candles/${file}.svg" alt="" style="animation-delay:${(-Math.random() * 4).toFixed(2)}s; animation-duration:${(3.4 + Math.random() * 1.2).toFixed(2)}s">`;
   scene.appendChild(el);
   return el;
 });
@@ -74,6 +74,7 @@ function nearSegment(p, a, b) {
 }
 scene.addEventListener('pointerdown', (e) => {
   if (root.dataset.step !== 'blow') return;
+  Sounds.unlock();  // the press lets the swoosh play once the finger moves
   stroke = { last: [e.clientX, e.clientY], t0: performance.now(), hit: new Set(), whooshed: false };
   root.classList.add('is-blowing');
   scene.setPointerCapture(e.pointerId);
