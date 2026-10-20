@@ -1163,20 +1163,57 @@ button.fortune--card:active { transform: scale(0.98); }
 .ritual--teru {
   position: relative;
   width: 166.172px;
-  height: calc(472.5px + 90px);
+  height: calc(372.5px + 90px);
 }
 .ritual--teru .teru--doll {
   position: absolute;
   left: 0;
   top: 0;
   width: 100%;
-  height: 472.5px;
-  cursor: grab;
+  height: 372.5px;
   touch-action: none;
   transform-origin: 83px 0;  /* swings from the top of its string */
 }
-.teru--doll:active { cursor: grabbing; }
-.teru--doll.is-hung { cursor: auto; }
+/* Only the loop at the top of the string takes hold of it */
+.teru--grip {
+  position: absolute;
+  left: 55px;
+  top: -16px;
+  width: 56px;
+  height: 80px;
+  z-index: 2;
+  border-radius: 999px;
+  border: 1.4px dashed var(--system-white);
+  background: color-mix(in srgb, var(--ui-white) 20%, transparent);
+  cursor: grab;
+  animation: grip-pulse 1.6s ease-in-out infinite;
+}
+.teru--hand {
+  position: absolute;
+  left: 69px;
+  top: 30px;
+  width: 48px;
+  z-index: 3;
+  pointer-events: none;
+  animation: hand-pull 1.6s cubic-bezier(0.45, 0, 0.3, 1) infinite;
+}
+@keyframes grip-pulse { 50% { scale: 1.08; } }
+@keyframes hand-pull {
+  0%, 15% { translate: 0 10px; opacity: 0; }
+  30% { opacity: 1; }
+  70% { translate: 0 -14px; opacity: 1; }
+  100% { translate: 0 -14px; opacity: 0; }
+}
+.is-held .teru--grip,
+.is-held .teru--hand,
+.teru--doll.is-hung .teru--grip,
+.teru--doll.is-hung .teru--hand { opacity: 0; animation: none; pointer-events: none; transition: opacity 0.2s; }
+.is-held .teru--doll { cursor: grabbing; }
+/* Bad weather: a grey sky, the sun gone; it clears once the doll is hung */
+.sheet { transition: background-color 1.2s; }
+.sheet:has(.ritual--teru.is-gloomy) { background-color: var(--dark-grey); }
+.teru--scene[src*="sun"] { transition: opacity 0.9s 0.3s, translate 1.2s 0.3s cubic-bezier(0.3, 1.2, 0.5, 1); }
+.is-gloomy .teru--scene[src*="sun"] { opacity: 0; translate: 0 40px; }
 .teru--scene {
   position: absolute;
   display: block;

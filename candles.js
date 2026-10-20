@@ -61,7 +61,7 @@ function nearSegment(p, a, b) {
 }
 scene.addEventListener('pointerdown', (e) => {
   if (root.dataset.step !== 'blow') return;
-  stroke = { last: [e.clientX, e.clientY], t0: performance.now(), hit: new Set() };
+  stroke = { last: [e.clientX, e.clientY], t0: performance.now(), hit: new Set(), whooshed: false };
   root.classList.add('is-blowing');
   scene.setPointerCapture(e.pointerId);
 });
@@ -69,6 +69,11 @@ scene.addEventListener('pointermove', (e) => {
   if (!stroke) return;
   const p = [e.clientX, e.clientY];
   const dir = Math.sign(p[0] - stroke.last[0]) || 1;
+  // A small swoosh once the swipe gets going
+  if (!stroke.whooshed && Math.abs(p[0] - stroke.last[0]) + Math.abs(p[1] - stroke.last[1]) > 6) {
+    stroke.whooshed = true;
+    Sounds.swoosh();
+  }
   flames.forEach((f, i) => {
     if (stroke.hit.has(i)) return;
     if (nearSegment(centre(f), stroke.last, p) < HIT_R) {

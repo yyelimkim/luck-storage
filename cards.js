@@ -218,7 +218,7 @@ const CARD_TEXT = {
 // Interactive pieces: on desktop they fill the canvas beside an opened card;
 // on the phone they take the illustration's place on the card's sheet
 const CANVAS_PAGES = {
-  '명태 액막이.png': 'charm.html?v=10',  // the fish charm
-  '촛불 한번에 불기.png': 'candles.html?v=3',  // make a wish, blow them all out
+  '명태 액막이.png': 'charm.html?v=13',  // the fish charm
+  '촛불 한번에 불기.png': 'candles.html?v=4',  // make a wish, blow them all out
   '돌팝 쌓기.png': 'stones.html?v=1',  // drop the stones in, the wish on top
 };

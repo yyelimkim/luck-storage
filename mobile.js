@@ -386,14 +386,15 @@ function flipAnimate(boxes, fromDeg, radii) {
 // Teru Teru Bozu's full doll, for the ritual (340:2185). Layers are
 // [file, left, top, width, height, rotate, stroke spill (CSS inset)].
 const TERU_BIG = [
-  ['string', 177.89, 43, 31.458, 227.852, 1.54, '-0.25% -2.28%', 25.353, 227.252],
+  // the string, 100 shorter than in Figma (its straight middle taken out)
+  ['string-short', 177.89, 143, 31.458, 127.852, 1.54, '-0.45% -2.28%', 25.353, 127.252],
   ['body', 110.09, 387.46, 166.172, 128.05, 0, '-0.45% -0.35%'],
   ['knot', 179.13, 234.17, 30.881, 12.562, 0, '', 0, 0, 1.157],
   ['knot', 179.13, 244.64, 30.881, 12.562, 0, '', 0, 0, 1.157],
   ['head', 125.7, 257.44, 135.87, 135.87, 0, ''],
   ['neck', 146.23, 381.6, 94.816, 25.415, 0, '-2.28% -0.61%'],
   ['shadow', 211.92, 398.25, 32.786, 7.714, 0, ''],
-  ['face', 132.09, 327.19, 67.446, 24.435, 0, ''],
+  ['face-sad', 132.09, 327.19, 67.446, 24.435, 0, ''],  // smiles once it's hung
 ];
 // [dx, dy] shifts every layer, so a drawing can start at its own top left
 function drawing(layers, knotColor, [dx, dy] = [0, 0]) {
@@ -459,8 +460,13 @@ function sheetHTML(name) {
   const ritual = CANVAS_PAGES[name]
     ? `<iframe class="ritual--piece" src="${CANVAS_PAGES[name]}&sheet" title="${title}"></iframe>`
     : name === '테루테루보즈.png'
-      ? `<div class="ritual--teru">
-          <div class="teru--doll draw">${drawing(TERU_BIG, 'var(--system-black)', [110.09, 43])}</div>
+      // Bad weather until it's hung: a grey sky, no sun, a sad doll. The
+      // hint (Blowing Candles' band and hand) shows where to take hold.
+      ? `<div class="ritual--teru is-gloomy">
+          <div class="teru--doll draw">${drawing(TERU_BIG, 'var(--system-black)', [110.09, 143])}
+            <span class="teru--grip" aria-hidden="true"></span>
+            <img class="teru--hand" src="assets/candles/hand.svg" alt="">
+          </div>
           ${TERU_SCENE.map(([file, left, top, w, h]) =>
             `<img class="teru--scene" src="assets/ritual/${file}.svg" style="left:${left}px; top:${top}px" width="${w}" height="${h}" alt="">`).join('')}
         </div>`
@@ -558,8 +564,13 @@ function teruRitual(el, k) {
   let hung = false;
   const set = (o) => { off = o; doll.style.transform = `translateY(${o}px)`; };
   set(TERU_DROP);
+  const TERU_H = 372.5;  // the doll's drawn height
+  const GRIP = 70;       // it can only be taken by the top of its string
   doll.addEventListener('pointerdown', (e) => {
     if (hung) return;
+    const r = doll.getBoundingClientRect();
+    if ((e.clientY - r.top) / (r.height / TERU_H) > GRIP) return;
+    el.querySelector('.ritual--teru').classList.add('is-held');
     doll.setPointerCapture(e.pointerId);
     doll.getAnimations().forEach((a) => a.cancel());
     grab = { y: e.clientY, off };
@@ -579,6 +590,9 @@ function teruRitual(el, k) {
     }
     hung = true;
     doll.classList.add('is-hung');
+    // The weather turns: the sky clears, the sun comes out, the doll smiles
+    el.querySelector('.ritual--teru').classList.remove('is-gloomy');
+    doll.querySelector('img[src*="face-sad"]').src = 'assets/teru/face.svg';
     await doll.animate([{ transform: `translateY(${off}px)` }, { transform: 'translateY(0)' }],
       { duration: 250, easing: 'ease-out' }).finished;
     set(0);

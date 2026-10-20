@@ -367,6 +367,7 @@ function release() {
     if (press.onCharm) {
       // Hit: knock it away from the side that was hit
       const side = press.x > pinPos()[0] ? 1 : -1;
+      Sounds.hit();
       omega += side * HIT;
       omegaPhi -= side * HIT * 1.5;
       snap(0.6);
