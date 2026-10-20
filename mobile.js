@@ -569,7 +569,8 @@ function claimed() {
   sheet.claimed = true;
   // The first time today it counts; after that it's only a replay
   sheet.counts = !playedToday(sheet.name);
-  if (sheet.counts) { markPlayed(sheet.name); Sounds.claim(); }
+  if (sheet.counts) markPlayed(sheet.name);
+  Sounds.claim();  // the finishing sparkle plays every time, even on a replay
   sheet.el.querySelector('.claimed--title').textContent = sheet.counts ? 'Luck Claimed!' : 'Already claimed today';
   sheet.el.classList.add('is-claimed');
 }
