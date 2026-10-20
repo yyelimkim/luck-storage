@@ -699,8 +699,8 @@ button.fortune--card {
 }
 button.fortune--card:active { transform: scale(0.98); }
 .fortune--read {
-  min-height: 267px;
-  padding: 60px 24px 22px;
+  /* as tall as the day's reading: the cards below follow it up or down */
+  padding: 60px 24px 26px;
   justify-content: flex-start;
 }
 .fortune .fortune--headline {
@@ -709,8 +709,7 @@ button.fortune--card:active { transform: scale(0.98); }
 }
 /* The whole reading, from the start */
 .fortune .fortune--body {
-  margin-top: 12px;
-  color: var(--dark-grey);
+  margin-top: 12px;  /* the same colour as the headline above it */
 }
 .fortune--tiles {
   display: grid;
@@ -719,7 +718,7 @@ button.fortune--card:active { transform: scale(0.98); }
   margin-top: 12px;
 }
 .fortune--tile { height: 228px; padding: 22px 0; }
-.fortune--label { color: var(--dark-grey); }
+.fortune--label { }  /* the same colour as what it labels */
 .fortune--ritual { gap: 26px; }
 .fortune--art { display: block; height: 90px; }
 .fortune--art img { display: block; width: auto; height: 87px; }
