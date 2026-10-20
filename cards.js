@@ -218,9 +218,9 @@ const CARD_TEXT = {
 // Interactive pieces: on desktop they fill the canvas beside an opened card;
 // on the phone they take the illustration's place on the card's sheet
 const CANVAS_PAGES = {
-  '명태 액막이.png': 'charm.html?v=22',  // the fish charm
-  '촛불 한번에 불기.png': 'candles.html?v=16',  // make a wish, blow them all out
-  '부처님 배 만지기.png': 'buddha.html?v=8',  // rub the belly round till it glows
-  '포도 12알 먹기.png': 'grapes.html?v=7',  // eat all twelve before the clock runs out
-  '돌팝 쌓기.png': 'stones.html?v=15',  // drop the stones in, the wish on top
+  '명태 액막이.png': 'charm.html?v=23',  // the fish charm
+  '촛불 한번에 불기.png': 'candles.html?v=17',  // make a wish, blow them all out
+  '부처님 배 만지기.png': 'buddha.html?v=9',  // rub the belly round till it glows
+  '포도 12알 먹기.png': 'grapes.html?v=8',  // eat all twelve before the clock runs out
+  '돌팝 쌓기.png': 'stones.html?v=16',  // drop the stones in, the wish on top
 };

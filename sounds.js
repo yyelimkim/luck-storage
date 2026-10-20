@@ -172,31 +172,41 @@ const Sounds = (() => {
     o.stop(t + 0.09);
   }
 
-  // A grape eaten: a juicy pop — a quick rising blip with a crunchy crackle
+  // A grape eaten: a bite — a crunchy chomp of a few quick gritty bursts,
+  // with a soft, juicy thump under it
   function eat() {
     const a = audio();
     const t = a.currentTime;
-    const o = a.createOscillator();
+    const out = a.createGain();
+    out.gain.value = 0.5;
+    out.connect(a.destination);
+    // the crunch: noise through a mid band-pass, chopped into little bites
+    const n = noise(a, 0.16);
+    const bp = a.createBiquadFilter();
+    bp.type = 'bandpass';
+    bp.frequency.value = 1400 + Math.random() * 400;
+    bp.Q.value = 1.1;
     const g = a.createGain();
-    o.type = 'sine';
-    o.frequency.setValueAtTime(320 + Math.random() * 80, t);
-    o.frequency.exponentialRampToValueAtTime(900, t + 0.05);
     g.gain.setValueAtTime(0.001, t);
-    g.gain.exponentialRampToValueAtTime(0.25, t + 0.008);
-    g.gain.exponentialRampToValueAtTime(0.001, t + 0.09);
-    o.connect(g).connect(a.destination);
-    o.start(t);
-    o.stop(t + 0.1);
-    const n = noise(a, 0.12);
-    const hp = a.createBiquadFilter();
-    hp.type = 'highpass';
-    hp.frequency.value = 2200;
-    const ng = a.createGain();
-    ng.gain.setValueAtTime(0.001, t + 0.02);
-    ng.gain.exponentialRampToValueAtTime(0.16, t + 0.03);
-    ng.gain.exponentialRampToValueAtTime(0.001, t + 0.12);
-    n.connect(hp).connect(ng).connect(a.destination);
+    [0, 0.035, 0.07, 0.11].forEach((d, i) => {
+      g.gain.exponentialRampToValueAtTime(0.5 - i * 0.09, t + d + 0.004);
+      g.gain.exponentialRampToValueAtTime(0.02, t + d + 0.03);
+    });
+    g.gain.exponentialRampToValueAtTime(0.001, t + 0.16);
+    n.connect(bp).connect(g).connect(out);
     n.start(t);
+    // the juicy thump
+    const o = a.createOscillator();
+    const og = a.createGain();
+    o.type = 'sine';
+    o.frequency.setValueAtTime(180, t);
+    o.frequency.exponentialRampToValueAtTime(90, t + 0.1);
+    og.gain.setValueAtTime(0.001, t);
+    og.gain.exponentialRampToValueAtTime(0.35, t + 0.01);
+    og.gain.exponentialRampToValueAtTime(0.001, t + 0.12);
+    o.connect(og).connect(out);
+    o.start(t);
+    o.stop(t + 0.13);
   }
 
   // A clock's second ticking down: a tiny dry tick (a little lower on the tock)
