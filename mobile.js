@@ -681,6 +681,7 @@ async function flipOpen(card) {
   sh.querySelector('[data-act="replay"]').addEventListener('click', replay);
 
   document.documentElement.classList.add('is-flipped');
+  Sounds.flip();
   await flipAnimate([from, midBox(from, to), to], 0,
     [cardRadius(from), cardRadius(midBox(from, to)), `${PANEL_RADIUS * to.k}px`]);
   await sheetTo(0);
@@ -701,6 +702,7 @@ async function flipClose() {
   // The card is hidden but still laid out, so its box is where to land
   const from = flip.box;
   const to = stageBox(flip.card);
+  Sounds.flip();
   await flipAnimate([from, midBox(from, to), to], 180,
     [`${PANEL_RADIUS * from.k}px`, cardRadius(midBox(from, to)), cardRadius(to)]);
   flip.el.remove();
@@ -772,6 +774,7 @@ function flyClover(src) {
 // comes in, down as it's spent (on wishes, see tree.js)
 function changeLuck(d) {
   luck += d;
+  if (d > 0) Sounds.chime();
   const dir = d > 0 ? 1 : -1;
   countIcon.animate([
     { transform: `scale(1.5) rotate(${-20 * dir}deg)` },

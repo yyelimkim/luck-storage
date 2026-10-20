@@ -163,7 +163,7 @@ const CARD_TEXT = {
   },
   '돌팝 쌓기.png': {
     about: 'A practice found across many cultures, including Scottish, Scandinavian, Buddhist, and Native American traditions, where a balanced stack of stones is believed to hold a wish in place.',
-    howTo: 'Drag stones one by one to stack them. Wobbles if off-center, settles if balanced.',
+    howTo: 'Tap each stone to drop it into place, building the tower from the bottom.',
   },
   '돼지꿈.png': {
     about: 'A Korean belief that dreaming of a pig (돼지꿈) brings wealth, often prompting people to buy a lottery ticket that day.',
@@ -220,5 +220,5 @@ const CARD_TEXT = {
 const CANVAS_PAGES = {
   '명태 액막이.png': 'charm.html?v=14',  // the fish charm
   '촛불 한번에 불기.png': 'candles.html?v=8',  // make a wish, blow them all out
-  '돌팝 쌓기.png': 'stones.html?v=1',  // drop the stones in, the wish on top
+  '돌팝 쌓기.png': 'stones.html?v=3',  // drop the stones in, the wish on top
 };

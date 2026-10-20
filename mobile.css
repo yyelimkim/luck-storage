@@ -1164,7 +1164,7 @@ button.fortune--card:active { transform: scale(0.98); }
   position: relative;
   width: 166.172px;
   height: calc(417.5px + 90px);
-  translate: 0 -70px;  /* sits higher on the sheet */
+  translate: 0 -40px;  /* higher on the sheet, yet once hung its loop stays clear of the words above */
 }
 .ritual--teru .teru--doll {
   position: absolute;

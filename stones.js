@@ -76,7 +76,17 @@ STONES.forEach((s) => {
 // The pile, shuffled so it isn't already in order
 [...STONES].sort(() => Math.random() - 0.5).forEach((s) => pile.appendChild(s.pick));
 
-function step(name) { root.dataset.step = name; }
+// The tower as big as fits: never wider than the screen, nor taller than
+// what the words and pile under it leave
+const under = () => document.querySelector(root.dataset.step === 'stack' ? '.stones--stack' : '.stones--ask');
+function fit() {
+  const room = innerHeight - (under()?.offsetHeight || 120) - 28 - 40;
+  const w = Math.min(300, innerWidth - 24, room * BOX_W / BOX_H);
+  root.style.setProperty('--w', `${Math.max(120, w)}px`);
+}
+addEventListener('resize', fit);
+function step(name) { root.dataset.step = name; fit(); }
+fit();
 
 // 1: the wish
 input.addEventListener('input', () => { send.disabled = !input.value.trim(); });

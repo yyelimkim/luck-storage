@@ -67,6 +67,42 @@ const Sounds = (() => {
     n.start(t);
   }
 
+  // A card turning over: a short papery flick, swept from bright to soft
+  function flip() {
+    const a = audio();
+    const t = a.currentTime;
+    const n = noise(a, 0.18);
+    const bp = a.createBiquadFilter();
+    bp.type = 'bandpass';
+    bp.Q.value = 0.9;
+    bp.frequency.setValueAtTime(3200, t);
+    bp.frequency.exponentialRampToValueAtTime(900, t + 0.16);
+    const g = a.createGain();
+    g.gain.setValueAtTime(0.001, t);
+    g.gain.exponentialRampToValueAtTime(0.18, t + 0.02);
+    g.gain.exponentialRampToValueAtTime(0.001, t + 0.17);
+    n.connect(bp).connect(g).connect(a.destination);
+    n.start(t);
+  }
+
+  // Luck added: two soft bell notes, rising
+  function chime() {
+    const a = audio();
+    const t = a.currentTime;
+    [[1318.5, 0], [1975.5, 0.09]].forEach(([f, d]) => {
+      const o = a.createOscillator();
+      const g = a.createGain();
+      o.type = 'sine';
+      o.frequency.value = f;
+      g.gain.setValueAtTime(0.001, t + d);
+      g.gain.exponentialRampToValueAtTime(0.12, t + d + 0.01);
+      g.gain.exponentialRampToValueAtTime(0.001, t + d + 0.6);
+      o.connect(g).connect(a.destination);
+      o.start(t + d);
+      o.stop(t + d + 0.62);
+    });
+  }
+
   const unlock = () => { audio(); };
-  return { hit, swoosh, unlock };
+  return { hit, swoosh, flip, chime, unlock };
 })();
