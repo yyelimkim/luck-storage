@@ -132,7 +132,11 @@ function finish() {
     { transform: 'translateY(-420px) scale(0.6)', opacity: 0 },
     { transform: 'translateY(8px) scale(1.04)', opacity: 1, offset: 0.75 },
     { transform: 'none', opacity: 1 },
-  ], { duration: 900, easing: 'cubic-bezier(0.3, 0.8, 0.4, 1)', fill: 'both' });
+  ], { duration: 900, easing: 'cubic-bezier(0.3, 0.8, 0.4, 1)', fill: 'both' }).finished.then(() => {
+    orb.getAnimations().forEach((a) => a.cancel());
+    orb.classList.add('is-floating');
+  });
+  setTimeout(() => Sounds.shimmer(), 500);  // as it settles on top
   if (IN_SHEET) setTimeout(() => parent.postMessage('luck-claimed', '*'), 2600);
 }
 

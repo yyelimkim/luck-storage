@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Buddha’s Belly</title>
+  <link rel="stylesheet" href="design-system.css?v=7">
+  <link rel="stylesheet" href="buddha.css?v=2">
+</head>
+<body>
+  <!-- Rubbing Buddha's belly (Figma 436:9042, 436:9128, 436:9189, 436:9248):
+       the Buddha; up close, rub the belly round and round until it glows;
+       back out, the belly aglow and the halo blooming behind. -->
+  <main class="buddha" id="buddha" data-step="intro">
+    <!-- The progress bar, as the pollock charm's -->
+    <div class="progress" id="progress" role="progressbar" aria-label="Glow" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+      <div class="progress--track"><span class="progress--fill" id="fill"></span></div>
+      <img class="progress--clover" src="assets/mobile/clover-outline.svg" width="28" height="28" alt="">
+    </div>
+
+    <div class="buddha--figure" id="figure">
+      <img class="buddha--halo" src="assets/buddha/halo.svg" alt="">
+      <img class="buddha--body" src="assets/buddha/buddha.svg" alt="The laughing Buddha">
+      <!-- The belly: dashed where to rub, warming to yellow as it's rubbed -->
+      <div class="buddha--belly" id="belly" aria-label="Rub here">
+        <span class="buddha--glow" id="glow"></span>
+      </div>
+      <svg class="buddha--spark" id="spark" viewBox="0 0 43 43" aria-hidden="true"><path d="M26.6 15.95L26.72 16.28L27.05 16.4L40.84 21.5L27.05 26.6L26.72 26.72L26.6 27.05L21.5 40.84L16.4 27.05L16.28 26.72L15.95 26.6L2.16 21.5L15.95 16.4L16.28 16.28L16.4 15.95L21.5 2.16L26.6 15.95Z"/></svg>
+      <img class="buddha--hand" src="assets/candles/hand.svg" alt="">
+    </div>
+    <!-- Up close the head fades into the green -->
+    <div class="buddha--fade" aria-hidden="true"></div>
+
+    <div class="buddha--words" role="status">
+      <p class="buddha--say" data-for="intro">Tap the Buddha to come closer</p>
+      <p class="buddha--say" data-for="rub">Rub the belly in circles</p>
+      <p class="buddha--say" data-for="done">Good fortune is on its way</p>
+    </div>
+  </main>
+  <script src="sounds.js?v=9"></script>
+  <script src="buddha.js?v=2"></script>
+</body>
+</html>

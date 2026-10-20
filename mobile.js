@@ -557,21 +557,12 @@ function fitRitual(sh) {
   return k;
 }
 
-// Each card's luck can be claimed once a day; played again the same day, it
-// still finishes, but nothing more is added. Kept in this browser only.
-const today = () => new Date().toDateString();
-function playedSet() {
-  try {
-    const v = JSON.parse(localStorage.getItem('played') || '{}');
-    return v.day === today() ? new Set(v.cards) : new Set();
-  } catch (e) { return new Set(); }
-}
-const played = playedSet();
+// Each card's luck can be claimed once a "day"; played again, it still
+// finishes, but nothing more is added. For now (in development) a day is one
+// visit: refreshing the page starts a new one.
+const played = new Set();
 const playedToday = (name) => played.has(name);
-function markPlayed(name) {
-  played.add(name);
-  try { localStorage.setItem('played', JSON.stringify({ day: today(), cards: [...played] })); } catch (e) {}
-}
+const markPlayed = (name) => played.add(name);
 
 function claimed() {
   if (!sheet || sheet.claimed) return;

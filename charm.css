@@ -123,7 +123,7 @@ html, body {
   z-index: 3;
   font-family: var(--font-display);
   font-weight: 500;
-  font-size: 22px;
+  font-size: 20px;  /* the rituals' step-words size */
   letter-spacing: var(--tracking);
   color: var(--system-black);
   white-space: nowrap;

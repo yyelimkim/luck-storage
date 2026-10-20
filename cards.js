@@ -183,7 +183,7 @@ const CARD_TEXT = {
   },
   '부처님 배 만지기.png': {
     about: 'A Chinese folk Buddhist custom of rubbing the belly of Budai, the round-bellied figure, believed to bring good fortune to whoever touches it.',
-    howTo: 'Circular rub gesture on the belly, builds a glow the longer you rub.',
+    howTo: 'Rub the belly in circles to make it glow.',
   },
   '빨간 옷 입기.png': {
     about: 'A belief rooted in Chinese tradition and shared across East Asia that wearing red brings good fortune and wards off bad luck, especially on important days.',
@@ -218,8 +218,9 @@ const CARD_TEXT = {
 // Interactive pieces: on desktop they fill the canvas beside an opened card;
 // on the phone they take the illustration's place on the card's sheet
 const CANVAS_PAGES = {
-  '명태 액막이.png': 'charm.html?v=17',  // the fish charm
-  '촛불 한번에 불기.png': 'candles.html?v=11',  // make a wish, blow them all out
-  '포도 12알 먹기.png': 'grapes.html?v=2',  // eat all twelve before the clock runs out
-  '돌팝 쌓기.png': 'stones.html?v=10',  // drop the stones in, the wish on top
+  '명태 액막이.png': 'charm.html?v=18',  // the fish charm
+  '촛불 한번에 불기.png': 'candles.html?v=12',  // make a wish, blow them all out
+  '부처님 배 만지기.png': 'buddha.html?v=2',  // rub the belly round till it glows
+  '포도 12알 먹기.png': 'grapes.html?v=3',  // eat all twelve before the clock runs out
+  '돌팝 쌓기.png': 'stones.html?v=11',  // drop the stones in, the wish on top
 };

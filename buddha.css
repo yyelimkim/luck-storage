@@ -1,0 +1,175 @@
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  height: 100%;
+  overflow: hidden;
+  background: transparent;  /* sits on the desktop canvas or the phone's card sheet */
+}
+
+/* The Buddha (321 x 317) placed by buddha.js for each step: whole, then up
+   close on the belly (the sides run off, as in 436:9128), then whole again
+   a touch bigger with the halo behind (436:9248) */
+.buddha {
+  --ease: cubic-bezier(0.3, 0.8, 0.2, 1);
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+  font-family: var(--font-display);
+  letter-spacing: var(--tracking);
+  color: var(--system-white);
+  -webkit-user-select: none;
+  user-select: none;
+}
+.buddha--figure {
+  position: absolute;
+  width: 321px;
+  height: 317px;
+  transform-origin: 0 0;
+  transition: transform 0.9s var(--ease);
+}
+.buddha--figure > * { position: absolute; display: block; }
+.buddha--body { inset: 0; width: 100%; height: 100%; z-index: 1; pointer-events: none; }
+[data-step="intro"] .buddha--figure { cursor: pointer; }
+[data-step="intro"] .buddha--body { pointer-events: auto; }
+
+/* The belly to rub (in the Buddha's units: 106,155 108x61): dashed and pale
+   until rubbed, warming to Yellow */
+.buddha--belly {
+  left: 33%;
+  top: 48.9%;
+  width: 33.6%;
+  height: 19.2%;
+  z-index: 2;
+  border-radius: 999px;
+  border: 1px dashed var(--system-black);
+  background: color-mix(in srgb, var(--system-white) 50%, transparent);
+  opacity: 0;
+  touch-action: none;
+  transition: opacity 0.4s, border-color 0.4s;
+}
+.buddha--glow {
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  background: var(--yellow);
+  opacity: var(--glow, 0);
+}
+[data-step="rub"] .buddha--belly { opacity: 1; cursor: pointer; }
+[data-step="done"] .buddha--belly { opacity: 1; border-color: transparent; --glow: 1; }
+.buddha--belly.is-full { animation: belly-glow 1.4s ease-in-out infinite alternate; }
+@keyframes belly-glow { to { box-shadow: 0 0 18px 6px color-mix(in srgb, var(--yellow) 70%, transparent); } }
+
+/* The sparkle that follows the rubbing finger (436:9189) */
+.buddha--spark {
+  left: 61.4%;
+  top: 46.6%;
+  width: 8.5%;
+  z-index: 3;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s;
+}
+.buddha--spark path { fill: var(--system-white); stroke: var(--system-black); stroke-width: 1.5px; vector-effect: non-scaling-stroke; }
+.buddha.is-rubbing .buddha--spark { opacity: 1; animation: twinkle 0.8s ease-in-out infinite alternate; }
+@keyframes twinkle { to { scale: 0.75; rotate: 25deg; } }
+
+/* The hand, circling to show how (436:9128) */
+.buddha--hand {
+  left: 47.7%;
+  top: 61.2%;
+  width: 17%;
+  z-index: 4;
+  opacity: 0;
+  pointer-events: none;
+}
+[data-step="rub"] .buddha--hand { animation: circle 1.8s 0.9s linear infinite; }
+.buddha.is-rubbing .buddha--hand { animation: none; opacity: 0; }
+@keyframes circle {
+  0% { opacity: 0; translate: 0 0; }
+  10% { opacity: 1; translate: 0 0; }
+  30% { translate: 14px -10px; }
+  50% { translate: 0 -20px; }
+  70% { translate: -14px -10px; }
+  90% { opacity: 1; translate: 0 0; }
+  100% { opacity: 0; translate: 0 0; }
+}
+
+/* The halo blooms behind once it's done (436:9248) */
+.buddha--halo {
+  left: 4.7%;
+  top: -22.2%;
+  width: 91.5%;
+  z-index: 0;
+  opacity: 0;
+  scale: 0.3;
+  pointer-events: none;
+}
+[data-step="done"] .buddha--halo { animation: bloom 0.9s 0.5s cubic-bezier(0.3, 1.4, 0.5, 1) forwards, turn 30s 1.4s linear infinite; }
+@keyframes bloom { to { opacity: 1; scale: 1; } }
+@keyframes turn { from { opacity: 1; scale: 1; rotate: 0deg; } to { opacity: 1; scale: 1; rotate: 360deg; } }
+
+/* Up close the head fades into the green (436:9128's gradient) */
+.buddha--fade {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 42%;
+  z-index: 2;
+  background: linear-gradient(to bottom, var(--forest-green) 53%, transparent);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.6s;
+}
+[data-step="rub"] .buddha--fade { opacity: 1; transition-delay: 0.3s; }
+
+/* The progress bar: the pollock charm's, at the top */
+.progress {
+  position: absolute;
+  left: 50%;
+  top: 14px;
+  z-index: 5;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: min(370px, calc(100% - 32px));
+  transform: translateX(-50%);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.4s;
+}
+[data-step="rub"] .progress { opacity: 1; transition-delay: 0.5s; }
+.progress--track {
+  flex: 1;
+  height: 14px;
+  padding: 2px;
+  border-radius: 999px;
+  border: 0.771px solid var(--system-black);
+  background: var(--ui-white);
+}
+.progress--fill {
+  display: block;
+  width: 0;
+  height: 100%;
+  border-radius: 999px;
+  background: var(--system-black);
+  transition: width 0.2s linear;
+}
+.progress--clover { flex: none; display: block; }
+
+/* The words at the bottom, white on the green as the candles' */
+.buddha--words {
+  position: absolute;
+  left: 16px;
+  right: 16px;
+  bottom: 28px;
+  z-index: 5;
+  min-height: 26px;
+  text-align: center;
+}
+.buddha--say { display: none; margin: 0; font-size: 20px; line-height: 1.3; }
+[data-step="intro"] .buddha--say[data-for="intro"],
+[data-step="rub"] .buddha--say[data-for="rub"],
+[data-step="done"] .buddha--say[data-for="done"] { display: block; animation: rise 0.45s var(--ease); }
+@keyframes rise { from { opacity: 0; translate: 0 10px; } }

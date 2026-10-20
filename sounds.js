@@ -213,8 +213,60 @@ const Sounds = (() => {
     n.start(t);
   }
 
+  // A hand rubbing round: a soft, low brush of air
+  function rub() {
+    const a = audio();
+    const t = a.currentTime;
+    const n = noise(a, 0.25);
+    const lp = a.createBiquadFilter();
+    lp.type = 'lowpass';
+    lp.frequency.value = 900;
+    const g = a.createGain();
+    g.gain.setValueAtTime(0.001, t);
+    g.gain.exponentialRampToValueAtTime(0.12, t + 0.06);
+    g.gain.exponentialRampToValueAtTime(0.001, t + 0.24);
+    n.connect(lp).connect(g).connect(a.destination);
+    n.start(t);
+  }
+
+  // A wish settling into place: a shiny rising "waaah" — a soft gliding
+  // tone with a slow shimmer, sparkles twinkling over the top
+  function shimmer() {
+    const a = audio();
+    const t = a.currentTime;
+    const o = a.createOscillator();
+    const g = a.createGain();
+    const lfo = a.createOscillator();
+    const lg = a.createGain();
+    o.type = 'sine';
+    o.frequency.setValueAtTime(440, t);
+    o.frequency.exponentialRampToValueAtTime(880, t + 0.9);
+    lfo.frequency.value = 6;
+    lg.gain.value = 12;
+    lfo.connect(lg).connect(o.frequency);
+    g.gain.setValueAtTime(0.001, t);
+    g.gain.exponentialRampToValueAtTime(0.12, t + 0.25);
+    g.gain.exponentialRampToValueAtTime(0.001, t + 1.4);
+    o.connect(g).connect(a.destination);
+    o.start(t); lfo.start(t);
+    o.stop(t + 1.45); lfo.stop(t + 1.45);
+    [1760, 2349, 2637, 3136].forEach((f, i) => {
+      const s = a.createOscillator();
+      const sg = a.createGain();
+      const d = 0.35 + i * 0.12;
+      s.type = 'triangle';
+      s.frequency.value = f;
+      sg.gain.setValueAtTime(0.001, t + d);
+      sg.gain.exponentialRampToValueAtTime(0.05, t + d + 0.01);
+      sg.gain.exponentialRampToValueAtTime(0.001, t + d + 0.35);
+      s.connect(sg).connect(a.destination);
+      s.start(t + d);
+      s.stop(t + d + 0.37);
+    });
+  }
+
   const unlock = () => { audio(); };
-  return { hit, swoosh, flip, claim, chime, stone, tap, eat, tick, unlock };
+  return { hit, swoosh, flip, claim, chime, stone, tap, eat, tick, rub, shimmer, unlock };
 })();
 
 // Every button, tab and link ticks when pressed (anything with its own
