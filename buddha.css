@@ -30,8 +30,6 @@ html, body {
 }
 .buddha--figure > * { position: absolute; display: block; }
 .buddha--body { inset: 0; width: 100%; height: 100%; z-index: 1; pointer-events: none; }
-[data-step="intro"] .buddha--figure { cursor: pointer; }
-[data-step="intro"] .buddha--body { pointer-events: auto; }
 
 /* The belly to rub (in the Buddha's units: 106,155 108x61): dashed and pale
    until rubbed, warming to Yellow */
@@ -60,19 +58,20 @@ html, body {
 .buddha--belly.is-full { animation: belly-glow 1.4s ease-in-out infinite alternate; }
 @keyframes belly-glow { to { box-shadow: 0 0 18px 6px color-mix(in srgb, var(--yellow) 70%, transparent); } }
 
-/* The sparkle that follows the rubbing finger (436:9189) */
+/* The sparkle (436:9189): it comes up, small, once the belly is all yellow */
 .buddha--spark {
   left: 61.4%;
   top: 46.6%;
   width: 8.5%;
   z-index: 3;
   opacity: 0;
+  scale: 0;
   pointer-events: none;
-  transition: opacity 0.3s;
 }
 .buddha--spark path { fill: var(--system-white); stroke: var(--system-black); stroke-width: 1.5px; vector-effect: non-scaling-stroke; }
-.buddha.is-rubbing .buddha--spark { opacity: 1; animation: twinkle 0.8s ease-in-out infinite alternate; }
-@keyframes twinkle { to { scale: 0.75; rotate: 25deg; } }
+.buddha.is-glowing .buddha--spark { animation: spark-up 0.5s cubic-bezier(0.3, 1.6, 0.5, 1) forwards, twinkle 1.2s 0.5s ease-in-out infinite alternate; }
+@keyframes spark-up { to { opacity: 1; scale: 1; } }
+@keyframes twinkle { from { opacity: 1; scale: 1; } to { opacity: 1; scale: 0.8; rotate: 20deg; } }
 
 /* The hand, circling to show how (436:9128) */
 .buddha--hand {
@@ -169,7 +168,6 @@ html, body {
   text-align: center;
 }
 .buddha--say { display: none; margin: 0; font-size: 20px; line-height: 1.3; }
-[data-step="intro"] .buddha--say[data-for="intro"],
 [data-step="rub"] .buddha--say[data-for="rub"],
 [data-step="done"] .buddha--say[data-for="done"] { display: block; animation: rise 0.45s var(--ease); }
 @keyframes rise { from { opacity: 0; translate: 0 10px; } }

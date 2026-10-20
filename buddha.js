@@ -36,8 +36,8 @@ function place() {
 addEventListener('resize', place);
 function step(name) { root.dataset.step = name; place(); }
 place();
-// 1 → 2: tapping the Buddha brings it up close
-figure.addEventListener('click', () => { if (root.dataset.step === 'intro') step('rub'); });
+// 1 → 2: the Buddha a moment, then it comes up close by itself
+setTimeout(() => step('rub'), 1300);
 
 // 2: rubbing — the angle swept round the belly's middle adds up
 let turned = 0;
@@ -55,7 +55,6 @@ belly.addEventListener('pointerdown', (e) => {
   const [cx, cy] = centre();
   last = Math.atan2(e.clientY - cy, e.clientX - cx);
   root.classList.add('is-rubbing');
-  follow(e);
 });
 belly.addEventListener('pointermove', (e) => {
   if (last === null || done()) return;
@@ -66,7 +65,6 @@ belly.addEventListener('pointermove', (e) => {
   if (d < -Math.PI) d += 2 * Math.PI;
   last = a;
   turned += Math.abs(d);
-  follow(e);
   // a soft brush every quarter turn
   const q = Math.floor(turned / (Math.PI / 2));
   if (q > quarter) { quarter = q; Sounds.rub(); }
@@ -80,18 +78,11 @@ const lift = () => { last = null; root.classList.remove('is-rubbing'); };
 belly.addEventListener('pointerup', lift);
 belly.addEventListener('pointercancel', lift);
 
-// The sparkle stays under the finger
-function follow(e) {
-  const r = figure.getBoundingClientRect();
-  const k = r.width / W;
-  spark.style.left = `${((e.clientX - r.left) / k / W) * 100 - 4.25}%`;
-  spark.style.top = `${((e.clientY - r.top) / k / H) * 100 - 9}%`;
-}
-
 // 3: back out, aglow, the halo blooming
 function finish() {
   lift();
   belly.classList.add('is-full');
+  root.classList.add('is-glowing');  // the sparkle comes up once it's all yellow
   setTimeout(() => step('done'), 500);
   if (IN_SHEET) setTimeout(() => parent.postMessage('luck-claimed', '*'), 2600);
 }
@@ -104,5 +95,6 @@ addEventListener('message', (e) => {
   fill.style.width = '0';
   belly.style.setProperty('--glow', 0);
   belly.classList.remove('is-full');
+  root.classList.remove('is-glowing');
   step('rub');
 });
