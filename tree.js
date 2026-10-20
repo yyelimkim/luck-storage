@@ -79,10 +79,12 @@
   const strips = HANGS.map((hang, i) => hung(hang, C.white, `data-wish="${i}"`)).join('');
 
   const scene = document.getElementById('tree-scene');
-  scene.innerHTML = `<div class="tree--layer" data-layer="back"></div>
+  scene.innerHTML = `<div class="tree--art">
+    <div class="tree--layer" data-layer="back"></div>
     <svg class="tree--slips" viewBox="0 0 ${W} ${H}" width="${W}" height="${H}"><g class="tree--wishes">${strips}</g></svg>
     <div class="tree--layer" data-layer="front" aria-hidden="true"></div>
-    <div class="tree--layer" data-layer="light" aria-hidden="true"></div>`;
+    <div class="tree--layer" data-layer="light" aria-hidden="true"></div>
+  </div>`;
   // Each layer's ids get its own prefix, since the three exports share names
   for (const name of LAYERS) {
     fetch(`assets/wishtree/${name}.svg?v=1`).then((r) => r.text()).then((svg) => {

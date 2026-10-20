@@ -1368,6 +1368,14 @@ button.fortune--card:active { transform: scale(0.98); }
   height: 874px;
 }
 .tree--scene svg { display: block; }
+/* The whole picture, a touch bigger and higher than the Figma frame; still
+   covering the screen top to bottom */
+.tree--art {
+  position: absolute;
+  inset: 0;
+  transform: translateY(-30px) scale(1.12);
+  transform-origin: 50% 60%;
+}
 /* The Figma frame's layers, stacked exactly: back, the slips, the front of
    the trees over them, then the light. Only the slips take taps. */
 .tree--layer,
