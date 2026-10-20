@@ -41,8 +41,7 @@ html, body {
 .stones--ground { transition: opacity 0.4s; }
 [data-step="wish"] .stones--ground { opacity: 0; }
 .stones--tower > div { position: absolute; }
-.stones--tower svg,
-.stones--pick svg { display: block; width: 100%; height: 100%; overflow: visible; }
+.stones--tower svg { display: block; width: 100%; height: 100%; overflow: visible; }
 .stone--fill path { fill: var(--fill, var(--system-black)); stroke: var(--system-black); stroke-width: 1.5px; }
 .stone--dash path {
   fill: var(--system-white);
@@ -51,9 +50,14 @@ html, body {
   stroke-dasharray: 8 8;
   stroke-linecap: round;
 }
-/* The outlines only show while building */
-.stones--slot { opacity: 0; transition: opacity 0.4s; }
+/* The outlines only show while building; each is tapped where its stone
+   should land (only the shape itself, as they overlap) */
+.stones--slot { opacity: 0; pointer-events: none; transition: opacity 0.4s; }
 [data-step="stack"] .stones--slot { opacity: 1; }
+[data-step="stack"] .stones--slot:not(.is-filled) path { pointer-events: visiblePainted; cursor: pointer; }
+.stones--slot:focus-visible { outline: none; }
+.stones--slot:focus-visible path { stroke: var(--system-black); }
+.stones--slot.is-wobble { animation: wobble 0.45s; }
 .stones--stone { visibility: hidden; z-index: 1; }  /* falls in front of the outlines */
 .stones--stone.is-placed { visibility: visible; }
 /* Each landing jolts the tower a touch */
@@ -151,36 +155,11 @@ html, body {
 .stones--send:disabled { background: var(--system-white); color: var(--dark-grey); cursor: default; }
 .stones--send:not(:disabled):active { transform: scale(0.92); }
 
-/* 2: the hint and the pile */
+/* 2: the hint */
 .stones--hint { margin: 0 0 14px; font-size: 16px; line-height: 1.35; max-width: 300px; }
-.stones--pile {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  align-items: center;
-  gap: 10px 14px;
-}
-.stones--pick {
-  display: grid;
-  place-items: center;
-  min-width: 56px;
-  min-height: 56px;
-  padding: 6px;
-  border: 0.771px solid var(--system-black);
-  border-radius: 16px;
-  background: var(--ui-white);
-  cursor: pointer;
-  -webkit-tap-highlight-color: transparent;
-  transition: transform 0.15s, opacity 0.3s;
-}
-.stones--pick svg { width: var(--w); height: var(--h); }
-.stones--pick:active { transform: scale(0.94); }
-.stones--pick:focus-visible { outline: 2px solid var(--system-black); outline-offset: 2px; }
-.stones--pick.is-used { opacity: 0.25; cursor: default; transform: scale(0.9); }
-.stones--pick.is-wobble { animation: wobble 0.45s; }
 @keyframes wobble {
-  20%, 60% { rotate: -8deg; }
-  40%, 80% { rotate: 8deg; }
+  20%, 60% { rotate: -3deg; }
+  40%, 80% { rotate: 3deg; }
 }
 
 /* 3: done */

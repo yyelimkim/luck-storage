@@ -1,6 +1,6 @@
 // Stacking Stones (Figma 430:8694, 430:8705), after the sketch:
 // 1. make a wish over the pink orb, 2. the tower waits as dashed outlines;
-// tap a stone from the pile and it drops from the top into its place —
+// tap where a stone should land and it drops from the top into place —
 // bottom first, as a real tower must be built — 3. the orb with your wish
 // settles on top, and the luck is claimed.
 
@@ -24,7 +24,6 @@ const IN_SHEET = new URLSearchParams(location.search).has('sheet');
 
 const root = document.getElementById('stones');
 const tower = document.getElementById('tower');
-const pile = document.getElementById('pile');
 const form = document.getElementById('wish-form');
 const input = document.getElementById('wish');
 const send = document.getElementById('send');
@@ -43,15 +42,22 @@ place(ground, BASE[0], BASE[1], BASE[2], BASE[3]);
 ground.innerHTML = svg(BASE[2], BASE[3], BASE[4], 'stone--fill');
 tower.appendChild(ground);
 
-// Each stone: its dashed outline in the tower, the stone itself (hidden
-// until it drops), and a smaller copy in the pile to tap
+// Each stone: its dashed outline in the tower — tapped, the stone drops
+// into it — and the stone itself, hidden until it drops
 const placed = new Set();
 STONES.forEach((s) => {
   const slot = document.createElement('div');
   slot.className = 'stones--slot';
   place(slot, s.x, s.y, s.w, s.h);
   slot.innerHTML = svg(s.w, s.h, s.d, 'stone--dash');
+  slot.setAttribute('role', 'button');
+  slot.setAttribute('aria-label', 'Drop a stone here');
+  slot.tabIndex = 0;
+  // only the outline's own shape takes the tap, as they overlap
+  slot.querySelector('path').addEventListener('click', () => drop(s));
+  slot.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); drop(s); } });
   tower.appendChild(slot);
+  s.slot = slot;
 
   const stone = document.createElement('div');
   stone.className = 'stones--stone';
@@ -61,23 +67,10 @@ STONES.forEach((s) => {
   stone.innerHTML = svg(s.w, s.h, s.d, 'stone--fill');
   tower.appendChild(stone);
   s.el = stone;
-
-  const pick = document.createElement('button');
-  pick.type = 'button';
-  pick.className = 'stones--pick';
-  pick.style.setProperty('--fill', s.fill);
-  pick.style.setProperty('--w', `${s.w * 0.36}px`);
-  pick.style.setProperty('--h', `${s.h * 0.36}px`);
-  pick.setAttribute('aria-label', `Place the ${s.id} stone`);
-  pick.innerHTML = svg(s.w, s.h, s.d, 'stone--fill');
-  pick.addEventListener('click', () => drop(s, pick));
-  s.pick = pick;
 });
-// The pile, shuffled so it isn't already in order
-[...STONES].sort(() => Math.random() - 0.5).forEach((s) => pile.appendChild(s.pick));
 
 // The tower as big as fits: never wider than the screen, nor taller than
-// what the words and pile under it leave
+// what the words under it leave
 const under = () => document.querySelector(root.dataset.step === 'stack' ? '.stones--stack' : '.stones--ask');
 function fit() {
   const room = innerHeight - (under()?.offsetHeight || 120) - 28 - 40;
@@ -98,20 +91,19 @@ form.addEventListener('submit', (e) => {
   step('stack');
 });
 
-// 2: tap a stone and it drops from the top into its place. A stone can only
-// go where what it rests on is already there.
-function drop(s, pick) {
+// 2: tap where a stone goes and it drops from the top into place. A stone
+// can only land where what it rests on is already there.
+function drop(s) {
   if (root.dataset.step !== 'stack' || placed.has(s.id)) return;
   if (!s.on.every((id) => placed.has(id))) {
-    pick.classList.remove('is-wobble');
-    void pick.offsetWidth;
-    pick.classList.add('is-wobble');
-    hint.textContent = 'That one needs something under it first — start from the bottom';
+    s.slot.classList.remove('is-wobble');
+    void s.slot.offsetWidth;
+    s.slot.classList.add('is-wobble');
+    hint.textContent = 'Nothing to rest on yet — start from the bottom';
     return;
   }
   placed.add(s.id);
-  pick.disabled = true;
-  pick.classList.add('is-used');
+  s.slot.classList.add('is-filled');
   // From above the screen down to its place, a little bounce as it lands
   const fall = s.el.getBoundingClientRect().bottom + 40;
   s.el.classList.add('is-placed');
@@ -145,9 +137,9 @@ function finish() {
 addEventListener('message', (e) => {
   if (e.data !== 'luck-continue') return;
   placed.clear();
-  STONES.forEach((s) => { s.el.classList.remove('is-placed'); s.pick.disabled = false; s.pick.classList.remove('is-used'); });
+  STONES.forEach((s) => { s.el.classList.remove('is-placed'); s.slot.classList.remove('is-filled'); });
   input.value = '';
   send.disabled = true;
-  hint.textContent = 'Tap a stone to drop it into place — start from the bottom';
+  hint.textContent = 'Stack stones by tapping where you want it to land';
   step('wish');
 });
