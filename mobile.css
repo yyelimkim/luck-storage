@@ -1292,12 +1292,32 @@ button.fortune--card:active { transform: scale(0.98); }
 }
 .claimed--title { font-weight: 600; font-size: 22px; }
 .claimed--sub { font-weight: 400; font-size: 16px; }
-/* Home, and Replay under it, in the same button style */
+/* Home, and under it a small Replay link: the sub line's white and size,
+   underlined, its icon beside it */
 .claimed--btns {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  align-items: center;
+  gap: 14px;
 }
+.claimed--replay {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 6px 10px;
+  border: 0;
+  background: none;
+  color: #fff;
+  font-family: var(--font-display);
+  font-size: 16px;
+  letter-spacing: var(--tracking);
+  line-height: normal;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+.claimed--replay span { text-decoration: underline; text-underline-offset: 3px; }
+.claimed--replay svg { display: block; flex: none; }
+.claimed--replay:active { opacity: 0.7; }
 .claimed--btn {
   width: 371px;
   height: 51px;
@@ -1322,7 +1342,7 @@ button.fortune--card:active { transform: scale(0.98); }
 .is-claimed .claimed--title { animation: claimed-rise 0.5s 0.18s cubic-bezier(0.2, 0.8, 0.2, 1) both; }
 .is-claimed .claimed--sub { animation: claimed-rise 0.5s 0.28s cubic-bezier(0.2, 0.8, 0.2, 1) both; }
 .is-claimed .claimed--btn { animation: claimed-rise 0.5s 0.4s cubic-bezier(0.2, 0.8, 0.2, 1) both; }
-.is-claimed .claimed--btn + .claimed--btn { animation-delay: 0.48s; }
+.is-claimed .claimed--replay { animation: claimed-rise 0.5s 0.48s cubic-bezier(0.2, 0.8, 0.2, 1) both; }
 @keyframes clover-pop {
   from { opacity: 0; transform: scale(0.2) rotate(-90deg); }
   to { opacity: 1; transform: rotate(15deg); }

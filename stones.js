@@ -104,6 +104,8 @@ function drop(s) {
   }
   placed.add(s.id);
   s.slot.classList.add('is-filled');
+  Sounds.unlock();
+  setTimeout(() => Sounds.stone(), 470);  // as it lands
   // From above the screen down to its place, a little bounce as it lands
   const fall = s.el.getBoundingClientRect().bottom + 40;
   s.el.classList.add('is-placed');
@@ -140,6 +142,6 @@ addEventListener('message', (e) => {
   STONES.forEach((s) => { s.el.classList.remove('is-placed'); s.slot.classList.remove('is-filled'); });
   input.value = '';
   send.disabled = true;
-  hint.textContent = 'Stack stones by tapping where you want it to land';
+  hint.textContent = '5 stones to go';
   step('wish');
 });

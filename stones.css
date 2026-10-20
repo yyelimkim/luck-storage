@@ -44,9 +44,9 @@ html, body {
 .stones--tower svg { display: block; width: 100%; height: 100%; overflow: visible; }
 .stone--fill path { fill: var(--fill, var(--system-black)); stroke: var(--system-black); stroke-width: 1.5px; }
 .stone--dash path {
-  fill: var(--system-white);
-  stroke: var(--dark-grey);
-  stroke-width: 1.5px;
+  fill: transparent;  /* empty: the background shows through (still tappable) */
+  stroke: var(--system-white);  /* dashed white, as the candles' swipe band */
+  stroke-width: 1.4px;
   stroke-dasharray: 8 8;
   stroke-linecap: round;
 }
@@ -150,9 +150,9 @@ html, body {
   background: var(--system-black);
   color: var(--system-white);
   cursor: pointer;
-  transition: background 0.2s, color 0.2s, transform 0.15s;
+  transition: opacity 0.2s, transform 0.15s;
 }
-.stones--send:disabled { background: var(--system-white); color: var(--dark-grey); cursor: default; }
+.stones--send:disabled { opacity: 0.35; cursor: default; }  /* as the candles' */
 .stones--send:not(:disabled):active { transform: scale(0.92); }
 
 /* 2: the hint */
@@ -164,4 +164,4 @@ html, body {
 
 /* 3: done */
 .stones--congrats { margin: 0; font-size: 22px; line-height: 1.3; }
-.stones--echo { margin: 10px 0 0; font-size: 15px; color: var(--dark-grey); }
+.stones--echo { margin: 10px 0 0; font-size: 15px; }  /* same colour as the line above it */

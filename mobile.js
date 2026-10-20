@@ -491,7 +491,10 @@ function sheetHTML(name) {
         </div>
         <div class="claimed--btns">
           <button type="button" class="claimed--btn" data-act="home">Home</button>
-          <button type="button" class="claimed--btn" data-act="replay">Replay</button>
+          <button type="button" class="claimed--replay" data-act="replay">
+            <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M2.75 8a5.25 5.25 0 1 0 1.6-3.78M2.75 2.5v3.25H6" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <span>Replay</span>
+          </button>
         </div>
       </div>
     </div>`;

@@ -85,24 +85,54 @@ const Sounds = (() => {
     n.start(t);
   }
 
-  // Luck added: two soft bell notes, rising
+  // Luck added: a quick bright sparkle — four notes climbing (C, E, G, C),
+  // each a short plucked triangle, the last ringing a little longer
   function chime() {
     const a = audio();
     const t = a.currentTime;
-    [[1318.5, 0], [1975.5, 0.09]].forEach(([f, d]) => {
+    [[1046.5, 0, 0.18], [1318.5, 0.055, 0.18], [1568, 0.11, 0.2], [2093, 0.165, 0.5]].forEach(([f, d, len]) => {
       const o = a.createOscillator();
       const g = a.createGain();
-      o.type = 'sine';
+      o.type = 'triangle';
       o.frequency.value = f;
       g.gain.setValueAtTime(0.001, t + d);
-      g.gain.exponentialRampToValueAtTime(0.12, t + d + 0.01);
-      g.gain.exponentialRampToValueAtTime(0.001, t + d + 0.6);
+      g.gain.exponentialRampToValueAtTime(0.14, t + d + 0.006);
+      g.gain.exponentialRampToValueAtTime(0.001, t + d + len);
       o.connect(g).connect(a.destination);
       o.start(t + d);
-      o.stop(t + d + 0.62);
+      o.stop(t + d + len + 0.02);
     });
   }
 
+  // A stone landing on stone: a low, dull thud with a gritty click
+  function stone() {
+    const a = audio();
+    const t = a.currentTime;
+    const out = a.createGain();
+    out.gain.value = 0.45;
+    out.connect(a.destination);
+    const o = a.createOscillator();
+    const og = a.createGain();
+    o.type = 'sine';
+    o.frequency.setValueAtTime(130 + Math.random() * 20, t);
+    o.frequency.exponentialRampToValueAtTime(48, t + 0.14);
+    og.gain.setValueAtTime(1, t);
+    og.gain.exponentialRampToValueAtTime(0.001, t + 0.18);
+    o.connect(og).connect(out);
+    o.start(t);
+    o.stop(t + 0.2);
+    const n = noise(a, 0.06);
+    const bp = a.createBiquadFilter();
+    bp.type = 'bandpass';
+    bp.frequency.value = 700;
+    bp.Q.value = 0.8;
+    const ng = a.createGain();
+    ng.gain.setValueAtTime(0.6, t);
+    ng.gain.exponentialRampToValueAtTime(0.001, t + 0.06);
+    n.connect(bp).connect(ng).connect(out);
+    n.start(t);
+  }
+
   const unlock = () => { audio(); };
-  return { hit, swoosh, flip, chime, unlock };
+  return { hit, swoosh, flip, chime, stone, unlock };
 })();
