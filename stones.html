@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Stacking Stones</title>
+  <link rel="stylesheet" href="design-system.css?v=7">
+  <link rel="stylesheet" href="stones.css?v=4">
+</head>
+<body>
+  <!-- Stacking Stones (Figma 430:8694, 430:8705), after the sketch: make a
+       wish, drop the stones into the tower one by one, the wish sits on top -->
+  <main class="stones" id="stones" data-step="wish">
+    <div class="stones--tower" id="tower">
+      <!-- The pink orb that carries the wish, with its two sparkles -->
+      <div class="stones--orb" id="orb">
+        <svg class="orb--ball" viewBox="0 0 84 84" aria-hidden="true"><circle cx="42" cy="42" r="40.8"/></svg>
+        <svg class="orb--spark orb--spark-big" viewBox="0 0 43 43" aria-hidden="true"><path d="M26.6 15.95L26.72 16.28L27.05 16.4L40.84 21.5L27.05 26.6L26.72 26.72L26.6 27.05L21.5 40.84L16.4 27.05L16.28 26.72L15.95 26.6L2.16 21.5L15.95 16.4L16.28 16.28L16.4 15.95L21.5 2.16L26.6 15.95Z"/></svg>
+        <svg class="orb--spark orb--spark-small" viewBox="0 0 21 21" aria-hidden="true"><path d="M12.63 7.92L12.75 8.25L13.08 8.37L18.84 10.5L13.08 12.63L12.75 12.75L12.63 13.08L10.5 18.84L8.37 13.08L8.25 12.75L7.92 12.63L2.16 10.5L7.92 8.37L8.25 8.25L8.37 7.92L10.5 2.16L12.63 7.92Z"/></svg>
+      </div>
+    </div>
+
+    <!-- 1: the wish -->
+    <form class="stones--wish" id="wish-form">
+      <div class="stones--field">
+        <input id="wish" type="text" maxlength="60" placeholder="What’s your Wish?" autocomplete="off" aria-label="What’s your wish?">
+        <button type="submit" class="stones--send" id="send" aria-label="Make the wish" disabled>
+          <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 13V3M3.5 7.5L8 3l4.5 4.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+      </div>
+    </form>
+
+    <!-- 2: the pile of stones to tap -->
+    <div class="stones--stack">
+      <p class="stones--hint" id="hint" role="status">Tap a stone to drop it into place — start from the bottom</p>
+      <div class="stones--pile" id="pile"></div>
+    </div>
+
+    <!-- 3: done -->
+    <div class="stones--done" role="status">
+      <p class="stones--congrats">Your wish is held in place</p>
+      <p class="stones--echo" id="echo"></p>
+    </div>
+  </main>
+  <script src="stones.js?v=1"></script>
+</body>
+</html>

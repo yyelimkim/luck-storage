@@ -220,4 +220,5 @@ const CARD_TEXT = {
 const CANVAS_PAGES = {
   '명태 액막이.png': 'charm.html?v=9',  // the fish charm
   '촛불 한번에 불기.png': 'candles.html?v=2',  // make a wish, blow them all out
+  '돌팝 쌓기.png': 'stones.html?v=1',  // drop the stones in, the wish on top
 };
