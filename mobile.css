@@ -70,6 +70,18 @@ img { -webkit-user-drag: none; }
   right: 17.67px;
   top: 16.33px;
 }
+/* The Dynamic Island, as on a real iPhone: a black pill at the top centre,
+   the time and icons either side of it */
+.status--island {
+  position: absolute;
+  left: 50%;
+  top: 7px;
+  width: 122px;
+  height: 34px;
+  margin-left: -61px;
+  border-radius: 999px;
+  background: #000;
+}
 
 /* Header (Figma 376:5496): the deck's name with a chevron, and a pill
    counting the luck claimed */
