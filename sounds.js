@@ -172,41 +172,44 @@ const Sounds = (() => {
     o.stop(t + 0.09);
   }
 
-  // A grape eaten: a bite — a crunchy chomp of a few quick gritty bursts,
-  // with a soft, juicy thump under it
+  // A grape eaten: a juicy bite — the skin pops, the inside squishes, and
+  // a little swallow after
   function eat() {
     const a = audio();
     const t = a.currentTime;
     const out = a.createGain();
-    out.gain.value = 0.5;
+    out.gain.value = 0.55;
     out.connect(a.destination);
-    // the crunch: noise through a mid band-pass, chopped into little bites
+    const tone = (f0, f1, at, len, peak, type = 'sine') => {
+      const o = a.createOscillator();
+      const g = a.createGain();
+      o.type = type;
+      o.frequency.setValueAtTime(f0, t + at);
+      o.frequency.exponentialRampToValueAtTime(f1, t + at + len);
+      g.gain.setValueAtTime(0.001, t + at);
+      g.gain.exponentialRampToValueAtTime(peak, t + at + 0.004);
+      g.gain.exponentialRampToValueAtTime(0.001, t + at + len);
+      o.connect(g).connect(out);
+      o.start(t + at);
+      o.stop(t + at + len + 0.01);
+    };
+    // the skin popping
+    tone(950 + Math.random() * 150, 260, 0, 0.035, 0.35);
+    // the squish: wet noise swept from bright to dull
     const n = noise(a, 0.16);
-    const bp = a.createBiquadFilter();
-    bp.type = 'bandpass';
-    bp.frequency.value = 1400 + Math.random() * 400;
-    bp.Q.value = 1.1;
-    const g = a.createGain();
-    g.gain.setValueAtTime(0.001, t);
-    [0, 0.035, 0.07, 0.11].forEach((d, i) => {
-      g.gain.exponentialRampToValueAtTime(0.5 - i * 0.09, t + d + 0.004);
-      g.gain.exponentialRampToValueAtTime(0.02, t + d + 0.03);
-    });
-    g.gain.exponentialRampToValueAtTime(0.001, t + 0.16);
-    n.connect(bp).connect(g).connect(out);
-    n.start(t);
-    // the juicy thump
-    const o = a.createOscillator();
-    const og = a.createGain();
-    o.type = 'sine';
-    o.frequency.setValueAtTime(180, t);
-    o.frequency.exponentialRampToValueAtTime(90, t + 0.1);
-    og.gain.setValueAtTime(0.001, t);
-    og.gain.exponentialRampToValueAtTime(0.35, t + 0.01);
-    og.gain.exponentialRampToValueAtTime(0.001, t + 0.12);
-    o.connect(og).connect(out);
-    o.start(t);
-    o.stop(t + 0.13);
+    const lp = a.createBiquadFilter();
+    lp.type = 'lowpass';
+    lp.Q.value = 3;
+    lp.frequency.setValueAtTime(3200, t + 0.015);
+    lp.frequency.exponentialRampToValueAtTime(450, t + 0.15);
+    const ng = a.createGain();
+    ng.gain.setValueAtTime(0.001, t + 0.015);
+    ng.gain.exponentialRampToValueAtTime(0.3, t + 0.03);
+    ng.gain.exponentialRampToValueAtTime(0.001, t + 0.16);
+    n.connect(lp).connect(ng).connect(out);
+    n.start(t + 0.015);
+    // the swallow
+    tone(240, 150, 0.13, 0.07, 0.18);
   }
 
   // A clock's second ticking down: a tiny dry tick (a little lower on the tock)
