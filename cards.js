@@ -220,7 +220,7 @@ const CARD_TEXT = {
 const CANVAS_PAGES = {
   '명태 액막이.png': 'charm.html?v=23',  // the fish charm
   '촛불 한번에 불기.png': 'candles.html?v=17',  // make a wish, blow them all out
-  '부처님 배 만지기.png': 'buddha.html?v=9',  // rub the belly round till it glows
+  '부처님 배 만지기.png': 'buddha.html?v=10',  // rub the belly round till it glows
   '포도 12알 먹기.png': 'grapes.html?v=8',  // eat all twelve before the clock runs out
   '돌팝 쌓기.png': 'stones.html?v=16',  // drop the stones in, the wish on top
 };

@@ -19,9 +19,9 @@ const spark = document.getElementById('spark');
 // Where the Buddha sits for each step, as in the frames (402 wide): its
 // width there, and which point of it is at the middle of the screen
 const PLACES = {
-  intro: { w: 321, at: [W / 2, H / 2] },
-  rub: { w: 470, at: BELLY },  // a touch smaller than the frame's 520.9
-  done: { w: 365, at: [W / 2, H / 2] },
+  intro: { w: 295, at: [W / 2, H / 2] },  // all a touch smaller than the frames
+  rub: { w: 430, at: BELLY },
+  done: { w: 335, at: [W / 2, H / 2] },
 };
 function place() {
   const p = PLACES[root.dataset.step] || PLACES.intro;
