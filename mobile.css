@@ -55,20 +55,24 @@ img { -webkit-user-drag: none; }
   display: none;
 }
 .is-preview .status { display: block; }
+/* As on a real iPhone: the time (17pt semibold) and the icons each centred
+   in the space either side of the island, level with its middle */
 .status--time {
   position: absolute;
-  left: 18px;
-  top: 12px;
-  width: 54px;
-  font: 600 15px/20px Inter, -apple-system, "SF Pro Text", sans-serif;
+  left: 22px;
+  top: 13px;
+  width: 96px;
+  font: 600 17px/22px -apple-system, "SF Pro Text", Inter, sans-serif;
   letter-spacing: -0.5px;
   text-align: center;
   color: #111;
 }
 .status--right {
   position: absolute;
-  right: 17.67px;
-  top: 16.33px;
+  left: 294px;
+  top: 17.4px;
+  width: 77.6px;
+  height: 13.2px;
 }
 /* The Dynamic Island, as on a real iPhone: a black pill at the top centre,
    the time and icons either side of it */

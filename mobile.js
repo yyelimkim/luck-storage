@@ -93,6 +93,17 @@ function place(st, y, f) {
   };
 }
 
+// The preview's status bar keeps the real time, as a phone's does
+(function clock() {
+  const el = document.querySelector('.status--time');
+  const tick = () => {
+    const d = new Date();
+    el.textContent = `${d.getHours() % 12 || 12}:${String(d.getMinutes()).padStart(2, '0')}`;
+    setTimeout(tick, (60 - d.getSeconds()) * 1000);
+  };
+  tick();
+}());
+
 // Phone-sized windows get the screen edge to edge, the header at the very top
 // (the real status bar is above the page). Anything wider shows the 402 x 874
 // frame in a phone-shaped preview.
