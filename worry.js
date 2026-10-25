@@ -171,7 +171,7 @@ function tuckIn() {
   const k = 216 / 137;
   drag.animate([
     { transform: 'none' },
-    { transform: `translate(${cx - (r.left + r.width / 2)}px, ${cy - (r.top + r.height / 2)}px) scale(${k}) rotate(29deg)` },
+    { transform: `translate(${cx - (r.left + r.width / 2)}px, ${cy - (r.top + r.height / 2)}px) scale(${k}) rotate(-49deg)` },
   ], { duration: 520, easing: 'cubic-bezier(0.3, 0.8, 0.2, 1)', fill: 'forwards' }).finished.then(() => {
     step('done');
     doll.classList.add('is-in');

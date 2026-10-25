@@ -99,19 +99,19 @@ html, body {
   35% { translate: -6px -14px; rotate: -2deg; }
   70% { translate: 0 2px; rotate: 0.5deg; }
 }
-/* tucked in: lying under the pillow (504:8117's pose), only its feet out */
+/* tucked in: lying under the pillow, its head towards the headboard, only its feet out */
 .worry--doll {
   position: absolute;
   left: 32px;   /* 504:8117's pose, moved with its pillow onto 445:991's */
   top: 356px;
   width: 216px;
   height: 215px;
-  rotate: 29deg;
+  rotate: -49deg;  /* the other way: its head towards the headboard */
   opacity: 0;
 }
 .worry--doll img { display: block; width: 100%; height: 100%; object-fit: contain; }
 .worry--doll.is-in { opacity: 1; animation: tuck 0.9s cubic-bezier(0.3, 0.8, 0.3, 1) forwards; }
-@keyframes tuck { to { translate: -34px -30px; } }
+@keyframes tuck { to { translate: 46px 40px; } }  /* down the bed, so its feet peek out */
 
 /* The bed fades into the card's colour at the top, and under the words */
 .worry--fade {
@@ -252,3 +252,6 @@ html, body {
 .worry[data-step="tell"] .worry--words { top: calc(100% - 226px); }
 .worry[data-step="tell"] .worry--field { top: calc(100% - 174px); }
 .worry--big { width: calc(280px * var(--g)); top: calc((100% - 226px) / 2 + 6px); }
+/* 3 and 4 (the bed): the words a little lower, under the bed's fade */
+.worry[data-step="tuck"] .worry--words,
+.worry[data-step="done"] .worry--words { top: calc(100% - 120px); }
