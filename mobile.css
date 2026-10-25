@@ -2432,3 +2432,73 @@ button.fortune--card:active { transform: scale(0.98); }
 /* Over the welcome picture the status bar turns white, as on the Wish Tree */
 .stage:has(.ob[data-step="welcome"]:not(.is-done)) .status--time { color: var(--system-white); }
 .stage:has(.ob[data-step="welcome"]:not(.is-done)) .status--right { filter: invert(1) brightness(2); }
+
+/* --- The iPhone keyboard, in the desktop preview (keyboard.js) --------------
+   Safari's form bar over the keyboard, slid up from the bottom while a text
+   field is focused. iOS's light keyboard: its grey, white keys with a
+   shadow under, the darker grey for shift, delete, 123 and return. */
+.kb {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 79;
+  font-family: -apple-system, system-ui, sans-serif;
+  letter-spacing: 0;
+  color: #000;
+  transform: translateY(100%);
+  transition: transform 0.38s cubic-bezier(0.32, 0.72, 0, 1);
+  -webkit-user-select: none;
+  user-select: none;
+  display: none;
+}
+.is-preview .kb { display: block; }
+.is-typing .kb { transform: none; }
+.is-typing .homebar { z-index: 80; }
+.kb button { font: inherit; color: inherit; border: 0; background: none; padding: 0; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+.kb svg { display: block; fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
+/* Safari's bar: ‹ › to hop fields, Done to put the keyboard away */
+.kb--bar {
+  display: flex;
+  align-items: center;
+  height: 44px;
+  padding: 0 8px;
+  background: #f6f6f6;
+  border-top: 0.5px solid #c8c7cc;
+}
+.kb--bar span { flex: 1; }
+.kb--bar button { height: 44px; padding: 0 12px; color: #007aff; }
+.kb--bar button svg { stroke-width: 2; }
+.kb--done { font-weight: 600; font-size: 17px; }
+.kb--pad { padding: 0 3px 34px; background: #d1d4d9; }
+/* The suggestion strip */
+.kb--suggest { display: flex; justify-content: center; align-items: center; height: 44px; }
+.kb--suggest button { height: 36px; padding: 0 14px; border-radius: 8px; font-size: 16px; }
+.kb--suggest button:empty { display: none; }
+.kb--keys { display: flex; flex-direction: column; gap: 11px; padding: 0 0 8px; }
+.kb--row { display: flex; justify-content: center; gap: 6px; padding: 0 0; }
+.kb--row.is-mid { padding: 0 19px; }
+.kb--key {
+  flex: 1;
+  max-width: 34px;
+  height: 43px;
+  border-radius: 5px !important;
+  background: #fff !important;
+  box-shadow: 0 1px 0 #898a8d;
+  font-size: 22.5px !important;
+  line-height: 43px;
+  text-align: center;
+}
+.kb--key.is-mod { flex: none; max-width: none; width: 44px; background: #abb0bc !important; font-size: 16px !important; display: grid; place-items: center; }
+.kb--key.is-mod.is-on { background: #fff !important; }
+.kb--row:nth-child(3) .kb--key.is-mod:first-child { margin-right: 8px; }
+.kb--row:nth-child(3) .kb--key.is-mod:last-child { margin-left: 8px; }
+.kb--key.is-wide { width: 92px; }
+.kb--key.is-space { max-width: none; flex: 1; font-size: 16px !important; }
+.kb--key.is-return { width: 92px; }
+.kb--key.is-down { background: #abb0bc !important; }
+.kb--key.is-mod.is-down { background: #fff !important; }
+.kb--foot { display: flex; justify-content: space-between; padding: 8px 22px 0; color: #4a4a4c; }
+/* The steps' buttons ride up above it */
+.is-typing .ob--page { padding-bottom: calc(44px + 44px + 4 * 43px + 3 * 11px + 8px + 32px + 34px + 12px); }
+.ob--page { transition: opacity 0.35s, translate 0.45s cubic-bezier(0.3, 0.8, 0.2, 1), visibility 0s 0.45s, padding-bottom 0.38s cubic-bezier(0.32, 0.72, 0, 1); }
