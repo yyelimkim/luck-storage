@@ -257,8 +257,8 @@
       Sounds.chime();
       hold.classList.remove('is-holding');
       hold.textContent = 'Your luck is sent ✦';
-      // after the spin the slip stays; the clover comes up above it, then
-      // shrinks away up out of the frame, off with the luck
+      // after the spin the slip stays; the luck clover comes up above it,
+      // then shrinks away up out of the frame, off with the luck
       setTimeout(() => { spinning = false; cloverAway(); }, 950);
     });
   });
@@ -376,8 +376,8 @@
     if (e.key === 'ArrowLeft') { e.preventDefault(); step(-1); }
   });
 
-  // The logo's clover over the slip: it pops up above it, then turns small
-  // and flies up out of the frame
+  // The clover earned from Home's cards, over the slip: it pops up above
+  // it, then turns small and flies up out of the frame
   const clover = document.getElementById('wish-clover');
   function cloverAway() {
     clover.classList.remove('is-away');

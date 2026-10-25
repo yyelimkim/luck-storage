@@ -2147,14 +2147,14 @@ button.fortune--card:active { transform: scale(0.98); }
   100% { scale: var(--grow, 1.9); }
 }
 
-/* Luck sent: the logo's clover pops up above the slip, then turns small
-   and flies up out of the frame */
+/* Luck sent: the clover earned from the cards on Home (the Luck Claimed
+   one) pops up above the slip, then turns small and flies up out of the frame */
 .wish--clover {
   position: absolute;
-  left: calc(50% - 36px);
-  top: calc(50% - 269px - 70px);  /* between the title and the slip */
-  width: 72px;
-  height: 64px;
+  left: calc(50% - 38.3px);
+  top: calc(50% - 269px - 80px);  /* between the title and the slip */
+  width: 76.6022px;
+  height: 76.6022px;
   opacity: 0;
   pointer-events: none;
 }
