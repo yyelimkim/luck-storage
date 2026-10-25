@@ -73,7 +73,7 @@
     const left = x - t.w / 2;
     return `<g class="tree--wish" ${data} data-fill="${fill}" tabindex="0" role="button" aria-label="Read a wish"
       style="transform-origin: ${x}px ${y}px; animation-delay: ${delay}s">
-      <rect x="${x - 14}" y="${y - 4}" width="28" height="${TAG_DROP + t.h + 10}" fill="transparent"/>
+      <rect x="${x - 22}" y="${y - 10}" width="44" height="${TAG_DROP + t.h + 26}" fill="transparent"/>
       <path d="M${x} ${y}V${y + STRING}" stroke="#272727" stroke-width="0.5"/>
       <image class="tree--paper" href="${t.src}" x="${left}" y="${y + TAG_DROP}" width="${t.w}" height="${t.h}"/>
     </g>`;
