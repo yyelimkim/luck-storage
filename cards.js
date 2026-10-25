@@ -226,5 +226,5 @@ const CANVAS_PAGES = {
   '악마의 눈.png': 'evileye.html?v=5',  // the eye takes the bad luck, and cracks
   '걱정인형.png': 'worry.html?v=13',  // tell the doll your worries, tuck it in
   '꽃잎 점.png': 'love.html?v=7',  // loves me, loves me not... ends on love
-  '손바닥의 인 쓰기.png': 'hito.html?v=18',  // trace 人, then swallow it
+  '손바닥의 인 쓰기.png': 'hito.html?v=19',  // trace 人, then swallow it
 };
