@@ -2243,7 +2243,7 @@ button.fortune--card:active { transform: scale(0.98); }
 .ob--bar {
   flex: 1;
   height: 14px;
-  margin-right: 52px;  /* centred, the back button's width on the other side */
+  margin-right: 8px;  /* across to the screen's 16px margin */
   padding: 2px;
   box-sizing: border-box;
   border-radius: 999px;
