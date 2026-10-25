@@ -626,7 +626,7 @@ img { -webkit-user-drag: none; }
   background: var(--ui-white);
   border: 1px solid var(--dark-grey);
   color: var(--dark-grey);
-  font-size: 17px;
+  font-size: 16px;  /* main buttons' text */
   -webkit-tap-highlight-color: transparent;
   transition: background 0.3s, border-color 0.3s, color 0.3s, transform 0.15s;
 }
@@ -1358,7 +1358,7 @@ button.fortune--card:active { transform: scale(0.98); }
   border: 1px solid var(--system-black);
   color: var(--system-black);
   font-family: var(--font-display);
-  font-size: 17px;
+  font-size: 16px;  /* main buttons' text */
   letter-spacing: var(--tracking);
   line-height: normal;
   cursor: pointer;
@@ -1841,7 +1841,7 @@ button.fortune--card:active { transform: scale(0.98); }
   background: var(--system-black);
   color: var(--system-white);
   font-family: var(--font-display);
-  font-size: 17px;
+  font-size: 16px;  /* main buttons' text */
   letter-spacing: var(--tracking);
   white-space: nowrap;
   cursor: pointer;
@@ -2026,7 +2026,7 @@ button.fortune--card:active { transform: scale(0.98); }
   border: 1px solid var(--system-black);
   background: var(--system-black);
   color: var(--system-white);
-  font-size: 17px;
+  font-size: 16px;  /* main buttons' text */
   cursor: pointer;
   transition: background 0.2s, color 0.2s, border-color 0.2s, transform 0.15s;
 }
@@ -2082,7 +2082,7 @@ button.fortune--card:active { transform: scale(0.98); }
   height: 51px;
   border-radius: 43px;
   border: 1px solid var(--system-black);
-  font-size: 17px;
+  font-size: 16px;  /* main buttons' text */
   cursor: pointer;
 }
 .wishform--no { background: var(--ui-white); }
@@ -2330,7 +2330,7 @@ button.fortune--card:active { transform: scale(0.98); }
   background: var(--system-black);
   color: var(--system-white);
   font: inherit;
-  font-size: 17px;
+  font-size: 16px;  /* main buttons' text */
   letter-spacing: var(--tracking);
   cursor: pointer;
   transition: background 0.2s, color 0.2s, border-color 0.2s, transform 0.15s;

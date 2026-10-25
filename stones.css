@@ -169,4 +169,4 @@ html, body {
 
 /* 3: done */
 .stones--congrats { margin: 0; font-size: 22px; line-height: 1.3; }
-.stones--echo { margin: 24px 0 0; font-size: 15px; }  /* same colour as the line above it */
+.stones--echo { margin: 24px 0 0; font-size: 14px; }  /* same colour as the line above it */
