@@ -125,7 +125,7 @@ img { -webkit-user-drag: none; }
   white-space: nowrap;
 }
 /* Page titles in Cooper, as 376:5463 */
-.head--title h1 { font-family: var(--font-title); font-size: 28px; letter-spacing: var(--tracking-title); }
+.head--title h1 { font-family: var(--font-title); font-size: 27px; letter-spacing: var(--tracking-title); }
 .head--title img { display: block; }
 /* As tall as the header's 44px buttons */
 .head--count {
@@ -370,7 +370,7 @@ img { -webkit-user-drag: none; }
   align-items: flex-end;
   gap: 4px;
   font-family: var(--font-title);
-  font-size: 38px;
+  font-size: 41px;
   letter-spacing: var(--tracking-title);
   line-height: 0.75;  /* trimmed to the capitals, as 390:6980 */
 }
@@ -839,7 +839,7 @@ button.fortune--card:active { transform: scale(0.98); }
   color: var(--system-black);
   font-family: var(--font-display);
   font-weight: 400;
-  font-size: 17px;
+  font-size: 16px;  /* a step under the 17 */
   letter-spacing: var(--tracking);
   line-height: normal;
 }
@@ -849,7 +849,7 @@ button.fortune--card:active { transform: scale(0.98); }
   margin: 0;
   font-family: var(--font-title);  /* Cooper, as the page titles */
   font-weight: 400;
-  font-size: 17px;
+  font-size: 20px;
   letter-spacing: var(--tracking-title);
   line-height: normal;
   color: var(--system-black);
@@ -976,7 +976,7 @@ button.fortune--card:active { transform: scale(0.98); }
   display: grid;
   place-items: center;
   font-family: var(--font-title);  /* Cooper, as the page titles */
-  font-size: 17px;
+  font-size: 20px;
   letter-spacing: var(--tracking-title);
   color: var(--system-black);
   white-space: nowrap;
@@ -1438,7 +1438,7 @@ button.fortune--card:active { transform: scale(0.98); }
   margin: 0;
   font-family: var(--font-title);
   font-weight: 400;
-  font-size: 28px;
+  font-size: 27px;
   letter-spacing: var(--tracking-title);
   line-height: normal;
   color: var(--system-black);

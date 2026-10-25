@@ -47,8 +47,8 @@
   /* Type */
   --font-display: "Paperlogy", sans-serif;
   --tracking: -0.02em;
-  --font-title: "Cooper Lt BT", serif;  /* page titles, 28px at -4% */
-  --tracking-title: -0.04em;
+  --font-title: "Cooper Lt BT", serif;  /* titles: 3px up on the Paperlogy size, at -3% */
+  --tracking-title: -0.03em;
 
   /* Each category's colour */
   --protection: var(--hot-pink);
