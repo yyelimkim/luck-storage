@@ -50,6 +50,13 @@
   ob.querySelector('.ob--back').addEventListener('click', () => { if (path.length) show(path.pop(), true); });
   pages.welcome.classList.add('is-on');
 
+  // --- Welcome: every card in a ring, turning (mobile.css)
+  const ring = document.getElementById('ob-ring');
+  const R = 300;
+  ring.style.setProperty('--r', `${R}px`);
+  ring.innerHTML = IMAGES.map((name, i) =>
+    `<img src="${englishSrc(name)}" alt="" style="--a:${(i * 360) / IMAGES.length}deg">`).join('');
+
   // --- The account: create one, or log in
   const title = document.getElementById('ob-account-title');
   const sub = document.getElementById('ob-account-sub');

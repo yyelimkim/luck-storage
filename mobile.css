@@ -2361,18 +2361,39 @@ button.fortune--card:active { transform: scale(0.98); }
 .ob--or::before,
 .ob--or::after { content: ""; flex: 1; height: 0.771px; background: var(--system-black); }
 
-/* Welcome: one screen. The Wish Tree full bleed, darkened towards the foot
-   for the words; the logo at the top; a Cooper line and the way in below */
-.ob--page[data-page="welcome"] { padding-top: 0; color: var(--system-white); }
+/* Welcome: one screen. All the cards in a ring, as Home fans them, each
+   leaning out from the middle, turning slowly round (a turn a minute and a
+   half); they fade into the paper under the words */
+.ob--page[data-page="welcome"] { padding-top: 0; }
 .ob--art { position: absolute; inset: 0; overflow: hidden; }
-.ob--art img { position: absolute; left: 0; bottom: 0; width: 100%; height: auto; }
+.ob--ring {
+  position: absolute;
+  left: 50%;
+  top: 770px;
+  width: 0;
+  height: 0;
+  animation: ob-turn 90s linear infinite;
+}
+.is-phone .ob--ring { top: 714px; }
+@keyframes ob-turn { to { rotate: 360deg; } }
+.ob--ring img {
+  position: absolute;
+  left: -90px;
+  top: calc(-1 * (var(--r) + 257px));
+  width: 180px;
+  height: 257px;
+  border-radius: 14.7px;  /* the cards' corners at this size */
+  transform-origin: 90px calc(var(--r) + 257px);
+  rotate: var(--a);
+  box-shadow: 0 4px 4px rgba(0, 0, 0, 0.15);  /* as the cards on Home */
+}
 .ob--art::after {
   content: "";
   position: absolute;
   inset: 0;
-  background: linear-gradient(to bottom, color-mix(in srgb, var(--system-black) 35%, transparent),
-    transparent 30%, transparent 45%, color-mix(in srgb, var(--system-black) 80%, transparent));
+  background: linear-gradient(to bottom, transparent 52%, var(--system-white) 74%);
 }
+@media (prefers-reduced-motion: reduce) { .ob--ring { animation: none; } }
 .ob--logo {
   position: relative;
   align-self: center;
@@ -2392,9 +2413,6 @@ button.fortune--card:active { transform: scale(0.98); }
   line-height: 1.1;
 }
 .ob--page[data-page="welcome"] .ob--actions { position: relative; margin-top: 0; }
-/* On the picture: the button in System White, the link in white */
-.ob--btn.is-light { background: var(--system-white); border-color: var(--system-white); color: var(--system-black); }
-.ob--link.is-light { color: var(--system-white); }
 
 /* All set: the clover from Luck Claimed, a swing as it lands */
 .ob--done {
@@ -2429,9 +2447,6 @@ button.fortune--card:active { transform: scale(0.98); }
 .is-preview.is-onboarding .demo-hint { opacity: 1; }
 .wish--hold { transition: opacity 0.3s; }
 .wish:has(.wish--clover.is-away) .wish--hold { opacity: 0; transition-delay: 0s; }
-/* Over the welcome picture the status bar turns white, as on the Wish Tree */
-.stage:has(.ob[data-step="welcome"]:not(.is-done)) .status--time { color: var(--system-white); }
-.stage:has(.ob[data-step="welcome"]:not(.is-done)) .status--right { filter: invert(1) brightness(2); }
 
 /* --- The iPhone keyboard, in the desktop preview (keyboard.js) --------------
    Safari's form bar over the keyboard, slid up from the bottom while a text

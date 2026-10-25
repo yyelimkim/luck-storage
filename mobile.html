@@ -7,7 +7,7 @@
   <meta name="theme-color" content="#f0f0f0">
   <title>행운보관소</title>
   <link rel="stylesheet" href="design-system.css?v=9">
-  <link rel="stylesheet" href="mobile.css?v=179">
+  <link rel="stylesheet" href="mobile.css?v=181">
 </head>
 <body>
   <!-- iPhone 17 screen (Figma 97:630 at rest, 97:730 while dialing), laid out at
@@ -291,19 +291,15 @@
         <div class="ob--bar" role="progressbar" aria-label="Setting up" aria-valuemin="0" aria-valuemax="3"><span class="ob--fill"></span></div>
       </div>
 
-      <!-- Welcome: one screen, the Wish Tree full bleed, the logo at the top,
-           the line and the way in at the foot -->
+      <!-- Welcome: one screen. Every card in a ring, as Home fans them,
+           turning slowly round behind the logo; the line and the way in below -->
       <div class="ob--page" data-page="welcome">
-        <div class="ob--art" aria-hidden="true">
-          <img src="assets/wishtree/back.svg?v=2" alt="">
-          <img src="assets/wishtree/front.svg?v=2" alt="">
-          <img src="assets/wishtree/light.svg?v=2" alt="">
-        </div>
+        <div class="ob--art" aria-hidden="true"><div class="ob--ring" id="ob-ring"></div></div>
         <img class="ob--logo" src="assets/splash/logo.svg?v=1" width="365" height="165" alt="Luck Corner">
         <h2 class="ob--hero">A little luck,<br>every day.</h2>
         <div class="ob--actions">
-          <button type="button" class="ob--btn is-light" data-go="signup">Get started</button>
-          <button type="button" class="ob--link is-light" data-go="login">Already have an account? <u>Log in</u></button>
+          <button type="button" class="ob--btn" data-go="signup">Get started</button>
+          <button type="button" class="ob--link" data-go="login">Already have an account? <u>Log in</u></button>
         </div>
       </div>
 
@@ -362,7 +358,7 @@
   <script src="mobile.js?v=103"></script>
   <script src="tree.js?v=36"></script>
   <script src="splash.js?v=22"></script>
-  <script src="onboarding.js?v=3"></script>
+  <script src="onboarding.js?v=4"></script>
   <script src="keyboard.js?v=1"></script>
 </body>
 </html>
