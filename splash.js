@@ -94,10 +94,10 @@
       if (x < 1) { raf = requestAnimationFrame(frame); return; }
       // all drawn: the letters exactly as designed, unmasked
       letters.removeAttribute('mask');
-      // the sticker fades in behind and the clover flaps its wings twice,
-      // like a butterfly, then on to the app
+      // the sticker fades in behind and the clover comes in and flaps its
+      // wings twice, like a butterfly, then on to the app
       splash.classList.add('is-stuck');
-      timers.push(setTimeout(leave, Math.max(CFG.stick + CFG.hold, CFG.flap) * 1000));
+      timers.push(setTimeout(leave, Math.max(CFG.stick + CFG.hold, CFG.flap + 0.3) * 1000));
     };
     raf = requestAnimationFrame(frame);
   }
@@ -138,14 +138,16 @@
     .catch(leave);
 
   // The clover by "Corner" (the logo's shape stroke17) on a layer of its
-  // own, so it can flap: copies of the sticker and the letters showing just
-  // the clover and the sticker round it, and the logo with that cut out.
-  // The cut follows the clover's own outline, grown to take in its sticker.
+  // own, so it can come in once the letters are drawn and flap: copies of
+  // the sticker and the letters showing just the clover and the line that
+  // hugs it, and the logo with that cut out. The cut follows the clover's
+  // own outline, grown a little: enough for its line, not the sticker's
+  // outermost edge, which stays put.
   function butterfly() {
     const letters = svg.querySelector('#letters');
     const sticker = svg.querySelector('#sticker');
     const d = svg.querySelector('#stroke17_splash').getAttribute('d');
-    const area = (paint) => `<path d="${d}" fill="${paint}" stroke="${paint}" stroke-width="20" stroke-linejoin="round"/>`;
+    const area = (paint) => `<path d="${d}" fill="${paint}" stroke="${paint}" stroke-width="7" stroke-linejoin="round"/>`;
     svg.querySelector('defs').insertAdjacentHTML('beforeend',
       `<mask id="splash-clover-in" maskUnits="userSpaceOnUse" x="-20" y="-20" width="420" height="220">${area('white')}</mask>`
       + `<mask id="splash-clover-out" maskUnits="userSpaceOnUse" x="-20" y="-20" width="420" height="220">`

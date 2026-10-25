@@ -2169,14 +2169,18 @@ button.fortune--card:active { transform: scale(0.98); }
 .m-nav, .m-navfade { transition: opacity 0.3s; }
 .is-reading .m-nav,
 .is-reading .m-navfade { opacity: 0; pointer-events: none; }
-/* The clover by "Corner" flaps its wings twice, like a butterfly, folding
-   along the line of its stem (from the curl to the middle) */
+/* The clover by "Corner" waits out the letters' drawing, comes in, then
+   flaps its wings twice, like a butterfly, folding along the line of its
+   stem (from the curl to the middle). 0.3s to come in, then the flaps. */
 .splash--clover {
   transform-box: view-box;
   transform-origin: 52px 118px;
+  opacity: 0;
 }
-.splash.is-stuck .splash--clover { animation: clover-flap var(--flap, 0.8s) ease-in-out; }
+.splash.is-stuck .splash--clover { opacity: 1; animation: clover-flap calc(var(--flap, 0.8s) + 0.3s) ease-in-out; }
 @keyframes clover-flap {
-  0%, 50%, 100% { transform: rotate(56deg) scaleX(1) rotate(-56deg); }
-  25%, 75% { transform: rotate(56deg) scaleX(0.25) rotate(-56deg); }
+  0% { opacity: 0; transform: scale(0.4) rotate(56deg) scaleX(1) rotate(-56deg); animation-timing-function: cubic-bezier(0.3, 1.5, 0.5, 1); }
+  27% { opacity: 1; transform: scale(1) rotate(56deg) scaleX(1) rotate(-56deg); }
+  45%, 82% { transform: scale(1) rotate(56deg) scaleX(0.25) rotate(-56deg); }
+  64%, 100% { transform: scale(1) rotate(56deg) scaleX(1) rotate(-56deg); }
 }
