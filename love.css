@@ -25,22 +25,24 @@ html, body {
   position: absolute;
   left: 50%;
   top: calc((100% - 166px) * 0.44);
-  width: 320px;
-  height: 470px;
-  margin: -160px 0 0 -160px;
-  transform-origin: 160px 160px;
+  width: 325px;
+  height: 469px;
+  margin: -140px 0 0 -170px;  /* the head (about 170, 140) on the spot */
+  transform-origin: 170px 140px;
   scale: var(--f);
-  -webkit-mask: linear-gradient(to bottom, #000 60%, transparent 86%);
-  mask: linear-gradient(to bottom, #000 60%, transparent 86%);
+}
+/* Plucked, the flower gives a little shake on its stem */
+.love--flower svg { transform-origin: 40px 460px; }
+.love--flower svg.is-shake { animation: love-shake 0.5s ease-out; }
+@keyframes love-shake {
+  20% { rotate: 1.6deg; }
+  45% { rotate: -1.2deg; }
+  70% { rotate: 0.6deg; }
 }
 .love--flower svg { display: block; width: 100%; height: 100%; overflow: visible; }
-.love--stem { fill: none; stroke: var(--system-black); stroke-width: 12px; stroke-linecap: round; }
-.love--middle { fill: var(--yellow); stroke: var(--system-black); stroke-width: 1.5px; }
 
-/* A petal: Sky Blue on its dark underside, in the system's line */
+/* A petal (the card's own shapes): taps anywhere on it */
 .love--petal { cursor: pointer; transform-box: fill-box; transform-origin: center; -webkit-tap-highlight-color: transparent; }
-.love--petal .under { fill: var(--system-black); }
-.love--petal .top { fill: var(--v2-blue); stroke: var(--system-black); stroke-width: 1.5px; }
 .love--petal:focus { outline: none; }
 .love--petal:focus-visible .top { stroke-width: 3px; }
 [data-step="ask"] .love--petal { pointer-events: none; }
@@ -111,5 +113,5 @@ html, body {
 
 /* The end: it loves you — the middle glows a little */
 [data-step="done"] .love--middle { animation: love-glow 1.2s ease-in-out infinite alternate; }
-@keyframes love-glow { to { fill: var(--system-white); } }
+@keyframes love-glow { to { fill: #fafafa; } }
 

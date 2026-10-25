@@ -3,13 +3,13 @@
 // number, so the last is always "loves me", and the luck is claimed. Before
 // the first pluck the pointing hand shows where to tap.
 
-const PETALS = 7;  // odd: it always ends on love
+const PETALS = 5;  // the card's four and one set back: odd, so it always ends on love
 const IN_SHEET = new URLSearchParams(location.search).has('sheet');
 const NS = 'http://www.w3.org/2000/svg';
 
 const root = document.getElementById('love');
 const flower = document.getElementById('flower');
-const petalsEl = document.getElementById('petals');
+const petalsEl = flower.querySelector('svg');
 const say = document.getElementById('say');
 const form = document.getElementById('ask-form');
 const input = document.getElementById('name');
@@ -23,28 +23,12 @@ function fit() {
 addEventListener('resize', fit);
 fit();
 
-// The petals round the middle, each an oval on its dark underside (the
-// card's flower's way), turned out from the middle
-const petals = [];
-for (let i = 0; i < PETALS; i++) {
-  const a = -90 + (i * 360) / PETALS;
-  const r = (a * Math.PI) / 180;
-  const cx = Math.cos(r) * 74;
-  const cy = Math.sin(r) * 74;
-  const g = document.createElementNS(NS, 'g');
-  g.setAttribute('class', 'love--petal');
-  g.setAttribute('tabindex', '0');
-  g.setAttribute('role', 'button');
-  g.setAttribute('aria-label', `Petal ${i + 1}`);
-  g.dataset.silent = '';
-  g.innerHTML = `<ellipse class="under" cx="${cx + 3}" cy="${cy + 6}" rx="64" ry="48" transform="rotate(${a} ${cx + 3} ${cy + 6})"/>`
-    + `<ellipse class="top" cx="${cx}" cy="${cy}" rx="64" ry="48" transform="rotate(${a} ${cx} ${cy})"/>`;
-  g.dataset.a = String(a);
+// The petals, the card's flower's own (love.html): each plucked by a tap
+const petals = [...petalsEl.querySelectorAll('.love--petal')];
+petals.forEach((g) => {
   g.addEventListener('click', () => pluck(g));
   g.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); pluck(g); } });
-  petalsEl.appendChild(g);
-  petals.push(g);
-}
+});
 
 let name = '';
 let plucked = 0;
@@ -65,7 +49,7 @@ form.addEventListener('submit', (e) => {
   input.blur();
   root.dataset.step = 'pluck';
   show('Tap a petal to pluck it');
-  pointAt_(petals[1]);
+  pointAt_(petals[4]);  // the front one
 });
 
 // The hand (pointer.js) shows a tap on a petal till the first pluck
@@ -79,7 +63,8 @@ function pluck(g) {
   unpoint();
   g.classList.add('is-plucked');
   plucked++;
-  const a = (Number(g.dataset.a) * Math.PI) / 180;
+  const b = g.getBBox();
+  const a = Math.atan2(b.y + b.height / 2 - 99, b.x + b.width / 2 - 186);
   const out = 60 + Math.random() * 30;
   const spin = (Math.random() < 0.5 ? -1 : 1) * (120 + Math.random() * 160);
   g.animate([
@@ -88,7 +73,11 @@ function pluck(g) {
     { transform: `translate(${Math.cos(a) * out * 1.3 + (Math.random() - 0.5) * 60}px, ${420}px) rotate(${spin}deg)`, opacity: 0 },
   ], { duration: 1500, easing: 'cubic-bezier(0.4, 0, 0.7, 1)', fill: 'forwards' });
   g.style.transformOrigin = 'center';
-  Sounds.swoosh(0.45);
+  Sounds.pluck();
+  const head = flower.querySelector('svg');
+  head.classList.remove('is-shake');
+  void head.getBBox();
+  head.classList.add('is-shake');
   const loves = plucked % 2 === 1;
   if (plucked < PETALS) {
     show(loves ? `${name} loves me` : `${name} loves me not`);

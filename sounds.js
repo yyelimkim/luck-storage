@@ -357,7 +357,48 @@ const Sounds = (() => {
     o.stop(t + 0.6);
   }
 
-  return { hit, swoosh, flip, claim, chime, stone, tap, eat, tick, rub, shimmer, absorb, crack, unlock };
+  // A petal plucked: the little snap as it comes away — a tight, bright
+  // tick of noise over a short, dull pop, then a breath of air
+  function pluck() {
+    const a = audio();
+    const t = a.currentTime;
+    const out = a.createGain();
+    out.gain.value = 0.5;
+    out.connect(a.destination);
+    const n = noise(a, 0.03);
+    const bp = a.createBiquadFilter();
+    bp.type = 'bandpass';
+    bp.frequency.value = 3600;
+    bp.Q.value = 1.4;
+    const ng = a.createGain();
+    ng.gain.setValueAtTime(0.9, t);
+    ng.gain.exponentialRampToValueAtTime(0.0001, t + 0.025);
+    n.connect(bp).connect(ng).connect(out);
+    n.start(t);
+    const o = a.createOscillator();
+    const og = a.createGain();
+    o.type = 'sine';
+    o.frequency.setValueAtTime(420, t);
+    o.frequency.exponentialRampToValueAtTime(180, t + 0.06);
+    og.gain.setValueAtTime(0.0001, t);
+    og.gain.exponentialRampToValueAtTime(0.3, t + 0.004);
+    og.gain.exponentialRampToValueAtTime(0.0001, t + 0.07);
+    o.connect(og).connect(out);
+    o.start(t);
+    o.stop(t + 0.08);
+    const air = noise(a, 0.25);
+    const lp = a.createBiquadFilter();
+    lp.type = 'lowpass';
+    lp.frequency.value = 1200;
+    const ag = a.createGain();
+    ag.gain.setValueAtTime(0.0001, t + 0.02);
+    ag.gain.exponentialRampToValueAtTime(0.06, t + 0.07);
+    ag.gain.exponentialRampToValueAtTime(0.0001, t + 0.25);
+    air.connect(lp).connect(ag).connect(out);
+    air.start(t + 0.02);
+  }
+
+  return { hit, swoosh, flip, claim, chime, stone, tap, eat, tick, rub, shimmer, absorb, crack, pluck, unlock };
 })();
 
 // Every button, tab and link ticks when pressed (anything with its own
