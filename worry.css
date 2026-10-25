@@ -113,6 +113,18 @@ html, body {
 .worry--doll.is-in { opacity: 1; animation: tuck 0.9s cubic-bezier(0.3, 0.8, 0.3, 1) forwards; }
 @keyframes tuck { to { translate: -34px -30px; } }
 
+/* The bed fades into the card's colour at the top, and under the words */
+.worry--fade {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  pointer-events: none;
+  background:
+    linear-gradient(to bottom, var(--yellow-green), transparent 96px),
+    linear-gradient(to top, var(--yellow-green) 150px, transparent 250px);
+}
+.worry:not([data-step="tuck"]):not([data-step="done"]) .worry--fade { opacity: 0; visibility: hidden; }
+
 /* the doll to drag (137 wide at the bed's top right in 445:991) */
 .worry--drag {
   position: absolute;

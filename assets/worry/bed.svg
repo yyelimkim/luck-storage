@@ -1,13 +1,14 @@
 <svg width="402" height="874" viewBox="0 0 402 874" fill="none" xmlns="http://www.w3.org/2000/svg">
 <!-- The bed under the worry doll's pillow (drawn to match Figma 445:991's
-     pillow): the headboard behind, the mattress and its side, the blanket
-     over the lower half with its sheet turned back -->
+     pillow): the headboard behind, the thick mattress and its side, the
+     blanket over the lower half with its sheet turned back. Hot Pink, System
+     White and UI White, in the system's black line. -->
 <g stroke="#272727" stroke-width="1.5" stroke-linejoin="round">
-<path d="M-121.8 396.4L-121.8 318.4L297.4 88.3L297.4 166.3Z" fill="#2A9F3A"/>
-<path d="M-116.6 393.5L567.4 980.3L567.4 1010.3L-116.6 423.5Z" fill="#E0E0E0"/>
+<path d="M-121.8 396.4L-121.8 318.4L297.4 88.3L297.4 166.3Z" fill="#DA236F"/>
+<path d="M-116.6 393.5L567.4 980.3L567.4 1044.3L-116.6 457.5Z" fill="#F0F0F0"/>
 <path d="M-116.6 393.5L292.1 169.2L976.1 756.0L567.4 980.3Z" fill="#FAFAFA"/>
-<path d="M96.8 586.4L628.8 1042.8L628.8 1078.8L96.8 622.4Z" fill="#0E8FB8"/>
-<path d="M96.8 586.4L519.5 354.5L1051.5 810.9L628.8 1042.8Z" fill="#11B2E4"/>
-<path d="M96.8 586.4L519.5 354.5L545.4 376.6L122.6 608.6Z" fill="#F0F0F0"/>
+<path d="M96.8 586.4L628.8 1042.8L628.8 1114.8L96.8 658.4Z" fill="#DA236F"/>
+<path d="M96.8 586.4L519.5 354.5L1051.5 810.9L628.8 1042.8Z" fill="#DA236F"/>
+<path d="M96.8 586.4L519.5 354.5L545.4 376.6L122.6 608.6Z" fill="#FAFAFA"/>
 </g>
 </svg>
