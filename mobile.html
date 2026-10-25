@@ -7,7 +7,7 @@
   <meta name="theme-color" content="#f0f0f0">
   <title>행운보관소</title>
   <link rel="stylesheet" href="design-system.css?v=9">
-  <link rel="stylesheet" href="mobile.css?v=161">
+  <link rel="stylesheet" href="mobile.css?v=163">
 </head>
 <body>
   <!-- iPhone 17 screen (Figma 97:630 at rest, 97:730 while dialing), laid out at
@@ -149,17 +149,20 @@
           <path fill-rule="evenodd" d="M259.273 0.5C261.301 0.500165 263.17 1.59637 264.16 3.36621L293.677 56.1416C294.144 56.9769 294.39 57.918 294.39 58.875V484.622C294.39 487.715 291.883 490.222 288.79 490.223H6.09961C3.00685 490.223 0.500053 487.715 0.5 484.622V59.0176C0.500083 57.9595 0.799426 56.923 1.36426 56.0283L34.7773 3.10938C35.8033 1.48462 37.5911 0.500076 39.5127 0.5H259.273ZM147.907 22.4355C144.838 22.4355 142.35 24.9214 142.35 27.9873C142.35 31.0531 144.838 33.5381 147.907 33.5381C150.976 33.538 153.465 31.053 153.465 27.9873C153.465 24.9214 150.976 22.4357 147.907 22.4355Z"/>
         </svg>
         <!-- The outline traced while it's held (460:2797): a soft glow under a
-             crisp line, 3px out from the paper -->
+             crisp line, an even 4px out from the paper all round -->
         <svg class="wish--trace" viewBox="0 0 294.89 490.723" aria-hidden="true">
-          <g class="wish--trace-glow"><path pathLength="1" d="M147 495.75H291.79C294.97 495.75 297.54 493.18 297.54 490V58.53C297.54 57.54 297.28 56.57 296.8 55.71L266.55 2.17C265.53 0.37 263.62 -0.75 261.54 -0.75H147"/><path pathLength="1" d="M147 495.75H2.21C-0.97 495.75 -3.54 493.18 -3.54 490V58.68C-3.54 57.58 -3.23 56.51 -2.64 55.59L31.6 1.91C32.66 0.25 34.48 -0.75 36.45 -0.75H147"/></g>
-          <g class="wish--trace-line"><path pathLength="1" d="M147 495.75H291.79C294.97 495.75 297.54 493.18 297.54 490V58.53C297.54 57.54 297.28 56.57 296.8 55.71L266.55 2.17C265.53 0.37 263.62 -0.75 261.54 -0.75H147"/><path pathLength="1" d="M147 495.75H2.21C-0.97 495.75 -3.54 493.18 -3.54 490V58.68C-3.54 57.58 -3.23 56.51 -2.64 55.59L31.6 1.91C32.66 0.25 34.48 -0.75 36.45 -0.75H147"/></g>
+          <g class="wish--trace-glow"><path pathLength="1" d="M147.45 494.22H288.79Q298.39 494.22 298.39 484.62V62.37Q298.39 56.37 295.46 51.13L267.83 1.74Q264.9 -3.5 258.9 -3.5H147.45"/><path pathLength="1" d="M147.45 494.22H6.1Q-3.5 494.22 -3.5 484.62V62.23Q-3.5 56.23 -0.3 51.15L31.02 1.58Q34.22 -3.5 40.22 -3.5H147.45"/></g>
+          <g class="wish--trace-line"><path pathLength="1" d="M147.45 494.22H288.79Q298.39 494.22 298.39 484.62V62.37Q298.39 56.37 295.46 51.13L267.83 1.74Q264.9 -3.5 258.9 -3.5H147.45"/><path pathLength="1" d="M147.45 494.22H6.1Q-3.5 494.22 -3.5 484.62V62.23Q-3.5 56.23 -0.3 51.15L31.02 1.58Q34.22 -3.5 40.22 -3.5H147.45"/></g>
         </svg>
         <p class="wish--text" id="wish-text"></p>
         <p class="wish--from">Anonymous</p>
       </div>
       <p class="wish--hold" id="wish-hold" role="status">Hold the slip to send your luck</p>
-      <!-- The dial's lines, as on Home -->
-      <div class="wish--dial" aria-hidden="true"><i style="left:4.86px;top:38.37px;rotate:-25.9deg;opacity:0.25"></i><i style="left:19.17px;top:31.98px;rotate:-22.2deg;opacity:0.75"></i><i style="left:33.85px;top:26.54px;rotate:-18.5deg"></i><i style="left:48.86px;top:22.04px;rotate:-14.8deg"></i><i style="left:64.13px;top:18.53px;rotate:-11.1deg"></i><i style="left:79.59px;top:16.01px;rotate:-7.4deg"></i><i style="left:95.19px;top:14.50px;rotate:-3.7deg"></i><i class="is-current" style="left:110.84px;top:11.66px"></i><i style="left:126.50px;top:14.50px;rotate:3.7deg"></i><i style="left:142.08px;top:16.01px;rotate:7.4deg"></i><i style="left:157.54px;top:18.53px;rotate:11.1deg"></i><i style="left:172.81px;top:22.04px;rotate:14.8deg"></i><i style="left:187.82px;top:26.54px;rotate:18.5deg"></i><i style="left:202.51px;top:31.98px;rotate:22.2deg;opacity:0.75"></i><i style="left:216.81px;top:38.37px;rotate:25.9deg;opacity:0.25"></i></div>
+      <!-- A straight dial, a line for each wish: drag it (or swipe the slip)
+           to go to the next wish -->
+      <div class="wish--dial" id="wish-dial" role="slider" aria-label="Wishes" tabindex="0">
+        <div class="wish--ticks" id="wish-ticks"></div>
+      </div>
     </div>
 
     <!-- Daily Fortune (Figma 395:7512, 395:7550, 397:208): opened from the
@@ -281,7 +284,7 @@
   <script src="cards.js?v=57"></script>
   <script src="sounds.js?v=16"></script>
   <script src="mobile.js?v=102"></script>
-  <script src="tree.js?v=31"></script>
+  <script src="tree.js?v=33"></script>
   <script src="splash.js?v=12"></script>
 </body>
 </html>
