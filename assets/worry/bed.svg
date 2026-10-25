@@ -1,18 +1,17 @@
 <svg width="402" height="874" viewBox="0 0 402 874" fill="none" xmlns="http://www.w3.org/2000/svg">
 <!-- The bed under the worry doll's pillow (drawn to match Figma 445:991's
-     pillow): the headboard behind, square; the mattress and the blanket each one
+     pillow): the headboard behind, square, running on
+     down behind the mattress; the mattress and the blanket each one
      rounded block, their tops turning softly over into their sides; the
-     sheet turned back over the blanket, top and side. Hot Pink, System White and UI White,
+     sheet turned back over the blanket, one piece curving over its edge. Hot Pink, System White and UI White,
      in the system's black line. -->
 <g stroke="#272727" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round">
-<path d="M-121.8 396.4L-121.8 318.4L297.4 88.3L297.4 166.3Z" fill="#DA236F"/>
+<path d="M-121.8 466.4L-121.8 318.4L297.4 88.3L297.4 236.3Z" fill="#DA236F"/>
 <path d="M304.2 179.6L964.0 745.6Q976.1 756.0 963.0 765.2L580.5 1035.1Q567.4 1044.3 555.3 1033.9L-104.4 467.9Q-116.6 457.5 -116.6 441.5L-116.6 409.5Q-116.6 393.5 -102.6 385.8L278.1 176.9Q292.1 169.2 304.2 179.6Z" fill="#F0F0F0"/>
 <path d="M-102.6 385.8L278.1 176.9Q292.1 169.2 304.2 179.6L964.0 745.6Q976.1 756.0 962.1 763.7L581.4 972.6Q567.4 980.3 555.3 969.9L-104.4 403.9Q-116.6 393.5 -102.6 385.8Z" fill="#FAFAFA" stroke="none"/>
 <path d="M-97.1 410.2L567.4 980.3"/>
 <path d="M110.8 578.7L505.5 362.2Q519.5 354.5 531.7 364.9L1039.4 800.4Q1051.5 810.9 1038.5 820.2L641.8 1105.5Q628.8 1114.8 616.7 1104.4L108.9 668.8Q96.8 658.4 96.8 642.4L96.8 602.4Q96.8 586.4 110.8 578.7Z" fill="#DA236F"/>
 <path d="M110.8 578.7L505.5 362.2Q519.5 354.5 531.7 364.9L1039.4 800.4Q1051.5 810.9 1037.5 818.6L642.8 1035.1Q628.8 1042.8 616.7 1032.4L108.9 596.8Q96.8 586.4 110.8 578.7Z" fill="#DA236F" stroke="none"/>
-<path d="M116.3 603.1L628.8 1042.8"/>
-<path d="M105.6 581.6L510.8 359.3Q519.5 354.5 527.1 361.0L537.8 370.1Q545.4 376.6 536.6 381.4L131.4 603.8Q122.6 608.6 115.1 602.1L104.4 592.9Q96.8 586.4 105.6 581.6Z" fill="#FAFAFA"/>
-<path d="M96.8 586.4L122.6 608.6L122.6 680.6L96.8 658.4Z" fill="#FAFAFA"/>
+<path d="M96.8 658.4L96.8 600.4Q96.8 586.4 109.1 579.7L510.8 359.3Q519.5 354.5 527.1 361.0L537.8 370.1Q545.4 376.6 536.6 381.4L134.9 601.8Q122.6 608.6 122.6 622.6L122.6 680.6Q122.6 680.6 122.6 680.6L96.8 658.4Q96.8 658.4 96.8 658.4Z" fill="#FAFAFA"/>
 </g>
 </svg>
