@@ -1495,19 +1495,19 @@ button.fortune--card:active { transform: scale(0.98); }
 .tree--layer[data-layer="light"] { filter: brightness(1.25) saturate(1.1); }
 .tree--sun {
   position: absolute;
-  left: -190px;
-  top: -230px;
-  width: 600px;
-  height: 600px;
+  left: -260px;
+  top: 70px;  /* in from the left edge, below the header and its title */
+  width: 520px;
+  height: 520px;
   border-radius: 50%;
-  background: radial-gradient(circle, rgba(255, 250, 205, 0.95), rgba(255, 244, 180, 0.45) 40%, rgba(255, 240, 170, 0) 72%);
+  background: radial-gradient(circle, rgba(255, 250, 205, 0.5), rgba(255, 244, 180, 0.2) 40%, rgba(255, 240, 170, 0) 70%);
   mix-blend-mode: screen;
   pointer-events: none;
   animation: sun-breathe 7s ease-in-out infinite alternate;
 }
 @keyframes sun-breathe {
-  from { opacity: 0.75; scale: 0.95; }
-  to { opacity: 1; scale: 1.05; }
+  from { opacity: 0.7; scale: 0.96; }
+  to { opacity: 1; scale: 1.04; }
 }
 .tree--layer svg { overflow: visible; }
 /* The moving light: each beam swings slowly from the top left, as light
