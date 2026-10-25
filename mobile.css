@@ -2177,7 +2177,8 @@ button.fortune--card:active { transform: scale(0.98); }
   transform-origin: 52px 118px;
   opacity: 0;
 }
-.splash.is-stuck .splash--clover { opacity: 1; animation: clover-flap calc(var(--flap, 0.8s) + 0.3s) ease-in-out; }
+/* after the sticker has come in, the moment the letters are done */
+.splash.is-stuck .splash--clover { opacity: 1; animation: clover-flap calc(var(--flap, 0.8s) + 0.3s) ease-in-out var(--stick, 0.4s) both; }
 @keyframes clover-flap {
   0% { opacity: 0; transform: scale(0.4) rotate(56deg) scaleX(1) rotate(-56deg); animation-timing-function: cubic-bezier(0.3, 1.5, 0.5, 1); }
   27% { opacity: 1; transform: scale(1) rotate(56deg) scaleX(1) rotate(-56deg); }
