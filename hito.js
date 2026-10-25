@@ -30,7 +30,7 @@ const strokes = [document.getElementById('trace-1'), document.getElementById('tr
 const HAND = { left: 146, width: 424 };
 function fit() {
   const room = innerHeight - 166;
-  root.style.setProperty('--p', Math.min(1.5, (innerWidth * 1.14) / HAND.width, (room + 40) / 400).toFixed(3));
+  root.style.setProperty('--p', Math.min(1.5, (innerWidth * 1.02) / HAND.width, (room + 20) / 420).toFixed(3));
   root.style.setProperty('--mid', `${HAND.left + HAND.width / 2}px`);
 }
 addEventListener('resize', fit);
