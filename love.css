@@ -111,7 +111,4 @@ html, body {
 .love--send:disabled { opacity: 0.35; cursor: default; }
 .love--send:not(:disabled):active { transform: scale(0.92); }
 
-/* The end: it loves you — the middle glows a little */
-[data-step="done"] .love--middle { animation: love-glow 1.2s ease-in-out infinite alternate; }
-@keyframes love-glow { to { fill: #fafafa; } }
 
