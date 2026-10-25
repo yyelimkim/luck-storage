@@ -155,7 +155,7 @@ const CARD_TEXT = {
   },
   '꽃잎 점.png': {
     about: 'An old French flower-petal game (“effeuiller la marguerite”) used to predict whether someone loves you back, one petal at a time.',
-    howTo: 'Tap each petal to pluck it off one at a time, alternating outcomes until the last one.',
+    howTo: 'Say who you’re thinking of, then pluck the petals one at a time.',
   },
   '네잎 클로버 찾기.png': {
     about: 'An Irish belief that finding a rare four-leaf clover among ordinary three-leaf ones is a sign of good luck.',
@@ -218,11 +218,12 @@ const CARD_TEXT = {
 // Interactive pieces: on desktop they fill the canvas beside an opened card;
 // on the phone they take the illustration's place on the card's sheet
 const CANVAS_PAGES = {
-  '명태 액막이.png': 'charm.html?v=26',  // the fish charm
+  '명태 액막이.png': 'charm.html?v=27',  // the fish charm
   '촛불 한번에 불기.png': 'candles.html?v=22',  // make a wish, blow them all out
   '부처님 배 만지기.png': 'buddha.html?v=13',  // rub the belly round till it glows
-  '포도 12알 먹기.png': 'grapes.html?v=12',  // eat all twelve before the clock runs out
-  '돌팝 쌓기.png': 'stones.html?v=21',  // drop the stones in, the wish on top
-  '악마의 눈.png': 'evileye.html?v=4',  // the eye takes the bad luck, and cracks
+  '포도 12알 먹기.png': 'grapes.html?v=13',  // eat all twelve before the clock runs out
+  '돌팝 쌓기.png': 'stones.html?v=22',  // drop the stones in, the wish on top
+  '악마의 눈.png': 'evileye.html?v=5',  // the eye takes the bad luck, and cracks
   '걱정인형.png': 'worry.html?v=13',  // tell the doll your worries, tuck it in
+  '꽃잎 점.png': 'love.html?v=1',  // loves me, loves me not... ends on love
 };

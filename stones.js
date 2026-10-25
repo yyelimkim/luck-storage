@@ -90,12 +90,16 @@ form.addEventListener('submit', (e) => {
   echo.textContent = `“${input.value.trim()}”`;
   input.blur();
   step('stack');
+  // the hand shows a tap on an outline (one resting on the ground) till the first stone
+  unpoint = pointAt(STONES.find((s) => s.on.length === 0).slot);
 });
 
 // 2: tap where a stone goes and it drops from the top into place. A stone
 // can only land where what it rests on is already there.
+let unpoint = () => {};
 function drop(s) {
   if (root.dataset.step !== 'stack' || placed.has(s.id)) return;
+  unpoint();
   if (!s.on.every((id) => placed.has(id))) {
     s.slot.classList.remove('is-wobble');
     void s.slot.offsetWidth;

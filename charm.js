@@ -313,6 +313,9 @@ const stage = document.getElementById('stage');
 let press = null;
 const HITS_TO_CLAIM = 5;
 let hits = 0;
+// the hand shows a tap on the fish till the first hit
+let unpoint = () => {};
+setTimeout(() => { if (!hits) unpoint = pointAt(document.getElementById('fish')); }, 1200);
 // The bar under the instructions fills a step with every hit
 const progress = document.getElementById('progress');
 const progressFill = document.getElementById('progress-fill');
@@ -373,6 +376,7 @@ function release() {
       snap(0.6);
       // Each hit knocks some bad luck loose; enough fills the bar, and the
       // page holding the sheet is told the luck is claimed
+      unpoint();
       if (hits < HITS_TO_CLAIM) {
         hits++;
         plusLuck(press.x, press.y);

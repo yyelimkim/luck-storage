@@ -46,6 +46,8 @@ function fit() {
 addEventListener('resize', fit);
 fit();
 
+// the hand shows a tap on a grape till the first is eaten
+let unpoint = pointAt(grapes[2]);
 let eaten = 0;
 let endAt = 0;
 let raf = 0;
@@ -72,6 +74,7 @@ function run() {
 function eat(c) {
   if (root.dataset.step === 'done' || c.classList.contains('is-eaten')) return;
   if (root.dataset.step === 'ready') {
+    unpoint();
     // the first grape starts the clock
     root.dataset.step = 'eating';
     endAt = performance.now() + SECONDS * 1000;
@@ -104,6 +107,7 @@ function timeUp() {
   void hint.offsetWidth;
   hint.classList.add('is-missed');
   reset();
+  unpoint = pointAt(grapes[2]);  // and the hand shows how again
 }
 function reset() {
   eaten = 0;

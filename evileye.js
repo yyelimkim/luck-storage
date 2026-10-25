@@ -81,6 +81,8 @@ function setOut() {
 setOut();
 
 let taken = 0;
+// the hand shows a tap on a bit of bad luck till the first is taken
+let unpoint = pointAt(wisps.querySelector('.wisp'));
 function show(text) {
   say.textContent = text;
   say.classList.remove('is-new');
@@ -98,6 +100,7 @@ function pulse(cls, ms) {
 function take(w) {
   if (root.dataset.step === 'done' || w.classList.contains('is-taken')) return;
   Sounds.unlock();
+  unpoint();
   w.style.translate = getComputedStyle(w).translate;  // held where it was drifting
   w.classList.add('is-taken');
   const b = w.getBoundingClientRect();
