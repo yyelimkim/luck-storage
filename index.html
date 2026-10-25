@@ -2,50 +2,366 @@
 <html lang="ko">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="The Luck Corner">
+  <meta name="theme-color" content="#f0f0f0">
   <title>The Luck Corner</title>
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
   <link rel="icon" href="favicon-32.png" sizes="32x32" type="image/png">
   <link rel="apple-touch-icon" href="apple-touch-icon.png">
-  <link rel="stylesheet" href="vendor/dialkit/styles.css?v=2.0.2">
   <link rel="stylesheet" href="design-system.css?v=9">
-  <link rel="stylesheet" href="style.css?v=31">
+  <link rel="stylesheet" href="mobile.css?v=192">
 </head>
 <body>
-  <header class="nav">
-    <!-- Home: also closes an open card -->
-    <a href="#" class="nav--btn nav--home" id="close" aria-label="Home">
-      <img src="assets/nav-clover.svg" width="41" height="41" alt="">
-    </a>
-    <h1 class="nav--title">행운보관소</h1>
-    <div class="nav--right">
-      <a href="#" class="nav--btn nav--list" id="view-strip" aria-label="Strip view">
-        <span></span><span></span><span></span>
-      </a>
-      <a href="#" class="nav--btn nav--grid" id="view-grid" aria-label="Grid view">
-        <span></span><span></span><span></span><span></span>
-      </a>
+  <!-- iPhone 17 screen (Figma 97:630 at rest, 97:730 while dialing), laid out at
+       402 x 874 and scaled to fit by mobile.js -->
+  <div class="stage" id="stage">
+    <!-- Fake status bar: only shown in the desktop preview frame -->
+    <div class="status">
+      <span class="status--time">9:41</span>
+      <span class="status--island" aria-hidden="true"></span>
+      <img class="status--right" src="assets/mobile/status-right.svg" width="77.6" height="13.2" alt="">
     </div>
-  </header>
 
-  <main class="showcase">
-    <div class="showcase--cards" id="cards"></div>
-  </main>
+    <!-- Header (Figma 376:5496): which cards, and the luck claimed so far -->
+    <header class="head">
+      <!-- On the profile, settings and the wardrobe take the deck name's place -->
+      <div class="head--tools">
+        <button type="button" aria-label="Settings"><img src="assets/profile/settings.svg?v=2" width="28" height="28" alt=""></button>
+        <button type="button" aria-label="Wardrobe"><img src="assets/profile/hanger.svg" width="28" height="28" alt=""></button>
+      </div>
+      <button type="button" class="head--title" aria-haspopup="dialog" aria-expanded="false">
+        <h1>All Cards</h1>
+        <img src="assets/mobile/chevron.svg" width="13.3333" height="7.33333" alt="">
+      </button>
+      <h1 class="head--page">Wish Tree</h1>
+      <div class="head--count" id="count">
+        <img src="assets/mobile/clover-outline.svg" width="22" height="22" alt="">
+        <span id="count-num">3</span>
+      </div>
+    </header>
 
-  <!-- Grid view: every card at once -->
-  <section class="grid" id="grid"></section>
+    <!-- Cards fan around the dial's centre -->
+    <div class="fan" id="fan"></div>
 
-  <!-- Opened card: flipped card on the left, interaction canvas on the right -->
-  <section class="viewer" id="viewer">
-    <div class="viewer--left" id="viewer-left"></div>
-    <div class="viewer--canvas" id="canvas"></div>
-  </section>
+    <!-- Dial: press to open it, turn it to spin the cards -->
+    <div class="dial" id="dial" role="slider" aria-label="Cards" tabindex="0">
+    </div>
 
-  <!-- One line per card: hover or drag along it to scrub the strip -->
-  <nav class="scroller" id="scroller" aria-label="Cards"></nav>
+    <!-- Profile (Figma 390:6966): who you are, today's fortune, recent luck -->
+    <section class="profile" id="profile" aria-label="Profile">
+      <div class="profile--hero">
+        <p class="profile--hello" id="hello">Good Morning,</p>
+        <h2 class="profile--name">Yelim <button type="button" aria-label="Edit name"><img src="assets/profile/pencil-14.svg" width="14" height="14" alt=""></button></h2>
+        <img class="profile--avatar" src="assets/profile/avatar.svg" width="144" height="254" alt="">
+      </div>
+      <div class="profile--body">
+        <h3 class="profile--label">Daily Fortune</h3>
+        <button type="button" class="profile--fortune">
+          <img class="profile--clouds" src="assets/profile/fortune-clouds.svg" width="371" height="143" alt="">
+          <img class="profile--dial" src="assets/profile/fortune-wheel.svg" width="235" height="235" alt="">
+          <span class="profile--date" id="today"></span>
+          <span class="profile--find">Find out your fortune for today!</span>
+          <img class="profile--go" src="assets/profile/arrow-right.svg" width="18" height="18" alt="">
+        </button>
+        <h3 class="profile--label">Recently Earned Luck</h3>
+        <div class="profile--recent">
+          <button type="button" class="profile--earned" data-card="명태 액막이.png" style="--earned: var(--yellow-green)">
+            <img src="assets/minis/color/pollock.svg" width="104" height="100" alt="">
+            <p>Pollock Protection<br>Charm</p>
+          </button>
+          <button type="button" class="profile--earned" data-card="돌팝 쌓기.png" style="--earned: var(--v2-blue)">
+            <img src="assets/minis/color/stones.svg" width="103" height="102" alt="">
+            <p>Stacking<br>Stones</p>
+          </button>
+          <button type="button" class="profile--earned" data-card="부처님 배 만지기.png" style="--earned: var(--forest-green)">
+            <img src="assets/minis/color/buddha.svg" width="111" height="109" alt="">
+            <p>Rubbing<br>Buddha’s Belly</p>
+          </button>
+          <button type="button" class="profile--earned" data-card="돼지꿈.png" style="--earned: var(--v2-blue)">
+            <img src="assets/minis/color/pig.svg" width="91" height="91" alt="">
+            <p>Pig<br>Dreams</p>
+          </button>
+        </div>
+      </div>
+    </section>
 
-  <script src="vendor/dialkit/browser.global.js?v=2.0.2"></script>
-  <script src="cards.js?v=57"></script>
-  <script src="script.js?v=33"></script>
+    <!-- Wish Tree (the Tree tab): anonymous wishes hanging on a tree; tap one
+         to read it. The scene is drawn by tree.js. -->
+    <section class="tree" id="tree" aria-label="Wish Tree">
+      <div class="tree--scene" id="tree-scene"></div>
+      <p class="tree--hint">Tap a wish to read it</p>
+    </section>
+    <!-- Paper grain over the whole Wish Tree screen, under its buttons -->
+    <div class="m-grain" aria-hidden="true"></div>
+    <!-- Writing a wish: the button, the sheet with a blank slip, a check
+         before the clovers are spent, then a note once it's up -->
+    <button type="button" class="tree--write" id="wish-write">
+      Write a wish
+    </button>
+    <p class="tree--toast" id="wish-toast" role="status">Your wish is on the tree</p>
+    <div class="wishform" id="wishform" aria-hidden="true">
+      <div class="wishform--scrim"></div>
+      <form class="wishform--sheet" role="dialog" aria-label="Write a wish">
+        <div class="wishform--bar">
+          <button type="button" class="wishform--close" aria-label="Close"><img src="assets/filter/close.svg" alt=""></button>
+          <h2 class="wishform--title">Write a wish</h2>
+        </div>
+        <div class="wishform--papers" role="radiogroup" aria-label="Paper">
+          <button type="button" class="wishform--paper" role="radio" aria-checked="true" aria-label="System White" data-fill="#F0F0F0" style="--swatch: var(--system-white)"></button>
+          <button type="button" class="wishform--paper" role="radio" aria-checked="false" aria-label="Yellow" data-fill="#F0F2A1" style="--swatch: var(--yellow)"></button>
+          <button type="button" class="wishform--paper" role="radio" aria-checked="false" aria-label="Light Pink" data-fill="#FC91B1" style="--swatch: var(--light-pink)"></button>
+        </div>
+        <div class="wishform--slip">
+          <svg class="wish--paper" viewBox="0 0 240 440" preserveAspectRatio="none" aria-hidden="true">
+            <path d="M0.6 40L40 0.6H200L239.4 40V439.4H0.6Z" vector-effect="non-scaling-stroke"/>
+          </svg>
+          <span class="wish--hole"></span>
+          <textarea id="wish-input" maxlength="80" rows="5" placeholder="I wish…" aria-label="Your wish"></textarea>
+        </div>
+        <p class="wishform--meta"><span>Shown on the tree anonymously</span><span id="wish-chars">0/80</span></p>
+        <button type="submit" class="wishform--hang" id="wish-hang" disabled>
+          <span class="wishform--hang-label">Hang it for</span>
+          <span class="wishform--hang-cost"><img src="assets/wish/clover-white.svg" width="18" height="18" alt="">3</span>
+        </button>
+        <p class="wishform--balance" id="wish-balance"></p>
+      </form>
+      <div class="wishform--confirm" role="alertdialog" aria-labelledby="wish-confirm-title" aria-describedby="wish-confirm-text">
+        <div class="wishform--card">
+          <p class="wishform--q" id="wish-confirm-title">Hang your wish?</p>
+          <p class="wishform--a" id="wish-confirm-text"></p>
+          <div class="wishform--choices">
+            <button type="button" class="wishform--no">Not yet</button>
+            <button type="button" class="wishform--yes">Hang it</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Reading a wish (Figma 460:2799, 460:303): the slip up close over the
+         dimmed tree. Held, a white outline traces round it from the bottom
+         middle; once it meets at the top the slip spins and the luck flies
+         to that wish on the tree. -->
+    <div class="wish" id="wish" aria-hidden="true">
+      <div class="wish--scrim"></div>
+      <h2 class="wish--title" id="wish-title">Wish 1</h2>
+      <button type="button" class="wish--close" aria-label="Close">
+        <svg width="14" height="14" viewBox="0 0 14 14" aria-hidden="true"><path d="M1 1L13 13M13 1L1 13"/></svg>
+      </button>
+      <div class="wish--slip" role="dialog" aria-labelledby="wish-title">
+        <svg class="wish--tag" viewBox="0 0 294.89 490.723" aria-hidden="true">
+          <path fill-rule="evenodd" d="M259.273 0.5C261.301 0.500165 263.17 1.59637 264.16 3.36621L293.677 56.1416C294.144 56.9769 294.39 57.918 294.39 58.875V484.622C294.39 487.715 291.883 490.222 288.79 490.223H6.09961C3.00685 490.223 0.500053 487.715 0.5 484.622V59.0176C0.500083 57.9595 0.799426 56.923 1.36426 56.0283L34.7773 3.10938C35.8033 1.48462 37.5911 0.500076 39.5127 0.5H259.273ZM147.907 22.4355C144.838 22.4355 142.35 24.9214 142.35 27.9873C142.35 31.0531 144.838 33.5381 147.907 33.5381C150.976 33.538 153.465 31.053 153.465 27.9873C153.465 24.9214 150.976 22.4357 147.907 22.4355Z"/>
+        </svg>
+        <!-- The outline traced while it's held (460:2797): a soft glow under a
+             crisp line, an even 4px out from the paper all round -->
+        <svg class="wish--trace" viewBox="0 0 294.89 490.723" aria-hidden="true">
+          <g class="wish--trace-glow"><path pathLength="1" d="M147.45 494.22H288.79Q298.39 494.22 298.39 484.62V62.37Q298.39 56.37 295.46 51.13L267.83 1.74Q264.9 -3.5 258.9 -3.5H147.45"/><path pathLength="1" d="M147.45 494.22H6.1Q-3.5 494.22 -3.5 484.62V62.23Q-3.5 56.23 -0.3 51.15L31.02 1.58Q34.22 -3.5 40.22 -3.5H147.45"/></g>
+          <g class="wish--trace-line"><path pathLength="1" d="M147.45 494.22H288.79Q298.39 494.22 298.39 484.62V62.37Q298.39 56.37 295.46 51.13L267.83 1.74Q264.9 -3.5 258.9 -3.5H147.45"/><path pathLength="1" d="M147.45 494.22H6.1Q-3.5 494.22 -3.5 484.62V62.23Q-3.5 56.23 -0.3 51.15L31.02 1.58Q34.22 -3.5 40.22 -3.5H147.45"/></g>
+        </svg>
+        <p class="wish--text" id="wish-text"></p>
+        <p class="wish--from">Anonymous</p>
+      </div>
+      <img class="wish--clover" id="wish-clover" src="assets/system/clover-claimed.svg" width="76.6022" height="76.6022" alt="">
+      <p class="wish--hold" id="wish-hold" role="status">Hold the slip to send your luck</p>
+      <!-- Under the slip: back and on through the wishes, and where you are
+           (or swipe the slip) -->
+      <div class="wish--nav">
+        <button type="button" class="wish--step" id="wish-prev" aria-label="Previous wish">
+          <svg width="13.33" height="7.33" viewBox="0 0 13.3333 7.33333" aria-hidden="true"><path d="M0.67 0.67L6.67 6.67L12.67 0.67"/></svg>
+        </button>
+        <p class="wish--count" id="wish-count" aria-live="polite">Wish 1 of 10</p>
+        <button type="button" class="wish--step is-next" id="wish-next" aria-label="Next wish">
+          <svg width="13.33" height="7.33" viewBox="0 0 13.3333 7.33333" aria-hidden="true"><path d="M0.67 0.67L6.67 6.67L12.67 0.67"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- Daily Fortune (Figma 395:7512, 395:7550, 397:208): opened from the
+         profile's fortune card. The clover ring fills while today's fortune
+         loads, the clovers turn yellow and "See Fortune!" opens the reading. -->
+    <section class="fortune" id="fortune" aria-label="Daily Fortune" aria-hidden="true" data-step="loading">
+      <div class="fortune--bar">
+        <button type="button" class="fortune--back" aria-label="Back">
+          <img src="assets/fortune/back.svg" width="28" height="28" alt="">
+        </button>
+        <h2 class="fortune--title">Daily Fortune</h2>
+      </div>
+      <div class="fortune--intro">
+        <p class="fortune--pill fortune--today"></p>
+        <div class="fortune--ring" aria-hidden="true">
+          <img class="fortune--ring-line" src="assets/fortune/ring.svg" width="253" height="253" alt="">
+          <svg class="fortune--arc" width="248" height="248" viewBox="0 0 248 248" fill="none">
+            <path d="M124 3.5A120.5 120.5 0 1 1 124 244.5A120.5 120.5 0 1 1 124 3.5" pathLength="100" stroke="currentColor" stroke-width="7" stroke-linecap="round"/>
+          </svg>
+          <span class="fortune--clover fortune--clover-big">
+            <img class="is-off" src="assets/fortune/clover-big-off.svg" width="88.1547" height="88.1547" alt="">
+            <img class="is-on" src="assets/fortune/clover-big-on.svg?v=2" width="88.1547" height="88.1547" alt="">
+          </span>
+          <span class="fortune--clover fortune--clover-small">
+            <img class="is-off" src="assets/fortune/clover-small-off.svg" width="31.6444" height="31.6444" alt="">
+            <img class="is-on" src="assets/fortune/clover-small-on.svg?v=2" width="31.6444" height="31.6444" alt="">
+          </span>
+        </div>
+        <button type="button" class="fortune--see" id="fortune-see" disabled>
+          <span class="is-off">Loading...</span><span class="is-on">See Fortune!</span>
+        </button>
+        <label class="fortune--birth">
+          <span id="fortune-birth"></span>
+          <img src="assets/fortune/pencil.svg" width="14" height="14" alt="">
+          <input type="date" id="fortune-birth-input" aria-label="Birthday">
+        </label>
+      </div>
+      <div class="fortune--result">
+        <p class="fortune--pill fortune--today"></p>
+        <div class="fortune--hero" aria-hidden="true">
+          <img class="fortune--coin fortune--coin-left" src="assets/fortune/coin-left.svg" width="48.916" height="48.916" alt="">
+          <img class="fortune--coin fortune--coin-right" src="assets/fortune/coin-right.svg" width="103.076" height="103.076" alt="">
+          <img class="fortune--pig-shadow" src="assets/fortune/pig-shadow.svg" width="142.885" height="10.4335" alt="">
+          <img class="fortune--pig" src="assets/fortune/pig.svg" width="188.837" height="182.295" alt="">
+        </div>
+        <div class="fortune--card fortune--read">
+          <p class="fortune--headline" id="fortune-headline"></p>
+          <p class="fortune--body" id="fortune-body"></p>
+        </div>
+        <div class="fortune--tiles">
+          <button type="button" class="fortune--card fortune--tile fortune--ritual" id="fortune-ritual">
+            <span class="fortune--label">Lucky Ritual</span>
+            <span class="fortune--art" id="fortune-art"></span>
+            <span class="fortune--ritual-name"><span id="fortune-ritual-name"></span><img src="assets/fortune/arrow.svg" width="18" height="18" alt=""></span>
+          </button>
+          <div class="fortune--card fortune--tile fortune--colour">
+            <span class="fortune--label">Lucky Color</span>
+            <span class="fortune--swatch" id="fortune-swatch"></span>
+            <span class="fortune--swatch-name" id="fortune-colour"></span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Behind the tab bar: what scrolls under it blurs away -->
+    <div class="m-navfade" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+
+    <!-- Tab bar (Figma 376:5524): icons only, the current one filled -->
+    <nav class="m-nav" aria-label="Sections">
+      <button type="button" class="m-nav--tab" data-tab="tree" aria-label="Tree">
+        <img class="is-off" src="assets/nav/tree-off.svg" width="26" height="26" alt="">
+        <img class="is-on" src="assets/nav/tree-on.svg" width="26" height="26" alt="">
+      </button>
+      <button type="button" class="m-nav--tab" data-tab="home" aria-label="Home" aria-current="page">
+        <img class="is-off" src="assets/nav/home-off.svg" width="19.0585" height="20.363" alt="">
+        <img class="is-on" src="assets/nav/home-on.svg" width="19.0586" height="20.3634" alt="">
+      </button>
+      <button type="button" class="m-nav--tab" data-tab="profile" aria-label="Profile">
+        <img class="is-off" src="assets/nav/profile-off.svg" width="17.0829" height="18.5" alt="">
+        <img class="is-on" src="assets/nav/profile-on.svg" width="17.0829" height="18.5" alt="">
+      </button>
+    </nav>
+
+    <!-- Filter (the header's deck name): pick a category, then Done -->
+    <div class="filter" id="filter" aria-hidden="true">
+      <div class="filter--scrim"></div>
+      <div class="filter--sheet" role="dialog" aria-label="Filter">
+        <div class="filter--bar">
+          <button type="button" class="filter--close" aria-label="Close">
+            <img src="assets/filter/close.svg" width="26" height="26" alt="">
+          </button>
+          <button type="button" class="filter--confirm">
+            Confirm <img src="assets/filter/check.svg" width="15" height="11.066" alt="">
+          </button>
+        </div>
+        <p class="filter--label">Categories</p>
+        <div class="filter--options" id="filter-options"></div>
+      </div>
+    </div>
+
+    <!-- Frosts the screen behind an opened card -->
+    <div class="overlay" id="overlay"></div>
+
+    <!-- An opened card's way back (Figma 350:4211) -->
+    <button type="button" class="m-back" id="back" aria-label="Back">
+      <img src="assets/system/arrow-back.svg" width="28" height="28" alt="">
+    </button>
+    <!-- The opened card's name, beside the way back -->
+    <p class="m-title" id="title"></p>
+
+    <div class="homebar"></div>
+
+    <!-- Onboarding: welcome (three slides), an account (create one or log
+         in), your name and birthday, then all set. Drawn from the design
+         system: Cooper titles, Paperlogy 16/17, the 371 x 51 buttons. -->
+    <section class="ob" id="ob" aria-label="Welcome" data-step="welcome">
+      <div class="ob--top">
+        <button type="button" class="ob--back" aria-label="Back"><img src="assets/system/arrow-back.svg" width="28" height="28" alt=""></button>
+        <div class="ob--bar" role="progressbar" aria-label="Setting up" aria-valuemin="0" aria-valuemax="3"><span class="ob--fill"></span></div>
+      </div>
+
+      <!-- Welcome: one screen. Every card in a ring, as Home fans them,
+           turning slowly round behind the logo; the line and the way in below -->
+      <div class="ob--page" data-page="welcome">
+        <div class="ob--art" aria-hidden="true"><div class="ob--ring" id="ob-ring"></div></div>
+        <img class="ob--logo" src="assets/splash/wordmark.svg?v=2" width="2264" height="961" alt="Luck Corner">
+        <h2 class="ob--hero">A little luck,<br>every day.</h2>
+        <div class="ob--actions">
+          <button type="button" class="ob--btn" data-go="signup">Get started</button>
+          <button type="button" class="ob--link" data-go="login"><span class="ob--muted">Already have an account?</span> <u>Log in</u></button>
+        </div>
+      </div>
+
+      <!-- Create an account / log in -->
+      <form class="ob--page" data-page="account" novalidate>
+        <h2 class="ob--title" id="ob-account-title">Create your account</h2>
+        <p class="ob--sub" id="ob-account-sub">Keep your luck safe across devices.</p>
+        <label class="ob--field"><span>Email</span><input type="email" name="email" autocomplete="email" placeholder="you@example.com" required></label>
+        <label class="ob--field"><span>Password</span><input type="password" name="password" autocomplete="new-password" placeholder="At least 8 characters" minlength="8" required></label>
+        <div class="ob--actions">
+          <button type="submit" class="ob--btn" disabled>Continue</button>
+          <p class="ob--or"><span>or</span></p>
+          <button type="button" class="ob--btn is-line" data-go="apple">Continue with Apple</button>
+          <button type="button" class="ob--link" id="ob-switch"><span class="ob--muted">Already have an account?</span> <u>Log in</u></button>
+        </div>
+      </form>
+
+      <!-- Name -->
+      <form class="ob--page" data-page="name" novalidate>
+        <h2 class="ob--title">What should we call you?</h2>
+        <p class="ob--sub">It's how we'll greet you each day.</p>
+        <label class="ob--field"><span>Name</span><input type="text" name="name" autocomplete="given-name" placeholder="Your name" maxlength="20" required></label>
+        <div class="ob--actions"><button type="submit" class="ob--btn" disabled>Continue</button></div>
+      </form>
+
+      <!-- Birthday -->
+      <form class="ob--page" data-page="birthday" novalidate>
+        <h2 class="ob--title">When's your birthday?</h2>
+        <p class="ob--sub">Your daily fortune is read from it.</p>
+        <label class="ob--field"><span>Birthday</span><input type="date" name="birthday" min="1900-01-01" required></label>
+        <div class="ob--actions"><button type="submit" class="ob--btn" disabled>Continue</button></div>
+      </form>
+
+      <!-- All set -->
+      <div class="ob--page" data-page="done">
+        <div class="ob--done">
+          <img src="assets/system/clover-claimed.svg" width="76.6022" height="76.6022" alt="">
+          <h2 class="ob--title" id="ob-done-title">You're all set</h2>
+          <p class="ob--sub" id="ob-done-sub">Here are 3 clovers to start with.</p>
+        </div>
+        <div class="ob--actions"><button type="button" class="ob--btn" data-go="home">Start</button></div>
+      </div>
+    </section>
+
+    <!-- Splash (Figma 486:5534): the logo draws itself on, then lifts away -->
+    <div class="splash" id="splash" aria-label="Luck Corner" role="img">
+      <div class="splash--logo"></div>
+    </div>
+  </div>
+
+  <!-- Demo only, under the phone -->
+  <p class="demo-hint" id="demo-hint">Demo: press / to fill in the details · S to skip</p>
+
+  <script src="cards.js?v=103"></script>
+  <script src="sounds.js?v=19"></script>
+  <script src="mobile.js?v=104"></script>
+  <script src="tree.js?v=36"></script>
+  <script src="splash.js?v=22"></script>
+  <script src="onboarding.js?v=10"></script>
 </body>
 </html>
