@@ -246,3 +246,9 @@ html, body {
 @media (prefers-reduced-motion: reduce) {
   .worry--hand, .worry--drag.is-held > img:first-child { animation: none; }
 }
+
+/* 2 (telling): the words and the field a step higher, clear of the keyboard,
+   and the doll a size smaller in the room above them */
+.worry[data-step="tell"] .worry--words { top: calc(100% - 226px); }
+.worry[data-step="tell"] .worry--field { top: calc(100% - 174px); }
+.worry--big { width: calc(280px * var(--g)); top: calc((100% - 226px) / 2 + 6px); }
