@@ -127,12 +127,15 @@
     return `translate(${a.x + a.w / 2 - (b.x + b.w / 2)}px, ${a.y + a.h / 2 - (b.y + b.h / 2)}px) scale(${a.w / b.w}, ${a.h / b.h})`;
   }
   const fromEl = reader.querySelector('.wish--from');
+  const titleEl = document.getElementById('wish-title');
   function openWish(g) {
     const paper = g.querySelector('.tree--paper');
     const own = g.dataset.own != null;
     text.textContent = own ? mine[Number(g.dataset.own)].text : WISHES[Number(g.dataset.wish) % WISHES.length];
     fromEl.textContent = own ? 'Anonymous · yours' : 'Anonymous';
+    titleEl.textContent = own ? 'Your wish' : `Wish ${Number(g.dataset.wish) + 1}`;
     slip.classList.remove('is-twist', 'is-pressing');
+    setTrace(0);
     slip.style.setProperty('--paper', g.dataset.fill);
     reader.classList.add('is-open');
     stageEl.classList.add('is-reading');
@@ -150,8 +153,9 @@
       { transform: 'none', opacity: 1 }], OPTS);
     reader.querySelector('.wish--close').focus({ preventScroll: true, focusVisible: false });
   }
-  function closeWish() {
+  function closeWish(then) {
     if (!from) return;
+    stopHold();
     const { g, box } = from;
     from = null;
     const to = toStage(slip.getBoundingClientRect());
@@ -164,6 +168,7 @@
         slip.getAnimations().forEach((a) => a.cancel());
         g.style.visibility = '';
         g.focus({ preventScroll: true });
+        if (typeof then === 'function') then(g);
       });
   }
   scene.addEventListener('click', (e) => {
@@ -174,42 +179,97 @@
     const g = e.target.closest('.tree--wish');
     if (g && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); openWish(g); }
   });
-  // Hold an open wish to send it good luck: the outline draws in white as
-  // it's held; held long enough, the slip twists round and the luck is sent
-  const HOLD_MS = 650;
+  // Hold an open wish to send it your luck (460:303): a white outline traces
+  // round the slip from the bottom middle, up both sides; when the two meet
+  // at the top the slip spins, goes back on the tree, and the luck lands on it
+  const HOLD_MS = 1300;
   const hold = document.getElementById('wish-hold');
   const sent = new Set();
-  let holdTimer = 0;
+  let traced = 0;
+  let raf = 0;
   const key = () => from && (from.g.dataset.own != null ? `own${from.g.dataset.own}` : `w${from.g.dataset.wish}`);
+  function setTrace(k) { traced = k; slip.style.setProperty('--trace', k.toFixed(4)); }
   function showSent(k) {
     const done = sent.has(k);
     slip.classList.toggle('is-sent', done);
-    hold.textContent = done ? 'Good luck sent ✦' : 'Hold to send good luck';
+    hold.classList.remove('is-holding');
+    hold.textContent = done ? 'Your luck is sent ✦' : 'Hold the slip to send your luck';
   }
+  // run the trace towards a target at a pace, then call back
+  function runTrace(to, ms, done) {
+    cancelAnimationFrame(raf);
+    const from0 = traced;
+    const t0 = performance.now();
+    const dur = Math.max(1, ms * Math.abs(to - from0));
+    const step = (now) => {
+      const x = Math.min(1, (now - t0) / dur);
+      setTrace(from0 + (to - from0) * x);
+      if (x < 1) raf = requestAnimationFrame(step);
+      else if (done) done();
+    };
+    raf = requestAnimationFrame(step);
+  }
+  function stopHold() { cancelAnimationFrame(raf); holding = false; }
+  let holding = false;
   slip.addEventListener('pointerdown', (e) => {
     if (!from || sent.has(key())) return;
     e.preventDefault();
     Sounds.unlock();
-    slip.classList.add('is-pressing');
-    clearTimeout(holdTimer);
-    holdTimer = setTimeout(() => {
+    holding = true;
+    slip.setPointerCapture?.(e.pointerId);
+    hold.classList.add('is-holding');
+    hold.textContent = 'Hold...';
+    runTrace(1, HOLD_MS, () => {
+      if (!holding || !from) return;
+      holding = false;
       const k = key();
       sent.add(k);
-      slip.classList.remove('is-pressing');
+      slip.classList.add('is-sent');
       slip.classList.remove('is-twist');
       void slip.offsetWidth;
-      slip.classList.add('is-twist');
+      slip.classList.add('is-twist');  // it spins
       Sounds.chime();
-      showSent(k);
-      hold.classList.remove('is-sent');
-      void hold.offsetWidth;
-      hold.classList.add('is-sent');
-    }, HOLD_MS);
+      hold.classList.remove('is-holding');
+      hold.textContent = 'Your luck is sent ✦';
+      // after the spin it goes back on the tree, and the luck lands on it
+      setTimeout(() => closeWish(luckLands), 950);
+    });
   });
-  const letGo = () => { clearTimeout(holdTimer); slip.classList.remove('is-pressing'); };
+  const letGo = () => {
+    if (!holding) return;
+    holding = false;
+    // let go too soon: the line runs back, the words come back
+    runTrace(0, 500);
+    hold.classList.remove('is-holding');
+    hold.textContent = 'Hold the slip to send your luck';
+  };
   slip.addEventListener('pointerup', letGo);
-  slip.addEventListener('pointerleave', letGo);
   slip.addEventListener('pointercancel', letGo);
+
+  // The luck landing on a wish on the tree: a ring of light opens round
+  // its slip, sparks scatter, and it gives a little swing
+  function luckLands(g) {
+    const paper = g.querySelector('.tree--paper');
+    const b = toStage(paper.getBoundingClientRect());
+    const fx = document.createElement('div');
+    fx.className = 'luck-lands';
+    fx.style.left = `${b.x + b.w / 2}px`;
+    fx.style.top = `${b.y + b.h / 2}px`;
+    for (let i = 0; i < 7; i++) {
+      const sp = document.createElement('i');
+      const a = (i / 7) * Math.PI * 2 + 0.4;
+      sp.style.setProperty('--dx', `${Math.cos(a) * 30}px`);
+      sp.style.setProperty('--dy', `${Math.sin(a) * 30}px`);
+      sp.style.animationDelay = `${(i % 3) * 0.04}s`;
+      fx.appendChild(sp);
+    }
+    stageEl.appendChild(fx);
+    g.classList.remove('is-lucky');
+    void g.getBoundingClientRect();
+    g.classList.add('is-lucky');
+    Sounds.shimmer();
+    setTimeout(() => { fx.remove(); g.classList.remove('is-lucky'); }, 1300);
+  }
   slip.addEventListener('contextmenu', (e) => e.preventDefault());
   reader.querySelector('.wish--scrim').addEventListener('click', closeWish);
   reader.querySelector('.wish--close').addEventListener('click', closeWish);

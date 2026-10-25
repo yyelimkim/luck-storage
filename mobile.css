@@ -1584,21 +1584,18 @@ button.fortune--card:active { transform: scale(0.98); }
   position: absolute;
   left: 0;
   right: 0;
-  top: calc(44px + 54px + 8px);
+  top: 122px;
   width: max-content;
   margin: 0 auto;
-  padding: 7px 18px;
-  border-radius: 36px;
-  background: var(--system-white);
-  border: 0.771px solid var(--system-black);
+  /* 460:5296: plain UI White words over the canopy */
   font-family: var(--font-display);
   font-size: 14px;
   letter-spacing: var(--tracking);
-  color: var(--system-black);
+  color: var(--ui-white);
   z-index: 1;
   pointer-events: none;
 }
-.is-phone .tree--hint { top: calc(54px + 8px); }
+.is-phone .tree--hint { top: 78px; }
 
 /* A wish up close: the strip, much bigger, over a dimmed tree */
 .wish {
@@ -1612,17 +1609,37 @@ button.fortune--card:active { transform: scale(0.98); }
 .wish--scrim {
   position: absolute;
   inset: 0;
-  background: color-mix(in srgb, var(--system-black) 45%, transparent);
+  background: color-mix(in srgb, var(--system-black) 80%, transparent);  /* 460:2799's scrim */
   opacity: 0;
   transition: opacity 0.4s;
 }
 .wish.is-open .wish--scrim { opacity: 1; }
+/* "Wish 1": Cooper, System White, centred where the header was */
+.wish--title {
+  position: absolute;
+  left: 75px;
+  right: 75px;
+  top: 61px;
+  margin: 0;
+  text-align: center;
+  font-family: var(--font-title);
+  font-weight: 400;
+  font-size: 19px;
+  letter-spacing: -0.02em;
+  line-height: 25px;
+  color: var(--system-white);
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+.is-phone .wish--title { top: 17px; }
+.wish.is-open .wish--title { opacity: 1; }
 /* The header makes way for the close button while a wish is open */
 .is-reading .head { opacity: 0; pointer-events: none; }
+/* The 14px ×, UI White, in a 44px tap area */
 .wish--close {
   position: absolute;
-  right: 8px;
-  top: 54px;
+  right: 6px;
+  top: 51px;
   width: 44px;
   height: 44px;
   display: grid;
@@ -1635,44 +1652,66 @@ button.fortune--card:active { transform: scale(0.98); }
   opacity: 0;
   transition: opacity 0.3s;
 }
-/* Just the ×, in white over the dimmed tree */
-.wish--close img { filter: brightness(0) invert(1); }
-.is-phone .wish--close { top: 10px; }
+.wish--close svg { display: block; overflow: visible; }
+.wish--close path { fill: none; stroke: var(--ui-white); stroke-width: 1.5px; stroke-linecap: round; }
+.is-phone .wish--close { top: 7px; }
 .wish--close:focus-visible,
 .wishform--close:focus-visible { outline: 1.5px solid var(--system-black); outline-offset: -2px; }
 .wish.is-open .wish--close { opacity: 1; }
+/* The slip (460:5271): 294 x 491, a little above the middle */
 .wish--slip {
   --paper: var(--system-white);
   position: absolute;
-  left: 81px;  /* (402 - 240) / 2 */
-  top: 50%;
-  width: 240px;
-  height: 440px;
-  margin-top: -220px;
+  left: 54px;
+  top: calc(50% - 269px);
+  width: 294.89px;
+  height: 490.72px;
   box-sizing: border-box;
-  padding: 64px 26px 0;
   transform-origin: 50% 50%;
 }
 .wish:not(.is-open) .wish--slip { opacity: 0; }
 /* Held, the slip's outline draws in white; let go before it's done and it
    fades back. Held long enough, it twists round and sends good luck. */
 .wish--slip { touch-action: none; -webkit-user-select: none; user-select: none; cursor: pointer; }
-.wish--slip.is-pressing .wish--paper path { stroke: var(--system-white); stroke-width: 3px; transition: stroke 0.6s, stroke-width 0.6s; }
-.wish--slip.is-sent .wish--paper path { stroke: var(--system-white); stroke-width: 3px; }
+/* The traced outline (460:2797), drawn by tree.js from the bottom middle
+   up both sides until they meet at the top: --trace runs 0 to 1 */
+.wish--trace {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  pointer-events: none;
+}
+.wish--trace path {
+  fill: none;
+  stroke: var(--ui-white);
+  stroke-width: 1.5px;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+  stroke-dasharray: 1 1.01;
+  stroke-dashoffset: calc(1 - var(--trace, 0));
+  opacity: calc(var(--trace, 0) * 40);
+}
+.wish--trace-glow { filter: blur(5px); }
+.wish--trace-glow path { stroke-width: 3px; }
+.wish--slip.is-sent { --trace: 1; }
 .wish--slip.is-twist { animation: twist 0.9s cubic-bezier(0.3, 0.8, 0.3, 1); }
 @keyframes twist {
   0% { rotate: y 0deg; }
   100% { rotate: y 360deg; }
 }
+/* Under the slip: 14px, System White; while held, "Hold..." at 16 */
 .wish--hold {
   position: absolute;
   left: 16px;
   right: 16px;
-  top: calc(50% + 236px);
+  top: calc(50% + 249px);
   margin: 0;
   text-align: center;
   font-family: var(--font-display);
-  font-size: 15px;
+  font-size: 14px;
+  line-height: 19px;
   letter-spacing: var(--tracking);
   color: var(--system-white);
   opacity: 0;
@@ -1681,18 +1720,29 @@ button.fortune--card:active { transform: scale(0.98); }
 .wish.is-open .wish--hold { opacity: 1; transition-delay: 0.3s; }
 .wish--hold.is-sent { animation: hold-rise 0.45s cubic-bezier(0.2, 0.8, 0.2, 1); }
 @keyframes hold-rise { from { opacity: 0; translate: 0 10px; } }
-/* Its string runs up off the screen */
-.wish--slip::before {
-  content: "";
+.wish--hold.is-holding { font-size: 16px; }
+/* The dial's lines under it all (460:5303), as on Home */
+.wish--dial {
   position: absolute;
-  left: 50%;
-  bottom: calc(100% - 26px);
-  width: 1px;
-  height: 100vh;
-  background: var(--system-black);
+  left: 90px;
+  top: calc(50% + 310px);
+  width: 222px;
+  height: 48px;
+  opacity: 0;
+  transition: opacity 0.3s;
+  pointer-events: none;
 }
-/* The hole is cut out of the paper, so what's behind shows through it */
-/* The open slip is paper too */
+.wish.is-open .wish--dial { opacity: 1; transition-delay: 0.3s; }
+.wish--dial i {
+  position: absolute;
+  width: 1.75px;
+  height: 18.66px;
+  margin: -9.33px 0 0 -0.875px;
+  border-radius: 1px;
+  background: #cfcfcf;
+}
+.wish--dial i.is-current { height: 23.33px; margin-top: -11.665px; background: #8f8f8f; }
+/* The open slip is paper too, the hole cut through */
 .wish--slip::after {
   content: "";
   position: absolute;
@@ -1701,10 +1751,16 @@ button.fortune--card:active { transform: scale(0.98); }
   mix-blend-mode: multiply;
   opacity: 0.6;
   pointer-events: none;
-  -webkit-mask: radial-gradient(circle 6px at 50% 26px, transparent 5.4px, #000 5.9px);
-  mask: radial-gradient(circle 6px at 50% 26px, transparent 5.4px, #000 5.9px);
-  clip-path: polygon(0 40px, 40px 0, calc(100% - 40px) 0, 100% 40px, 100% 100%, 0 100%);
+  clip-path: path(evenodd, "M259.273 0.5C261.301 0.500165 263.17 1.59637 264.16 3.36621L293.677 56.1416C294.144 56.9769 294.39 57.918 294.39 58.875V484.622C294.39 487.715 291.883 490.222 288.79 490.223H6.09961C3.00685 490.223 0.500053 487.715 0.5 484.622V59.0176C0.500083 57.9595 0.799426 56.923 1.36426 56.0283L34.7773 3.10938C35.8033 1.48462 37.5911 0.500076 39.5127 0.5H259.273ZM147.907 22.4355C144.838 22.4355 142.35 24.9214 142.35 27.9873C142.35 31.0531 144.838 33.5381 147.907 33.5381C150.976 33.538 153.465 31.053 153.465 27.9873C153.465 24.9214 150.976 22.4357 147.907 22.4355Z");
 }
+.wish--tag {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+.wish--tag path { fill: var(--paper); stroke: var(--system-black); stroke-width: 1px; stroke-linejoin: round; }
 .wish--paper {
   --hole-y: 26px;
   -webkit-mask: radial-gradient(circle 6px at 50% var(--hole-y), transparent 5.4px, #000 5.9px);
@@ -1741,13 +1797,9 @@ button.fortune--card:active { transform: scale(0.98); }
   line-height: 1.35;
   color: var(--system-black);
 }
-.wish--text { font-size: 22px; }
-.wish--from {
-  position: absolute;
-  left: 26px;
-  bottom: 64px;
-  font-size: 14px;
-}
+/* The wish at 16 from the top left; who it's from at 14, at the foot */
+.wish--slip .wish--text { position: absolute; left: 25px; top: 82.7px; width: 244px; font-size: 16px; }
+.wish--slip .wish--from { position: absolute; left: 25px; top: 442.7px; width: 244px; font-size: 14px; }
 
 /* Writing a wish. The button sits over the tree, just above the tab bar, in
    the System Black of the app's main actions, its price in a small pill */
@@ -2042,7 +2094,7 @@ button.fortune--card:active { transform: scale(0.98); }
   inset: 0;
   z-index: 69;
   background: var(--system-white);
-  transition: opacity 0.6s ease, visibility 0s 0.6s;
+  transition: opacity calc(var(--out, 0.55s) * 0.73) calc(var(--out, 0.55s) * 0.27) ease, visibility 0s var(--out, 0.55s);
 }
 .splash::after {
   content: "";
@@ -2066,6 +2118,58 @@ button.fortune--card:active { transform: scale(0.98); }
 .splash.is-drawing #letters { opacity: 1; }
 /* Every change on the splash is a dissolve: the sticker fades in behind
    the drawn letters, then the whole splash fades to the app */
-.splash--logo #sticker { opacity: 0; transition: opacity 0.7s ease; }
+.splash--logo #sticker { opacity: 0; transition: opacity var(--stick, 0.4s) ease; }
 .splash.is-stuck #sticker { opacity: 1; }
+/* Leaving: the logo dips a touch, then swells as the splash dissolves */
 .splash.is-leaving { opacity: 0; visibility: hidden; pointer-events: none; }
+.splash.is-leaving .splash--logo { animation: splash-out var(--out, 0.55s) cubic-bezier(0.5, 0, 0.3, 1) forwards; }
+@keyframes splash-out {
+  30% { scale: var(--dip, 0.94); }
+  100% { scale: var(--grow, 1.35); }
+}
+
+/* Luck landing on a wish back on the tree: a ring of light opens round the
+   slip and little white sparks scatter, as it gives a swing */
+.luck-lands {
+  position: absolute;
+  z-index: 35;
+  width: 0;
+  height: 0;
+  pointer-events: none;
+}
+.luck-lands::before {
+  content: "";
+  position: absolute;
+  left: -14px;
+  top: -14px;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: 1.5px solid var(--ui-white);
+  box-shadow: 0 0 10px color-mix(in srgb, var(--ui-white) 70%, transparent);
+  animation: luck-ring 0.9s cubic-bezier(0.2, 0.8, 0.3, 1) forwards;
+}
+@keyframes luck-ring {
+  from { scale: 0.3; opacity: 1; }
+  to { scale: 2.6; opacity: 0; }
+}
+.luck-lands i {
+  position: absolute;
+  left: -3px;
+  top: -3px;
+  width: 6px;
+  height: 6px;
+  background: var(--ui-white);
+  clip-path: polygon(50% 0, 62% 38%, 100% 50%, 62% 62%, 50% 100%, 38% 62%, 0 50%, 38% 38%);
+  animation: luck-spark 0.9s cubic-bezier(0.2, 0.8, 0.3, 1) both;
+}
+@keyframes luck-spark {
+  0% { translate: 0 0; scale: 0.4; opacity: 0; }
+  20% { opacity: 1; }
+  100% { translate: var(--dx) var(--dy); scale: 1.2; opacity: 0; }
+}
+.tree--wish.is-lucky { animation: wish-hung 1.2s cubic-bezier(0.3, 0.6, 0.4, 1), wish-sway 4s 1.2s ease-in-out infinite alternate; }
+/* While a wish is open the tab bar steps back; the dial's lines take its place */
+.m-nav, .m-navfade { transition: opacity 0.3s; }
+.is-reading .m-nav,
+.is-reading .m-navfade { opacity: 0; pointer-events: none; }
