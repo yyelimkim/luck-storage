@@ -2184,3 +2184,5 @@ button.fortune--card:active { transform: scale(0.98); }
   45%, 82% { transform: scale(1) rotate(56deg) scaleX(0.25) rotate(-56deg); }
   64%, 100% { transform: scale(1) rotate(56deg) scaleX(1) rotate(-56deg); }
 }
+.splash.is-reset,
+.splash.is-reset * { transition: none !important; animation: none !important; }

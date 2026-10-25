@@ -64,15 +64,19 @@
     // tuning, it stays to be replayed; otherwise it's done with
     if (!TUNING) timers.push(setTimeout(() => splash.remove(), CFG.out * 1000 + 50));
   }
-  // A tap skips it
-  splash.addEventListener('click', () => { if (!TUNING) leave(); });
+  // A tap skips it (tuning, a tap plays it again)
+  splash.addEventListener('click', () => { if (TUNING) play(); else leave(); });
 
   function play() {
     cancelAnimationFrame(raf);
     timers.forEach(clearTimeout);
     timers = [];
     gone = false;
+    // straight back to the start: no sticker, no clover, nothing fading out
+    splash.classList.add('is-reset');
     splash.classList.remove('is-leaving', 'is-stuck', 'is-drawing');
+    void splash.offsetWidth;
+    splash.classList.remove('is-reset');
     if (!svg) return;
     const letters = svg.querySelector('#letters');
     letters.setAttribute('mask', 'url(#splash-trim)');
@@ -98,7 +102,8 @@
       // the sticker fades in behind and the clover comes in and flaps its
       // wings twice, like a butterfly, then on to the app
       splash.classList.add('is-stuck');
-      timers.push(setTimeout(leave, Math.max(CFG.stick + CFG.hold, CFG.flap + 0.3) * 1000));
+      // (tuning, it stays on the splash: Replay plays it again, Leave shows the exit)
+      if (!TUNING) timers.push(setTimeout(leave, Math.max(CFG.stick + CFG.hold, CFG.flap + 0.3) * 1000));
     };
     raf = requestAnimationFrame(frame);
   }
@@ -182,6 +187,8 @@
       const { createDialRoot, createDialKit } = window.DialKit;
       createDialRoot();
       const kit = createDialKit('Splash', {
+        replay: { type: 'action' },
+        'see it leave': { type: 'action' },
         trim: {
           run: [CFG.run, 0.3, 4, 0.05],
           curve: { type: 'easing', duration: CFG.run, ease: CFG.ease },
@@ -193,8 +200,19 @@
           dip: [CFG.dip, 0.7, 1, 0.01],
           grow: [CFG.grow, 1, 2.5, 0.01],
         },
-        replay: { type: 'action' },
-      }, { onAction: (path) => { if (path === 'replay') play(); } });
+      }, {
+        onAction: (path) => {
+          if (path === 'replay') play();
+          // the exit, then back to the drawn logo to tune it again
+          if (path === 'see it leave') {
+            leave();
+            timers.push(setTimeout(() => {
+              gone = false;
+              splash.classList.remove('is-leaving');
+            }, CFG.out * 1000 + 600));
+          }
+        },
+      });
       kit.subscribe((v) => {
         CFG.run = v.trim.run;
         if (v.trim.curve && Array.isArray(v.trim.curve.ease)) CFG.ease = v.trim.curve.ease;
