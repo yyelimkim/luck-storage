@@ -2397,9 +2397,9 @@ button.fortune--card:active { transform: scale(0.98); }
 .ob--logo {
   position: relative;
   align-self: center;
-  width: 230px;
+  width: 200px;  /* the wordmark (Figma 486:5455), a touch smaller than the splash's */
   height: auto;
-  margin-top: 70px;
+  margin-top: 78px;
 }
 .is-phone .ob--logo { margin-top: 30px; }
 .ob--hero {
