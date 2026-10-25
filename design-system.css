@@ -23,6 +23,14 @@
   font-display: swap;
 }
 
+/* Page titles (Figma 376:5463): Cooper Light BT */
+@font-face {
+  font-family: "Cooper Lt BT";
+  src: url("assets/fonts/CooperLtBT-Regular.ttf") format("truetype");
+  font-weight: 400;
+  font-display: swap;
+}
+
 :root {
   /* Colour variables */
   --yellow-green: #ddca4f;
@@ -39,6 +47,8 @@
   /* Type */
   --font-display: "Paperlogy", sans-serif;
   --tracking: -0.02em;
+  --font-title: "Cooper Lt BT", serif;  /* page titles, 28px at -4% */
+  --tracking-title: -0.04em;
 
   /* Each category's colour */
   --protection: var(--hot-pink);
