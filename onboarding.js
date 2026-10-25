@@ -52,7 +52,7 @@
 
   // --- Welcome: every card in a ring, turning (mobile.css)
   const ring = document.getElementById('ob-ring');
-  const R = 380;
+  const R = 340;
   ring.style.setProperty('--r', `${R}px`);
   ring.innerHTML = IMAGES.map((name, i) =>
     `<img src="${englishSrc(name)}" alt="" style="--a:${(i * 360) / IMAGES.length}deg">`).join('');
