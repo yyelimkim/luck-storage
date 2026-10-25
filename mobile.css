@@ -2187,3 +2187,253 @@ button.fortune--card:active { transform: scale(0.98); }
 }
 .splash.is-reset,
 .splash.is-reset * { transition: none !important; animation: none !important; }
+
+/* --- Onboarding -------------------------------------------------------------
+   Over everything but the splash, the status bar and the home indicator:
+   System White under the paper grain. Every value is the design system's:
+   Cooper titles (27), Paperlogy 17 / 16 / 14, the 371 x 51 buttons, the
+   0.771px line, the rituals' progress bar. */
+.ob {
+  position: absolute;
+  inset: 0;
+  z-index: 68;
+  background: var(--system-white);
+  font-family: var(--font-display);
+  letter-spacing: var(--tracking);
+  color: var(--system-black);
+  transition: opacity 0.5s ease, visibility 0s 0.5s;
+}
+.ob::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: url("assets/system/paper.png") 0 0 / 402px auto;
+  mix-blend-mode: multiply;
+  opacity: 0.6;
+  pointer-events: none;
+}
+.ob.is-done { opacity: 0; visibility: hidden; pointer-events: none; }
+
+/* The way back and the progress, level with the header's place */
+.ob--top {
+  position: absolute;
+  left: 8px;
+  right: 8px;
+  top: 54px;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 44px;
+}
+.is-phone .ob--top { top: 10px; }
+.ob--back {
+  flex: none;
+  width: 44px;
+  height: 44px;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+  transition: opacity 0.3s;
+}
+.ob--back img { display: block; }
+.ob--bar {
+  flex: 1;
+  height: 14px;
+  margin-right: 52px;  /* centred, the back button's width on the other side */
+  padding: 2px;
+  box-sizing: border-box;
+  border-radius: 999px;
+  border: 0.771px solid var(--system-black);
+  background: var(--ui-white);
+  transition: opacity 0.3s;
+}
+.ob--fill {
+  display: block;
+  width: var(--done, 0%);
+  height: 100%;
+  border-radius: 999px;
+  background: var(--system-black);
+  transition: width 0.4s cubic-bezier(0.3, 0.8, 0.2, 1);
+}
+.ob[data-step="welcome"] .ob--top,
+.ob[data-step="done"] .ob--top { opacity: 0; pointer-events: none; }
+
+/* Each step: the words from the top, the buttons at the foot */
+.ob--page {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  padding: 122px 16px calc(var(--nav-bottom, 42px) + 4px);
+  box-sizing: border-box;
+  opacity: 0;
+  visibility: hidden;
+  translate: 24px 0;
+  transition: opacity 0.35s, translate 0.45s cubic-bezier(0.3, 0.8, 0.2, 1), visibility 0s 0.45s;
+}
+.is-phone .ob--page { padding-top: 78px; }
+.ob--page.is-back { translate: -24px 0; }
+.ob--page.is-on { opacity: 1; visibility: visible; translate: 0 0; transition-delay: 0.1s, 0.1s, 0s; }
+.ob--title {
+  margin: 0;
+  font-family: var(--font-title);
+  font-weight: 400;
+  font-size: 27px;
+  letter-spacing: var(--tracking-title);
+  line-height: 1.15;
+}
+.ob--sub { margin: 10px 0 32px; font-size: 16px; line-height: 1.35; }
+.ob--field { display: block; margin-bottom: 16px; }
+.ob--field span { display: block; margin-bottom: 8px; font-size: 14px; }
+.ob--field input {
+  display: block;
+  width: 100%;
+  height: 51px;
+  padding: 0 18px;
+  box-sizing: border-box;
+  border: 0.771px solid var(--system-black);
+  border-radius: 16px;
+  background: var(--ui-white);
+  font: inherit;
+  font-size: 17px;
+  letter-spacing: var(--tracking);
+  color: var(--system-black);
+  outline: none;
+  -webkit-appearance: none;
+  appearance: none;
+}
+.ob--field input::placeholder { color: var(--dark-grey); }
+.ob--field input:focus-visible { box-shadow: 0 0 0 3px var(--ui-white), 0 0 0 4.5px var(--system-black); }
+.ob--field input[type="date"] { line-height: 49px; }
+
+.ob--actions {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  margin-top: auto;
+}
+/* The app's main button, as on the wish sheet; outlined for the second choice */
+.ob--btn {
+  width: 100%;
+  max-width: 371px;
+  height: 51px;
+  padding: 0;
+  border-radius: 43px;
+  border: 1px solid var(--system-black);
+  background: var(--system-black);
+  color: var(--system-white);
+  font: inherit;
+  font-size: 17px;
+  letter-spacing: var(--tracking);
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s, border-color 0.2s, transform 0.15s;
+}
+.ob--btn:active { transform: scale(0.97); }
+.ob--btn:disabled { background: var(--ui-white); border-color: var(--dark-grey); color: var(--dark-grey); cursor: default; transform: none; }
+.ob--btn.is-line { background: var(--ui-white); color: var(--system-black); }
+.ob--link {
+  padding: 10px;
+  border: 0;
+  background: none;
+  font: inherit;
+  font-size: 16px;
+  letter-spacing: var(--tracking);
+  color: var(--system-black);
+  cursor: pointer;
+}
+.ob--link u { text-underline-offset: 3px; }
+.ob--or {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  max-width: 371px;
+  margin: 2px 0;
+  font-size: 14px;
+}
+.ob--or::before,
+.ob--or::after { content: ""; flex: 1; height: 0.771px; background: var(--system-black); }
+
+/* Welcome: three slides to swipe, the dots, then the buttons */
+.ob--page[data-page="welcome"] { padding-top: 0; }
+.ob--slides {
+  flex: 1;
+  display: flex;
+  margin: 0 -16px;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+}
+.ob--slides::-webkit-scrollbar { display: none; }
+.ob--slide {
+  flex: none;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 40px 0;
+  box-sizing: border-box;
+  text-align: center;
+  scroll-snap-align: center;
+}
+.ob--slide img { height: 160px; width: auto; margin-bottom: 36px; }
+.ob--slide h2 {
+  margin: 0;
+  font-family: var(--font-title);
+  font-weight: 400;
+  font-size: 27px;
+  letter-spacing: var(--tracking-title);
+}
+.ob--slide p { margin: 10px 0 0; max-width: 280px; font-size: 16px; line-height: 1.35; }
+.ob--dots { display: flex; justify-content: center; gap: 8px; margin: 28px 0 32px; }
+.ob--dots button {
+  width: 8px;
+  height: 8px;
+  padding: 0;
+  border: 0;
+  border-radius: 999px;
+  background: var(--dark-grey);
+  cursor: pointer;
+  transition: width 0.3s, background 0.3s;
+}
+.ob--dots button[aria-selected="true"] { width: 20px; background: var(--system-black); }
+
+/* All set: the clover from Luck Claimed, a swing as it lands */
+.ob--done {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+.ob--done img { margin-bottom: 28px; filter: brightness(0.16); }
+.ob--page.is-on .ob--done img { animation: ob-clover 0.8s 0.2s cubic-bezier(0.3, 1.5, 0.5, 1) both; }
+@keyframes ob-clover { from { opacity: 0; scale: 0.3; rotate: -40deg; } }
+.ob--done .ob--sub { margin-bottom: 0; }
+
+/* Demo only: under the phone, very small, while onboarding is up */
+.demo-hint {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 4px;
+  margin: 0;
+  text-align: center;
+  font-family: var(--font-display);
+  font-size: 10px;
+  letter-spacing: var(--tracking);
+  color: var(--dark-grey);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.4s;
+}
+.is-preview.is-onboarding .demo-hint { opacity: 1; }

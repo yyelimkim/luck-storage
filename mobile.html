@@ -7,7 +7,7 @@
   <meta name="theme-color" content="#f0f0f0">
   <title>행운보관소</title>
   <link rel="stylesheet" href="design-system.css?v=9">
-  <link rel="stylesheet" href="mobile.css?v=173">
+  <link rel="stylesheet" href="mobile.css?v=174">
 </head>
 <body>
   <!-- iPhone 17 screen (Figma 97:630 at rest, 97:730 while dialing), laid out at
@@ -276,16 +276,100 @@
 
     <div class="homebar"></div>
 
+    <!-- Onboarding: welcome (three slides), an account (create one or log
+         in), your name and birthday, then all set. Drawn from the design
+         system: Cooper titles, Paperlogy 16/17, the 371 x 51 buttons. -->
+    <section class="ob" id="ob" aria-label="Welcome" data-step="welcome">
+      <div class="ob--top">
+        <button type="button" class="ob--back" aria-label="Back"><img src="assets/system/arrow-back.svg" width="28" height="28" alt=""></button>
+        <div class="ob--bar" role="progressbar" aria-label="Setting up" aria-valuemin="0" aria-valuemax="3"><span class="ob--fill"></span></div>
+      </div>
+
+      <!-- Welcome -->
+      <div class="ob--page" data-page="welcome">
+        <div class="ob--slides" id="ob-slides">
+          <div class="ob--slide">
+            <img src="assets/minis/color/clover.svg" width="106" height="114" alt="">
+            <h2>Keep your luck</h2>
+            <p>Play a small ritual each day and store the luck you earn.</p>
+          </div>
+          <div class="ob--slide">
+            <img src="assets/minis/color/teru.svg" width="56" height="131" alt="">
+            <h2>Read your fortune</h2>
+            <p>A new fortune every morning, read from your birthday.</p>
+          </div>
+          <div class="ob--slide">
+            <img src="assets/minis/color/dandelion.svg" width="107" height="114" alt="">
+            <h2>Make a wish</h2>
+            <p>Hang a wish on the tree, and send your luck to others.</p>
+          </div>
+        </div>
+        <div class="ob--dots" role="tablist" aria-label="Slides">
+          <button type="button" role="tab" aria-selected="true" aria-label="Slide 1" data-silent></button>
+          <button type="button" role="tab" aria-selected="false" aria-label="Slide 2" data-silent></button>
+          <button type="button" role="tab" aria-selected="false" aria-label="Slide 3" data-silent></button>
+        </div>
+        <div class="ob--actions">
+          <button type="button" class="ob--btn" data-go="signup">Get started</button>
+          <button type="button" class="ob--link" data-go="login">I already have an account</button>
+        </div>
+      </div>
+
+      <!-- Create an account / log in -->
+      <form class="ob--page" data-page="account" novalidate>
+        <h2 class="ob--title" id="ob-account-title">Create your account</h2>
+        <p class="ob--sub" id="ob-account-sub">Keep your luck safe across devices.</p>
+        <label class="ob--field"><span>Email</span><input type="email" name="email" autocomplete="email" placeholder="you@example.com" required></label>
+        <label class="ob--field"><span>Password</span><input type="password" name="password" autocomplete="new-password" placeholder="At least 8 characters" minlength="8" required></label>
+        <div class="ob--actions">
+          <button type="submit" class="ob--btn" disabled>Continue</button>
+          <p class="ob--or"><span>or</span></p>
+          <button type="button" class="ob--btn is-line" data-go="apple">Continue with Apple</button>
+          <button type="button" class="ob--link" id="ob-switch">Already have an account? <u>Log in</u></button>
+        </div>
+      </form>
+
+      <!-- Name -->
+      <form class="ob--page" data-page="name" novalidate>
+        <h2 class="ob--title">What should we call you?</h2>
+        <p class="ob--sub">It's how we'll greet you each day.</p>
+        <label class="ob--field"><span>Name</span><input type="text" name="name" autocomplete="given-name" placeholder="Your name" maxlength="20" required></label>
+        <div class="ob--actions"><button type="submit" class="ob--btn" disabled>Continue</button></div>
+      </form>
+
+      <!-- Birthday -->
+      <form class="ob--page" data-page="birthday" novalidate>
+        <h2 class="ob--title">When's your birthday?</h2>
+        <p class="ob--sub">Your daily fortune is read from it.</p>
+        <label class="ob--field"><span>Birthday</span><input type="date" name="birthday" min="1900-01-01" required></label>
+        <div class="ob--actions"><button type="submit" class="ob--btn" disabled>Continue</button></div>
+      </form>
+
+      <!-- All set -->
+      <div class="ob--page" data-page="done">
+        <div class="ob--done">
+          <img src="assets/system/clover-claimed.svg" width="76.6022" height="76.6022" alt="">
+          <h2 class="ob--title" id="ob-done-title">You're all set</h2>
+          <p class="ob--sub" id="ob-done-sub">Here are 12 clovers to start with.</p>
+        </div>
+        <div class="ob--actions"><button type="button" class="ob--btn" data-go="home">Start</button></div>
+      </div>
+    </section>
+
     <!-- Splash (Figma 486:5534): the logo draws itself on, then lifts away -->
     <div class="splash" id="splash" aria-label="Luck Corner" role="img">
       <div class="splash--logo"></div>
     </div>
   </div>
 
+  <!-- Demo only, under the phone -->
+  <p class="demo-hint" id="demo-hint">Demo: press / to fill in the details</p>
+
   <script src="cards.js?v=57"></script>
   <script src="sounds.js?v=16"></script>
   <script src="mobile.js?v=102"></script>
   <script src="tree.js?v=35"></script>
   <script src="splash.js?v=22"></script>
+  <script src="onboarding.js?v=1"></script>
 </body>
 </html>
