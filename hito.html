@@ -8,7 +8,7 @@
   <link rel="icon" href="favicon-32.png" sizes="32x32" type="image/png">
   <link rel="apple-touch-icon" href="apple-touch-icon.png">
   <link rel="stylesheet" href="design-system.css?v=9">
-  <link rel="stylesheet" href="hito.css?v=4">
+  <link rel="stylesheet" href="hito.css?v=7">
 </head>
 <body>
   <!-- Hito (人) on the palm (Figma 510:8282, 510:8284, 510:8285): trace the
@@ -20,12 +20,14 @@
         <defs>
           <!-- where the finger has traced: the pink shows only there -->
           <mask id="traced" maskUnits="userSpaceOnUse" x="0" y="0" width="637" height="713">
-            <g transform="translate(253.21 320.87)" fill="none" stroke="#fff" stroke-width="34" stroke-linecap="round" stroke-linejoin="round">
+            <g transform="translate(253.21 320.87)" fill="none" stroke="#fff" stroke-width="50" stroke-linecap="round" stroke-linejoin="round">
               <path id="trace-1" d="M93.5 12C94 40 88 70 70 92C56 108 36 117 14 122"/>
               <path id="trace-2" d="M99 34C104 60 114 80 130 95C145 108 160 115 176 121"/>
             </g>
           </mask>
         </defs>
+        <!-- turned 5° to the left, so the hand sits upright -->
+        <g id="tilt" transform="rotate(-5 351 390)">
         <image href="assets/hito/hand.svg?v=2" width="637" height="713"/>
         <g class="hito--char" transform="translate(253.21 320.87)">
           <!-- 510:8282's dashed outline to trace -->
@@ -39,6 +41,7 @@
         <image class="hito--doll" id="doll" href="assets/hito/doll.svg?v=2" width="637" height="713"/>
         <!-- where it takes the tap: just the little person -->
         <rect class="hito--hit" id="doll-hit" x="225" y="255" width="263" height="215" rx="20" role="button" aria-label="Swallow the little person"/>
+        </g>
       </svg>
       <img class="hito--hand" id="hint" src="assets/candles/hand.svg" alt="">
     </div>
@@ -53,6 +56,6 @@
   </main>
   <script src="sounds.js?v=19"></script>
   <script src="pointer.js?v=1"></script>
-  <script src="hito.js?v=7"></script>
+  <script src="hito.js?v=12"></script>
 </body>
 </html>

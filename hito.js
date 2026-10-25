@@ -23,10 +23,14 @@ const strokes = [document.getElementById('trace-1'), document.getElementById('tr
 });
 
 // The palm as big as fits above the words
+// The palm as big as fits: the tilted hand edge to edge (10 clear each
+// side), centred across; no taller than the room above the words allows.
+// Tilted, the hand spans about 118 to 562 across the frame (pinky tip to thumb, with a little room).
+const HAND = { left: 118, width: 444 };
 function fit() {
   const room = innerHeight - 166;
-  // the hand reaches 214 either side of its middle: all of it on the screen
-  root.style.setProperty('--p', Math.min(1.1, (innerWidth / 2 - 18) / 214, (room - 20) / 440).toFixed(3));
+  root.style.setProperty('--p', Math.min(1.25, (innerWidth - 20) / HAND.width, (room - 10) / 400).toFixed(3));
+  root.style.setProperty('--mid', `${HAND.left + HAND.width / 2}px`);
 }
 addEventListener('resize', fit);
 fit();
@@ -46,7 +50,8 @@ function showHow(now) {
   const k = Math.min(1, t);
   const q = st.p.getPointAtLength(st.len * k);
   // its fingertip (a third across its 70, at the top) on the line
-  hint.style.translate = `${q.x + AT[0] - 23}px ${q.y + AT[1] - 2}px`;
+  const [hx, hy] = tilted(q.x + AT[0], q.y + AT[1]);
+  hint.style.translate = `${hx - 23}px ${hy - 2}px`;
   hint.style.opacity = t < 0.08 ? t / 0.08 : t > 1.15 ? 0 : 1;
   demo = requestAnimationFrame(showHow);
 }
@@ -55,9 +60,21 @@ function stopHow() { cancelAnimationFrame(demo); hint.style.opacity = '0'; }
 
 // Tracing: the pointer drags along a stroke from its top; the ink follows
 // as far as it's been, never skipping ahead
+// (through the 5° tilt, to the drawing's own units)
+const tilt = document.getElementById('tilt');
 function toPalm(e) {
-  const r = svg.getBoundingClientRect();
-  return [((e.clientX - r.left) / r.width) * 637, ((e.clientY - r.top) / r.height) * 713];
+  const pt = svg.createSVGPoint();
+  pt.x = e.clientX;
+  pt.y = e.clientY;
+  const q = pt.matrixTransform(tilt.getScreenCTM().inverse());
+  return [q.x, q.y];
+}
+// from the drawing's units to the palm's (the tilt applied)
+function tilted(x, y) {
+  const a = (-5 * Math.PI) / 180;
+  const dx = x - 351;
+  const dy = y - 390;
+  return [351 + dx * Math.cos(a) - dy * Math.sin(a), 390 + dx * Math.sin(a) + dy * Math.cos(a)];
 }
 let tracing = false;
 let lastSound = 0;
@@ -98,7 +115,6 @@ palm.addEventListener('pointercancel', lift);
 let unpoint = () => {};
 function written() {
   tracing = false;
-  Sounds.shimmer();
   setTimeout(() => {
     step('doll');
     setTimeout(() => { if (root.dataset.step === 'doll') unpoint = pointAt(dollHit); }, 700);

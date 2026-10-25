@@ -27,8 +27,9 @@ html, body {
   top: calc((100% - 166px) * 0.6);
   width: 637px;
   height: 713px;
-  margin: -390px 0 0 -351px;  /* the hand centred across (its middle at 351), the 人 (390 down) on the spot */
-  transform-origin: 351px 390px;
+  --mid: 351px;  /* the tilted hand's middle across, measured by hito.js */
+  margin: -390px 0 0 calc(-1 * var(--mid));  /* the hand centred across, the 人 (390 down) on the spot */
+  transform-origin: var(--mid) 390px;
   scale: var(--p);
   touch-action: none;
 }
@@ -77,10 +78,12 @@ html, body {
   left: 0;
   right: 0;
   bottom: 0;
-  height: 280px;
+  height: 290px;
   z-index: 4;
   pointer-events: none;
-  background: linear-gradient(to bottom, transparent, var(--v2-blue) 55%);
+  /* solid from above the wrist's end, so none of its edge shows, and
+     clear of the 人 */
+  background: linear-gradient(to bottom, transparent, var(--v2-blue) 26%);
 }
 
 /* The words at the bottom, at the rituals' one spot */
