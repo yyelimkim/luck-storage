@@ -19,7 +19,7 @@
     if (gone) return;
     gone = true;
     splash.classList.add('is-leaving');
-    setTimeout(() => splash.remove(), 600);
+    setTimeout(() => splash.remove(), 700);
   }
   // A tap skips it
   splash.addEventListener('click', leave);

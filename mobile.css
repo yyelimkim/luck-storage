@@ -368,10 +368,15 @@ img { -webkit-user-drag: none; }
   top: calc(291.91px - var(--up));
   display: flex;
   align-items: flex-end;
-  gap: 2px;
+  gap: 4px;
+  font-family: var(--font-title);
   font-size: 38px;
+  letter-spacing: var(--tracking-title);
+  line-height: 0.75;  /* trimmed to the capitals, as 390:6980 */
 }
-.profile--name button { padding: 0; border: 0; background: none; cursor: pointer; margin-bottom: 8px; }
+/* The 14px pencil, with a 44px tap area round it */
+.profile--name button { position: relative; padding: 0; border: 0; background: none; cursor: pointer; }
+.profile--name button::before { content: ""; position: absolute; inset: -15px; }
 .profile--name img { display: block; }
 /* The character stands over the hero's edge, and grows in a touch each time
    the page opens */
@@ -413,7 +418,10 @@ img { -webkit-user-drag: none; }
 .profile--fortune:active { transform: scale(0.98); }
 .profile--clouds, .profile--dial, .profile--go { position: absolute; display: block; }
 .profile--clouds { left: -0.771px; top: -0.771px; }
-.profile--dial { left: 222px; top: -0.771px; }
+/* The fortune wheel (395:7995) turns slowly, cut off by the card's edge */
+.profile--dial { left: 222.23px; top: -45.77px; animation: wheel-turn 90s linear infinite; }
+@keyframes wheel-turn { to { rotate: 360deg; } }
+@media (prefers-reduced-motion: reduce) { .profile--dial { animation: none; } }
 .profile--go {
   left: 332px;
   top: 98px;
@@ -2034,7 +2042,7 @@ button.fortune--card:active { transform: scale(0.98); }
   inset: 0;
   z-index: 69;
   background: var(--system-white);
-  transition: opacity 0.5s ease, visibility 0s 0.5s;
+  transition: opacity 0.6s ease, visibility 0s 0.6s;
 }
 .splash::after {
   content: "";
@@ -2052,13 +2060,12 @@ button.fortune--card:active { transform: scale(0.98); }
   width: 364.995px;
   height: 164.805px;
   margin: -82.4px 0 0 -182.5px;
-  transition: scale 0.5s cubic-bezier(0.3, 0.8, 0.2, 1);
 }
 .splash--logo svg { display: block; overflow: visible; }
 .splash--logo #letters { opacity: 0; }
 .splash.is-drawing #letters { opacity: 1; }
-.splash--logo #sticker { opacity: 0; scale: 0.94; transform-origin: 50% 50%; transform-box: fill-box; }
-.splash.is-stuck #sticker { animation: stick-down 0.5s cubic-bezier(0.3, 1.5, 0.5, 1) forwards; }
-@keyframes stick-down { to { opacity: 1; scale: 1; } }
+/* Every change on the splash is a dissolve: the sticker fades in behind
+   the drawn letters, then the whole splash fades to the app */
+.splash--logo #sticker { opacity: 0; transition: opacity 0.7s ease; }
+.splash.is-stuck #sticker { opacity: 1; }
 .splash.is-leaving { opacity: 0; visibility: hidden; pointer-events: none; }
-.splash.is-leaving .splash--logo { scale: 1.06; }
