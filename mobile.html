@@ -7,7 +7,7 @@
   <meta name="theme-color" content="#f0f0f0">
   <title>행운보관소</title>
   <link rel="stylesheet" href="design-system.css?v=9">
-  <link rel="stylesheet" href="mobile.css?v=174">
+  <link rel="stylesheet" href="mobile.css?v=175">
 </head>
 <body>
   <!-- iPhone 17 screen (Figma 97:630 at rest, 97:730 while dialing), laid out at
@@ -159,10 +159,16 @@
       </div>
       <img class="wish--clover" id="wish-clover" src="assets/system/clover-claimed.svg" width="76.6022" height="76.6022" alt="">
       <p class="wish--hold" id="wish-hold" role="status">Hold the slip to send your luck</p>
-      <!-- A straight dial, a line for each wish: drag it (or swipe the slip)
-           to go to the next wish -->
-      <div class="wish--dial" id="wish-dial" role="slider" aria-label="Wishes" tabindex="0">
-        <div class="wish--ticks" id="wish-ticks"></div>
+      <!-- Under the slip: back and on through the wishes, and where you are
+           (or swipe the slip) -->
+      <div class="wish--nav">
+        <button type="button" class="wish--step" id="wish-prev" aria-label="Previous wish">
+          <svg width="13.33" height="7.33" viewBox="0 0 13.3333 7.33333" aria-hidden="true"><path d="M0.67 0.67L6.67 6.67L12.67 0.67"/></svg>
+        </button>
+        <p class="wish--count" id="wish-count" aria-live="polite">Wish 1 of 10</p>
+        <button type="button" class="wish--step is-next" id="wish-next" aria-label="Next wish">
+          <svg width="13.33" height="7.33" viewBox="0 0 13.3333 7.33333" aria-hidden="true"><path d="M0.67 0.67L6.67 6.67L12.67 0.67"/></svg>
+        </button>
       </div>
     </div>
 
@@ -368,7 +374,7 @@
   <script src="cards.js?v=57"></script>
   <script src="sounds.js?v=16"></script>
   <script src="mobile.js?v=102"></script>
-  <script src="tree.js?v=35"></script>
+  <script src="tree.js?v=36"></script>
   <script src="splash.js?v=22"></script>
   <script src="onboarding.js?v=1"></script>
 </body>

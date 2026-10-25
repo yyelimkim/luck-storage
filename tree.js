@@ -133,7 +133,7 @@
     const own = g.dataset.own != null;
     text.textContent = own ? mine[Number(g.dataset.own)].text : WISHES[Number(g.dataset.wish) % WISHES.length];
     fromEl.textContent = own ? 'Anonymous · yours' : 'Anonymous';
-    // numbered as the dial goes, left to right
+    // numbered as the arrows go, left to right
     titleEl.textContent = own ? 'Your wish' : `Wish ${inOrder().indexOf(g) + 1}`;
     slip.classList.remove('is-twist', 'is-pressing');
     setTrace(0);
@@ -156,7 +156,7 @@
     scene.classList.add('is-zoomed');
     return box;
   }
-  // The wishes left to right, as the dial and swipes go through them
+  // The wishes left to right, as the arrows and swipes go through them
   const inOrder = () => [...scene.querySelectorAll('.tree--wish')]
     .map((g) => [g, g.querySelector('.tree--paper').getBoundingClientRect().left])
     .sort((a, b) => a[1] - b[1]).map(([g]) => g);
@@ -167,7 +167,7 @@
     reader.setAttribute('aria-hidden', 'false');
     from = { g, box: lean(g) };
     showSent(key());
-    setUpDial();
+    setUpCount();
     g.style.visibility = 'hidden';
     const to = toStage(slip.getBoundingClientRect());
     slip.animate([{ transform: `${transformFrom(from.box, to)} rotate(0deg)`, opacity: 0.9 },
@@ -297,24 +297,20 @@
   slip.addEventListener('pointerup', letGo);
   slip.addEventListener('pointercancel', letGo);
 
-  // --- Going through the wishes: the dial or a swipe -------------------------
-  const GAP = 15;  // between the dial's lines
-  const dial = document.getElementById('wish-dial');
-  const ticks = document.getElementById('wish-ticks');
+  // --- Going through the wishes: the arrows under the slip, or a swipe -----
+  const prev = document.getElementById('wish-prev');
+  const nextBtn = document.getElementById('wish-next');
+  const count = document.getElementById('wish-count');
   let order = [];
-  function drawDial(dragged = 0) {
+  function drawCount() {
     const i = order.indexOf(from && from.g);
-    ticks.style.transform = `translateX(${-i * GAP + dragged}px)`;
-    [...ticks.children].forEach((t, j) => t.classList.toggle('is-current', j === i));
-    dial.setAttribute('aria-valuenow', String(i + 1));
+    count.textContent = `Wish ${i + 1} of ${order.length}`;
+    prev.disabled = i <= 0;
+    nextBtn.disabled = i >= order.length - 1;
   }
-  function setUpDial() {
-    order = inOrder();
-    ticks.innerHTML = order.map((_, j) => `<i style="left:${j * GAP}px"></i>`).join('');
-    dial.setAttribute('aria-valuemin', '1');
-    dial.setAttribute('aria-valuemax', String(order.length));
-    drawDial();
-  }
+  function setUpCount() { order = inOrder(); drawCount(); }
+  prev.addEventListener('click', () => step(-1));
+  nextBtn.addEventListener('click', () => step(1));
   // To the wish `by` along (1 next, -1 back); the slip slides out the way it
   // was going (from a swipe's `dx`) and the next comes in from the other side
   function step(by, dx = 0) {
@@ -332,7 +328,7 @@
     from = { g, box: lean(g) };
     g.style.visibility = 'hidden';
     showSent(key());
-    drawDial();
+    drawCount();
     Sounds.tap();
     slip.style.translate = '';
     slip.style.rotate = '';
@@ -345,36 +341,12 @@
       { translate: '0 0', rotate: '0deg', opacity: 1 },
     ], { duration: 520, easing: 'cubic-bezier(0.3, 0.8, 0.2, 1)' });
   }
-  // Dragging the dial runs through the wishes a line at a time
-  let spin = null;
-  dial.addEventListener('pointerdown', (e) => {
-    if (!from || spinning) return;
-    e.preventDefault();
-    dial.setPointerCapture(e.pointerId);
-    spin = { x: e.clientX, at: order.indexOf(from.g) };
-    ticks.classList.add('is-dragging');
-  });
-  dial.addEventListener('pointermove', (e) => {
-    if (!spin) return;
-    const dx = (e.clientX - spin.x) / px();
-    const j = Math.max(0, Math.min(order.length - 1, Math.round(spin.at - dx / GAP)));
-    const i = order.indexOf(from.g);
-    if (j !== i) go(order[j], j > i ? 1 : -1);
-    // follow the finger between lines
-    ticks.style.transform = `translateX(${-spin.at * GAP + dx}px)`;
-  });
-  const endSpin = () => {
-    if (!spin) return;
-    spin = null;
-    ticks.classList.remove('is-dragging');
-    drawDial();
-  };
-  dial.addEventListener('pointerup', endSpin);
-  dial.addEventListener('pointercancel', endSpin);
-  dial.addEventListener('keydown', (e) => {
+  addEventListener('keydown', (e) => {
+    if (!from) return;
     if (e.key === 'ArrowRight') { e.preventDefault(); step(1); }
     if (e.key === 'ArrowLeft') { e.preventDefault(); step(-1); }
   });
+
 
   // The clover earned from Home's cards, over the slip: it pops up above
   // it, then turns small and flies up out of the frame

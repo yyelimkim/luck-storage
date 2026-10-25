@@ -1663,7 +1663,7 @@ button.fortune--card:active { transform: scale(0.98); }
   --paper: var(--system-white);
   position: absolute;
   left: 54px;
-  top: calc(50% - 269px);
+  top: calc(50% - 235px);  /* 497:8061: the hint, 29, the slip, 29, the row */
   width: 294.89px;
   height: 490.72px;
   box-sizing: border-box;
@@ -1701,12 +1701,12 @@ button.fortune--card:active { transform: scale(0.98); }
   0% { rotate: y 0deg; }
   100% { rotate: y 360deg; }
 }
-/* Under the slip: 14px, System White; while held, "Hold..." at 16 */
+/* Above the slip: 14px, System White; while held, "Hold..." at 16 */
 .wish--hold {
   position: absolute;
   left: 16px;
   right: 16px;
-  top: calc(50% + 249px);
+  top: calc(50% - 281px);  /* above the slip */
   margin: 0;
   text-align: center;
   font-family: var(--font-display);
@@ -1721,46 +1721,46 @@ button.fortune--card:active { transform: scale(0.98); }
 .wish--hold.is-sent { animation: hold-rise 0.45s cubic-bezier(0.2, 0.8, 0.2, 1); }
 @keyframes hold-rise { from { opacity: 0; translate: 0 10px; } }
 .wish--hold.is-holding { font-size: 16px; }
-/* The dial under it all (460:5303's lines, set out straight): a line for
-   each wish, the one open at the middle, taller and darker; the row fades
-   out at its ends. Drag it to go through the wishes. */
-.wish--dial {
+/* Under the slip (497:8058): ‹ Wish 1 of 10 ›, 270 wide, 29 below it;
+   the chevrons the header's, in #c4c4c4, each in a 44px tap area */
+.wish--nav {
   position: absolute;
   left: 50%;
-  top: calc(50% + 306px);
-  width: 222px;
+  top: calc(50% + 286px);
+  width: 270px;
   height: 44px;
-  margin-left: -111px;
-  overflow: hidden;
-  touch-action: none;
-  cursor: grab;
+  margin: -22px 0 0 -135px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   opacity: 0;
   transition: opacity 0.3s;
-  -webkit-mask: linear-gradient(to right, transparent, #000 30%, #000 70%, transparent);
-  mask: linear-gradient(to right, transparent, #000 30%, #000 70%, transparent);
 }
-.wish--dial:active { cursor: grabbing; }
-.wish--dial:focus-visible { outline: none; }
-.wish.is-open .wish--dial { opacity: 1; transition-delay: 0.3s; }
-.wish--ticks {
-  position: absolute;
-  left: 50%;
-  top: 0;
-  height: 100%;
-  transition: transform 0.35s cubic-bezier(0.3, 0.8, 0.2, 1);
+.wish.is-open .wish--nav { opacity: 1; transition-delay: 0.3s; }
+.wish--count {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 12px;
+  letter-spacing: var(--tracking);
+  color: #c4c4c4;
+  white-space: nowrap;
 }
-.wish--ticks.is-dragging { transition: none; }
-.wish--ticks i {
-  position: absolute;
-  top: 50%;
-  width: 1.75px;
-  height: 18.66px;
-  margin: -9.33px 0 0 -0.875px;
-  border-radius: 1px;
-  background: #cfcfcf;
-  transition: height 0.2s, margin 0.2s, background 0.2s;
+.wish--step {
+  width: 44px;
+  height: 44px;
+  margin: 0 -19px;  /* the chevron itself sits at the row's ends */
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+  transition: opacity 0.2s;
 }
-.wish--ticks i.is-current { height: 23.33px; margin-top: -11.665px; background: #8f8f8f; }
+.wish--step svg { display: block; rotate: 90deg; overflow: visible; }
+.wish--step.is-next svg { rotate: -90deg; }
+.wish--step path { fill: none; stroke: #c4c4c4; stroke-width: 1.33px; stroke-linecap: round; stroke-linejoin: round; }
+.wish--step:disabled { opacity: 0.3; cursor: default; }
 /* The open slip is paper too, the hole cut through */
 .wish--slip::after {
   content: "";
@@ -2152,7 +2152,7 @@ button.fortune--card:active { transform: scale(0.98); }
 .wish--clover {
   position: absolute;
   left: calc(50% - 38.3px);
-  top: calc(50% - 269px - 80px);  /* between the title and the slip */
+  top: calc(50% - 312px);  /* where the hint is, which steps aside for it */
   width: 76.6022px;
   height: 76.6022px;
   opacity: 0;
@@ -2437,3 +2437,5 @@ button.fortune--card:active { transform: scale(0.98); }
   transition: opacity 0.4s;
 }
 .is-preview.is-onboarding .demo-hint { opacity: 1; }
+.wish--hold { transition: opacity 0.3s; }
+.wish:has(.wish--clover.is-away) .wish--hold { opacity: 0; transition-delay: 0s; }
