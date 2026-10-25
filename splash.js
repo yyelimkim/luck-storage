@@ -24,12 +24,14 @@
     stick: 0.4,                  // the sticker fading in
     hold: 0.25,                  // sticker down, before it leaves
     out: 0.55,                   // the dip, swell and dissolve
+    flap: 0.8,                   // the clover's two flaps, once it's drawn
     dip: 0.94,                   // how far the logo dips
     grow: 1.35,                  // how far it swells as it goes
   };
   function applyCss() {
     splash.style.setProperty('--stick', `${CFG.stick}s`);
     splash.style.setProperty('--out', `${CFG.out}s`);
+    splash.style.setProperty('--flap', `${CFG.flap}s`);
     splash.style.setProperty('--dip', CFG.dip);
     splash.style.setProperty('--grow', CFG.grow);
   }
@@ -92,9 +94,10 @@
       if (x < 1) { raf = requestAnimationFrame(frame); return; }
       // all drawn: the letters exactly as designed, unmasked
       letters.removeAttribute('mask');
-      // the sticker fades in behind, then on to the app
+      // the sticker fades in behind and the clover flaps its wings twice,
+      // like a butterfly, then on to the app
       splash.classList.add('is-stuck');
-      timers.push(setTimeout(leave, (CFG.stick + CFG.hold) * 1000));
+      timers.push(setTimeout(leave, Math.max(CFG.stick + CFG.hold, CFG.flap) * 1000));
     };
     raf = requestAnimationFrame(frame);
   }
@@ -128,10 +131,36 @@
         p.setAttribute('stroke-dasharray', `${len} ${len + 1}`);
         return { p, len, from, to };
       });
+      butterfly();
       play();
       if (TUNING) tune();
     })
     .catch(leave);
+
+  // The clover by "Corner" (the logo's shape at 21,91 59x52) in a layer of
+  // its own, so it can flap: a copy of the letters cut to just the clover,
+  // and the letters with the clover cut out
+  function butterfly() {
+    const letters = svg.querySelector('#letters');
+    const BOX = 'M15 85h72v64h-72Z';
+    const defs = svg.querySelector('defs');
+    defs.insertAdjacentHTML('beforeend',
+      `<clipPath id="splash-clover-in"><path d="${BOX}"/></clipPath>`
+      + `<clipPath id="splash-clover-out"><path clip-rule="evenodd" d="M-20 -20H400V200H-20Z${BOX}"/></clipPath>`);
+    const wrap = document.createElementNS(NS, 'g');
+    wrap.setAttribute('clip-path', 'url(#splash-clover-out)');
+    letters.replaceWith(wrap);
+    wrap.appendChild(letters);
+    const clover = document.createElementNS(NS, 'g');
+    clover.setAttribute('class', 'splash--clover');
+    const inner = document.createElementNS(NS, 'g');
+    inner.setAttribute('clip-path', 'url(#splash-clover-in)');
+    const copy = document.createElementNS(NS, 'use');
+    copy.setAttribute('href', '#letters');
+    inner.appendChild(copy);
+    clover.appendChild(inner);
+    wrap.after(clover);
+  }
 
   // DialKit (vendor/dialkit, MIT): a panel to tune the splash live
   function tune() {
@@ -150,6 +179,7 @@
           curve: { type: 'easing', duration: CFG.run, ease: CFG.ease },
         },
         sticker: { fade: [CFG.stick, 0, 1.5, 0.05], hold: [CFG.hold, 0, 3, 0.05] },
+        clover: { flaps: [CFG.flap, 0.2, 2, 0.05] },
         leave: {
           duration: [CFG.out, 0.1, 2, 0.05],
           dip: [CFG.dip, 0.7, 1, 0.01],
@@ -162,6 +192,7 @@
         if (v.trim.curve && Array.isArray(v.trim.curve.ease)) CFG.ease = v.trim.curve.ease;
         CFG.stick = v.sticker.fade;
         CFG.hold = v.sticker.hold;
+        CFG.flap = v.clover.flaps;
         CFG.out = v.leave.duration;
         CFG.dip = v.leave.dip;
         CFG.grow = v.leave.grow;

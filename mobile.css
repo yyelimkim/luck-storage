@@ -2192,3 +2192,14 @@ button.fortune--card:active { transform: scale(0.98); }
 .m-nav, .m-navfade { transition: opacity 0.3s; }
 .is-reading .m-nav,
 .is-reading .m-navfade { opacity: 0; pointer-events: none; }
+/* The clover by "Corner" flaps its wings twice, like a butterfly, folding
+   across the line of its stem (from the curl to the middle) */
+.splash--clover {
+  transform-box: view-box;
+  transform-origin: 52px 118px;
+}
+.splash.is-stuck .splash--clover { animation: clover-flap var(--flap, 0.8s) ease-in-out; }
+@keyframes clover-flap {
+  0%, 50%, 100% { transform: rotate(-34deg) scaleX(1) rotate(34deg); }
+  25%, 75% { transform: rotate(-34deg) scaleX(0.25) rotate(34deg); }
+}
