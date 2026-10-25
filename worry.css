@@ -111,7 +111,7 @@ html, body {
 }
 .worry--doll img { display: block; width: 100%; height: 100%; object-fit: contain; }
 .worry--doll.is-in { opacity: 1; animation: tuck 0.9s cubic-bezier(0.3, 0.8, 0.3, 1) forwards; }
-@keyframes tuck { to { translate: 46px 40px; } }  /* down the bed, so its feet peek out */
+@keyframes tuck { to { translate: 26px 22px; } }  /* down the bed, so its feet peek out */
 
 /* The bed fades into the card's colour at the top, and under the words */
 .worry--fade {
