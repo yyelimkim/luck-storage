@@ -847,10 +847,10 @@ button.fortune--card:active { transform: scale(0.98); }
 /* Set like the rest of the app's text: Paperlogy 17, Regular */
 .filter--label {
   margin: 0;
-  font-family: var(--font-display);
+  font-family: var(--font-title);  /* Cooper, as the page titles */
   font-weight: 400;
   font-size: 17px;
-  letter-spacing: var(--tracking);
+  letter-spacing: var(--tracking-title);
   line-height: normal;
   color: var(--system-black);
 }
@@ -975,9 +975,9 @@ button.fortune--card:active { transform: scale(0.98); }
   z-index: 70;
   display: grid;
   place-items: center;
-  font-family: var(--font-display);
+  font-family: var(--font-title);  /* Cooper, as the page titles */
   font-size: 17px;
-  letter-spacing: var(--tracking);
+  letter-spacing: var(--tracking-title);
   color: var(--system-black);
   white-space: nowrap;
   visibility: hidden;
