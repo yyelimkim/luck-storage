@@ -225,5 +225,5 @@ const CANVAS_PAGES = {
   '돌팝 쌓기.png': 'stones.html?v=22',  // drop the stones in, the wish on top
   '악마의 눈.png': 'evileye.html?v=5',  // the eye takes the bad luck, and cracks
   '걱정인형.png': 'worry.html?v=13',  // tell the doll your worries, tuck it in
-  '꽃잎 점.png': 'love.html?v=5',  // loves me, loves me not... ends on love
+  '꽃잎 점.png': 'love.html?v=6',  // loves me, loves me not... ends on love
 };
