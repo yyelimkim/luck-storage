@@ -2517,3 +2517,5 @@ button.fortune--card:active { transform: scale(0.98); }
 /* The steps' buttons ride up above it */
 .is-typing .ob--page { padding-bottom: calc(44px + 44px + 4 * 43px + 3 * 11px + 8px + 32px + 34px + 12px); }
 .ob--page { transition: opacity 0.35s, translate 0.45s cubic-bezier(0.3, 0.8, 0.2, 1), visibility 0s 0.45s, padding-bottom 0.38s cubic-bezier(0.32, 0.72, 0, 1); }
+/* From onboarding's light screen the clover starts dark, as it's drawn there */
+.clover-fly.is-dark img:first-child { filter: brightness(0.16); }

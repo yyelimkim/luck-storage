@@ -745,7 +745,7 @@ let luck = Number(countNum.textContent);
 const CLOVER_FLY_MS = 820;
 // The claimed clover lifts off, shrinks along a curve up to the header's
 // clover, unwinding its tilt and turning from white to the header's ink
-function flyClover(src) {
+function flyClover(src, dark = false) {
   // Its box untilted: the tilted one's centre, at its own size
   const tilted = stageBox(src);
   const size = src.offsetWidth;
@@ -755,7 +755,7 @@ function flyClover(src) {
   };
   const to = stageBox(countIcon);
   const fly = document.createElement('div');
-  fly.className = 'clover-fly';
+  fly.className = dark ? 'clover-fly is-dark' : 'clover-fly';  // dark: from a light screen (onboarding)
   fly.innerHTML = `<img src="assets/system/clover-claimed.svg" alt=""><img src="${countIcon.getAttribute('src')}" alt="">`;
   Object.assign(fly.style, px(from));
   stage.appendChild(fly);

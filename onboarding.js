@@ -21,6 +21,10 @@
   const STEPS = { signup: ['account', 'name', 'birthday'], login: ['account'] };
 
   root.classList.add('is-onboarding');
+  // the count starts empty: the first clovers come in at the end
+  const START_LUCK = Number(countNum.textContent);
+  luck = 0;
+  countNum.textContent = '0';
 
   function show(step, back = false) {
     const from = ob.dataset.step;
@@ -80,7 +84,7 @@
     const to = b.dataset.go;
     if (to === 'signup' || to === 'login') { setMode(to); go('account'); }
     if (to === 'apple') { fillIn(pages.account); next('account'); }
-    if (to === 'home') finish();
+    if (to === 'home') finish('start');
   });
 
   // --- Each form: its button wakes once it's filled in properly
@@ -108,7 +112,7 @@
   }
 
   // --- All set: your name on the profile, your birthday for the fortune
-  function finish() {
+  function finish(how) {
     const name = (mode === 'login' ? DEMO.name : pages.name.elements.name.value.trim()) || DEMO.name;
     const nameEl = document.querySelector('.profile--name');
     if (nameEl && nameEl.firstChild) nameEl.firstChild.textContent = `${name} `;
@@ -119,6 +123,14 @@
     }
     ob.classList.add('is-done');
     root.classList.remove('is-onboarding');
+    // the clover flies up into the count, as luck does, and the count rolls up
+    const clover = pages.done.querySelector('.ob--done img');
+    if (how === 'start') {
+      flyClover(clover, true).then(() => changeLuck(START_LUCK));
+    } else {
+      luck = START_LUCK;
+      countNum.textContent = String(START_LUCK);
+    }
     setTimeout(() => ob.remove(), 600);
   }
   // the done step's words, as you arrive
@@ -129,7 +141,7 @@
     document.getElementById('ob-done-sub').textContent = mode === 'login'
       ? 'Your luck is right where you left it.'
       : 'Here are 3 clovers to start with.';
-    if (window.Sounds) Sounds.claim();
+    Sounds.claim();
   }).observe(ob, { attributes: true, attributeFilter: ['data-step'] });
 
   // --- Demo: / fills in the step you're on
