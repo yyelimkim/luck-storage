@@ -44,7 +44,7 @@ html, body {
 }
 .hito--ink { fill: var(--hot-pink); stroke: var(--system-black); stroke-width: 1.5px; }
 /* the pen line while tracing; the filled character once it's written */
-.hito--pen { fill: none; stroke: var(--hot-pink); stroke-width: 9px; stroke-linecap: round; stroke-linejoin: round; }
+.hito--pen { fill: none; stroke: var(--hot-pink); stroke-width: 15px; stroke-linecap: round; stroke-linejoin: round; }
 .hito--full { opacity: 0; transition: opacity 0.4s; }
 .hito.is-written .hito--full { opacity: 1; }
 .hito.is-written .hito--pen { opacity: 0; transition: opacity 0.4s; }
