@@ -2369,21 +2369,21 @@ button.fortune--card:active { transform: scale(0.98); }
 .ob--ring {
   position: absolute;
   left: 50%;
-  top: 770px;
+  top: 1001px;  /* the top card's top 250px down */
   width: 0;
   height: 0;
   animation: ob-turn 90s linear infinite;
 }
-.is-phone .ob--ring { top: 714px; }
+.is-phone .ob--ring { top: 945px; }
 @keyframes ob-turn { to { rotate: 360deg; } }
 .ob--ring img {
   position: absolute;
-  left: -90px;
-  top: calc(-1 * (var(--r) + 257px));
-  width: 180px;
-  height: 257px;
-  border-radius: 14.7px;  /* the cards' corners at this size */
-  transform-origin: 90px calc(var(--r) + 257px);
+  left: -130px;
+  top: calc(-1 * (var(--r) + 371px));
+  width: 260px;
+  height: 371px;
+  border-radius: 21.2px;  /* the cards' corners at this size */
+  transform-origin: 130px calc(var(--r) + 371px);
   rotate: var(--a);
   box-shadow: 0 4px 4px rgba(0, 0, 0, 0.15);  /* as the cards on Home */
 }
