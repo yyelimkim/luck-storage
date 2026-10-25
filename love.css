@@ -46,23 +46,6 @@ html, body {
 [data-step="ask"] .love--petal { pointer-events: none; }
 .love--petal.is-plucked { pointer-events: none; }
 
-/* The pointing hand, as Blowing Candles': it shows a tap on a petal till
-   the first is plucked */
-.love--hand {
-  position: absolute;
-  width: 54px;
-  opacity: 0;
-  pointer-events: none;
-}
-[data-step="pluck"] .love--hand.is-showing { animation: love-tap 1.6s ease-in-out infinite; }
-@keyframes love-tap {
-  0% { opacity: 0; translate: 22px 26px; scale: 1; }
-  25% { opacity: 1; translate: 0 0; scale: 1; }
-  45% { opacity: 1; translate: 0 0; scale: 0.88; }
-  60% { opacity: 1; translate: 0 0; scale: 1; }
-  85%, 100% { opacity: 0; translate: 10px 14px; scale: 1; }
-}
-
 /* The words at the bottom, at the rituals' one spot */
 .love--words {
   position: absolute;
@@ -130,6 +113,3 @@ html, body {
 [data-step="done"] .love--middle { animation: love-glow 1.2s ease-in-out infinite alternate; }
 @keyframes love-glow { to { fill: var(--system-white); } }
 
-@media (prefers-reduced-motion: reduce) {
-  .love--hand { animation: none !important; }
-}

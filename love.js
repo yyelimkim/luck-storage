@@ -10,7 +10,6 @@ const NS = 'http://www.w3.org/2000/svg';
 const root = document.getElementById('love');
 const flower = document.getElementById('flower');
 const petalsEl = document.getElementById('petals');
-const hand = document.getElementById('hand');
 const say = document.getElementById('say');
 const form = document.getElementById('ask-form');
 const input = document.getElementById('name');
@@ -38,8 +37,8 @@ for (let i = 0; i < PETALS; i++) {
   g.setAttribute('role', 'button');
   g.setAttribute('aria-label', `Petal ${i + 1}`);
   g.dataset.silent = '';
-  g.innerHTML = `<ellipse class="under" cx="${cx + 3}" cy="${cy + 6}" rx="62" ry="38" transform="rotate(${a} ${cx + 3} ${cy + 6})"/>`
-    + `<ellipse class="top" cx="${cx}" cy="${cy}" rx="62" ry="38" transform="rotate(${a} ${cx} ${cy})"/>`;
+  g.innerHTML = `<ellipse class="under" cx="${cx + 3}" cy="${cy + 6}" rx="64" ry="48" transform="rotate(${a} ${cx + 3} ${cy + 6})"/>`
+    + `<ellipse class="top" cx="${cx}" cy="${cy}" rx="64" ry="48" transform="rotate(${a} ${cx} ${cy})"/>`;
   g.dataset.a = String(a);
   g.addEventListener('click', () => pluck(g));
   g.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); pluck(g); } });
@@ -66,23 +65,18 @@ form.addEventListener('submit', (e) => {
   input.blur();
   root.dataset.step = 'pluck';
   show('Tap a petal to pluck it');
-  pointAt(petals[1]);
+  pointAt_(petals[1]);
 });
 
-// The hand, pointing at a petal (in the flower's own units) till the first pluck
-function pointAt(g) {
-  const a = (Number(g.dataset.a) * Math.PI) / 180;
-  // over the petal's outer half, the fingertip (the image's top left) on it
-  hand.style.left = `${160 + Math.cos(a) * 96 - 18}px`;  // its fingertip at 18, 2 of 54 wide
-  hand.style.top = `${160 + Math.sin(a) * 96 - 2}px`;
-  hand.classList.add('is-showing');
-}
+// The hand (pointer.js) shows a tap on a petal till the first pluck
+let unpoint = () => {};
+function pointAt_(g) { unpoint = pointAt(g.querySelector('.top')); }
 
 // 2: pluck — it comes away, turning, and drifts down; loves me, loves me not
 function pluck(g) {
   if (root.dataset.step !== 'pluck' || g.classList.contains('is-plucked')) return;
   Sounds.unlock();
-  hand.classList.remove('is-showing');
+  unpoint();
   g.classList.add('is-plucked');
   plucked++;
   const a = (Number(g.dataset.a) * Math.PI) / 180;

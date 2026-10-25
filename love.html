@@ -8,7 +8,7 @@
   <link rel="icon" href="favicon-32.png" sizes="32x32" type="image/png">
   <link rel="apple-touch-icon" href="apple-touch-icon.png">
   <link rel="stylesheet" href="design-system.css?v=9">
-  <link rel="stylesheet" href="love.css?v=1">
+  <link rel="stylesheet" href="love.css?v=2">
 </head>
 <body>
   <!-- Love me, love me not: the card's flower (Figma 234:1619 — its Sky
@@ -19,11 +19,14 @@
   <main class="love" id="love" data-step="ask">
     <div class="love--flower" id="flower">
       <svg viewBox="-160 -160 320 470" aria-label="A flower" role="img">
-        <path class="love--stem" d="M-4 40C-10 120 -30 210 -60 310"/>
-        <g id="petals"></g>
-        <circle class="love--middle" r="36"/>
+        <!-- as the card's: the stem curving up from the bottom left, the
+             head tipped up to the right and seen at an angle -->
+        <path class="love--stem" d="M-92 310C-80 220 -46 110 6 30"/>
+        <g transform="translate(12 6) rotate(-24) scale(1 0.62)">
+          <g id="petals"></g>
+          <circle class="love--middle" r="36"/>
+        </g>
       </svg>
-      <img class="love--hand" id="hand" src="assets/candles/hand.svg" alt="">
     </div>
 
     <!-- What this step is, at the rituals' spot, and under it the field -->
@@ -38,6 +41,7 @@
     </form>
   </main>
   <script src="sounds.js?v=18"></script>
-  <script src="love.js?v=1"></script>
+  <script src="pointer.js?v=1"></script>
+  <script src="love.js?v=3"></script>
 </body>
 </html>
