@@ -132,7 +132,7 @@ html, body {
   border: 0.771px solid var(--system-black);
   background: var(--ui-white);
   font: inherit;
-  font-size: 17px;
+  font-size: 16px;  /* fields' text: a step under 17 */
   letter-spacing: var(--tracking);
   color: var(--system-black);
   outline: none;

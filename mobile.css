@@ -2301,7 +2301,7 @@ button.fortune--card:active { transform: scale(0.98); }
   border-radius: 16px;
   background: var(--ui-white);
   font: inherit;
-  font-size: 17px;
+  font-size: 16px;  /* fields' text: a step under 17 */
   letter-spacing: var(--tracking);
   color: var(--system-black);
   outline: none;
