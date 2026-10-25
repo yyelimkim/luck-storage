@@ -99,11 +99,12 @@
       if (x < 1) { raf = requestAnimationFrame(frame); return; }
       // all drawn: the letters exactly as designed, unmasked
       letters.removeAttribute('mask');
-      // the sticker fades in behind straight away, then the clover comes in
-      // and flaps its wings twice, like a butterfly, then on to the app
+      // the sticker fades in behind straight away; a third of the way in the
+      // clover comes in and flaps its wings twice, like a butterfly; then on
+      // to the app
       splash.classList.add('is-stuck');
       // (tuning, it stays on the splash: Replay plays it again, Leave shows the exit)
-      if (!TUNING) timers.push(setTimeout(leave, (CFG.stick + Math.max(CFG.hold, CFG.flap + 0.3)) * 1000));
+      if (!TUNING) timers.push(setTimeout(leave, Math.max(CFG.stick + CFG.hold, CFG.stick * 0.3 + CFG.flap + 0.3) * 1000));
     };
     raf = requestAnimationFrame(frame);
   }
