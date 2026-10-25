@@ -72,7 +72,9 @@
     title.textContent = login ? 'Welcome back' : 'Create your account';
     sub.textContent = login ? 'Log in to pick up your luck where you left it.' : 'Keep your luck safe across devices.';
     pages.account.querySelector('[type="submit"]').textContent = login ? 'Log in' : 'Continue';
-    swap.innerHTML = login ? 'New here? <u>Create an account</u>' : 'Already have an account? <u>Log in</u>';
+    swap.innerHTML = login
+      ? '<span class="ob--muted">New here?</span> <u>Create an account</u>'
+      : '<span class="ob--muted">Already have an account?</span> <u>Log in</u>';
     password.autocomplete = login ? 'current-password' : 'new-password';
     password.placeholder = login ? 'Your password' : 'At least 8 characters';
     check(pages.account);
