@@ -201,6 +201,9 @@
           grow: [CFG.grow, 1, 2.5, 0.01],
         },
       }, {
+        // kept in this browser across reloads (localStorage 'dialkit:splash')
+        id: 'splash',
+        persist: true,
         onAction: (path) => {
           if (path === 'replay') play();
           // the exit, then back to the drawn logo to tune it again
@@ -224,6 +227,8 @@
         CFG.grow = v.leave.grow;
         applyCss();
       });
+      // play it again with the saved values
+      play();
     };
     document.head.appendChild(js);
   }
