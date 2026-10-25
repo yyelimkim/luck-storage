@@ -2147,59 +2147,36 @@ button.fortune--card:active { transform: scale(0.98); }
   100% { scale: var(--grow, 1.35); }
 }
 
-/* Luck landing on a wish back on the tree: a ring of light opens round the
-   slip and little white sparks scatter, as it gives a swing */
-.luck-lands {
+/* Luck sent: the logo's clover pops up above the slip, then turns small
+   and flies up out of the frame */
+.wish--clover {
   position: absolute;
-  z-index: 35;
-  width: 0;
-  height: 0;
+  left: calc(50% - 36px);
+  top: calc(50% - 269px - 70px);  /* between the title and the slip */
+  width: 72px;
+  height: 64px;
+  opacity: 0;
   pointer-events: none;
 }
-.luck-lands::before {
-  content: "";
-  position: absolute;
-  left: -14px;
-  top: -14px;
-  width: 28px;
-  height: 28px;
-  border-radius: 50%;
-  border: 1.5px solid var(--ui-white);
-  box-shadow: 0 0 10px color-mix(in srgb, var(--ui-white) 70%, transparent);
-  animation: luck-ring 0.9s cubic-bezier(0.2, 0.8, 0.3, 1) forwards;
+.wish--clover.is-away { animation: clover-away 1.5s forwards; }
+@keyframes clover-away {
+  0% { opacity: 0; scale: 0.3; translate: 0 30px; animation-timing-function: cubic-bezier(0.3, 1.5, 0.5, 1); }
+  25% { opacity: 1; scale: 1; translate: 0 0; animation-timing-function: ease-in-out; }
+  50% { opacity: 1; scale: 1; translate: 0 0; rotate: 0deg; animation-timing-function: cubic-bezier(0.5, 0, 0.8, 0.4); }
+  100% { opacity: 1; scale: 0.2; translate: 0 -320px; rotate: 30deg; }
 }
-@keyframes luck-ring {
-  from { scale: 0.3; opacity: 1; }
-  to { scale: 2.6; opacity: 0; }
-}
-.luck-lands i {
-  position: absolute;
-  left: -3px;
-  top: -3px;
-  width: 6px;
-  height: 6px;
-  background: var(--ui-white);
-  clip-path: polygon(50% 0, 62% 38%, 100% 50%, 62% 62%, 50% 100%, 38% 62%, 0 50%, 38% 38%);
-  animation: luck-spark 0.9s cubic-bezier(0.2, 0.8, 0.3, 1) both;
-}
-@keyframes luck-spark {
-  0% { translate: 0 0; scale: 0.4; opacity: 0; }
-  20% { opacity: 1; }
-  100% { translate: var(--dx) var(--dy); scale: 1.2; opacity: 0; }
-}
-.tree--wish.is-lucky { animation: wish-hung 1.2s cubic-bezier(0.3, 0.6, 0.4, 1), wish-sway 4s 1.2s ease-in-out infinite alternate; }
 /* While a wish is open the tab bar steps back; the dial's lines take its place */
 .m-nav, .m-navfade { transition: opacity 0.3s; }
 .is-reading .m-nav,
 .is-reading .m-navfade { opacity: 0; pointer-events: none; }
 /* The clover by "Corner" flaps its wings twice, like a butterfly, folding
-   across the line of its stem (from the curl to the middle) */
+   along the line of its stem (from the curl to the middle) */
 .splash--clover {
   transform-box: view-box;
   transform-origin: 52px 118px;
 }
 .splash.is-stuck .splash--clover { animation: clover-flap var(--flap, 0.8s) ease-in-out; }
 @keyframes clover-flap {
-  0%, 50%, 100% { transform: rotate(-34deg) scaleX(1) rotate(34deg); }
-  25%, 75% { transform: rotate(-34deg) scaleX(0.25) rotate(34deg); }
+  0%, 50%, 100% { transform: rotate(56deg) scaleX(1) rotate(-56deg); }
+  25%, 75% { transform: rotate(56deg) scaleX(0.25) rotate(-56deg); }
 }

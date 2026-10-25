@@ -174,7 +174,7 @@
       { transform: 'none', opacity: 1 }], OPTS);
     reader.querySelector('.wish--close').focus({ preventScroll: true, focusVisible: false });
   }
-  function closeWish(then) {
+  function closeWish() {
     if (!from) return;
     stopHold();
     const { g, box } = from;
@@ -189,7 +189,6 @@
         slip.getAnimations().forEach((a) => a.cancel());
         g.style.visibility = '';
         g.focus({ preventScroll: true });
-        if (typeof then === 'function') then(g);
       });
   }
   scene.addEventListener('click', (e) => {
@@ -258,8 +257,9 @@
       Sounds.chime();
       hold.classList.remove('is-holding');
       hold.textContent = 'Your luck is sent ✦';
-      // after the spin it goes back on the tree, and the luck lands on it
-      setTimeout(() => { spinning = false; closeWish(luckLands); }, 950);
+      // after the spin the slip stays; the clover comes up above it, then
+      // shrinks away up out of the frame, off with the luck
+      setTimeout(() => { spinning = false; cloverAway(); }, 950);
     });
   });
   // let go of a hold too soon: the line runs back, the words come back
@@ -376,30 +376,17 @@
     if (e.key === 'ArrowLeft') { e.preventDefault(); step(-1); }
   });
 
-  // The luck landing on a wish on the tree: a ring of light opens round
-  // its slip, sparks scatter, and it gives a little swing
-  function luckLands(g) {
-    const paper = g.querySelector('.tree--paper');
-    const b = toStage(paper.getBoundingClientRect());
-    const fx = document.createElement('div');
-    fx.className = 'luck-lands';
-    fx.style.left = `${b.x + b.w / 2}px`;
-    fx.style.top = `${b.y + b.h / 2}px`;
-    for (let i = 0; i < 7; i++) {
-      const sp = document.createElement('i');
-      const a = (i / 7) * Math.PI * 2 + 0.4;
-      sp.style.setProperty('--dx', `${Math.cos(a) * 30}px`);
-      sp.style.setProperty('--dy', `${Math.sin(a) * 30}px`);
-      sp.style.animationDelay = `${(i % 3) * 0.04}s`;
-      fx.appendChild(sp);
-    }
-    stageEl.appendChild(fx);
-    g.classList.remove('is-lucky');
-    void g.getBoundingClientRect();
-    g.classList.add('is-lucky');
+  // The logo's clover over the slip: it pops up above it, then turns small
+  // and flies up out of the frame
+  const clover = document.getElementById('wish-clover');
+  function cloverAway() {
+    clover.classList.remove('is-away');
+    void clover.offsetWidth;
+    clover.classList.add('is-away');
     Sounds.shimmer();
-    setTimeout(() => { fx.remove(); g.classList.remove('is-lucky'); }, 1300);
   }
+  clover.addEventListener('animationend', () => clover.classList.remove('is-away'));
+
   slip.addEventListener('contextmenu', (e) => e.preventDefault());
   reader.querySelector('.wish--scrim').addEventListener('click', closeWish);
   reader.querySelector('.wish--close').addEventListener('click', closeWish);

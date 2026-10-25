@@ -137,27 +137,32 @@
     })
     .catch(leave);
 
-  // The clover by "Corner" (the logo's shape at 21,91 59x52) in a layer of
-  // its own, so it can flap: a copy of the letters cut to just the clover,
-  // and the letters with the clover cut out
+  // The clover by "Corner" (the logo's shape stroke17) on a layer of its
+  // own, so it can flap: copies of the sticker and the letters showing just
+  // the clover and the sticker round it, and the logo with that cut out.
+  // The cut follows the clover's own outline, grown to take in its sticker.
   function butterfly() {
     const letters = svg.querySelector('#letters');
-    const BOX = 'M15 85h72v64h-72Z';
-    const defs = svg.querySelector('defs');
-    defs.insertAdjacentHTML('beforeend',
-      `<clipPath id="splash-clover-in"><path d="${BOX}"/></clipPath>`
-      + `<clipPath id="splash-clover-out"><path clip-rule="evenodd" d="M-20 -20H400V200H-20Z${BOX}"/></clipPath>`);
+    const sticker = svg.querySelector('#sticker');
+    const d = svg.querySelector('#stroke17_splash').getAttribute('d');
+    const area = (paint) => `<path d="${d}" fill="${paint}" stroke="${paint}" stroke-width="20" stroke-linejoin="round"/>`;
+    svg.querySelector('defs').insertAdjacentHTML('beforeend',
+      `<mask id="splash-clover-in" maskUnits="userSpaceOnUse" x="-20" y="-20" width="420" height="220">${area('white')}</mask>`
+      + `<mask id="splash-clover-out" maskUnits="userSpaceOnUse" x="-20" y="-20" width="420" height="220">`
+      + `<rect x="-20" y="-20" width="420" height="220" fill="white"/>${area('black')}</mask>`);
     const wrap = document.createElementNS(NS, 'g');
-    wrap.setAttribute('clip-path', 'url(#splash-clover-out)');
-    letters.replaceWith(wrap);
-    wrap.appendChild(letters);
+    wrap.setAttribute('mask', 'url(#splash-clover-out)');
+    sticker.before(wrap);
+    wrap.append(sticker, letters);
     const clover = document.createElementNS(NS, 'g');
     clover.setAttribute('class', 'splash--clover');
     const inner = document.createElementNS(NS, 'g');
-    inner.setAttribute('clip-path', 'url(#splash-clover-in)');
-    const copy = document.createElementNS(NS, 'use');
-    copy.setAttribute('href', '#letters');
-    inner.appendChild(copy);
+    inner.setAttribute('mask', 'url(#splash-clover-in)');
+    for (const id of ['#sticker', '#letters']) {
+      const copy = document.createElementNS(NS, 'use');
+      copy.setAttribute('href', id);
+      inner.appendChild(copy);
+    }
     clover.appendChild(inner);
     wrap.after(clover);
   }
