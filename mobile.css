@@ -2405,7 +2405,7 @@ button.fortune--card:active { transform: scale(0.98); }
 .is-phone .ob--logo { margin-top: 30px; }
 .ob--hero {
   position: relative;
-  margin: auto 0 52px;
+  margin: auto 0 44px;
   text-align: center;
   font-family: var(--font-title);
   font-weight: 400;
