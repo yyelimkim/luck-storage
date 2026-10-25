@@ -2137,14 +2137,14 @@ button.fortune--card:active { transform: scale(0.98); }
 .splash.is-drawing #letters { opacity: 1; }
 /* Every change on the splash is a dissolve: the sticker fades in behind
    the drawn letters, then the whole splash fades to the app */
-.splash--logo #sticker { opacity: 0; transition: opacity var(--stick, 0.4s) ease; }
+.splash--logo #sticker { opacity: 0; transition: opacity var(--stick, 0.9s) ease; }
 .splash.is-stuck #sticker { opacity: 1; }
 /* Leaving: the logo dips a touch, then swells as the splash dissolves */
 .splash.is-leaving { opacity: 0; visibility: hidden; pointer-events: none; }
 .splash.is-leaving .splash--logo { animation: splash-out var(--out, 0.55s) cubic-bezier(0.5, 0, 0.3, 1) forwards; }
 @keyframes splash-out {
   30% { scale: var(--dip, 0.94); }
-  100% { scale: var(--grow, 1.35); }
+  100% { scale: var(--grow, 1.9); }
 }
 
 /* Luck sent: the logo's clover pops up above the slip, then turns small
@@ -2178,7 +2178,7 @@ button.fortune--card:active { transform: scale(0.98); }
   opacity: 0;
 }
 /* after the sticker has come in, the moment the letters are done */
-.splash.is-stuck .splash--clover { opacity: 1; animation: clover-flap calc(var(--flap, 0.8s) + 0.3s) ease-in-out var(--stick, 0.4s) both; }
+.splash.is-stuck .splash--clover { opacity: 1; animation: clover-flap calc(var(--flap, 0.8s) + 0.3s) ease-in-out var(--stick, 0.9s) both; }
 @keyframes clover-flap {
   0% { opacity: 0; transform: scale(0.4) rotate(56deg) scaleX(1) rotate(-56deg); animation-timing-function: cubic-bezier(0.3, 1.5, 0.5, 1); }
   27% { opacity: 1; transform: scale(1) rotate(56deg) scaleX(1) rotate(-56deg); }

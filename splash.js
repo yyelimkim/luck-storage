@@ -21,13 +21,13 @@
   // The timings (seconds) and curves
   const CFG = {
     run: 1.5,                    // the trim, first stroke to last
-    ease: [0.45, 0, 0.55, 1],    // its curve: a gentle ease-in-out
-    stick: 0.4,                  // the sticker fading in
+    ease: [0.38, 0, 0.31, 0.99], // its curve: ease-in-out
+    stick: 0.9,                  // the sticker fading in
     hold: 0.25,                  // sticker down, before it leaves
     out: 0.55,                   // the dip, swell and dissolve
     flap: 0.8,                   // the clover's two flaps, once it's drawn
     dip: 0.94,                   // how far the logo dips
-    grow: 1.35,                  // how far it swells as it goes
+    grow: 1.9,                   // how far it swells as it goes
   };
   function applyCss() {
     splash.style.setProperty('--stick', `${CFG.stick}s`);
