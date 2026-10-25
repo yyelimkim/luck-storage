@@ -24,11 +24,11 @@ html, body {
 .hito--palm {
   position: absolute;
   left: 50%;
-  top: calc((100% - 166px) * 0.5);
+  top: calc((100% - 166px) * 0.6);
   width: 637px;
   height: 713px;
-  margin: -390px 0 0 -335px;  /* the 人's middle (about 335, 390) on the spot */
-  transform-origin: 335px 390px;
+  margin: -390px 0 0 -351px;  /* the hand centred across (its middle at 351), the 人 (390 down) on the spot */
+  transform-origin: 351px 390px;
   scale: var(--p);
   touch-action: none;
 }
@@ -69,6 +69,18 @@ html, body {
   width: 70px;  /* in the palm's units */
   opacity: 0;
   pointer-events: none;
+}
+
+/* The wrist fades into the card's blue, under the words */
+.hito--fade {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 280px;
+  z-index: 4;
+  pointer-events: none;
+  background: linear-gradient(to bottom, transparent, var(--v2-blue) 55%);
 }
 
 /* The words at the bottom, at the rituals' one spot */

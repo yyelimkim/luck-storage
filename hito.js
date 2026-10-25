@@ -25,8 +25,8 @@ const strokes = [document.getElementById('trace-1'), document.getElementById('tr
 // The palm as big as fits above the words
 function fit() {
   const room = innerHeight - 166;
-  // the hand reaches 232 either side of the 人's middle: all of it on the screen
-  root.style.setProperty('--p', Math.min(1, (innerWidth / 2 - 14) / 232, (room - 40) / 500).toFixed(3));
+  // the hand reaches 214 either side of its middle: all of it on the screen
+  root.style.setProperty('--p', Math.min(1.1, (innerWidth / 2 - 18) / 214, (room - 20) / 440).toFixed(3));
 }
 addEventListener('resize', fit);
 fit();
