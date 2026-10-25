@@ -2425,7 +2425,7 @@ button.fortune--card:active { transform: scale(0.98); }
   position: fixed;
   left: 0;
   right: 0;
-  bottom: 4px;
+  bottom: 14px;  /* in the room left under the phone's frame */
   margin: 0;
   text-align: center;
   font-family: var(--font-display);

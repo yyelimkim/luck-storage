@@ -116,11 +116,12 @@ function fit() {
     fitScale = innerWidth / STAGE_W;
     stageH = innerHeight / fitScale;
   } else {
-    fitScale = Math.min((innerWidth - 40) / STAGE_W, (innerHeight - 40) / FIGMA_H, 1);
+    // room under the frame for the demo's hint: the phone sits a touch high
+    fitScale = Math.min((innerWidth - 40) / STAGE_W, (innerHeight - 76) / FIGMA_H, 1);
     stageH = FIGMA_H;
   }
   stage.style.height = `${stageH}px`;
-  stage.style.transform = `scale(${fitScale})`;
+  stage.style.transform = phone ? `scale(${fitScale})` : `translateY(-14px) scale(${fitScale})`;
   const headTop = phone ? 0 : 44;
   // The tab bar (and every button at its height, through --nav-bottom), then
   // the dial's lines LINE_GAP above it, then the fan in what's left

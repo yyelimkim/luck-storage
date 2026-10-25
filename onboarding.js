@@ -3,7 +3,8 @@
 // up takes all the steps; logging in goes straight to all set.
 //
 // This is a demo: nothing is sent anywhere. Pressing / fills the step you're
-// on with demo details (the hint sits under the phone, outside its screen).
+// on with demo details, and S skips onboarding (the hint sits under the
+// phone, outside its screen).
 // Your name goes on the profile and your birthday seeds Daily Fortune.
 
 (() => {
@@ -148,7 +149,14 @@
     if (page.querySelector('[type="submit"]')) check(page);
   }
   addEventListener('keydown', (e) => {
-    if (e.key !== '/' || !root.classList.contains('is-onboarding')) return;
+    if (!root.classList.contains('is-onboarding')) return;
+    // S skips onboarding altogether (unless you're typing in a field)
+    if ((e.key === 's' || e.key === 'S') && !e.target.closest('input')) {
+      e.preventDefault();
+      finish();
+      return;
+    }
+    if (e.key !== '/') return;
     e.preventDefault();
     const page = pages[ob.dataset.step];
     if (ob.dataset.step === 'welcome') { setMode('signup'); go('account'); return; }
