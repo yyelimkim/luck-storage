@@ -361,11 +361,11 @@ img { -webkit-user-drag: none; }
   line-height: normal;
   color: var(--system-black);
 }
-.profile--hello { position: absolute; left: 16px; top: calc(261px - var(--up)); }
+.profile--hello { position: absolute; left: 16px; top: calc(265px - var(--up)); }
 .profile--name {
   position: absolute;
   left: 16px;
-  top: calc(291.91px - var(--up));
+  top: calc(303.91px - var(--up));
   display: flex;
   align-items: flex-end;
   gap: 4px;
