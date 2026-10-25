@@ -152,24 +152,40 @@ const Sounds = (() => {
     n.start(t);
   }
 
-  // A button or tab pressed: a soft, rounded wooden tock
+  // A button pressed: a soft, creamy click — a muffled tick of noise for
+  // the edge and a low round thump under it, quiet and gone in a blink
   function tap() {
     const a = audio();
     const t = a.currentTime;
-    const o = a.createOscillator();
-    const g = a.createGain();
+    const out = a.createGain();
+    out.gain.value = 0.55;
+    out.connect(a.destination);
+    // the tick: a few ms of noise, warm and dull through a low-pass
+    const n = a.createBufferSource();
+    const buf = a.createBuffer(1, Math.ceil(a.sampleRate * 0.02), a.sampleRate);
+    const d = buf.getChannelData(0);
+    for (let i = 0; i < d.length; i++) d[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / d.length, 4);
+    n.buffer = buf;
     const lp = a.createBiquadFilter();
     lp.type = 'lowpass';
-    lp.frequency.value = 1800;
-    o.type = 'triangle';
-    o.frequency.setValueAtTime(560, t);
-    o.frequency.exponentialRampToValueAtTime(360, t + 0.05);
-    g.gain.setValueAtTime(0.001, t);
-    g.gain.exponentialRampToValueAtTime(0.16, t + 0.004);
-    g.gain.exponentialRampToValueAtTime(0.001, t + 0.08);
-    o.connect(lp).connect(g).connect(a.destination);
+    lp.frequency.value = 1400;
+    lp.Q.value = 0.4;
+    const ng = a.createGain();
+    ng.gain.value = 0.22;
+    n.connect(lp).connect(ng).connect(out);
+    n.start(t);
+    // the body: a round little thump
+    const o = a.createOscillator();
+    const g = a.createGain();
+    o.type = 'sine';
+    o.frequency.setValueAtTime(260, t);
+    o.frequency.exponentialRampToValueAtTime(150, t + 0.04);
+    g.gain.setValueAtTime(0.0001, t);
+    g.gain.exponentialRampToValueAtTime(0.18, t + 0.003);
+    g.gain.exponentialRampToValueAtTime(0.0001, t + 0.06);
+    o.connect(g).connect(out);
     o.start(t);
-    o.stop(t + 0.09);
+    o.stop(t + 0.07);
   }
 
   // A grape eaten: a cartoony "nom nom" — two quick mouthy chomps, each a
