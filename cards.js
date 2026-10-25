@@ -221,6 +221,6 @@ const CANVAS_PAGES = {
   '명태 액막이.png': 'charm.html?v=25',  // the fish charm
   '촛불 한번에 불기.png': 'candles.html?v=21',  // make a wish, blow them all out
   '부처님 배 만지기.png': 'buddha.html?v=12',  // rub the belly round till it glows
-  '포도 12알 먹기.png': 'grapes.html?v=10',  // eat all twelve before the clock runs out
+  '포도 12알 먹기.png': 'grapes.html?v=11',  // eat all twelve before the clock runs out
   '돌팝 쌓기.png': 'stones.html?v=20',  // drop the stones in, the wish on top
 };

@@ -188,48 +188,49 @@ const Sounds = (() => {
     o.stop(t + 0.07);
   }
 
-  // A grape eaten: a cartoony "nom nom" — two quick mouthy chomps, each a
-  // short buzz shaped like a voiced "nom", with a tiny click as teeth meet
+  // A grape eaten: a crunchy bite — a juicy pop as the skin gives, then a
+  // crackle of tiny brittle grains (bright, uneven, close together), and a
+  // second, smaller crunch as it's chewed
   function eat() {
     const a = audio();
     const t = a.currentTime;
     const out = a.createGain();
-    out.gain.value = 0.5;
+    out.gain.value = 0.55;
     out.connect(a.destination);
-    const nom = (at, pitch) => {
-      const o = a.createOscillator();
-      o.type = 'sawtooth';
-      o.frequency.setValueAtTime(pitch, t + at);
-      o.frequency.exponentialRampToValueAtTime(pitch * 0.8, t + at + 0.09);
-      // the mouth: a vowel-ish band that closes as the "m" ends it
-      const f = a.createBiquadFilter();
-      f.type = 'bandpass';
-      f.Q.value = 2.5;
-      f.frequency.setValueAtTime(500, t + at);
-      f.frequency.linearRampToValueAtTime(900, t + at + 0.03);
-      f.frequency.exponentialRampToValueAtTime(320, t + at + 0.09);
-      const g = a.createGain();
-      g.gain.setValueAtTime(0.001, t + at);
-      g.gain.exponentialRampToValueAtTime(0.4, t + at + 0.012);
-      g.gain.exponentialRampToValueAtTime(0.001, t + at + 0.1);
-      o.connect(f).connect(g).connect(out);
-      o.start(t + at);
-      o.stop(t + at + 0.11);
-      // the teeth
-      const n = noise(a, 0.015);
-      const hp = a.createBiquadFilter();
-      hp.type = 'highpass';
-      hp.frequency.value = 2500;
-      const ng = a.createGain();
-      ng.gain.setValueAtTime(0.2, t + at);
-      ng.gain.exponentialRampToValueAtTime(0.001, t + at + 0.015);
-      n.connect(hp).connect(ng).connect(out);
-      n.start(t + at);
+    // the pop of the skin
+    const o = a.createOscillator();
+    const og = a.createGain();
+    o.type = 'sine';
+    o.frequency.setValueAtTime(220, t);
+    o.frequency.exponentialRampToValueAtTime(90, t + 0.05);
+    og.gain.setValueAtTime(0.0001, t);
+    og.gain.exponentialRampToValueAtTime(0.35, t + 0.004);
+    og.gain.exponentialRampToValueAtTime(0.0001, t + 0.06);
+    o.connect(og).connect(out);
+    o.start(t);
+    o.stop(t + 0.07);
+    // the crackle: a run of tiny grains, each its own pitch and loudness
+    const crunch = (at, grains, span, loud) => {
+      for (let i = 0; i < grains; i++) {
+        const when = t + at + (i / grains) * span + Math.random() * (span / grains) * 0.8;
+        const len = 0.004 + Math.random() * 0.01;
+        const n = noise(a, len + 0.005);
+        const bp = a.createBiquadFilter();
+        bp.type = 'bandpass';
+        bp.frequency.value = 1500 + Math.random() * 3000;
+        bp.Q.value = 1.2 + Math.random() * 2;
+        const g = a.createGain();
+        const peak = loud * (0.4 + Math.random() * 0.6) * (1 - (i / grains) * 0.5);
+        g.gain.setValueAtTime(peak, when);
+        g.gain.exponentialRampToValueAtTime(0.0001, when + len);
+        n.connect(bp).connect(g).connect(out);
+        n.start(when);
+      }
     };
-    const p = 150 + Math.random() * 30;
-    nom(0, p);
-    nom(0.12, p * 1.12);
+    crunch(0.006, 14, 0.12, 0.9);
+    crunch(0.19, 8, 0.08, 0.5);
   }
+
 
   // A clock's second ticking down: a tiny dry tick (a little lower on the tock)
   let tock = false;
