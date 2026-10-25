@@ -199,7 +199,7 @@ const CARD_TEXT = {
   },
   '악마의 눈.png': {
     about: 'A charm widely used across Mediterranean and Middle Eastern cultures, believed to ward off envy and ill will directed at you.',
-    howTo: 'Tap the eye to make it blink, deflecting an incoming shadow/glare animation.',
+    howTo: 'Tap each bit of bad luck to send it into the eye.',
   },
   '촛불 한번에 불기.png': {
     about: 'A widespread Western birthday custom. Blowing out every candle in a single breath is believed to make your wish come true.',
@@ -223,4 +223,5 @@ const CANVAS_PAGES = {
   '부처님 배 만지기.png': 'buddha.html?v=12',  // rub the belly round till it glows
   '포도 12알 먹기.png': 'grapes.html?v=11',  // eat all twelve before the clock runs out
   '돌팝 쌓기.png': 'stones.html?v=20',  // drop the stones in, the wish on top
+  '악마의 눈.png': 'evileye.html?v=3',  // the eye takes the bad luck, and cracks
 };

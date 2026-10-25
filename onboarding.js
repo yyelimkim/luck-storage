@@ -154,7 +154,7 @@
   addEventListener('keydown', (e) => {
     if (!root.classList.contains('is-onboarding')) return;
     // S skips onboarding altogether (unless you're typing in a field)
-    if ((e.key === 's' || e.key === 'S') && !e.target.closest('input')) {
+    if ((e.key === 's' || e.key === 'S') && !(e.target.closest && e.target.closest('input'))) {
       e.preventDefault();
       finish();
       return;

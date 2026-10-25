@@ -302,7 +302,62 @@ const Sounds = (() => {
   }
 
   const unlock = () => { audio(); };
-  return { hit, swoosh, flip, claim, chime, stone, tap, eat, tick, rub, shimmer, unlock };
+  // Bad luck drawn into the eye: a dark breath pulled inwards, a low
+  // filtered rush that falls in pitch and closes off
+  function absorb() {
+    const a = audio();
+    const t = a.currentTime;
+    const n = noise(a, 0.4);
+    const lp = a.createBiquadFilter();
+    lp.type = 'lowpass';
+    lp.Q.value = 6;
+    lp.frequency.setValueAtTime(1800, t);
+    lp.frequency.exponentialRampToValueAtTime(160, t + 0.32);
+    const g = a.createGain();
+    g.gain.setValueAtTime(0.0001, t);
+    g.gain.exponentialRampToValueAtTime(0.32, t + 0.12);
+    g.gain.exponentialRampToValueAtTime(0.0001, t + 0.36);
+    n.connect(lp).connect(g).connect(a.destination);
+    n.start(t);
+  }
+
+  // The eye cracking: a sharp glassy snap, then a few ticks as the crack
+  // runs; `big` for the last one, longer and louder
+  function crack(big = false) {
+    const a = audio();
+    const t = a.currentTime;
+    const out = a.createGain();
+    out.gain.value = big ? 0.7 : 0.45;
+    out.connect(a.destination);
+    const snap = (at, len, loud, f) => {
+      const n = noise(a, len + 0.01);
+      const hp = a.createBiquadFilter();
+      hp.type = 'bandpass';
+      hp.frequency.value = f;
+      hp.Q.value = 0.9;
+      const g = a.createGain();
+      g.gain.setValueAtTime(loud, t + at);
+      g.gain.exponentialRampToValueAtTime(0.0001, t + at + len);
+      n.connect(hp).connect(g).connect(out);
+      n.start(t + at);
+    };
+    snap(0, 0.05, 1, 3200);
+    const ticks = big ? 9 : 4;
+    for (let i = 1; i <= ticks; i++) snap(0.03 + i * (big ? 0.035 : 0.03) + Math.random() * 0.015, 0.012, 0.35 * (1 - i / (ticks + 2)), 2500 + Math.random() * 3500);
+    // a glassy ring under it
+    const o = a.createOscillator();
+    const og = a.createGain();
+    o.type = 'sine';
+    o.frequency.value = big ? 2300 : 2900;
+    og.gain.setValueAtTime(0.0001, t);
+    og.gain.exponentialRampToValueAtTime(0.05, t + 0.005);
+    og.gain.exponentialRampToValueAtTime(0.0001, t + (big ? 0.5 : 0.25));
+    o.connect(og).connect(out);
+    o.start(t);
+    o.stop(t + 0.6);
+  }
+
+  return { hit, swoosh, flip, claim, chime, stone, tap, eat, tick, rub, shimmer, absorb, crack, unlock };
 })();
 
 // Every button, tab and link ticks when pressed (anything with its own
