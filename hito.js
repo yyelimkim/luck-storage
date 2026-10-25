@@ -25,9 +25,9 @@ const strokes = [document.getElementById('trace-1'), document.getElementById('tr
 // The palm as big as fits above the words
 // The palm big: the tilted hand a little wider than the screen, its
 // pinky and thumb tips running just off the edges, centred across; no
-// taller than the room above the words allows. Tilted, the hand spans about
-// 146 to 569 across the frame.
-const HAND = { left: 146, width: 424 };
+// taller than the room above the words allows. The hand spans about 137 to
+// 565 across the frame.
+const HAND = { left: 137, width: 428 };
 function fit() {
   const room = innerHeight - 166;
   root.style.setProperty('--p', Math.min(1.5, (innerWidth * 1.02) / HAND.width, (room + 20) / 420).toFixed(3));
@@ -61,7 +61,7 @@ function stopHow() { cancelAnimationFrame(demo); hint.style.opacity = '0'; }
 
 // Tracing: the pointer drags along a stroke from its top; the ink follows
 // as far as it's been, never skipping ahead
-// (through the 3° tilt, to the drawing's own units)
+// (through the tilt, if any, to the drawing's own units)
 const tilt = document.getElementById('tilt');
 function toPalm(e) {
   const pt = svg.createSVGPoint();
@@ -72,7 +72,7 @@ function toPalm(e) {
 }
 // from the drawing's units to the palm's (the tilt applied)
 function tilted(x, y) {
-  const a = (3 * Math.PI) / 180;
+  const a = (0 * Math.PI) / 180;
   const dx = x - 351;
   const dy = y - 390;
   return [351 + dx * Math.cos(a) - dy * Math.sin(a), 390 + dx * Math.sin(a) + dy * Math.cos(a)];
@@ -116,6 +116,7 @@ palm.addEventListener('pointercancel', lift);
 let unpoint = () => {};
 function written() {
   tracing = false;
+  root.classList.add('is-written');  // the pen line gives way to the filled 人
   setTimeout(() => {
     step('doll');
     setTimeout(() => { if (root.dataset.step === 'doll') unpoint = pointAt(dollHit); }, 700);
@@ -134,6 +135,7 @@ dollHit.addEventListener('click', () => {
 addEventListener('message', (e) => {
   if (e.data !== 'luck-continue') return;
   strokes.forEach((st) => { st.done = 0; draw(st); });
+  root.classList.remove('is-written');
   doll.classList.remove('is-eaten');
   step('write');
   demoAt = performance.now();
