@@ -1,0 +1,236 @@
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  height: 100%;
+  overflow: hidden;
+  background: transparent;  /* sits on the desktop canvas or the phone's card sheet */
+}
+
+.worry {
+  --g: 1;      /* the dolls' grid scale, set by worry.js */
+  --s: 1;      /* the bed's scale (its 402 x 874 frame), set by worry.js */
+  --sy: 0px;   /* where the bed's frame starts, set by worry.js */
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+  font-family: var(--font-display);
+  letter-spacing: var(--tracking);
+  color: var(--system-black);
+  -webkit-user-select: none;
+  user-select: none;
+}
+.worry > * { transition: opacity 0.45s, visibility 0s 0.45s; }
+
+/* 1: the six dolls, two by three as in 445:622 (144 each); the chosen one
+   held in white brackets */
+.worry--grid {
+  position: absolute;
+  left: 50%;
+  top: calc((100% - 166px) / 2 + 6px);
+  display: grid;
+  grid-template-columns: repeat(2, 150px);
+  gap: 26px 22px;
+  translate: -50% -50%;
+  scale: var(--g);
+}
+.worry--doll-pick {
+  position: relative;
+  width: 150px;
+  height: 150px;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: transform 0.2s;
+}
+.worry--doll-pick img { display: block; width: 100%; height: 100%; object-fit: contain; pointer-events: none; }
+.worry--doll-pick:active { transform: scale(0.95); }
+.worry--doll-pick:focus { outline: none; }
+.worry--selected {
+  position: absolute;
+  z-index: 1;
+  width: 176px;
+  height: 172px;
+  pointer-events: none;
+  transition: left 0.3s cubic-bezier(0.3, 0.8, 0.2, 1), top 0.3s cubic-bezier(0.3, 0.8, 0.2, 1);
+}
+
+/* 2: the chosen doll up close (366 wide in 445:814), the worry flying in */
+.worry--big {
+  position: absolute;
+  left: 50%;
+  top: calc((100% - 166px) / 2 + 10px);
+  width: calc(366px * var(--g));
+  translate: -50% -50%;
+}
+.worry--big img { display: block; width: 100%; height: auto; }
+.worry--big.is-taking { animation: hug 0.6s cubic-bezier(0.3, 1.6, 0.5, 1); }
+@keyframes hug { 40% { scale: 1.06 0.95; } }
+.worry--said {
+  position: absolute;
+  left: 16px;
+  right: 16px;
+  margin: 0;
+  text-align: center;
+  font-size: 16px;
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* 3 and 4: the bed (drawn to match the pillow of 445:991), the doll between
+   it and the pillow once tucked in */
+.worry--scene {
+  position: absolute;
+  left: 0;
+  top: var(--sy);
+  width: 402px;
+  height: 874px;
+  transform-origin: 0 0;
+  scale: var(--s);
+  pointer-events: none;
+}
+.worry--bed,
+.worry--pillow { position: absolute; left: 0; top: 0; width: 402px; height: 874px; }
+.worry--pillow { top: 196px; height: 367px; transform-origin: 201px 182px; }
+.worry--pillow.is-lift { animation: lift 0.8s cubic-bezier(0.3, 0.8, 0.3, 1); }
+@keyframes lift {
+  35% { translate: -6px -14px; rotate: -2deg; }
+  70% { translate: 0 2px; rotate: 0.5deg; }
+}
+/* tucked in: lying under the pillow (504:8117's pose), only its feet out */
+.worry--doll {
+  position: absolute;
+  left: 32px;   /* 504:8117's pose, moved with its pillow onto 445:991's */
+  top: 356px;
+  width: 216px;
+  height: 215px;
+  rotate: 29deg;
+  opacity: 0;
+}
+.worry--doll img { display: block; width: 100%; height: 100%; object-fit: contain; }
+.worry--doll.is-in { opacity: 1; animation: tuck 0.9s cubic-bezier(0.3, 0.8, 0.3, 1) forwards; }
+@keyframes tuck { to { translate: -34px -30px; } }
+
+/* the doll to drag (137 wide at the bed's top right in 445:991) */
+.worry--drag {
+  position: absolute;
+  width: calc(137px * var(--s));
+  height: calc(137px * var(--s));
+  touch-action: none;
+  cursor: grab;
+  z-index: 4;
+  -webkit-tap-highlight-color: transparent;
+}
+.worry--drag:active { cursor: grabbing; }
+.worry--drag:focus { outline: none; }
+.worry--drag > img:first-child { display: block; width: 100%; height: 100%; object-fit: contain; pointer-events: none; }
+.worry--drag.is-held > img:first-child { animation: dangle 0.9s ease-in-out infinite alternate; }
+@keyframes dangle { from { rotate: -6deg; } to { rotate: 6deg; } }
+/* the hand, as Blowing Candles', showing where to take it */
+.worry--hand {
+  position: absolute;
+  left: 52%;
+  top: 55%;
+  width: 46px;
+  pointer-events: none;
+  animation: point 1.6s ease-in-out infinite;
+}
+@keyframes point {
+  0%, 100% { translate: 0 0; opacity: 1; }
+  50% { translate: -40px 26px; opacity: 0.6; }
+}
+.worry--drag.is-held .worry--hand,
+.worry--drag.is-moved .worry--hand { display: none; }
+
+/* What's on in each step */
+.worry:not([data-step="choose"]) .worry--grid,
+.worry:not([data-step="choose"]) .worry--btn,
+.worry:not([data-step="tell"]) .worry--big,
+.worry:not([data-step="tell"]) .worry--field,
+.worry:not([data-step="tuck"]):not([data-step="done"]) .worry--scene,
+.worry:not([data-step="tuck"]) .worry--drag { opacity: 0; visibility: hidden; pointer-events: none; }
+.worry[data-step="tell"] .worry--big,
+.worry[data-step="tuck"] .worry--scene { transition-delay: 0.2s, 0s; }
+
+/* The words at the bottom, at the rituals' one spot */
+.worry--words {
+  position: absolute;
+  left: 16px;
+  right: 16px;
+  top: calc(100% - 166px);  /* the same spot in every ritual */
+  z-index: 5;
+  min-height: 26px;
+  text-align: center;
+}
+.worry--say { display: none; margin: 0; font-size: 20px; line-height: 1.3; }
+[data-step="choose"] .worry--say[data-for="choose"],
+[data-step="tell"] .worry--say[data-for="tell"],
+[data-step="tuck"] .worry--say[data-for="tuck"],
+[data-step="done"] .worry--say[data-for="done"] { display: block; animation: rise 0.45s cubic-bezier(0.3, 0.8, 0.2, 1); }
+@keyframes rise { from { opacity: 0; translate: 0 10px; } }
+
+/* Under the words: the app's main button (1), the field to write in (2) */
+.worry--btn,
+.worry--field {
+  position: absolute;
+  left: 50%;
+  top: calc(100% - 114px);
+  z-index: 5;
+  width: min(371px, calc(100% - 32px));
+  height: 51px;
+  translate: -50% 0;
+}
+.worry--btn {
+  border-radius: 43px;
+  border: 1px solid var(--system-black);
+  background: var(--system-black);
+  color: var(--system-white);
+  font: inherit;
+  font-size: 16px;  /* main buttons' text */
+  letter-spacing: var(--tracking);
+  cursor: pointer;
+}
+.worry--btn:active { transform: scale(0.97); }
+.worry--field { margin: 0; }
+.worry--field input {
+  width: 100%;
+  height: 100%;
+  padding: 0 58px 0 22px;
+  border-radius: 43px;
+  border: 0.771px solid var(--system-black);
+  background: var(--ui-white);
+  font: inherit;
+  font-size: 16px;  /* fields' text */
+  letter-spacing: var(--tracking);
+  color: var(--system-black);
+  outline: none;
+  -webkit-user-select: text;
+  user-select: text;
+}
+.worry--field input::placeholder { color: var(--dark-grey); }
+.worry--field input:focus-visible { box-shadow: 0 0 0 2px var(--system-black); }
+/* the send arrow, as Stacking Stones' */
+.worry--send {
+  position: absolute;
+  right: 7px;
+  top: 7px;
+  width: 37px;
+  height: 37px;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: var(--system-black);
+  color: var(--system-white);
+  cursor: pointer;
+  transition: opacity 0.2s, transform 0.15s;
+}
+.worry--send:disabled { opacity: 0.35; cursor: default; }
+.worry--send:not(:disabled):active { transform: scale(0.92); }
+
+@media (prefers-reduced-motion: reduce) {
+  .worry--hand, .worry--drag.is-held > img:first-child { animation: none; }
+}

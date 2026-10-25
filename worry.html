@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Worry Doll</title>
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="favicon-32.png" sizes="32x32" type="image/png">
+  <link rel="apple-touch-icon" href="apple-touch-icon.png">
+  <link rel="stylesheet" href="design-system.css?v=9">
+  <link rel="stylesheet" href="worry.css?v=2">
+</head>
+<body>
+  <!-- Worry Doll (Figma 445:622, 445:814, 445:991, 504:8117): choose a doll,
+       tell it what's worrying you, then tuck it under your pillow so it can
+       do the worrying while you sleep. -->
+  <main class="worry" id="worry" data-step="choose">
+    <!-- 1: six dolls to choose from, the chosen one in brackets -->
+    <div class="worry--grid" id="grid" role="radiogroup" aria-label="Dolls">
+      <img class="worry--selected" id="selected" src="assets/worry/selected.svg" alt="">
+    </div>
+
+    <!-- 2: the chosen doll, up close, taking your worries in -->
+    <div class="worry--big" id="big" aria-hidden="true"><img alt=""></div>
+    <p class="worry--said" id="said" aria-hidden="true"></p>
+
+    <!-- 3 and 4: the bed and its pillow; the doll to drag onto the pillow,
+         and under it once it's there -->
+    <div class="worry--scene" id="scene" aria-hidden="true">
+      <img class="worry--bed" src="assets/worry/bed.svg?v=1" alt="">
+      <div class="worry--doll" id="doll"><img alt=""></div>
+      <img class="worry--pillow" id="pillow" src="assets/worry/pillow.svg?v=1" alt="">
+    </div>
+    <div class="worry--drag" id="drag" role="button" tabindex="0" aria-label="Drag your doll onto the pillow"><img alt="">
+      <img class="worry--hand" src="assets/candles/hand.svg" alt="">
+    </div>
+
+    <!-- What this step is, at the rituals' spot, and under it its control -->
+    <div class="worry--words" role="status">
+      <p class="worry--say" data-for="choose">Choose a doll to hold your worries</p>
+      <p class="worry--say" data-for="tell">Tell your doll what’s worrying you</p>
+      <p class="worry--say" data-for="tuck">Tuck your doll under your pillow</p>
+      <p class="worry--say" data-for="done">Sleep well, your doll will worry for you</p>
+    </div>
+    <button type="button" class="worry--btn" id="choose">Choose this doll</button>
+    <form class="worry--field" id="tell-form">
+      <input id="tell" type="text" maxlength="60" placeholder="I’m worried about…" autocomplete="off" aria-label="What’s worrying you?">
+      <button type="submit" class="worry--send" id="send" aria-label="Tell the doll" disabled>
+        <svg width="20" height="20" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 13V3M3.5 7.5L8 3l4.5 4.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+    </form>
+  </main>
+  <script src="sounds.js?v=18"></script>
+  <script src="worry.js?v=2"></script>
+</body>
+</html>
