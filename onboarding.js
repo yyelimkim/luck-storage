@@ -128,7 +128,7 @@
     document.getElementById('ob-done-title').textContent = mode === 'login' ? `Welcome back, ${name}` : `You're all set, ${name}`;
     document.getElementById('ob-done-sub').textContent = mode === 'login'
       ? 'Your luck is right where you left it.'
-      : 'Here are 12 clovers to start with.';
+      : 'Here are 3 clovers to start with.';
     if (window.Sounds) Sounds.claim();
   }).observe(ob, { attributes: true, attributeFilter: ['data-step'] });
 
