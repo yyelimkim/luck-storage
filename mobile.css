@@ -2369,12 +2369,12 @@ button.fortune--card:active { transform: scale(0.98); }
 .ob--ring {
   position: absolute;
   left: 50%;
-  top: 861px;  /* the top card's top 200px down */
+  top: 891px;  /* the top card's top 230px down */
   width: 0;
   height: 0;
   animation: ob-turn 90s linear infinite;
 }
-.is-phone .ob--ring { top: 805px; }
+.is-phone .ob--ring { top: 835px; }
 @keyframes ob-turn { to { rotate: 360deg; } }
 .ob--ring img {
   position: absolute;
