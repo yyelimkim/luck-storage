@@ -1485,6 +1485,30 @@ button.fortune--card:active { transform: scale(0.98); }
 }
 .tree--layer[data-layer="front"],
 .tree--layer[data-layer="light"] { pointer-events: none; }
+/* Sun and shadow: the light comes from the top left, so everything casts
+   its shadow down and to the right. The front of the tree shades the leaves
+   behind it; each slip throws a small shadow that swings with it. */
+.tree--layer[data-layer="front"] { filter: drop-shadow(7px 12px 9px rgba(6, 34, 36, 0.38)); }
+.tree--wish .tree--paper { filter: drop-shadow(3px 6px 2.5px rgba(6, 34, 36, 0.35)); }
+/* The light, brighter: the beams themselves a touch stronger, and a warm sun
+   glowing in from the top-left corner, breathing slowly */
+.tree--layer[data-layer="light"] { filter: brightness(1.25) saturate(1.1); }
+.tree--sun {
+  position: absolute;
+  left: -190px;
+  top: -230px;
+  width: 600px;
+  height: 600px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255, 250, 205, 0.95), rgba(255, 244, 180, 0.45) 40%, rgba(255, 240, 170, 0) 72%);
+  mix-blend-mode: screen;
+  pointer-events: none;
+  animation: sun-breathe 7s ease-in-out infinite alternate;
+}
+@keyframes sun-breathe {
+  from { opacity: 0.75; scale: 0.95; }
+  to { opacity: 1; scale: 1.05; }
+}
 .tree--layer svg { overflow: visible; }
 /* The moving light: each beam swings slowly from the top left, as light
    does through moving leaves, and brightens and dims as it goes */
