@@ -15,7 +15,8 @@
   if (!splash) return;
   const holder = splash.querySelector('.splash--logo');
   const NS = 'http://www.w3.org/2000/svg';
-  const TUNING = new URLSearchParams(location.search).has('dial');
+  // (also when a second ? slips in, as in ?r=1?dial)
+  const TUNING = /[?&]dial(?:[=&?]|$)/.test(location.search);
 
   // The timings (seconds) and curves
   const CFG = {
