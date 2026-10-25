@@ -2361,50 +2361,40 @@ button.fortune--card:active { transform: scale(0.98); }
 .ob--or::before,
 .ob--or::after { content: ""; flex: 1; height: 0.771px; background: var(--system-black); }
 
-/* Welcome: three slides to swipe, the dots, then the buttons */
-.ob--page[data-page="welcome"] { padding-top: 0; }
-.ob--slides {
-  flex: 1;
-  display: flex;
-  margin: 0 -16px;
-  overflow-x: auto;
-  scroll-snap-type: x mandatory;
-  scrollbar-width: none;
+/* Welcome: one screen. The Wish Tree full bleed, darkened towards the foot
+   for the words; the logo at the top; a Cooper line and the way in below */
+.ob--page[data-page="welcome"] { padding-top: 0; color: var(--system-white); }
+.ob--art { position: absolute; inset: 0; overflow: hidden; }
+.ob--art img { position: absolute; left: 0; bottom: 0; width: 100%; height: auto; }
+.ob--art::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to bottom, color-mix(in srgb, var(--system-black) 35%, transparent),
+    transparent 30%, transparent 45%, color-mix(in srgb, var(--system-black) 80%, transparent));
 }
-.ob--slides::-webkit-scrollbar { display: none; }
-.ob--slide {
-  flex: none;
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 60px 40px 0;
-  box-sizing: border-box;
+.ob--logo {
+  position: relative;
+  align-self: center;
+  width: 230px;
+  height: auto;
+  margin-top: 70px;
+}
+.is-phone .ob--logo { margin-top: 30px; }
+.ob--hero {
+  position: relative;
+  margin: auto 0 36px;
   text-align: center;
-  scroll-snap-align: center;
-}
-.ob--slide img { height: 160px; width: auto; margin-bottom: 36px; }
-.ob--slide h2 {
-  margin: 0;
   font-family: var(--font-title);
   font-weight: 400;
-  font-size: 27px;
+  font-size: 41px;  /* as the profile's name */
   letter-spacing: var(--tracking-title);
+  line-height: 1.1;
 }
-.ob--slide p { margin: 10px 0 0; max-width: 280px; font-size: 16px; line-height: 1.35; }
-.ob--dots { display: flex; justify-content: center; gap: 8px; margin: 28px 0 32px; }
-.ob--dots button {
-  width: 8px;
-  height: 8px;
-  padding: 0;
-  border: 0;
-  border-radius: 999px;
-  background: var(--dark-grey);
-  cursor: pointer;
-  transition: width 0.3s, background 0.3s;
-}
-.ob--dots button[aria-selected="true"] { width: 20px; background: var(--system-black); }
+.ob--page[data-page="welcome"] .ob--actions { position: relative; margin-top: 0; }
+/* On the picture: the button in System White, the link in white */
+.ob--btn.is-light { background: var(--system-white); border-color: var(--system-white); color: var(--system-black); }
+.ob--link.is-light { color: var(--system-white); }
 
 /* All set: the clover from Luck Claimed, a swing as it lands */
 .ob--done {
@@ -2439,3 +2429,6 @@ button.fortune--card:active { transform: scale(0.98); }
 .is-preview.is-onboarding .demo-hint { opacity: 1; }
 .wish--hold { transition: opacity 0.3s; }
 .wish:has(.wish--clover.is-away) .wish--hold { opacity: 0; transition-delay: 0s; }
+/* Over the welcome picture the status bar turns white, as on the Wish Tree */
+.stage:has(.ob[data-step="welcome"]:not(.is-done)) .status--time { color: var(--system-white); }
+.stage:has(.ob[data-step="welcome"]:not(.is-done)) .status--right { filter: invert(1) brightness(2); }

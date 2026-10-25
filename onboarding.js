@@ -1,4 +1,4 @@
-// Onboarding, after the splash: welcome (three slides) → an account (create
+// Onboarding, after the splash: welcome (one screen) → an account (create
 // one, or log in) → your name → your birthday → all set, then Home. Signing
 // up takes all the steps; logging in goes straight to all set.
 //
@@ -49,21 +49,6 @@
   function go(step) { path.push(ob.dataset.step); show(step); }
   ob.querySelector('.ob--back').addEventListener('click', () => { if (path.length) show(path.pop(), true); });
   pages.welcome.classList.add('is-on');
-
-  // --- Welcome: the slides and their dots
-  const slides = document.getElementById('ob-slides');
-  const dots = [...ob.querySelectorAll('.ob--dots button')];
-  slides.addEventListener('scroll', () => {
-    const i = Math.round(slides.scrollLeft / slides.clientWidth);
-    dots.forEach((d, j) => d.setAttribute('aria-selected', String(i === j)));
-  }, { passive: true });
-  dots.forEach((d, j) => d.addEventListener('click', () => slides.scrollTo({ left: j * slides.clientWidth, behavior: 'smooth' })));
-  // and they turn by themselves till you touch them
-  let auto = setInterval(() => {
-    const i = Math.round(slides.scrollLeft / slides.clientWidth);
-    slides.scrollTo({ left: ((i + 1) % dots.length) * slides.clientWidth, behavior: 'smooth' });
-  }, 3200);
-  slides.addEventListener('pointerdown', () => clearInterval(auto), { once: true });
 
   // --- The account: create one, or log in
   const title = document.getElementById('ob-account-title');
@@ -127,7 +112,6 @@
     }
     ob.classList.add('is-done');
     root.classList.remove('is-onboarding');
-    clearInterval(auto);
     setTimeout(() => ob.remove(), 600);
   }
   // the done step's words, as you arrive

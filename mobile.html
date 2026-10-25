@@ -7,7 +7,7 @@
   <meta name="theme-color" content="#f0f0f0">
   <title>행운보관소</title>
   <link rel="stylesheet" href="design-system.css?v=9">
-  <link rel="stylesheet" href="mobile.css?v=176">
+  <link rel="stylesheet" href="mobile.css?v=177">
 </head>
 <body>
   <!-- iPhone 17 screen (Figma 97:630 at rest, 97:730 while dialing), laid out at
@@ -291,33 +291,19 @@
         <div class="ob--bar" role="progressbar" aria-label="Setting up" aria-valuemin="0" aria-valuemax="3"><span class="ob--fill"></span></div>
       </div>
 
-      <!-- Welcome -->
+      <!-- Welcome: one screen, the Wish Tree full bleed, the logo at the top,
+           the line and the way in at the foot -->
       <div class="ob--page" data-page="welcome">
-        <div class="ob--slides" id="ob-slides">
-          <div class="ob--slide">
-            <img src="assets/minis/color/clover.svg" width="106" height="114" alt="">
-            <h2>Keep your luck</h2>
-            <p>Play a small ritual each day and store the luck you earn.</p>
-          </div>
-          <div class="ob--slide">
-            <img src="assets/minis/color/teru.svg" width="56" height="131" alt="">
-            <h2>Read your fortune</h2>
-            <p>A new fortune every morning, read from your birthday.</p>
-          </div>
-          <div class="ob--slide">
-            <img src="assets/minis/color/dandelion.svg" width="107" height="114" alt="">
-            <h2>Make a wish</h2>
-            <p>Hang a wish on the tree, and send your luck to others.</p>
-          </div>
+        <div class="ob--art" aria-hidden="true">
+          <img src="assets/wishtree/back.svg?v=2" alt="">
+          <img src="assets/wishtree/front.svg?v=2" alt="">
+          <img src="assets/wishtree/light.svg?v=2" alt="">
         </div>
-        <div class="ob--dots" role="tablist" aria-label="Slides">
-          <button type="button" role="tab" aria-selected="true" aria-label="Slide 1" data-silent></button>
-          <button type="button" role="tab" aria-selected="false" aria-label="Slide 2" data-silent></button>
-          <button type="button" role="tab" aria-selected="false" aria-label="Slide 3" data-silent></button>
-        </div>
+        <img class="ob--logo" src="assets/splash/logo.svg?v=1" width="365" height="165" alt="Luck Corner">
+        <h2 class="ob--hero">A little luck,<br>every day.</h2>
         <div class="ob--actions">
-          <button type="button" class="ob--btn" data-go="signup">Get started</button>
-          <button type="button" class="ob--link" data-go="login">I already have an account</button>
+          <button type="button" class="ob--btn is-light" data-go="signup">Get started</button>
+          <button type="button" class="ob--link is-light" data-go="login">Already have an account? <u>Log in</u></button>
         </div>
       </div>
 
@@ -376,6 +362,6 @@
   <script src="mobile.js?v=103"></script>
   <script src="tree.js?v=36"></script>
   <script src="splash.js?v=22"></script>
-  <script src="onboarding.js?v=2"></script>
+  <script src="onboarding.js?v=3"></script>
 </body>
 </html>
