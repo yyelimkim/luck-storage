@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Hito on Palm</title>
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="favicon-32.png" sizes="32x32" type="image/png">
+  <link rel="apple-touch-icon" href="apple-touch-icon.png">
+  <link rel="stylesheet" href="design-system.css?v=9">
+  <link rel="stylesheet" href="hito.css?v=3">
+</head>
+<body>
+  <!-- Hito (人) on the palm (Figma 510:8282, 510:8284, 510:8285): trace the
+       character on your palm, stroke by stroke; written, it becomes a
+       little person standing there; tap it to swallow it, nerves and all. -->
+  <main class="hito" id="hito" data-step="write">
+    <div class="hito--palm" id="palm">
+      <svg viewBox="0 0 637 713" aria-label="Your palm" role="img">
+        <defs>
+          <!-- where the finger has traced: the pink shows only there -->
+          <mask id="traced" maskUnits="userSpaceOnUse" x="0" y="0" width="637" height="713">
+            <g transform="translate(253.21 320.87)" fill="none" stroke="#fff" stroke-width="34" stroke-linecap="round" stroke-linejoin="round">
+              <path id="trace-1" d="M93.5 12C94 40 88 70 70 92C56 108 36 117 14 122"/>
+              <path id="trace-2" d="M99 34C104 60 114 80 130 95C145 108 160 115 176 121"/>
+            </g>
+          </mask>
+        </defs>
+        <image href="assets/hito/hand.svg?v=2" width="637" height="713"/>
+        <g class="hito--char" transform="translate(253.21 320.87)">
+          <!-- 510:8282's dashed outline to trace -->
+          <path class="hito--dash" d="M93.6041 0.75C100.614 0.750071 106.296 6.43199 106.297 13.4414C106.297 16.1234 106.23 18.8183 106.092 21.5195C107.175 38.9836 111.861 56.0109 121.295 70.624C132.053 87.2897 149.52 101.672 176.981 109.975C183.691 112.003 187.486 119.086 185.458 125.796C183.429 132.505 176.346 136.3 169.636 134.272C136.838 124.357 114.224 106.474 99.9684 84.3906C97.5368 80.6239 95.3638 76.7606 93.4332 72.8232C91.4713 76.8407 89.2588 80.7798 86.774 84.6152C72.4997 106.648 49.8752 124.37 17.1178 134.273C10.4084 136.301 3.32501 132.506 1.2965 125.797C-0.731811 119.087 3.06342 112.004 9.77307 109.976C37.2751 101.661 54.7302 87.3913 65.4703 70.8135C74.9014 56.2558 79.5927 39.2204 80.6666 21.5381C80.526 18.8276 80.4576 16.1265 80.4576 13.4414C80.4577 6.43185 86.1405 0.750071 93.15 0.75C93.2257 0.750002 93.3012 0.750632 93.3766 0.751953C93.4523 0.750621 93.5281 0.750002 93.6041 0.75Z"/>
+        </g>
+        <!-- 510:8284's Hot Pink, showing only where it's been traced -->
+        <g class="hito--char" mask="url(#traced)">
+          <path class="hito--ink" transform="translate(253.21 320.87)" d="M93.6041 0.75C100.614 0.750071 106.296 6.43199 106.297 13.4414C106.297 16.1234 106.23 18.8183 106.092 21.5195C107.175 38.9836 111.861 56.0109 121.295 70.624C132.053 87.2897 149.52 101.672 176.981 109.975C183.691 112.003 187.486 119.086 185.458 125.796C183.429 132.505 176.346 136.3 169.636 134.272C136.838 124.357 114.224 106.474 99.9684 84.3906C97.5368 80.6239 95.3638 76.7606 93.4332 72.8232C91.4713 76.8407 89.2588 80.7798 86.774 84.6152C72.4997 106.648 49.8752 124.37 17.1178 134.273C10.4084 136.301 3.32501 132.506 1.2965 125.797C-0.731811 119.087 3.06342 112.004 9.77307 109.976C37.2751 101.661 54.7302 87.3913 65.4703 70.8135C74.9014 56.2558 79.5927 39.2204 80.6666 21.5381C80.526 18.8276 80.4576 16.1265 80.4576 13.4414C80.4577 6.43185 86.1405 0.750071 93.15 0.75C93.2257 0.750002 93.3012 0.750632 93.3766 0.751953C93.4523 0.750621 93.5281 0.750002 93.6041 0.75Z"/>
+        </g>
+        <!-- 510:8285's little person, standing on the palm once it's written -->
+        <image class="hito--doll" id="doll" href="assets/hito/doll.svg?v=2" width="637" height="713"/>
+        <!-- where it takes the tap: just the little person -->
+        <rect class="hito--hit" id="doll-hit" x="225" y="255" width="263" height="215" rx="20" role="button" aria-label="Swallow the little person"/>
+      </svg>
+      <img class="hito--hand" id="hint" src="assets/candles/hand.svg" alt="">
+    </div>
+
+    <div class="hito--words" role="status">
+      <p class="hito--say" data-for="write">Trace the character on your palm</p>
+      <p class="hito--say" data-for="doll">Swallow the little person</p>
+      <p class="hito--say" data-for="done">Calm down, your nerves are gone</p>
+    </div>
+  </main>
+  <script src="sounds.js?v=19"></script>
+  <script src="pointer.js?v=1"></script>
+  <script src="hito.js?v=5"></script>
+</body>
+</html>

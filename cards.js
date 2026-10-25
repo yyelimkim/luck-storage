@@ -191,7 +191,7 @@ const CARD_TEXT = {
   },
   '손바닥의 인 쓰기.png': {
     about: 'A Japanese custom of drawing the character for “person” on your palm and swallowing it, believed to calm nerves before something stressful.',
-    howTo: 'Trace 人 on the palm with your finger, then tap to “swallow” it.',
+    howTo: 'Trace 人 on your palm, then swallow the little person.',
   },
   '시험 전 날 떡 먹기.png': {
     about: 'A Korean tradition of eating sticky rice cake (찹쌀떡) before an exam, believed to help your answers “stick” and bring good results.',
@@ -226,4 +226,5 @@ const CANVAS_PAGES = {
   '악마의 눈.png': 'evileye.html?v=5',  // the eye takes the bad luck, and cracks
   '걱정인형.png': 'worry.html?v=13',  // tell the doll your worries, tuck it in
   '꽃잎 점.png': 'love.html?v=7',  // loves me, loves me not... ends on love
+  '손바닥의 인 쓰기.png': 'hito.html?v=4',  // trace 人, then swallow it
 };
