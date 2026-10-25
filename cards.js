@@ -218,11 +218,11 @@ const CARD_TEXT = {
 // Interactive pieces: on desktop they fill the canvas beside an opened card;
 // on the phone they take the illustration's place on the card's sheet
 const CANVAS_PAGES = {
-  '명태 액막이.png': 'charm.html?v=25',  // the fish charm
-  '촛불 한번에 불기.png': 'candles.html?v=21',  // make a wish, blow them all out
-  '부처님 배 만지기.png': 'buddha.html?v=12',  // rub the belly round till it glows
-  '포도 12알 먹기.png': 'grapes.html?v=11',  // eat all twelve before the clock runs out
-  '돌팝 쌓기.png': 'stones.html?v=20',  // drop the stones in, the wish on top
-  '악마의 눈.png': 'evileye.html?v=3',  // the eye takes the bad luck, and cracks
-  '걱정인형.png': 'worry.html?v=11',  // tell the doll your worries, tuck it in
+  '명태 액막이.png': 'charm.html?v=26',  // the fish charm
+  '촛불 한번에 불기.png': 'candles.html?v=22',  // make a wish, blow them all out
+  '부처님 배 만지기.png': 'buddha.html?v=13',  // rub the belly round till it glows
+  '포도 12알 먹기.png': 'grapes.html?v=12',  // eat all twelve before the clock runs out
+  '돌팝 쌓기.png': 'stones.html?v=21',  // drop the stones in, the wish on top
+  '악마의 눈.png': 'evileye.html?v=4',  // the eye takes the bad luck, and cracks
+  '걱정인형.png': 'worry.html?v=12',  // tell the doll your worries, tuck it in
 };

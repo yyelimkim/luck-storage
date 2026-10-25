@@ -176,7 +176,7 @@ html, body {
   min-height: 26px;
   text-align: center;
 }
-.worry--say { display: none; margin: 0; font-size: 20px; line-height: 1.3; }
+.worry--say { display: none; margin: 0; font-size: 18px; line-height: 1.3; }
 [data-step="choose"] .worry--say[data-for="choose"],
 [data-step="tell"] .worry--say[data-for="tell"],
 [data-step="tuck"] .worry--say[data-for="tuck"],
