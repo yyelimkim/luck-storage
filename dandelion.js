@@ -84,7 +84,7 @@ function seed(cx, cy, rot) {
   place(s);
   return s;
 }
-function place(s) { s.img.style.transform = `translate(${s.x.toFixed(1)}px, ${s.y.toFixed(1)}px) rotate(${s.rot.toFixed(1)}deg)`; }
+function place(s) { s.img.style.transform = `translate(${s.x.toFixed(1)}px, ${s.y.toFixed(1)}px) rotate(${(s.rot + (s.sway || 0)).toFixed(1)}deg)`; }
 
 // As big as fits: the head and the hand that holds it above the words
 let k = 1;
@@ -149,9 +149,8 @@ let tilt = 0;
 let tiltV = 0;
 let tiltTo = 0;
 let cam = 0;
-const CAM_WAIT = 250;   // ms after the blow
-const CAM_MOVE = 1400;  // ms
-const CAM_TO = 0.9;     // of the screen's width
+let camV = 0;
+const CAM_FOLLOW = 1500;  // ms the camera follows them for
 let blownAt = 0;
 function blow(strength) {
   stopHint();
@@ -169,6 +168,7 @@ function blow(strength) {
       const dx = px - PIVOT[0];
       const dy = py - PIVOT[1];
       const s = seed(PIVOT[0] + dx * Math.cos(a) - dy * Math.sin(a), PIVOT[1] + dx * Math.sin(a) + dy * Math.cos(a), i * 30 + tilt);
+      s.sway = 0;
       launch(s, strength);
       seeds.push(s);
     }, 30 + ((i + 3) % 12) * 22 + Math.random() * 20);  // from the right side round, quickly
@@ -176,12 +176,14 @@ function blow(strength) {
 }
 function launch(s, strength) {
   s.moving = true;
-  s.vx = rand(220, 300) * strength;   // the gust, easing off to the breeze
-  s.breeze = rand(170, 230);
-  s.vy = rand(-75, -35);               // up and away, gently, so they stay in sight
-  s.rise = rand(-28, -12);
-  s.bob = rand(10, 24);
-  s.freq = rand(0.6, 1.2);
+  // scattered: some caught hard by the gust, some lightly, some lifting,
+  // some dipping before they rise
+  s.vx = rand(240, 480) * strength;   // the gust, easing off to the breeze
+  s.breeze = rand(200, 360);           // each at its own pace, so they scatter
+  s.vy = rand(-110, 70);               // spread up and down, but kept in the frame
+  s.rise = rand(-22, -4);
+  s.bob = rand(8, 16);     // a slight wave up and down as they go
+  s.freq = rand(0.5, 0.9);
   s.phase = rand(0, Math.PI * 2);
   s.spin = rand(-50, 50);
   s.lie = rand(70, 110);  // they float lying on the wind, fluff first
@@ -210,17 +212,30 @@ function tick(now) {
       s.vx += (s.breeze - s.vx) * Math.min(1, dt * 0.9);
       s.vy += (s.rise - s.vy) * Math.min(1, dt * 0.6);
       s.x += s.vx * dt;
-      s.y += s.vy * dt + Math.sin(s.t * s.freq * Math.PI * 2 + s.phase) * s.bob * dt;
+      // the wave: its height, and a little tilt with it
+      const w = s.t * s.freq * Math.PI * 2 + s.phase;
+      s.y += s.vy * dt + Math.cos(w) * s.bob * s.freq * Math.PI * 2 * dt;
       s.rot += ((s.lie - (s.rot % 360)) * 0.6 + s.spin * 0.2) * dt;
+      s.sway = Math.sin(w) * 9;
       place(s);
       const sx = r.left + s.x * k;
       const sy = r.top + s.y * k;
       if (sx - 30 > innerWidth || sx < -60 || sy < -60) { s.gone = true; s.img.remove(); } else inSight++;
     }
-    // the camera makes one move after them, easing off to the right, and
-    // holds there as they float on out of the frame
-    const u = Math.min(1, Math.max(0, (now - blownAt - CAM_WAIT) / CAM_MOVE));
-    cam = CAM_TO * innerWidth * (u < 0.5 ? 4 * u * u * u : 1 - (-2 * u + 2) ** 3 / 2);
+    // the camera follows them for a moment and a half, at their own pace,
+    // then stops, and they blow on out of the frame
+    // (it keeps the middle of them a little left of the middle of the
+    // screen, so they've room to scatter on ahead)
+    const since = now - blownAt;
+    const flying = seeds.filter((s) => s.moving && !s.gone);
+    if (since < CAM_FOLLOW && flying.length) {
+      const mid = flying.reduce((sum, s) => sum + s.x, 0) / flying.length;
+      const want = (art.offsetLeft + 198.5) + (mid - 198.5) * k - innerWidth * 0.42;
+      camV += ((want - cam) * 7 - camV) * Math.min(1, dt * 6);
+    } else {
+      camV -= camV * Math.min(1, dt * 9);
+    }
+    cam += camV * dt;
     world.style.transform = `translate3d(${(-cam).toFixed(1)}px, 0, 0)`;
     if (!inSight && seeds.length >= 12 && root.dataset.step === 'gone') finish();
   }
@@ -236,7 +251,7 @@ function start() {
   root.dataset.step = 'wish';
   input.value = '';
   send.disabled = true;
-  tilt = 0; tiltV = 0; tiltTo = 0; cam = 0; blownAt = 0;
+  tilt = 0; tiltV = 0; tiltTo = 0; cam = 0; camV = 0; blownAt = 0;
   world.style.transform = '';
   stopHint();
   build();
