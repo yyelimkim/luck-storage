@@ -1177,8 +1177,13 @@ function showEarned() {
     // height, so the tall thin ones (the evil eye, Teru Teru Bozu) aren't
     // small beside the round ones, and none taller than the card allows
     const [file, w0, h0] = MINI[name];
-    const k = Math.min(105 / h0, Math.sqrt((88 * 88) / (w0 * h0)));
-    const img = `<img src="assets/minis/color/${file}.svg" width="${Math.round(w0 * k)}" height="${Math.round(h0 * k)}" alt="">`;
+    // the tall thin ones (the dreamcatcher, Teru Teru Bozu, the evil eye) a
+    // little taller still, and in from the edge, so they hang more centred
+    const tall = w0 / h0 < 0.5;
+    const k = Math.min((tall ? 118 : 105) / h0, Math.sqrt((88 * 88) / (w0 * h0)) * (tall ? 1.12 : 1));
+    // (the worry doll, short and wide, a little lower)
+    const nudge = tall ? 'margin-left: 14px' : file === 'worry-doll' ? 'margin-top: 10px' : '';
+    const img = `<img src="assets/minis/color/${file}.svg" width="${Math.round(w0 * k)}" height="${Math.round(h0 * k)}" alt=""${nudge ? ` style="${nudge}"` : ''}>`;
     // the name on one line while it fits, wrapping when it doesn't
     return `<button type="button" class="profile--earned" data-card="${name}" style="--earned: ${CARD_COLOR[name]}">${img}<p>${cardName(name)}</p></button>`;
   }).join('');
