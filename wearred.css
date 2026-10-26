@@ -33,14 +33,17 @@ html, body {
   scale: var(--k);
 }
 .wr--fig img { position: absolute; display: block; pointer-events: none; }
+/* the shirt fades up into the green, right across the screen (wearred.js
+   sets where it ends: solid to just under the shoulders, clear by mid-chest) */
 .wr--fade {
   position: absolute;
-  left: -20px;
-  right: -20px;
-  top: -130px;
-  height: 281px;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: var(--fade-to, 0px);
+  z-index: 2;
   pointer-events: none;
-  background: linear-gradient(to bottom, var(--forest-green) 53.4%, rgb(42 159 58 / 0));
+  background: linear-gradient(to bottom, var(--forest-green) var(--fade-solid, 50%), rgb(42 159 58 / 0));
 }
 
 /* A slot (the bottoms, the shoes): what's on, and what's coming on */
@@ -68,12 +71,19 @@ html, body {
 .wr--arrow:active { transform: scale(0.88); }
 [data-step="done"] .wr--arrow { opacity: 0; pointer-events: none; }
 
-/* All in red: a glow round the figure */
-[data-step="done"] .wr--fig { animation: wr-glow 1.6s ease-in-out infinite alternate; }
-@keyframes wr-glow {
-  from { filter: drop-shadow(0 0 6px var(--light-pink)); }
-  to { filter: drop-shadow(0 0 18px var(--light-pink)); }
+/* All in red: the card's yellow flower (Figma 234:1872) opens up behind the
+   figure, and turns slowly */
+.wr--fig .wr--burst {
+  left: -51.5px;
+  top: 48px;
+  width: 504.167px;
+  height: 504.167px;
+  opacity: 0;
+  scale: 0.6;
+  transition: opacity 0.6s, scale 0.8s cubic-bezier(0.3, 1.3, 0.5, 1);
 }
+[data-step="done"] .wr--burst { opacity: 1; scale: 1; animation: wr-turn 40s linear infinite; }
+@keyframes wr-turn { to { rotate: 360deg; } }
 
 /* The pointing hand, showing a swipe across the bottoms */
 .wr--hint {

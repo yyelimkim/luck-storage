@@ -32,7 +32,10 @@ const RED = { bottoms: 'pants-red', shoes: 'shoes-red' };
 const chevron = (dir) => `<svg width="11" height="18" viewBox="0 0 11 18" aria-hidden="true"><path d="${dir < 0 ? 'M9.5 1.5L2 9l7.5 7.5' : 'M1.5 1.5L9 9l-7.5 7.5'}" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
 
 function build() {
+  const burst = img('burst', [-51.5, 48, 504.167, 504.167]);
+  burst.classList.add('wr--burst');
   fig.replaceChildren(
+    burst,
     img('legs', [36.3, 205, 328.7, 362.7], [331, 365]),
     img('shirt', [14, 0, 374.8, 258.2], [375, 259]),
     img('sock-r', [251.4, 424.6, 114.3, 144.1], [115, 145]),
@@ -51,9 +54,6 @@ function build() {
   }
   fig.appendChild(img('hand-r', [311, 216, 81.9, 70.2], [82, 71]));
   fig.appendChild(img('hand-l', [8, 213, 78.7, 70.2], [79, 71]));
-  const fade = document.createElement('div');
-  fade.className = 'wr--fade';
-  fig.appendChild(fade);
   // the arrows
   for (const [name, s] of Object.entries(SLOTS)) {
     s.arrows.forEach(([ax, ay], i) => {
@@ -82,7 +82,11 @@ function fit() {
   const room = innerHeight - 120 - 24;
   k = Math.min(1, (innerWidth - 8) / 470, room / 590);
   root.style.setProperty('--k', k.toFixed(3));
-  root.style.setProperty('--top', `${Math.max(0, (room - 613 * k) / 2 + 10).toFixed(1)}px`);
+  const top = Math.max(0, (room - 613 * k) / 2 + 10);
+  root.style.setProperty('--top', `${top.toFixed(1)}px`);
+  // the fade: solid down to 20 into the figure, clear by 151 (as the design's)
+  root.style.setProperty('--fade-to', `${(top + 151 * k).toFixed(1)}px`);
+  root.style.setProperty('--fade-solid', `${(((top + 20 * k) / (top + 151 * k)) * 100).toFixed(1)}%`);
 }
 addEventListener('resize', fit);
 

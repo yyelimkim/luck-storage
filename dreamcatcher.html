@@ -8,19 +8,26 @@
   <link rel="icon" href="favicon-32.png" sizes="32x32" type="image/png">
   <link rel="apple-touch-icon" href="apple-touch-icon.png">
   <link rel="stylesheet" href="design-system.css?v=9">
-  <link rel="stylesheet" href="dreamcatcher.css?v=2">
+  <link rel="stylesheet" href="dreamcatcher.css?v=3">
 </head>
 <body>
-  <!-- Dreamcatcher (the card's own, Figma 234:1369; the bad dreams, 529:450,
+  <!-- Dreamcatcher (the card's own, Figma 234:1369, with its strands 234:1348/56/62; the bad dreams, 529:450,
        529:465, 529:455): tap it to wake it and it spins, glowing. The bad
        dreams drift in one by one, flickering and wavering, and each melts
        away as it reaches the web. With the last caught, the glow fades. -->
   <main class="dc" id="dc" data-step="tap">
     <div class="dc--art" id="art">
       <img class="dc--string" src="assets/dreamcatcher/string.svg?v=1" alt="">
-      <button type="button" class="dc--hoop" id="hoop" aria-label="Wake the dreamcatcher">
-        <img src="assets/dreamcatcher/hoop.svg?v=1" alt="">
-      </button>
+      <!-- what turns: the hoop, and the beaded strands hanging under it -->
+      <div class="dc--turn" id="turn">
+        <img class="dc--strand" src="assets/dreamcatcher/strand-left.svg?v=1" alt="" style="left:74px;top:477px;width:36.58px;height:159.63px">
+        <img class="dc--strand" src="assets/dreamcatcher/crease.svg?v=1" alt="" style="left:93px;top:571px;width:2.5px;height:13px">
+        <img class="dc--strand" src="assets/dreamcatcher/strand-mid.svg?v=1" alt="" style="left:129px;top:489px;width:50.85px;height:242.51px">
+        <img class="dc--strand" src="assets/dreamcatcher/strand-right.svg?v=1" alt="" style="left:199px;top:477px;width:36.58px;height:159.63px">
+        <button type="button" class="dc--hoop" id="hoop" aria-label="Wake the dreamcatcher">
+          <img src="assets/dreamcatcher/hoop.svg?v=1" alt="">
+        </button>
+      </div>
     </div>
     <div class="dc--dreams" id="dreams" aria-hidden="true"></div>
     <div class="dc--words" role="status">
@@ -29,8 +36,8 @@
       <p class="dc--say" data-for="done">Only sweet dreams now</p>
     </div>
   </main>
-  <script src="sounds.js?v=24"></script>
+  <script src="sounds.js?v=25"></script>
   <script src="pointer.js?v=1"></script>
-  <script src="dreamcatcher.js?v=2"></script>
+  <script src="dreamcatcher.js?v=3"></script>
 </body>
 </html>

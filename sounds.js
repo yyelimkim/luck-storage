@@ -130,6 +130,38 @@ const Sounds = (() => {
     n.start(t);
   }
 
+  // A bad dream caught: drawn in with a swirling rush that rises and
+  // closes off, and a soft low bell as it's gone
+  function capture() {
+    const a = audio();
+    const t = a.currentTime;
+    const n = noise(a, 0.7);
+    const bp = a.createBiquadFilter();
+    bp.type = 'bandpass';
+    bp.Q.value = 3;
+    bp.frequency.setValueAtTime(400, t);
+    bp.frequency.exponentialRampToValueAtTime(2200, t + 0.35);
+    bp.frequency.exponentialRampToValueAtTime(700, t + 0.6);
+    const g = a.createGain();
+    g.gain.setValueAtTime(0.0001, t);
+    g.gain.exponentialRampToValueAtTime(0.5, t + 0.25);
+    g.gain.exponentialRampToValueAtTime(0.0001, t + 0.62);
+    n.connect(bp).connect(g).connect(a.destination);
+    n.start(t);
+    [[523.3, 0.42], [392, 0.5]].forEach(([f, d]) => {
+      const o = a.createOscillator();
+      const og = a.createGain();
+      o.type = 'sine';
+      o.frequency.value = f;
+      og.gain.setValueAtTime(0.0001, t + d);
+      og.gain.exponentialRampToValueAtTime(0.09, t + d + 0.02);
+      og.gain.exponentialRampToValueAtTime(0.0001, t + d + 0.7);
+      o.connect(og).connect(a.destination);
+      o.start(t + d);
+      o.stop(t + d + 0.75);
+    });
+  }
+
   // A celebration (a perfect score): a quick "ta-da", two short notes up
   // into a bright held chord, with a sparkle of high bells on top
   function fanfare() {
@@ -559,7 +591,7 @@ const Sounds = (() => {
     air.start(t + 0.02);
   }
 
-  return { hit, swoosh, flip, claim, chime, stone, tap, eat, tick, rub, shimmer, absorb, crack, surge, rain, fanfare, blow, pluck, unlock };
+  return { hit, swoosh, flip, claim, chime, stone, tap, eat, tick, rub, shimmer, absorb, crack, surge, rain, fanfare, blow, capture, pluck, unlock };
 })();
 
 // Every button, tab and link ticks when pressed (anything with its own

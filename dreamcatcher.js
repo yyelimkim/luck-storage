@@ -9,24 +9,26 @@ const IN_SHEET = new URLSearchParams(location.search).has('sheet');
 const root = document.getElementById('dc');
 const art = document.getElementById('art');
 const hoop = document.getElementById('hoop');
-const wheel = hoop.querySelector('img');
+const turn = document.getElementById('turn');
 const dreams = document.getElementById('dreams');
 
-// The drawing as big as fits, its hoop in the middle of the room over the
-// words, the string running up off the top
+// The drawing as big as fits, its hoop a little above the middle of the
+// room, its strands' tips just over the words, the string running up off
+// the top
 let k = 1;
 function fit() {
   const room = innerHeight - 120 - 16;
-  k = Math.min(1, (innerWidth - 48) / 308, (room - 40) / 330);
+  k = Math.min(1, (innerWidth - 48) / 308, room / 640);
   root.style.setProperty('--k', k.toFixed(3));
-  root.style.setProperty('--top', `${(room * 0.48 - 350 * k).toFixed(1)}px`);
+  root.style.setProperty('--top', `${(room + 4 - 732 * k).toFixed(1)}px`);
 }
 addEventListener('resize', fit);
 fit();
 // where the hoop's middle is on the screen, and how big it is there
 function centre() {
   const r = hoop.getBoundingClientRect();
-  return { x: r.left + r.width / 2, y: r.top + r.height / 2, r: r.width / 2 };
+  // (its height: its width narrows as it turns)
+  return { x: r.left + r.width / 2, y: r.top + r.height / 2, r: r.height / 2 };
 }
 
 // The bad dreams, each from its own edge, one after another
@@ -68,7 +70,7 @@ hoop.addEventListener('click', () => {
   Sounds.shimmer();
   root.dataset.step = 'catch';
   root.classList.add('is-awake');
-  spinTo = 36;  // deg a second
+  spinTo = 200;  // deg a second: a turn every couple of seconds
   GHOSTS.forEach((g) => timers.push(setTimeout(() => release(g), g.at)));
 });
 let timers = [];
@@ -77,15 +79,21 @@ let timers = [];
 let spin = 0;
 let spinV = 0;
 let spinTo = 0;
+let rest = null;  // where it comes to rest, once it's done
 let caught = 0;
 let last = performance.now();
 function tick(now) {
   const dt = Math.min(0.033, (now - last) / 1000);
   last = now;
-  // the hoop spins up when woken, and winds down once it's done
-  spinV += (spinTo - spinV) * Math.min(1, dt * (spinTo ? 1.2 : 0.8));
-  spin = (spin + spinV * dt) % 360;
-  if (spinV > 0.05) wheel.style.transform = `rotate(${spin.toFixed(2)}deg)`;
+  // it turns over and over, front to back, when woken; once it's done it
+  // slows and comes to rest facing us again
+  if (rest === null) {
+    spinV += (spinTo - spinV) * Math.min(1, dt * 1.2);
+    spin += spinV * dt;
+  } else {
+    spin += (rest - spin) * Math.min(1, dt * 1.6);
+  }
+  turn.style.transform = `perspective(1000px) rotateY(${spin.toFixed(2)}deg)`;
 
   const c = centre();
   for (const g of ghosts) {
@@ -118,7 +126,7 @@ requestAnimationFrame(tick);
 
 function dissolve(g, x, y, op, c) {
   g.state = 'gone';
-  Sounds.absorb();
+  Sounds.capture();
   const from = `translate(${(x - g.w / 2).toFixed(1)}px, ${(y - g.h / 2).toFixed(1)}px)`;
   const to = `translate(${(x + (c.x - x) * 0.4 - g.w / 2).toFixed(1)}px, ${(y + (c.y - y) * 0.4 - g.h / 2).toFixed(1)}px)`;
   g.img.animate([
@@ -133,7 +141,7 @@ function dissolve(g, x, y, op, c) {
 function calm() {
   root.classList.add('is-calm');
   root.dataset.step = 'done';
-  spinTo = 0;
+  rest = (Math.ceil(spin / 360) + 1) * 360;  // on round, to facing us
   if (IN_SHEET) setTimeout(() => parent.postMessage('luck-claimed', '*'), 1600);
 }
 
@@ -145,6 +153,7 @@ addEventListener('message', (e) => {
   ghosts.forEach((g) => g.img.remove());
   ghosts = [];
   caught = 0;
+  spin = 0; spinV = 0; spinTo = 0; rest = null;
   root.classList.remove('is-awake', 'is-calm');
   root.dataset.step = 'tap';
 });
