@@ -216,6 +216,28 @@ const Sounds = (() => {
     });
   }
 
+  // A coin: a bright metallic "cha-ching", two quick rings, each a
+  // few high partials that ring out
+  function coin() {
+    const a = audio();
+    const t = a.currentTime;
+    [[0, 1], [0.11, 1.33]].forEach(([d, up]) => {
+      [1, 2.76, 5.4].forEach((p, i) => {
+        const o = a.createOscillator();
+        const g = a.createGain();
+        o.type = 'sine';
+        o.frequency.value = 1320 * up * p;
+        const loud = [0.16, 0.07, 0.03][i];
+        g.gain.setValueAtTime(0.0001, t + d);
+        g.gain.exponentialRampToValueAtTime(loud, t + d + 0.005);
+        g.gain.exponentialRampToValueAtTime(0.0001, t + d + (d ? 0.9 : 0.25));
+        o.connect(g).connect(a.destination);
+        o.start(t + d);
+        o.stop(t + d + 0.95);
+      });
+    });
+  }
+
   // A celebration (a perfect score): a quick "ta-da", two short notes up
   // into a bright held chord, with a sparkle of high bells on top
   function fanfare() {
@@ -645,7 +667,7 @@ const Sounds = (() => {
     air.start(t + 0.02);
   }
 
-  return { hit, swoosh, flip, claim, chime, stone, tap, eat, tick, rub, shimmer, absorb, crack, surge, rain, fanfare, blow, capture, pop, oink, pluck, unlock };
+  return { hit, swoosh, flip, claim, chime, stone, tap, eat, tick, rub, shimmer, absorb, crack, surge, rain, fanfare, blow, capture, pop, oink, coin, pluck, unlock };
 })();
 
 // Every button, tab and link ticks when pressed (anything with its own

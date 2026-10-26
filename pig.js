@@ -141,7 +141,7 @@ function tap(p) {
 function toSky() {
   root.dataset.step = 'done';
   root.classList.add('is-sky');
-  later(() => Sounds.shimmer(), 1500);
+  later(() => Sounds.coin(), 1500);  // the coin sun
   if (IN_SHEET) later(() => parent.postMessage('luck-claimed', '*'), 4600);
 }
 

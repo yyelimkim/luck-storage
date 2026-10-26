@@ -218,19 +218,19 @@ const CARD_TEXT = {
 // Interactive pieces: on desktop they fill the canvas beside an opened card;
 // on the phone they take the illustration's place on the card's sheet
 const CANVAS_PAGES = {
-  '돼지꿈.png': 'pig.html?v=11',  // catch the three pigs as they pop up, then the coin sun
-  '빨간 옷 입기.png': 'wearred.html?v=8',  // swipe the bottoms and shoes till both are red
-  '드림캐쳐.png': 'dreamcatcher.html?v=9',  // wake it, it catches the bad dreams
-  '민들레 소원 빌기.png': 'dandelion.html?v=18',  // make a wish, blow the seeds away
-  '시험 전 날 떡 먹기.png': 'ricecake.html?v=11',  // eat all eight, the 100 at the bar's end
-  '네잎 클로버 찾기.png': 'clover.html?v=16',  // swipe through the field, find the one four-leaf
-  '명태 액막이.png': 'charm.html?v=38',  // the fish charm
-  '촛불 한번에 불기.png': 'candles.html?v=27',  // make a wish, blow them all out
-  '부처님 배 만지기.png': 'buddha.html?v=16',  // rub the belly round till it glows
-  '포도 12알 먹기.png': 'grapes.html?v=18',  // eat all twelve before the clock runs out
-  '돌팝 쌓기.png': 'stones.html?v=28',  // drop the stones in, the wish on top
-  '악마의 눈.png': 'evileye.html?v=22',  // hung on a string like the fish charm; hit, it cracks
-  '걱정인형.png': 'worry.html?v=20',  // tell the doll your worries, tuck it in
-  '꽃잎 점.png': 'love.html?v=14',  // loves me, loves me not... ends on love
-  '손바닥의 인 쓰기.png': 'hito.html?v=25',  // trace 人, then swallow it
+  '돼지꿈.png': 'pig.html?v=12',  // catch the three pigs as they pop up, then the coin sun
+  '빨간 옷 입기.png': 'wearred.html?v=9',  // swipe the bottoms and shoes till both are red
+  '드림캐쳐.png': 'dreamcatcher.html?v=10',  // wake it, it catches the bad dreams
+  '민들레 소원 빌기.png': 'dandelion.html?v=19',  // make a wish, blow the seeds away
+  '시험 전 날 떡 먹기.png': 'ricecake.html?v=12',  // eat all eight, the 100 at the bar's end
+  '네잎 클로버 찾기.png': 'clover.html?v=17',  // swipe through the field, find the one four-leaf
+  '명태 액막이.png': 'charm.html?v=39',  // the fish charm
+  '촛불 한번에 불기.png': 'candles.html?v=28',  // make a wish, blow them all out
+  '부처님 배 만지기.png': 'buddha.html?v=17',  // rub the belly round till it glows
+  '포도 12알 먹기.png': 'grapes.html?v=19',  // eat all twelve before the clock runs out
+  '돌팝 쌓기.png': 'stones.html?v=29',  // drop the stones in, the wish on top
+  '악마의 눈.png': 'evileye.html?v=23',  // hung on a string like the fish charm; hit, it cracks
+  '걱정인형.png': 'worry.html?v=21',  // tell the doll your worries, tuck it in
+  '꽃잎 점.png': 'love.html?v=15',  // loves me, loves me not... ends on love
+  '손바닥의 인 쓰기.png': 'hito.html?v=26',  // trace 人, then swallow it
 };

@@ -113,7 +113,7 @@ function next(name, dir) {
 }
 function done() {
   root.dataset.step = 'done';
-  Sounds.shimmer();
+  Sounds.fanfare();
   if (IN_SHEET) setTimeout(() => parent.postMessage('luck-claimed', '*'), 1100);
 }
 
