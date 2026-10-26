@@ -104,6 +104,32 @@ const Sounds = (() => {
     });
   }
 
+  // A breath blown out, soft and long: an airy "fffoo" that swells and
+  // falls away, its rush sweeping down as the breath empties
+  function blow(strength = 1) {
+    const a = audio();
+    const t = a.currentTime;
+    const len = 1.1;
+    const n = noise(a, len + 0.1);
+    const bp = a.createBiquadFilter();
+    bp.type = 'bandpass';
+    bp.Q.value = 0.7;
+    bp.frequency.setValueAtTime(1600, t);
+    bp.frequency.exponentialRampToValueAtTime(500, t + len);
+    const lp = a.createBiquadFilter();
+    lp.type = 'lowpass';
+    lp.frequency.setValueAtTime(3500, t);
+    lp.frequency.exponentialRampToValueAtTime(900, t + len);
+    const g = a.createGain();
+    const peak = 0.22 * Math.min(1.3, strength);
+    g.gain.setValueAtTime(0.0001, t);
+    g.gain.exponentialRampToValueAtTime(peak, t + 0.18);
+    g.gain.setValueAtTime(peak * 0.85, t + 0.45);
+    g.gain.exponentialRampToValueAtTime(0.0001, t + len);
+    n.connect(bp).connect(lp).connect(g).connect(a.destination);
+    n.start(t);
+  }
+
   // A celebration (a perfect score): a quick "ta-da", two short notes up
   // into a bright held chord, with a sparkle of high bells on top
   function fanfare() {
@@ -533,7 +559,7 @@ const Sounds = (() => {
     air.start(t + 0.02);
   }
 
-  return { hit, swoosh, flip, claim, chime, stone, tap, eat, tick, rub, shimmer, absorb, crack, surge, rain, fanfare, pluck, unlock };
+  return { hit, swoosh, flip, claim, chime, stone, tap, eat, tick, rub, shimmer, absorb, crack, surge, rain, fanfare, blow, pluck, unlock };
 })();
 
 // Every button, tab and link ticks when pressed (anything with its own

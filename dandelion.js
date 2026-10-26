@@ -34,11 +34,6 @@ function part(p) {
 const PIVOT = [222, 470];
 const HEAD = [250.3, 174.45];  // the head's middle
 const SEED = [26.1357, 62.2061];
-const LOOSE = [  // the three already drifting off
-  { box: [111.0, 61.1, 64.9, 51.6], rot: -60.1 },
-  { box: [54.4, 91.7, 64.9, 38.8], rot: -104.2 },
-  { box: [12.0, 0, 45.3, 65.5], rot: -21.7 },
-];
 
 let stem;
 let head;
@@ -54,7 +49,7 @@ function build() {
   stem = add({ box: [178.3, 239.0, 103.2, 365.2], inner: [75.3489, 360.39], rot: 4.5, src: 'stem' });
   add({ box: [0, 272.9, 379.1, 540.1], inner: [379.131, 540.125], src: 'hand' });
   add({ box: [140.6, 379.4, 106.3, 106.1], inner: [76.2203, 74.963], rot: -141.7, src: 'nail-1' });
-  add({ box: [303.9, 267.0, 93.0, 92.7], inner: [68.6847, 67.7097], rot: 29.3, src: 'nail-2' });
+  add({ box: [303.9, 267.0, 93.0, 92.7], inner: [68.6847, 67.7097], rot: -29.3, src: 'nail-2' });
   add({ box: [0, 272.9, 379.1, 540.1], inner: [380.632, 541.625], src: 'hand-line' });
   add({ box: [244.7, 437.7, 13.5, 14.0], inner: [12.5038, 6.97534], rot: -131.3, src: 'line-1' });
   add({ box: [231.5, 421.6, 10.2, 10.8], inner: [10.745, 4.13515], rot: -131.3, src: 'line-2' });
@@ -72,8 +67,7 @@ function build() {
   [stem, head, glow].forEach((el) => {
     el.style.transformOrigin = `${PIVOT[0] - parseFloat(el.style.left)}px ${PIVOT[1] - parseFloat(el.style.top)}px`;
   });
-  // the seeds already in the air
-  seeds = LOOSE.map(({ box: [x, y, w, h], rot }) => seed(x + w / 2, y + h / 2, rot));
+  seeds = [];
 }
 
 // A seed in the air, by its middle and its turn
@@ -155,12 +149,14 @@ let tilt = 0;
 let tiltV = 0;
 let tiltTo = 0;
 let cam = 0;
-let camV = 0;
+const CAM_WAIT = 250;   // ms after the blow
+const CAM_MOVE = 1400;  // ms
+const CAM_TO = 0.9;     // of the screen's width
 let blownAt = 0;
 function blow(strength) {
   stopHint();
   root.dataset.step = 'gone';
-  Sounds.swoosh(strength);
+  Sounds.blow(strength);
   blownAt = performance.now();
   tiltV = 70 * strength;   // deg a second, a gust
   tiltTo = 9;              // and it stays leaning in the breeze
@@ -175,15 +171,15 @@ function blow(strength) {
       const s = seed(PIVOT[0] + dx * Math.cos(a) - dy * Math.sin(a), PIVOT[1] + dx * Math.sin(a) + dy * Math.cos(a), i * 30 + tilt);
       launch(s, strength);
       seeds.push(s);
-    }, 60 + ((i + 3) % 12) * 55 + Math.random() * 40);  // from the right side round
+    }, 30 + ((i + 3) % 12) * 22 + Math.random() * 20);  // from the right side round, quickly
   }
-  seeds.forEach((s) => launch(s, strength * 0.8));
 }
 function launch(s, strength) {
   s.moving = true;
-  s.vx = rand(150, 240) * strength;   // the gust, easing off to the breeze
-  s.breeze = rand(70, 120);
-  s.vy = rand(-70, -20);
+  s.vx = rand(220, 300) * strength;   // the gust, easing off to the breeze
+  s.breeze = rand(170, 230);
+  s.vy = rand(-75, -35);               // up and away, gently, so they stay in sight
+  s.rise = rand(-28, -12);
   s.bob = rand(10, 24);
   s.freq = rand(0.6, 1.2);
   s.phase = rand(0, Math.PI * 2);
@@ -212,21 +208,21 @@ function tick(now) {
       if (!s.moving || s.gone) continue;
       s.t += dt;
       s.vx += (s.breeze - s.vx) * Math.min(1, dt * 0.9);
-      s.vy += (-12 - s.vy) * Math.min(1, dt * 0.6);
+      s.vy += (s.rise - s.vy) * Math.min(1, dt * 0.6);
       s.x += s.vx * dt;
       s.y += s.vy * dt + Math.sin(s.t * s.freq * Math.PI * 2 + s.phase) * s.bob * dt;
       s.rot += ((s.lie - (s.rot % 360)) * 0.6 + s.spin * 0.2) * dt;
       place(s);
-      if (r.left + s.x * k - 30 > innerWidth) { s.gone = true; s.img.remove(); } else inSight++;
+      const sx = r.left + s.x * k;
+      const sy = r.top + s.y * k;
+      if (sx - 30 > innerWidth || sx < -60 || sy < -60) { s.gone = true; s.img.remove(); } else inSight++;
     }
-    // the camera follows them along, a little slower, so they float on out
-    if (now - blownAt > 500) {
-      const want = 70 * k;  // px a second
-      camV += (want - camV) * Math.min(1, dt * 1.5);
-      cam += camV * dt;
-      world.style.transform = `translate3d(${(-cam).toFixed(1)}px, 0, 0)`;
-    }
-    if (!inSight && seeds.length >= 15 && root.dataset.step === 'gone') finish();
+    // the camera makes one move after them, easing off to the right, and
+    // holds there as they float on out of the frame
+    const u = Math.min(1, Math.max(0, (now - blownAt - CAM_WAIT) / CAM_MOVE));
+    cam = CAM_TO * innerWidth * (u < 0.5 ? 4 * u * u * u : 1 - (-2 * u + 2) ** 3 / 2);
+    world.style.transform = `translate3d(${(-cam).toFixed(1)}px, 0, 0)`;
+    if (!inSight && seeds.length >= 12 && root.dataset.step === 'gone') finish();
   }
   requestAnimationFrame(tick);
 }
@@ -240,7 +236,7 @@ function start() {
   root.dataset.step = 'wish';
   input.value = '';
   send.disabled = true;
-  tilt = 0; tiltV = 0; tiltTo = 0; cam = 0; camV = 0; blownAt = 0;
+  tilt = 0; tiltV = 0; tiltTo = 0; cam = 0; blownAt = 0;
   world.style.transform = '';
   stopHint();
   build();

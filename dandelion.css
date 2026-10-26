@@ -52,7 +52,7 @@ html, body {
 /* The yellow of the head, and its seeds, fade as they go */
 .dl--rings, .dl--seeds { transition: opacity 1.6s ease-out; }
 [data-step="gone"] .dl--seeds, [data-step="done"] .dl--seeds { opacity: 0; transition-duration: 0.25s; }
-[data-step="gone"] .dl--rings, [data-step="done"] .dl--rings { opacity: 0.2; }
+[data-step="gone"] .dl--rings, [data-step="done"] .dl--rings { opacity: 0.05; }
 
 /* The hand fades into the card's blue under the words */
 .dl--fade {
@@ -75,6 +75,21 @@ html, body {
   opacity: 0;
 }
 
+/* Asking for the wish: the dandelion softened behind the question, which
+   sits in the middle with the field under it (as the candles' wish) */
+.dl--veil {
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  background: var(--v2-blue);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.5s;
+}
+[data-step="wish"] .dl--veil { opacity: 0.7; }
+[data-step="wish"] .dl--words { top: calc(50% - 64px); }
+[data-step="wish"] .dl--field { top: calc(50% - 16px); }
+
 /* The words at the bottom, at the rituals' one spot */
 .dl--words {
   position: absolute;
@@ -85,8 +100,6 @@ html, body {
   min-height: 24px;
   text-align: center;
 }
-/* with the field under them, the words sit above it */
-[data-step="wish"] .dl--words { top: calc(100% - 166px); }
 .dl--say { display: none; margin: 0; font-size: 18px; line-height: 1.3; }  /* the rituals' step-words size */
 [data-step="wish"] .dl--say[data-for="wish"],
 [data-step="blow"] .dl--say[data-for="blow"],
