@@ -1152,16 +1152,14 @@ function showEarned() {
   const list = store.get('earned', []).filter((n) => IMAGES.includes(n));  // only cards there are
   if (!list.length) return;
   recent.innerHTML = list.map((name) => {
-    // the name over two lines, broken near its middle
-    const words = cardName(name).split(' ');
-    let cut = 1;
-    let best = Infinity;
-    for (let i = 1; i < words.length; i++) {
-      const d = Math.abs(words.slice(0, i).join(' ').length - words.slice(i).join(' ').length);
-      if (d < best) { best = d; cut = i; }
-    }
-    const label = words.length > 1 ? `${words.slice(0, cut).join(' ')}<br>${words.slice(cut).join(' ')}` : words[0];
-    return `<button type="button" class="profile--earned" data-card="${name}" style="--earned: ${CARD_COLOR[name]}">${miniImg(name, 'color', 100)}<p>${label}</p></button>`;
+    // each drawing the same size to the eye: sized by its area, not its
+    // height, so the tall thin ones (the evil eye, Teru Teru Bozu) aren't
+    // small beside the round ones, and none taller than the card allows
+    const [file, w0, h0] = MINI[name];
+    const k = Math.min(105 / h0, Math.sqrt((88 * 88) / (w0 * h0)));
+    const img = `<img src="assets/minis/color/${file}.svg" width="${Math.round(w0 * k)}" height="${Math.round(h0 * k)}" alt="">`;
+    // the name on one line while it fits, wrapping when it doesn't
+    return `<button type="button" class="profile--earned" data-card="${name}" style="--earned: ${CARD_COLOR[name]}">${img}<p>${cardName(name)}</p></button>`;
   }).join('');
 }
 function earned(name) {

@@ -49,7 +49,7 @@ function build() {
   stem = add({ box: [178.3, 239.0, 103.2, 365.2], inner: [75.3489, 360.39], rot: 4.5, src: 'stem' });
   add({ box: [0, 272.9, 379.1, 540.1], inner: [379.131, 540.125], src: 'hand' });
   add({ box: [140.6, 379.4, 106.3, 106.1], inner: [76.2203, 74.963], rot: -141.7, src: 'nail-1' });
-  add({ box: [303.9, 267.0, 93.0, 92.7], inner: [68.6847, 67.7097], rot: -29.3, src: 'nail-2' });
+  add({ box: [303.9, 267.0, 93.0, 92.7], inner: [68.6847, 67.7097], rot: 150.7, src: 'nail-2' });
   add({ box: [0, 272.9, 379.1, 540.1], inner: [380.632, 541.625], src: 'hand-line' });
   add({ box: [244.7, 437.7, 13.5, 14.0], inner: [12.5038, 6.97534], rot: -131.3, src: 'line-1' });
   add({ box: [231.5, 421.6, 10.2, 10.8], inner: [10.745, 4.13515], rot: -131.3, src: 'line-2' });
@@ -178,8 +178,8 @@ function launch(s, strength) {
   s.moving = true;
   // scattered: some caught hard by the gust, some lightly, some lifting,
   // some dipping before they rise
-  s.vx = rand(240, 480) * strength;   // the gust, easing off to the breeze
-  s.breeze = rand(200, 360);           // each at its own pace, so they scatter
+  s.vx = rand(170, 580) * strength;   // the gust, easing off to the breeze
+  s.breeze = rand(140, 420);           // each at its own pace, so they spread out wide
   s.vy = rand(-110, 70);               // spread up and down, but kept in the frame
   s.rise = rand(-22, -4);
   s.bob = rand(8, 16);     // a slight wave up and down as they go
@@ -227,6 +227,8 @@ function tick(now) {
     // (it keeps the middle of them a little left of the middle of the
     // screen, so they've room to scatter on ahead)
     const since = now - blownAt;
+    // as the camera stops, the words: in the middle, over the seeds going
+    if (since > CAM_FOLLOW && !root.classList.contains('is-wind')) root.classList.add('is-wind');
     const flying = seeds.filter((s) => s.moving && !s.gone);
     if (since < CAM_FOLLOW && flying.length) {
       const mid = flying.reduce((sum, s) => sum + s.x, 0) / flying.length;
@@ -251,6 +253,7 @@ function start() {
   root.dataset.step = 'wish';
   input.value = '';
   send.disabled = true;
+  root.classList.remove('is-wind');
   tilt = 0; tiltV = 0; tiltTo = 0; cam = 0; camV = 0; blownAt = 0;
   world.style.transform = '';
   stopHint();
