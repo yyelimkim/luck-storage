@@ -83,6 +83,7 @@
     strokes.forEach((s) => {
       s.p.style.visibility = 'hidden';  // else its round cap shows as a dot before it starts
       s.p.setAttribute('stroke-dashoffset', s.len);
+      s.k = 0;
     });
     void splash.offsetWidth;
     splash.classList.add('is-drawing');
@@ -91,8 +92,11 @@
       if (gone) return;
       const x = Math.min(1, Math.max(0, (now - t0) / 1000 / CFG.run));
       const t = bezier(CFG.ease, x);
+      // only the strokes the pen is on (or has just finished) are touched
       strokes.forEach((s) => {
         const k = Math.min(1, Math.max(0, (t - s.from) / (s.to - s.from)));
+        if (k === s.k) return;
+        s.k = k;
         s.p.style.visibility = k > 0 ? '' : 'hidden';
         s.p.setAttribute('stroke-dashoffset', (s.len * (1 - k)).toFixed(2));
       });
@@ -109,12 +113,21 @@
     raf = requestAnimationFrame(frame);
   }
 
+  // The logo as two pictures (rendered from Figma's logo, 486:5534): the
+  // sticker behind and the letters on it — light to draw, so the trim's
+  // mask over the letters stays smooth on a phone. The clover's outline
+  // comes too, for its flap.
+  const V = '0 0 364.995 164.805';
   Promise.all([
-    fetch('assets/splash/logo.svg?v=1').then((r) => r.text()),
+    fetch('assets/splash/clover-shape.txt?v=1').then((r) => r.text()),
     fetch('assets/splash/trace.json?v=4').then((r) => r.json()),
   ])
-    .then(([text, lines]) => {
-      holder.innerHTML = text;
+    .then(([clover, lines]) => {
+      holder.innerHTML = `<svg width="364.995" height="164.805" viewBox="${V}" xmlns="http://www.w3.org/2000/svg">
+        <defs><path id="stroke17_splash" d="${clover.trim()}"/></defs>
+        <g id="sticker"><image href="assets/splash/sticker.png?v=1" width="364.995" height="164.805"/></g>
+        <g id="letters"><image href="assets/splash/letters.png?v=1" width="364.995" height="164.805"/></g>
+      </svg>`;
       svg = holder.querySelector('svg');
 
       // The letters show only where the pen has been. Each stroke has its

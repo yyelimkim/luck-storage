@@ -2137,9 +2137,7 @@ button.fortune--card:active { transform: scale(0.98); }
   content: "";
   position: absolute;
   inset: 0;
-  background: url("assets/system/paper.png") 0 0 / 402px auto;
-  mix-blend-mode: multiply;
-  opacity: 0.6;
+  background: url("assets/system/paper-shade.png") 0 0 / 402px auto;  /* no blend: smoother */
   pointer-events: none;
 }
 .splash--logo {
