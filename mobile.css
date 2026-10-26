@@ -408,7 +408,7 @@ img { -webkit-user-drag: none; }
 }
 /* One rhythm: 12 from a label to its cards (as between the Daily Fortune
    cards), 32 between sections */
-.profile--label { margin-bottom: 12px; }
+.profile--label { margin-bottom: 12px; color: var(--dark-grey); }  /* section titles in Dark Grey */
 .profile--fortune {
   position: relative;
   overflow: hidden;
@@ -469,7 +469,7 @@ img { -webkit-user-drag: none; }
   box-sizing: border-box;
   border: 0.771px solid var(--system-black);
   border-radius: 16px;
-  background: var(--earned, var(--yellow-green));
+  background: var(--system-white);  /* System White; only the icon carries the card's colours */
   scroll-snap-align: start;
   font: inherit;
   text-align: left;
@@ -480,14 +480,12 @@ img { -webkit-user-drag: none; }
 .profile--earned:active { transform: scale(0.97); }
 /* Each card's line drawing, in the card's own colour, at one height */
 .profile--earned img { display: block; flex: none; width: auto; height: 85px; }
-/* UI White text on Forest Green, as on the filter's Calm tile */
-.profile .profile--earned[style*="forest-green"] p { color: var(--ui-white); }
 .profile .profile--earned p { white-space: nowrap; }
-/* 44 x 44 tap targets (the usual minimum), 8 apart; pulled out by the
+/* 44 x 44 tap targets (the usual minimum), touching, so the icons sit 16 apart; pulled out by the
    padding so the icons themselves still sit on the 16px margin */
 .head--tools {
   display: none;
-  gap: 8px;
+  gap: 0;
   margin-left: -8px;
 }
 .head--tools button {
@@ -2182,7 +2180,7 @@ button.fortune--card:active { transform: scale(0.98); }
 .wish--clover {
   position: absolute;
   left: calc(50% - 38.3px);
-  top: calc(50% - 312px);  /* where the hint is, which steps aside for it */
+  top: calc(50% + 10px - 38.3px);  /* in the slip's middle, which it shrinks into */
   width: 76.6022px;
   height: 76.6022px;
   opacity: 0;
@@ -2190,10 +2188,10 @@ button.fortune--card:active { transform: scale(0.98); }
 }
 .wish--clover.is-away { animation: clover-away 1.5s forwards; }
 @keyframes clover-away {
-  0% { opacity: 0; scale: 0.3; translate: 0 30px; animation-timing-function: cubic-bezier(0.3, 1.5, 0.5, 1); }
+  0% { opacity: 0; scale: 0.2; animation-timing-function: cubic-bezier(0.3, 1.5, 0.5, 1); }
   25% { opacity: 1; scale: 1; translate: 0 0; animation-timing-function: ease-in-out; }
-  50% { opacity: 1; scale: 1; translate: 0 0; rotate: 0deg; animation-timing-function: cubic-bezier(0.5, 0, 0.8, 0.4); }
-  100% { opacity: 1; scale: 0.2; translate: 0 -320px; rotate: 30deg; }
+  45% { opacity: 1; scale: 1; translate: 0 0; rotate: 0deg; animation-timing-function: cubic-bezier(0.5, 0, 0.8, 0.4); }
+  100% { opacity: 1; scale: 0.2; translate: 0 -560px; rotate: 30deg; }
 }
 /* While a wish is open the tab bar steps back; the dial's lines take its place */
 .m-nav, .m-navfade { transition: opacity 0.3s; }
@@ -2477,7 +2475,6 @@ button.fortune--card:active { transform: scale(0.98); }
 }
 .is-preview.is-onboarding .demo-hint { opacity: 1; }
 .wish--hold { transition: opacity 0.3s; }
-.wish:has(.wish--clover.is-away) .wish--hold { opacity: 0; transition-delay: 0s; }
 
 /* --- The iPhone keyboard, in the desktop preview (keyboard.js) --------------
    Safari's form bar over the keyboard, slid up from the bottom while a text

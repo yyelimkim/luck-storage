@@ -328,7 +328,7 @@
       hold.textContent = 'Your luck is sent ✦';
       // after the spin the slip stays; the luck clover comes up above it,
       // then shrinks away up out of the frame, off with the luck
-      setTimeout(() => { spinning = false; cloverAway(); }, 950);
+      setTimeout(cloverAway, 950);
     });
   });
   // let go of a hold too soon: the line runs back, the words come back
@@ -420,11 +420,25 @@
   // The clover earned from Home's cards, over the slip: it pops up above
   // it, then turns small and flies up out of the frame
   const clover = document.getElementById('wish-clover');
+  // Sent: the slip shrinks away into its middle, and out of it comes the
+  // clover, which turns small and flies up out of the frame; then the slip
+  // is back, its luck sent
   function cloverAway() {
-    clover.classList.remove('is-away');
-    void clover.offsetWidth;
-    clover.classList.add('is-away');
+    spinning = true;
     Sounds.shimmer();
+    slip.animate([{ scale: 1, opacity: 1 }, { scale: 0.12, opacity: 0 }],
+      { duration: 520, easing: 'cubic-bezier(0.5, 0, 0.7, 0.4)', fill: 'forwards' });
+    setTimeout(() => {
+      clover.classList.remove('is-away');
+      void clover.offsetWidth;
+      clover.classList.add('is-away');
+    }, 330);
+    setTimeout(() => {
+      slip.getAnimations().forEach((a) => a.cancel());
+      slip.animate([{ scale: 0.92, opacity: 0 }, { scale: 1, opacity: 1 }],
+        { duration: 420, easing: 'cubic-bezier(0.3, 0.8, 0.2, 1)' });
+      spinning = false;
+    }, 1900);
   }
   clover.addEventListener('animationend', () => clover.classList.remove('is-away'));
 
