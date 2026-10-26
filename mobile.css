@@ -36,7 +36,7 @@ img { -webkit-user-drag: none; }
 /* On a phone the page itself is the screen: full width, as tall as the
    window (mobile.js sets the height), header at the very top */
 .is-phone,
-.is-phone body { background: var(--system-white); }
+.is-phone body { background: var(--system-white); overscroll-behavior: none; }
 .is-phone .stage {
   left: 0;
   top: 0;
@@ -1454,7 +1454,9 @@ button.fortune--card:active { transform: scale(0.98); }
   z-index: 15;
   display: flex;
   flex-direction: column;
-  overflow-y: auto;
+  overflow: hidden;  /* never scrolls: the scene sits on its bottom edge */
+  overscroll-behavior: none;
+  touch-action: none;  /* (the slips still take taps) */
   background: #16313f;  /* the painting's night canopy, where the scene runs out */
   scrollbar-width: none;
   opacity: 0;

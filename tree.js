@@ -524,15 +524,8 @@
     closeForm();
     changeLuck(-COST);
 
-    // Bring the spot into view on short screens, then fly there
-    const tree = document.getElementById('tree');
+    // (the tree never scrolls: its spots are all in view)
     const paper = g.querySelector('.tree--paper');
-    const box0 = paper.getBoundingClientRect();
-    const tb = tree.getBoundingClientRect();
-    if (box0.top < tb.top + 120 || box0.bottom > tb.bottom - 160) {
-      tree.scrollTo({ top: tree.scrollTop + box0.top - tb.top - tb.height / 2, behavior: 'smooth' });
-      await new Promise((r) => setTimeout(r, 380));
-    }
     const end = toStage(paper.getBoundingClientRect());
     const dx = end.x + end.w / 2 - (start.x + start.w / 2);
     const dy = end.y + end.h / 2 - (start.y + start.h / 2);

@@ -1121,3 +1121,45 @@ document.querySelectorAll('.profile--earned').forEach((b) => {
   b.addEventListener('click', () => openOnHome(IMAGES.indexOf(b.dataset.card)));
 });
 document.getElementById('fortune-ritual').addEventListener('click', goClaim);
+
+// The phone's status bar (saved to the home screen, the app's own top) takes
+// the colour of what's at the top of the screen, so the app runs up under it
+// seamlessly: the Wish Tree's dark canopy, the profile's yellow, an open
+// card's colour, System White elsewhere.
+(() => {
+  const meta = document.querySelector('meta[name="theme-color"]');
+  if (!meta) return;
+  const WHITE = '#f0f0f0';
+  function topColour() {
+    const splash = document.getElementById('splash');
+    if (splash && !splash.classList.contains('is-leaving')) return WHITE;
+    const ob = document.getElementById('ob');
+    if (ob && !ob.classList.contains('is-done')) return WHITE;
+    if (stage.dataset.view === 'tree') {
+      return document.getElementById('wish').classList.contains('is-open') ? '#262b2e' : '#15303e';
+    }
+    const r = stage.getBoundingClientRect();
+    for (const el of document.elementsFromPoint(r.left + r.width / 2, r.top + 2)) {
+      if (!stage.contains(el)) continue;
+      if (el.classList.contains('profile--hero')) return '#d8c54c';  // the hero's yellow, under its grain
+      const bg = getComputedStyle(el).backgroundColor;
+      const m = bg.match(/rgba?\(([^)]+)\)/);
+      if (!m) continue;
+      const [cr, cg, cb, ca = 1] = m[1].split(',').map(Number);
+      if (ca < 0.9) continue;
+      return `#${[cr, cg, cb].map((v) => Math.round(v).toString(16).padStart(2, '0')).join('')}`;
+    }
+    return WHITE;
+  }
+  let queued = false;
+  const sync = () => {
+    queued = false;
+    const c = topColour();
+    if (meta.content !== c) meta.content = c;
+  };
+  const later = () => { if (!queued) { queued = true; requestAnimationFrame(sync); } };
+  new MutationObserver(later).observe(stage, { subtree: true, attributes: true, attributeFilter: ['class', 'data-view', 'data-step'] });
+  // and again as colours finish fading (an opened card's sheet)
+  stage.addEventListener('transitionend', later);
+  later();
+})();
