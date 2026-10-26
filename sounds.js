@@ -162,6 +162,34 @@ const Sounds = (() => {
     });
   }
 
+  // Something springing up into being: a quick rising "boing" with a
+  // soft click at its start
+  function pop() {
+    const a = audio();
+    const t = a.currentTime;
+    const o = a.createOscillator();
+    const g = a.createGain();
+    o.type = 'sine';
+    o.frequency.setValueAtTime(260, t);
+    o.frequency.exponentialRampToValueAtTime(880, t + 0.12);
+    o.frequency.exponentialRampToValueAtTime(700, t + 0.28);
+    g.gain.setValueAtTime(0.0001, t);
+    g.gain.exponentialRampToValueAtTime(0.22, t + 0.02);
+    g.gain.exponentialRampToValueAtTime(0.0001, t + 0.32);
+    o.connect(g).connect(a.destination);
+    o.start(t);
+    o.stop(t + 0.35);
+    const n = noise(a, 0.02);
+    const hp = a.createBiquadFilter();
+    hp.type = 'highpass';
+    hp.frequency.value = 2500;
+    const ng = a.createGain();
+    ng.gain.setValueAtTime(0.12, t);
+    ng.gain.exponentialRampToValueAtTime(0.0001, t + 0.02);
+    n.connect(hp).connect(ng).connect(a.destination);
+    n.start(t);
+  }
+
   // A celebration (a perfect score): a quick "ta-da", two short notes up
   // into a bright held chord, with a sparkle of high bells on top
   function fanfare() {
@@ -591,7 +619,7 @@ const Sounds = (() => {
     air.start(t + 0.02);
   }
 
-  return { hit, swoosh, flip, claim, chime, stone, tap, eat, tick, rub, shimmer, absorb, crack, surge, rain, fanfare, blow, capture, pluck, unlock };
+  return { hit, swoosh, flip, claim, chime, stone, tap, eat, tick, rub, shimmer, absorb, crack, surge, rain, fanfare, blow, capture, pop, pluck, unlock };
 })();
 
 // Every button, tab and link ticks when pressed (anything with its own

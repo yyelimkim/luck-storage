@@ -125,6 +125,7 @@ function written() {
   root.classList.add('is-written');  // the pen line gives way to the filled 人
   setTimeout(() => {
     step('doll');
+    Sounds.pop();  // as the little person springs up
     setTimeout(() => { if (root.dataset.step === 'doll') unpoint = pointAt(dollHit); }, 700);
   }, 1000);  // the finished 人 (510:8284) a moment first
 }
