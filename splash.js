@@ -120,7 +120,7 @@
   const V = '0 0 364.995 164.805';
   Promise.all([
     fetch('assets/splash/clover-shape.txt?v=1').then((r) => r.text()),
-    fetch('assets/splash/trace.json?v=5').then((r) => r.json()),
+    fetch('assets/splash/trace.json?v=6').then((r) => r.json()),
   ])
     .then(([clover, lines]) => {
       holder.innerHTML = `<svg width="364.995" height="164.805" viewBox="${V}" xmlns="http://www.w3.org/2000/svg">
