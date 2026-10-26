@@ -159,17 +159,16 @@ function eat(layer) {
 }
 
 // All eight: the 100 flashes up big in the middle, Hot Pink in the
-// system's black line, to a fanfare
+// system's black line, to a fanfare, with a word for the test under it
 const hundredSvg = fetch('assets/ricecake/hundred.svg?v=1').then((r) => r.text());
 function celebrate() {
   hundredSvg.then((txt) => {
     const big = document.createElement('div');
     big.className = 'rc--hundred';
     big.setAttribute('aria-hidden', 'true');
-    big.innerHTML = txt;
+    big.innerHTML = `${txt}<p>Good luck on your test!</p>`;
     root.appendChild(big);
     Sounds.fanfare();
-    big.addEventListener('animationend', () => big.remove());
   });
 }
 
