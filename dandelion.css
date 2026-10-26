@@ -106,17 +106,13 @@ html, body {
 .is-wind .dl--say[data-for="done"] { display: block; animation: rise 0.45s cubic-bezier(0.3, 0.8, 0.2, 1); }
 /* once the camera stops, up in the sky they've gone into, the words
    themselves centred (the dots trail after, outside that) */
-.is-wind .dl--words { top: 34%; }
+.is-wind .dl--words { top: 44%; }
 .dl--wind { position: relative; display: inline-block; }
 .dl--dots { position: absolute; left: 100%; top: 0; white-space: nowrap; }
-.dl--dots i { font-style: normal; opacity: 0; animation: dot 1.5s infinite; }
-.dl--dots i:nth-child(2) { animation-delay: 0.25s; }
-.dl--dots i:nth-child(3) { animation-delay: 0.5s; }
-@keyframes dot {
-  0% { opacity: 0; }
-  20%, 70% { opacity: 1; }
-  100% { opacity: 0; }
-}
+.dl--dots i { font-style: normal; opacity: 0; animation: dot 0.5s ease-out 0.6s forwards; }  /* once, one by one, slowly */
+.dl--dots i:nth-child(2) { animation-delay: 1.2s; }
+.dl--dots i:nth-child(3) { animation-delay: 1.8s; }
+@keyframes dot { to { opacity: 1; } }
 @keyframes rise { from { opacity: 0; translate: 0 10px; } }
 
 /* The wish field, as the other rituals' */
