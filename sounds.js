@@ -104,6 +104,36 @@ const Sounds = (() => {
     });
   }
 
+  // A celebration (a perfect score): a quick "ta-da", two short notes up
+  // into a bright held chord, with a sparkle of high bells on top
+  function fanfare() {
+    const a = audio();
+    const t = a.currentTime;
+    const out = a.createGain();
+    out.gain.value = 0.5;
+    const lp = a.createBiquadFilter();
+    lp.type = 'lowpass';
+    lp.frequency.value = 3200;
+    lp.connect(out).connect(a.destination);
+    const note = (f, at, len, type = 'square', loud = 0.12) => {
+      const o = a.createOscillator();
+      const g = a.createGain();
+      o.type = type;
+      o.frequency.value = f;
+      g.gain.setValueAtTime(0.0001, t + at);
+      g.gain.exponentialRampToValueAtTime(loud, t + at + 0.012);
+      g.gain.setValueAtTime(loud, t + at + len * 0.6);
+      g.gain.exponentialRampToValueAtTime(0.0001, t + at + len);
+      o.connect(g).connect(lp);
+      o.start(t + at);
+      o.stop(t + at + len + 0.02);
+    };
+    note(392, 0, 0.11);
+    note(523.3, 0.12, 0.11);
+    [523.3, 659.3, 784, 1046.5].forEach((f) => note(f, 0.25, 0.9, 'square', 0.07));
+    [2093, 2637, 3136, 4186].forEach((f, i) => note(f, 0.3 + i * 0.07, 0.35, 'sine', 0.05));
+  }
+
   // Luck counted (the clover lands in the count): subtle and low, two soft
   // round notes a fifth apart
   function chime() {
@@ -503,7 +533,7 @@ const Sounds = (() => {
     air.start(t + 0.02);
   }
 
-  return { hit, swoosh, flip, claim, chime, stone, tap, eat, tick, rub, shimmer, absorb, crack, surge, rain, pluck, unlock };
+  return { hit, swoosh, flip, claim, chime, stone, tap, eat, tick, rub, shimmer, absorb, crack, surge, rain, fanfare, pluck, unlock };
 })();
 
 // Every button, tab and link ticks when pressed (anything with its own

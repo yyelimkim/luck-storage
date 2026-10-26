@@ -153,13 +153,30 @@ function eat(layer) {
   show();
   if (eaten === 8) {
     root.dataset.step = 'done';
-    if (IN_SHEET) setTimeout(() => parent.postMessage('luck-claimed', '*'), 1500);  // once the 100 has shaken
+    setTimeout(celebrate, 450);
+    if (IN_SHEET) setTimeout(() => parent.postMessage('luck-claimed', '*'), 2400);  // once the 100 has had its moment
   }
+}
+
+// All eight: the 100 flashes up big in the middle, Hot Pink in the
+// system's black line, to a fanfare
+const hundredSvg = fetch('assets/ricecake/hundred.svg?v=1').then((r) => r.text());
+function celebrate() {
+  hundredSvg.then((txt) => {
+    const big = document.createElement('div');
+    big.className = 'rc--hundred';
+    big.setAttribute('aria-hidden', 'true');
+    big.innerHTML = txt;
+    root.appendChild(big);
+    Sounds.fanfare();
+    big.addEventListener('animationend', () => big.remove());
+  });
 }
 
 function start() {
   eaten = 0;
   root.dataset.step = 'eat';
+  root.querySelector('.rc--hundred')?.remove();
   build();
   show();
   fit();
