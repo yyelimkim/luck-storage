@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Pig Dreams</title>
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="favicon-32.png" sizes="32x32" type="image/png">
+  <link rel="apple-touch-icon" href="apple-touch-icon.png">
+  <link rel="stylesheet" href="design-system.css?v=9">
+  <link rel="stylesheet" href="pig.css?v=2">
+</head>
+<body>
+  <!-- Pig Dreams (Figma 537:957, 537:1248; the pigs 537:882, 537:1063,
+       537:1089): three pigs hide behind three hills, popping up for a
+       moment and ducking back down. Tap each while it's up to catch it.
+       With all three caught, the view rises to the sky, where a sun shaped
+       like a coin comes up. -->
+  <main class="pg" id="pg" data-step="catch">
+    <div class="pg--world" id="world"></div>
+    <!-- the three to catch, as silhouettes till they're caught -->
+    <div class="pg--caught" id="caught" aria-label="Pigs caught"></div>
+    <p class="pg--quote" aria-live="polite">Dream of pigs, wake to fortune.</p>
+    <div class="pg--words" role="status">
+      <p class="pg--say" data-for="catch">Tap the pigs when they pop up</p>
+    </div>
+  </main>
+  <script src="sounds.js?v=25"></script>
+  <script src="pointer.js?v=1"></script>
+  <script src="pig.js?v=2"></script>
+</body>
+</html>

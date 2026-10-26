@@ -1,0 +1,106 @@
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  height: 100%;
+  overflow: hidden;
+  background: transparent;  /* sits on the desktop canvas or the phone's card sheet */
+}
+
+.pg {
+  --k: 1;  /* the scene's scale, set by pig.js */
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+  font-family: var(--font-display);
+  letter-spacing: var(--tracking);
+  color: var(--system-black);
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+/* The scene (Figma's 402 x 874 frame), its foot at the bottom of the screen;
+   it rises off the bottom at the end, showing the sky over it */
+.pg--world {
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  width: 402px;
+  height: 874px;
+  margin-left: -201px;
+  transform-origin: 201px 874px;
+  scale: var(--k);
+  transition: translate 1.6s cubic-bezier(0.55, 0, 0.25, 1);
+}
+.is-sky .pg--world { translate: 0 calc(311px * var(--k)); }  /* as far as the design's second frame */
+.pg--world img { position: absolute; display: block; pointer-events: none; }
+/* a pig: tap it while it's up */
+.pg--pig { position: absolute; cursor: pointer; -webkit-tap-highlight-color: transparent; will-change: transform; }
+.pg--pig img { position: static; width: 100%; height: 100%; }
+.pg--pig.is-caught { pointer-events: none; visibility: hidden; }
+
+/* The coin sun (537:938), rising once all three are caught, and turning
+   ever so slowly, glinting */
+.pg--sun {
+  opacity: 0;
+  transition: opacity 0.8s 1.2s, translate 1.4s 1.1s cubic-bezier(0.3, 1.2, 0.5, 1);
+  translate: 0 60px;
+}
+.is-sky .pg--sun { opacity: 1; translate: 0 0; animation: sun-glint 3s ease-in-out 2.4s infinite alternate; }
+@keyframes sun-glint {
+  from { filter: drop-shadow(0 0 4px var(--yellow)); }
+  to { filter: drop-shadow(0 0 20px var(--yellow)); }
+}
+
+/* The three to catch, at the top (Frame 5172): white silhouettes till
+   each is caught, then in colour */
+.pg--caught {
+  position: absolute;
+  left: 50%;
+  top: 14px;
+  z-index: 4;
+  display: flex;
+  align-items: flex-end;
+  gap: 6px;
+  translate: -50% 0;
+  pointer-events: none;
+}
+.pg--slot { display: block; filter: grayscale(1) brightness(2.2); opacity: 0.85; transition: filter 0.3s, opacity 0.3s; }
+.pg--slot.is-in { filter: none; opacity: 1; animation: slot-pop 0.5s cubic-bezier(0.3, 1.6, 0.5, 1); }
+@keyframes slot-pop { 50% { scale: 1.25; } }
+.pg--fly { position: fixed; z-index: 5; pointer-events: none; }
+
+/* The words for the sky: one line, in the middle of it */
+.pg--quote {
+  position: absolute;
+  left: 16px;
+  right: 16px;
+  top: 50%;  /* just under the sun, set by pig.js */
+  z-index: 4;
+  margin: 0;
+  font-family: var(--font-title);
+  font-size: 23px;
+  letter-spacing: var(--tracking-title);
+  text-align: center;
+  opacity: 0;
+  translate: 0 10px;
+  pointer-events: none;
+  transition: opacity 0.8s 2.2s, translate 0.8s 2.2s cubic-bezier(0.3, 0.8, 0.2, 1);
+}
+.is-sky .pg--quote { opacity: 1; translate: 0 0; }
+
+/* The words at the bottom, at the rituals' one spot */
+.pg--words {
+  position: absolute;
+  left: 16px;
+  right: 16px;
+  top: calc(100% - 120px);  /* the same spot in every ritual */
+  z-index: 4;
+  min-height: 24px;
+  text-align: center;
+  transition: opacity 0.4s;
+}
+.is-sky .pg--words { opacity: 0; }
+.pg--say { display: none; margin: 0; font-size: 18px; line-height: 1.3; }  /* the rituals' step-words size */
+[data-step="catch"] .pg--say[data-for="catch"] { display: block; animation: rise 0.45s cubic-bezier(0.3, 0.8, 0.2, 1); }
+@keyframes rise { from { opacity: 0; translate: 0 10px; } }
