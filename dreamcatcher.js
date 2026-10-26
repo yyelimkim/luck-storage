@@ -93,7 +93,8 @@ function tick(now) {
   } else {
     spin += (rest - spin) * Math.min(1, dt * 1.6);
   }
-  turn.style.transform = `perspective(1000px) rotateY(${spin.toFixed(2)}deg)`;
+  // flat, at eye level: no perspective, so it narrows evenly to its edge
+  turn.style.transform = `rotateY(${spin.toFixed(2)}deg)`;
 
   const c = centre();
   for (const g of ghosts) {

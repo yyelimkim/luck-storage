@@ -219,7 +219,7 @@ const CARD_TEXT = {
 // on the phone they take the illustration's place on the card's sheet
 const CANVAS_PAGES = {
   '빨간 옷 입기.png': 'wearred.html?v=4',  // swipe the bottoms and shoes till both are red
-  '드림캐쳐.png': 'dreamcatcher.html?v=3',  // wake it, it catches the bad dreams
+  '드림캐쳐.png': 'dreamcatcher.html?v=4',  // wake it, it catches the bad dreams
   '민들레 소원 빌기.png': 'dandelion.html?v=16',  // make a wish, blow the seeds away
   '시험 전 날 떡 먹기.png': 'ricecake.html?v=8',  // eat all eight, the 100 at the bar's end
   '네잎 클로버 찾기.png': 'clover.html?v=14',  // swipe through the field, find the one four-leaf
