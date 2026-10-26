@@ -111,7 +111,7 @@ function pop(p, ms = hold()) {
 function tap(p) {
   if (demo || !p.up || p.caught || root.dataset.step !== 'catch') return;
   Sounds.unlock();
-  Sounds.chime();
+  Sounds.oink();
   p.caught = true;
   caughtCount++;
   // it leaps up out of its hill and flies to its place at the top

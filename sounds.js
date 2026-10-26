@@ -190,6 +190,32 @@ const Sounds = (() => {
     n.start(t);
   }
 
+  // A pig caught: a quick double "oink", two short nasal grunts, the
+  // second a touch higher
+  function oink() {
+    const a = audio();
+    const t = a.currentTime;
+    [[0, 1], [0.15, 1.15]].forEach(([d, up]) => {
+      const o = a.createOscillator();
+      o.type = 'sawtooth';
+      o.frequency.setValueAtTime(150 * up, t + d);
+      o.frequency.exponentialRampToValueAtTime(260 * up, t + d + 0.05);
+      o.frequency.exponentialRampToValueAtTime(170 * up, t + d + 0.12);
+      // the nose: the buzz through a narrow, high band
+      const bp = a.createBiquadFilter();
+      bp.type = 'bandpass';
+      bp.frequency.value = 1100;
+      bp.Q.value = 4;
+      const g = a.createGain();
+      g.gain.setValueAtTime(0.0001, t + d);
+      g.gain.exponentialRampToValueAtTime(0.5, t + d + 0.02);
+      g.gain.exponentialRampToValueAtTime(0.0001, t + d + 0.13);
+      o.connect(bp).connect(g).connect(a.destination);
+      o.start(t + d);
+      o.stop(t + d + 0.15);
+    });
+  }
+
   // A celebration (a perfect score): a quick "ta-da", two short notes up
   // into a bright held chord, with a sparkle of high bells on top
   function fanfare() {
@@ -619,7 +645,7 @@ const Sounds = (() => {
     air.start(t + 0.02);
   }
 
-  return { hit, swoosh, flip, claim, chime, stone, tap, eat, tick, rub, shimmer, absorb, crack, surge, rain, fanfare, blow, capture, pop, pluck, unlock };
+  return { hit, swoosh, flip, claim, chime, stone, tap, eat, tick, rub, shimmer, absorb, crack, surge, rain, fanfare, blow, capture, pop, oink, pluck, unlock };
 })();
 
 // Every button, tab and link ticks when pressed (anything with its own
