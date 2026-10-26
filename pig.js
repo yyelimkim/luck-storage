@@ -48,7 +48,7 @@ function sunY() {
   return (SUN_TOP - top) / k;
 }
 function placeQuote() {
-  document.querySelector('.pg--quote').style.top = `${SUN_TOP + 164 * k + 26}px`;
+  document.querySelector('.pg--quote').style.top = `${SUN_TOP + 164 * k + 44}px`;
 }
 addEventListener('resize', fit);
 
