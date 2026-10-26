@@ -159,6 +159,9 @@
         // their tops, each in its own time
         layer.querySelectorAll('g').forEach((g) => {
           if (!g.querySelector(':scope > line')) return;
+          // the ones drawn into a canopy (masked by it, its shading over
+          // them) stay in the still drawing, under that shading
+          if (g.parentElement.closest('[mask]')) return;
           const w = liftOut(layer, g, 'tree--strand', 4);
           w.style.animationDelay = `${(-rand() * 6).toFixed(2)}s`;
           w.style.animationDuration = `${(4.5 + rand() * 3).toFixed(2)}s`;

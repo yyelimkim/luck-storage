@@ -408,7 +408,7 @@ img { -webkit-user-drag: none; }
 }
 /* One rhythm: 12 from a label to its cards (as between the Daily Fortune
    cards), 32 between sections */
-.profile--label { margin-bottom: 12px; color: var(--dark-grey); }  /* section titles in Dark Grey */
+.profile--label { margin-bottom: 12px; padding-left: 4px; color: var(--dark-grey); }  /* section titles in Dark Grey, 4px in */
 .profile--fortune {
   position: relative;
   overflow: hidden;
@@ -442,7 +442,7 @@ img { -webkit-user-drag: none; }
 }
 .profile--fortune .profile--date,
 .profile--fortune .profile--find { position: relative; }
-.profile--fortune .profile--date { font-size: 14px; white-space: pre; }
+.profile--fortune .profile--date { font-size: 14px; white-space: pre; color: var(--dark-grey); }
 .profile--fortune .profile--find { width: 181px; font-size: 20px; }
 .profile--fortune + .profile--label { margin-top: 32px; }
 /* Edge to edge, so the row runs off the screen */
