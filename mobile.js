@@ -530,10 +530,23 @@ function setSheet(p) {
   sheet.el.style.setProperty('--p', q);
   sheet.el.querySelector('.sheet--howto').style.top = `${lerp(HOWTO_TOP, headTop() + HOWTO_TOP_FULL, q)}px`;
   sheet.el.classList.toggle('is-full', p === 1);
+  if (p === 1) shown();
   // The card's name gives way to the how-to as the sheet takes the top
   titleEl.style.opacity = 1 - q;
   // The card scrolls up with it
   flip.el.style.transform = `translateY(${-sheetTop() * Math.max(0, p)}px)`;
+}
+
+// The ritual's page is told when its sheet is fully up, so what it shows
+// first (a hand showing how) is seen; and told again if it loads after
+function shown() {
+  const frame = sheet && sheet.el.querySelector('.ritual--piece');
+  if (!frame) return;
+  frame.contentWindow?.postMessage('luck-shown', '*');
+  if (!frame.dataset.told) {
+    frame.dataset.told = '1';
+    frame.addEventListener('load', () => { if (sheet && sheet.el.classList.contains('is-full')) frame.contentWindow.postMessage('luck-shown', '*'); });
+  }
 }
 
 // Glide the sheet to p, from wherever it is (also its entrance and exit,

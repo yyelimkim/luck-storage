@@ -39,6 +39,11 @@ html, body {
 .pg--pig img { position: static; width: 100%; height: 100%; }
 .pg--pig.is-caught { pointer-events: none; visibility: hidden; }
 
+/* As the view rises, the clouds drift a little apart, to the edges */
+.pg--cloud { transition: translate 1.6s cubic-bezier(0.55, 0, 0.25, 1); }
+.is-sky .pg--cloud.is-left { translate: -34px 0; }
+.is-sky .pg--cloud.is-right { translate: 34px 0; }
+
 /* The coin sun (537:938), rising once all three are caught, and turning
    ever so slowly, glinting */
 .pg--sun {

@@ -54,9 +54,9 @@ addEventListener('resize', fit);
 
 function build() {
   world.replaceChildren(
-    img('cloud', [-9, 182, 162.45, 69.18]),
-    img('cloud', [265, 240, 162.45, 69.18]),
-    img('cloud', [215, 8, 162.45, 69.18]),   // the sky's, for the end
+    img('cloud', [-9, 182, 162.45, 69.18], 'pg--cloud is-left'),
+    img('cloud', [265, 240, 162.45, 69.18], 'pg--cloud is-right'),
+    img('cloud', [215, 8, 162.45, 69.18], 'pg--cloud is-right'),   // the sky's, for the end
     img('coin', [119, sunY(), 164, 164], 'pg--sun'),
   );
   PIGS.forEach((p, i) => {
@@ -90,9 +90,9 @@ let timers = [];
 const later = (fn, ms) => timers.push(setTimeout(fn, ms));
 const rand = (a, b) => a + Math.random() * (b - a);
 let caughtCount = 0;
-function hold() { return Math.max(380, 820 - caughtCount * 170 + rand(-80, 80)); }  // ms up
+function hold() { return Math.max(320, 640 - caughtCount * 150 + rand(-70, 70)); }  // ms up
 function pop(p, ms = hold()) {
-  if (p.caught || root.dataset.step !== 'catch') return;
+  if (p.caught || root.dataset.step !== 'catch' || demo) return;
   p.el.getAnimations().forEach((a) => a.cancel());
   p.up = true;
   p.el.animate([{ transform: `translateY(${p.drop}px)` }, { transform: 'translateY(-6px)', offset: 0.75 }, { transform: 'translateY(0)' }],
@@ -102,15 +102,13 @@ function pop(p, ms = hold()) {
     p.up = false;
     p.el.animate([{ transform: 'translateY(0)' }, { transform: `translateY(${p.drop}px)` }],
       { duration: 200, easing: 'cubic-bezier(0.5, 0, 0.8, 0.5)', fill: 'forwards' });
-    later(() => pop(p), rand(700, 2000));
+    later(() => pop(p), rand(900, 2300));
   }, 220 + ms);
 }
 
 // --- Catching one --------------------------------------------------------
-let unpoint = () => {};
 function tap(p) {
-  if (!p.up || p.caught || root.dataset.step !== 'catch') return;
-  unpoint();
+  if (demo || !p.up || p.caught || root.dataset.step !== 'catch') return;
   Sounds.unlock();
   Sounds.chime();
   p.caught = true;
@@ -155,15 +153,52 @@ function start() {
   fit();
   build();
   placeQuote();
-  // the front pig comes up first, slowly, the hand showing a tap on it;
-  // then they all take their turns
-  const front = PIGS[2];
+  // the hand shows how once the sheet's up (or straight away, on its own)
+  if (IN_SHEET) waitingToShow = true; else showHow();
+}
+let waitingToShow = false;
+addEventListener('message', (e) => {
+  if (e.data === 'luck-shown' && waitingToShow) { waitingToShow = false; showHow(); }
+});
+
+// Before it starts, once: the front pig comes up, the hand taps it, and it
+// ducks away; then the game begins
+let demo = false;
+function showHow() {
+  demo = true;
+  const p = PIGS[2];
   later(() => {
-    pop(front, 1600);
-    unpoint = pointAt(front.el);
-  }, 900);
-  later(() => pop(PIGS[1]), 3200);
-  later(() => pop(PIGS[0]), 4300);
+    p.el.animate([{ transform: `translateY(${p.drop}px)` }, { transform: 'translateY(-6px)', offset: 0.75 }, { transform: 'translateY(0)' }],
+      { duration: 260, easing: 'cubic-bezier(0.3, 0.8, 0.4, 1)', fill: 'forwards' });
+  }, 600);
+  later(() => {
+    const r = p.el.getBoundingClientRect();
+    const hand = document.createElement('img');
+    hand.src = 'assets/candles/hand.svg';
+    hand.alt = '';
+    Object.assign(hand.style, { position: 'fixed', zIndex: 6, width: '54px', pointerEvents: 'none', left: `${r.left + r.width / 2 - 18}px`, top: `${r.top + r.height / 2 - 2}px` });
+    root.appendChild(hand);
+    hand.animate([
+      { opacity: 0, translate: '22px 26px', scale: 1 },
+      { opacity: 1, translate: '0 0', scale: 1, offset: 0.35 },
+      { opacity: 1, translate: '0 0', scale: 0.86, offset: 0.55 },
+      { opacity: 1, translate: '0 0', scale: 1, offset: 0.7 },
+      { opacity: 0, translate: '10px 14px', scale: 1 },
+    ], { duration: 1300, easing: 'ease-in-out', fill: 'forwards' }).finished.then(() => hand.remove());
+    // as the finger presses, the pig ducks away, quick
+    later(() => {
+      Sounds.unlock();
+      p.el.animate([{ transform: 'translateY(0)' }, { transform: 'translateY(-10px) scale(1.05, 0.95)', offset: 0.25 }, { transform: `translateY(${p.drop}px)` }],
+        { duration: 300, easing: 'cubic-bezier(0.5, 0, 0.8, 0.5)', fill: 'forwards' });
+    }, 720);
+  }, 1100);
+  // then they all take their turns
+  later(() => {
+    demo = false;
+    pop(PIGS[2]);
+    later(() => pop(PIGS[1]), 1200);
+    later(() => pop(PIGS[0]), 2200);
+  }, 3300);
 }
 // The sheet's Continue: the pigs back behind their hills
 addEventListener('message', (e) => { if (e.data === 'luck-continue') start(); });
