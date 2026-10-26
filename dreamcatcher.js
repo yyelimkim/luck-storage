@@ -10,6 +10,13 @@ const root = document.getElementById('dc');
 const art = document.getElementById('art');
 const hoop = document.getElementById('hoop');
 const turn = document.getElementById('turn');
+// the rim's layers, through the hoop's thickness
+for (let z = -6; z <= 6; z += 1) {
+  const rim = document.createElement('div');
+  rim.className = 'dc--rim';
+  rim.style.transform = `translateZ(${z}px)`;
+  turn.insertBefore(rim, turn.querySelector('.dc--back'));
+}
 const dreams = document.getElementById('dreams');
 
 // The drawing as big as fits, its hoop a little above the middle of the

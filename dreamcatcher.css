@@ -32,6 +32,9 @@ html, body {
   margin-left: -154px;
   transform-origin: 154px 0;
   scale: var(--k);
+  /* seen at eye level, straight on to the hoop's middle */
+  perspective: 1100px;
+  perspective-origin: 154px 350px;
 }
 .dc--string {
   position: absolute;
@@ -49,8 +52,31 @@ html, body {
 .dc--turn {
   position: absolute;
   inset: 0;
-  transform-origin: 154px 0;
+  transform-origin: 154px 350px;
+  transform-style: preserve-3d;
   will-change: transform;
+}
+/* The hoop has a thickness: its gold rim, layer on layer through it, shows
+   as a solid edge when it turns side on; its web on both faces */
+.dc--rim {
+  position: absolute;
+  left: 0;
+  top: 196px;
+  width: 308px;
+  height: 308px;
+  border-radius: 50%;
+  border: 16px solid #c4b13f;  /* the hoop's Yellow Green, a shade into the edge */
+  pointer-events: none;
+}
+.dc--back {
+  position: absolute;
+  left: 0;
+  top: 196px;
+  width: 308px;
+  height: 308px;
+  transform: translateZ(-7px) rotateY(180deg);
+  backface-visibility: hidden;
+  pointer-events: none;
 }
 .dc--strand { position: absolute; display: block; pointer-events: none; }
 .dc--hoop {
@@ -66,6 +92,8 @@ html, body {
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
   transition: filter 1.2s ease-out;
+  transform: translateZ(7px);
+  backface-visibility: hidden;
 }
 .dc--hoop:focus { outline: none; }
 .dc--hoop img { display: block; width: 100%; height: 100%; }
