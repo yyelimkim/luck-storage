@@ -23,7 +23,7 @@ function img(src, [x, y, w, h], [ew, eh] = [w, h]) {
 // The two slots, and what can go in them, in turn (red last of each)
 const SLOTS = {
   bottoms: { box: [91, 201.6, 220.6, 145.7], size: [223, 148], options: ['pants-white', 'pants-green', 'pants-blue', 'pants-red'],
-    arrows: [[57, 290], [345, 290]], band: [180, 380] },
+    arrows: [[57, 322], [345, 322]], band: [180, 380] },  // level with the bottoms' middle, clear of the hands
   shoes: { box: [0, 510.7, 401, 102.1], size: [402, 103], options: ['shoes-blue', 'shoes-white', 'shoes-green', 'shoes-red'],
     arrows: [[-26, 571], [427, 571]], band: [430, 640] },
 };
