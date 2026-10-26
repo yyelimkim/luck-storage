@@ -99,4 +99,6 @@ addEventListener('message', (e) => {
   send.disabled = true;
   root.dataset.step = 'ask';
   show('Who are you thinking of?');
+  setTimeout(() => input.focus({ preventScroll: true }), 500);
 });
+setTimeout(() => { if (root.dataset.step === 'ask') input.focus({ preventScroll: true }); }, 600);

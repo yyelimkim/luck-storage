@@ -248,12 +248,23 @@ html, body {
   .worry--hand, .worry--drag.is-held > img:first-child { animation: none; }
 }
 
-/* 2 (telling): the words and the field a step higher, clear of the keyboard,
-   and the doll a size smaller in the room above them */
-.worry[data-step="tell"] .worry--words { top: calc(100% - 226px); }
+/* Asking (as the birthday cake's wish, 436:8802): the scene softened
+   behind, the field over it in the middle, the question in the words */
+.worry--veil {
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  -webkit-backdrop-filter: blur(3.8px);
+  backdrop-filter: blur(3.8px);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.4s;
+}
+[data-step="tell"] .worry--veil { opacity: 1; }
+/* 2 (telling): the field in the middle over the softened doll */
 /* with the button under them, the words sit above it */
 .worry[data-step="choose"] .worry--words { top: calc(100% - 166px); }
-.worry[data-step="tell"] .worry--field { top: calc(100% - 174px); }
+.worry[data-step="tell"] .worry--field { top: 46%; }
 .worry--big { width: calc(280px * var(--g)); top: calc((100% - 226px) / 2 + 6px); }
 /* 3 and 4 (the bed): the words a little lower, under the bed's fade */
 .worry[data-step="tuck"] .worry--words,

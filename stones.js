@@ -1,8 +1,7 @@
 // Stacking Stones (Figma 430:8694, 430:8705), after the sketch:
-// 1. make a wish over the pink orb, 2. the tower waits as dashed outlines;
-// tap where a stone should land and it drops from the top into place —
-// bottom first, as a real tower must be built — 3. the orb with your wish
-// settles on top, and the luck is claimed.
+// 1. the tower waits as dashed outlines; tap where a stone should land and
+// it drops from the top into place — bottom first, as a real tower must be
+// built — 2. the pink orb settles on top, and the luck is claimed.
 
 // The tower in its 406 x 475 box: [name, x, y, w, h, fill, path (viewBox w x h)]
 const BASE = [2.8, 375, 388, 101, 'M30.103 94.8305L4.20467 64.3023C0.0704741 59.429 -0.39975 52.4285 3.04558 47.0461L20.2116 20.2289C28.9291 6.61016 44.6531 -0.840795 60.7136 1.03667L313.653 30.6052C317.389 31.0418 321.049 31.9752 324.537 33.3804L377.366 54.6608C388.277 59.056 389.733 73.91 379.883 80.3399L353.439 97.6017C351.074 99.1456 348.311 99.9678 345.486 99.9678H41.198C36.9247 99.9678 32.8675 98.0892 30.103 94.8305Z'];
@@ -24,11 +23,7 @@ const IN_SHEET = new URLSearchParams(location.search).has('sheet');
 
 const root = document.getElementById('stones');
 const tower = document.getElementById('tower');
-const form = document.getElementById('wish-form');
-const input = document.getElementById('wish');
-const send = document.getElementById('send');
 const hint = document.getElementById('hint');
-const echo = document.getElementById('echo');
 const orb = document.getElementById('orb');
 
 const pct = (v, of) => `${(v / of) * 100}%`;
@@ -82,19 +77,7 @@ addEventListener('resize', fit);
 function step(name) { root.dataset.step = name; fit(); }
 fit();
 
-// 1: the wish
-input.addEventListener('input', () => { send.disabled = !input.value.trim(); });
-form.addEventListener('submit', (e) => {
-  e.preventDefault();
-  if (!input.value.trim()) return;
-  echo.textContent = `“${input.value.trim()}”`;
-  input.blur();
-  step('stack');
-  // the hand shows a tap on an outline (one resting on the ground) till the first stone
-  unpoint = pointAt(STONES.find((s) => s.on.length === 0).slot);
-});
-
-// 2: tap where a stone goes and it drops from the top into place. A stone
+// 1: tap where a stone goes and it drops from the top into place. A stone
 // can only land where what it rests on is already there.
 let unpoint = () => {};
 function drop(s) {
@@ -129,7 +112,7 @@ function drop(s) {
   if (!left) setTimeout(finish, 800);
 }
 
-// 3: the orb with the wish settles on top
+// 2: the orb settles on top
 function finish() {
   step('done');
   orb.animate([
@@ -144,13 +127,19 @@ function finish() {
   if (IN_SHEET) setTimeout(() => parent.postMessage('luck-claimed', '*'), 2600);
 }
 
-// The sheet's Continue takes the tower down for another wish
+// The sheet's Continue takes the tower down to build again
 addEventListener('message', (e) => {
   if (e.data !== 'luck-continue') return;
   placed.clear();
   STONES.forEach((s) => { s.el.classList.remove('is-placed'); s.slot.classList.remove('is-filled'); });
-  input.value = '';
-  send.disabled = true;
   hint.textContent = '5 stones to go';
-  step('wish');
+  begin();
 });
+
+// Straight to building: the hand shows a tap on an outline (one resting
+// on the ground) till the first stone
+function begin() {
+  step('stack');
+  setTimeout(() => { if (!placed.size) unpoint = pointAt(STONES.find((s) => s.on.length === 0).slot); }, 900);
+}
+begin();

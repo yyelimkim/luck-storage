@@ -11,45 +11,32 @@
   <link rel="stylesheet" href="stones.css?v=17">
 </head>
 <body>
-  <!-- Stacking Stones (Figma 430:8694, 430:8705), after the sketch: make a
-       wish, drop the stones into the tower one by one, the wish sits on top -->
-  <main class="stones" id="stones" data-step="wish">
+  <!-- Stacking Stones (Figma 430:8694, 430:8705), after the sketch: drop
+       the stones into the tower one by one, and the pink orb settles on top -->
+  <main class="stones" id="stones" data-step="stack">
     <div class="stones--stage">
     <div class="stones--tower" id="tower">
-      <!-- The pink orb that carries the wish, with its two sparkles -->
+      <!-- The pink orb that settles on top, with its two sparkles -->
       <div class="stones--orb" id="orb">
         <svg class="orb--ball" viewBox="0 0 84 84" aria-hidden="true"><circle cx="42" cy="42" r="40.8"/></svg>
         <svg class="orb--spark orb--spark-big" viewBox="0 0 43 43" aria-hidden="true"><path d="M26.6 15.95L26.72 16.28L27.05 16.4L40.84 21.5L27.05 26.6L26.72 26.72L26.6 27.05L21.5 40.84L16.4 27.05L16.28 26.72L15.95 26.6L2.16 21.5L15.95 16.4L16.28 16.28L16.4 15.95L21.5 2.16L26.6 15.95Z"/></svg>
         <svg class="orb--spark orb--spark-small" viewBox="0 0 21 21" aria-hidden="true"><path d="M12.63 7.92L12.75 8.25L13.08 8.37L18.84 10.5L13.08 12.63L12.75 12.75L12.63 13.08L10.5 18.84L8.37 13.08L8.25 12.75L7.92 12.63L2.16 10.5L7.92 8.37L8.25 8.25L8.37 7.92L10.5 2.16L12.63 7.92Z"/></svg>
       </div>
     </div>
-    <!-- 1: the wish, written at the centre, the orb floating above -->
-    <form class="stones--wish" id="wish-form">
-      <div class="stones--field">
-        <input id="wish" type="text" maxlength="60" placeholder="I wish…" autocomplete="off" aria-label="What’s your wish?">
-        <button type="submit" class="stones--send" id="send" aria-label="Make the wish" disabled>
-          <svg width="20" height="20" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 13V3M3.5 7.5L8 3l4.5 4.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        </button>
-      </div>
-    </form>
     </div>
 
-    <!-- Under the tower: what this step is -->
-    <p class="stones--ask">What’s your wish?</p>
-
-    <!-- 2: building the tower -->
+    <!-- 1: building the tower -->
     <div class="stones--stack">
       <p class="stones--hint" id="hint" role="status">5 stones to go</p>
     </div>
 
-    <!-- 3: done -->
+    <!-- 2: done -->
     <div class="stones--done" role="status">
-      <p class="stones--congrats">Your wish is held in place</p>
-      <p class="stones--echo" id="echo"></p>
+      <p class="stones--congrats">Your luck is held in place</p>
     </div>
   </main>
   <script src="sounds.js?v=24"></script>
   <script src="pointer.js?v=1"></script>
-  <script src="stones.js?v=9"></script>
+  <script src="stones.js?v=10"></script>
 </body>
 </html>

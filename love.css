@@ -66,7 +66,7 @@ html, body {
 .love--field {
   position: absolute;
   left: 50%;
-  top: calc(100% - 114px);
+  top: 46%;  /* in the middle, over the softened flower */
   z-index: 5;
   width: min(371px, calc(100% - 32px));
   height: 51px;
@@ -74,8 +74,19 @@ html, body {
   translate: -50% 0;
   transition: opacity 0.35s, visibility 0s 0.35s;
 }
-/* with the field under them, the words sit above it */
-[data-step="ask"] .love--words { top: calc(100% - 166px); }
+/* Asking (as the birthday cake's wish, 436:8802): the scene softened
+   behind, the field over it in the middle, the question in the words */
+.love--veil {
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  -webkit-backdrop-filter: blur(3.8px);
+  backdrop-filter: blur(3.8px);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.4s;
+}
+[data-step="ask"] .love--veil { opacity: 1; }
 [data-step]:not([data-step="ask"]) .love--field { opacity: 0; visibility: hidden; pointer-events: none; }
 .love--field input {
   width: 100%;

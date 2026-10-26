@@ -75,20 +75,19 @@ html, body {
   opacity: 0;
 }
 
-/* Asking for the wish: the dandelion softened behind the question, which
-   sits in the middle with the field under it (as the candles' wish) */
+/* Asking (as the birthday cake's wish, 436:8802): the scene softened
+   behind, the field over it in the middle, the question in the words */
 .dl--veil {
   position: absolute;
   inset: 0;
   z-index: 4;
-  background: var(--v2-blue);
+  -webkit-backdrop-filter: blur(3.8px);
+  backdrop-filter: blur(3.8px);
   opacity: 0;
   pointer-events: none;
-  transition: opacity 0.5s;
+  transition: opacity 0.4s;
 }
-[data-step="wish"] .dl--veil { opacity: 0.7; }
-[data-step="wish"] .dl--words { top: calc(50% - 64px); }
-[data-step="wish"] .dl--field { top: calc(50% - 16px); }
+[data-step="wish"] .dl--veil { opacity: 1; }
 
 /* The words at the bottom, at the rituals' one spot */
 .dl--words {
@@ -105,15 +104,26 @@ html, body {
 [data-step="blow"] .dl--say[data-for="blow"],
 [data-step="done"] .dl--say[data-for="done"],
 .is-wind .dl--say[data-for="done"] { display: block; animation: rise 0.45s cubic-bezier(0.3, 0.8, 0.2, 1); }
-/* once the camera stops, in the middle of the screen */
-.is-wind .dl--words { top: calc(50% - 12px); }
+/* once the camera stops, up in the sky they've gone into, the words
+   themselves centred (the dots trail after, outside that) */
+.is-wind .dl--words { top: 34%; }
+.dl--wind { position: relative; display: inline-block; }
+.dl--dots { position: absolute; left: 100%; top: 0; white-space: nowrap; }
+.dl--dots i { font-style: normal; opacity: 0; animation: dot 1.5s infinite; }
+.dl--dots i:nth-child(2) { animation-delay: 0.25s; }
+.dl--dots i:nth-child(3) { animation-delay: 0.5s; }
+@keyframes dot {
+  0% { opacity: 0; }
+  20%, 70% { opacity: 1; }
+  100% { opacity: 0; }
+}
 @keyframes rise { from { opacity: 0; translate: 0 10px; } }
 
 /* The wish field, as the other rituals' */
 .dl--field {
   position: absolute;
   left: 50%;
-  top: calc(100% - 114px);
+  top: 46%;  /* in the middle, over the softened scene */
   z-index: 5;
   width: min(371px, calc(100% - 32px));
   height: 51px;

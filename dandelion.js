@@ -259,6 +259,7 @@ function start() {
   stopHint();
   build();
   fit();
+  setTimeout(() => { if (root.dataset.step === 'wish') input.focus({ preventScroll: true }); }, 600);
 }
 // The sheet's Continue: a new dandelion, and a new wish
 addEventListener('message', (e) => { if (e.data === 'luck-continue') start(); });
