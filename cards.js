@@ -159,7 +159,7 @@ const CARD_TEXT = {
   },
   '네잎 클로버 찾기.png': {
     about: 'An Irish belief that finding a rare four-leaf clover among ordinary three-leaf ones is a sign of good luck.',
-    howTo: 'Swipe through a field of 3-leaf clovers searching, then tap the one 4-leaf clover when it appears.',
+    howTo: 'Swipe through the field and tap the four-leaf clover.',
   },
   '돌팝 쌓기.png': {
     about: 'A practice found across many cultures, including Scottish, Scandinavian, Buddhist, and Native American traditions, where a balanced stack of stones is believed to hold a wish in place.',
@@ -218,6 +218,7 @@ const CARD_TEXT = {
 // Interactive pieces: on desktop they fill the canvas beside an opened card;
 // on the phone they take the illustration's place on the card's sheet
 const CANVAS_PAGES = {
+  '네잎 클로버 찾기.png': 'clover.html?v=7',  // swipe through the field, find the one four-leaf
   '명태 액막이.png': 'charm.html?v=33',  // the fish charm
   '촛불 한번에 불기.png': 'candles.html?v=23',  // make a wish, blow them all out
   '부처님 배 만지기.png': 'buddha.html?v=13',  // rub the belly round till it glows

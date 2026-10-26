@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Four-Leaf Clover</title>
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="favicon-32.png" sizes="32x32" type="image/png">
+  <link rel="apple-touch-icon" href="apple-touch-icon.png">
+  <link rel="stylesheet" href="design-system.css?v=9">
+  <link rel="stylesheet" href="clover.css?v=3">
+</head>
+<body>
+  <!-- Finding a four-leaf clover (the clovers of Figma 522:282): a field of
+       three-leaf clovers three screens wide, swiped through left and right;
+       one of them, somewhere off to one side, has four leaves. Tap it. -->
+  <main class="clover" id="clover" data-step="look">
+    <div class="clover--field" id="field" aria-label="A field of clovers"></div>
+    <div class="clover--found" id="found" aria-hidden="true"></div>
+    <div class="clover--words" role="status">
+      <p class="clover--say" data-for="look">Swipe through the field to find the four-leaf clover</p>
+      <p class="clover--say" data-for="found">You found it!</p>
+    </div>
+  </main>
+  <script src="sounds.js?v=21"></script>
+  <script src="clover.js?v=7"></script>
+</body>
+</html>
