@@ -1,0 +1,100 @@
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  height: 100%;
+  overflow: hidden;
+  background: transparent;  /* sits on the desktop canvas or the phone's card sheet */
+}
+
+.wr {
+  --k: 1;       /* the figure's scale, set by wearred.js */
+  --top: 0px;   /* where its top sits, set by wearred.js */
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+  font-family: var(--font-display);
+  letter-spacing: var(--tracking);
+  color: var(--system-white);  /* on the green, as the Buddha's words */
+  -webkit-user-select: none;
+  user-select: none;
+  touch-action: none;
+}
+
+/* The figure (Figma's 401 x 613), its shirt fading up into the card's green */
+.wr--fig {
+  position: absolute;
+  left: 50%;
+  top: var(--top);
+  width: 401px;
+  height: 613px;
+  margin-left: -200.5px;
+  transform-origin: 200.5px 0;
+  scale: var(--k);
+}
+.wr--fig img { position: absolute; display: block; pointer-events: none; }
+.wr--fade {
+  position: absolute;
+  left: -20px;
+  right: -20px;
+  top: -130px;
+  height: 281px;
+  pointer-events: none;
+  background: linear-gradient(to bottom, var(--forest-green) 53.4%, rgb(42 159 58 / 0));
+}
+
+/* A slot (the bottoms, the shoes): what's on, and what's coming on */
+.wr--slot { position: absolute; }
+.wr--slot img { position: absolute; left: 0; top: 0; width: 100%; height: 100%; }
+
+/* The arrows either side of each, as the design's: System White chevrons
+   in 44px tap areas */
+.wr--arrow {
+  position: absolute;
+  width: 44px;
+  height: 44px;
+  margin: -22px 0 0 -22px;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--system-white);
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: transform 0.15s, opacity 0.3s;
+}
+.wr--arrow svg { display: block; overflow: visible; }
+.wr--arrow:active { transform: scale(0.88); }
+[data-step="done"] .wr--arrow { opacity: 0; pointer-events: none; }
+
+/* All in red: a glow round the figure */
+[data-step="done"] .wr--fig { animation: wr-glow 1.6s ease-in-out infinite alternate; }
+@keyframes wr-glow {
+  from { filter: drop-shadow(0 0 6px var(--light-pink)); }
+  to { filter: drop-shadow(0 0 18px var(--light-pink)); }
+}
+
+/* The pointing hand, showing a swipe across the bottoms */
+.wr--hint {
+  position: absolute;
+  z-index: 6;
+  width: 54px;
+  pointer-events: none;
+  opacity: 0;
+}
+
+/* The words at the bottom, at the rituals' one spot */
+.wr--words {
+  position: absolute;
+  left: 16px;
+  right: 16px;
+  top: calc(100% - 120px);  /* the same spot in every ritual */
+  z-index: 5;
+  min-height: 24px;
+  text-align: center;
+}
+.wr--say { display: none; margin: 0; font-size: 18px; line-height: 1.3; }  /* the rituals' step-words size */
+[data-step="dress"] .wr--say[data-for="dress"],
+[data-step="done"] .wr--say[data-for="done"] { display: block; animation: rise 0.45s cubic-bezier(0.3, 0.8, 0.2, 1); }
+@keyframes rise { from { opacity: 0; translate: 0 10px; } }

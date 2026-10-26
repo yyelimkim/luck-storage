@@ -187,7 +187,7 @@ const CARD_TEXT = {
   },
   '빨간 옷 입기.png': {
     about: 'A belief rooted in Chinese tradition and shared across East Asia that wearing red brings good fortune and wards off bad luck, especially on important days.',
-    howTo: 'Drag red clothing onto the figure to dress it.',
+    howTo: 'Swipe the bottoms and the shoes, or tap the arrows, until both are red.',
   },
   '손바닥의 인 쓰기.png': {
     about: 'A Japanese custom of drawing the character for “person” on your palm and swallowing it, believed to calm nerves before something stressful.',
@@ -218,6 +218,7 @@ const CARD_TEXT = {
 // Interactive pieces: on desktop they fill the canvas beside an opened card;
 // on the phone they take the illustration's place on the card's sheet
 const CANVAS_PAGES = {
+  '빨간 옷 입기.png': 'wearred.html?v=2',  // swipe the bottoms and shoes till both are red
   '드림캐쳐.png': 'dreamcatcher.html?v=2',  // wake it, it catches the bad dreams
   '민들레 소원 빌기.png': 'dandelion.html?v=16',  // make a wish, blow the seeds away
   '시험 전 날 떡 먹기.png': 'ricecake.html?v=8',  // eat all eight, the 100 at the bar's end
