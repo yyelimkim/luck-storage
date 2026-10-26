@@ -2,11 +2,11 @@
    Figma 519:247 is 221 x 647: the eye (its knot on top) and the beads,
    little eye and tassel under it. The string comes down to the knot. */
 .charm.eye {
-  --pin-x: 98.8px;   /* matches window.CHARM.pin in evileye.js */
-  --pin-y: -69.7px;
+  --pin-x: 102.3px;  /* matches window.CHARM.pin in evileye.js */
+  --pin-y: 30.2px;
   left: calc(50% - 110px);  /* the eye runs 1–219 across; centre it */
-  /* centre the piece from just above the knot's string (-10) to the tassel's end (647) */
-  top: calc(50% - 657px / 2 + 10px);
+  /* centre the piece from the string's top (20) to the tassel's end (647) */
+  top: calc(50% - 627px / 2 - 20px);
   width: 221px;
   height: 647px;
 }
@@ -21,6 +21,12 @@
 }
 .charm--fit .part { pointer-events: auto; }
 .in-sheet .charm--fit .part--string { pointer-events: none; }
+/* the shorter string's top fades into the sheet as the fish's does (its
+   top is 120px down its roomy box now) */
+.in-sheet .eye .part--string {
+  -webkit-mask-image: linear-gradient(to bottom, transparent 120px, #000 175px);
+  mask-image: linear-gradient(to bottom, transparent 120px, #000 175px);
+}
 
 /* The cracks: the system's black line on a pale edge (so it reads on the
    dark blue too), run in a stretch at a time with each hit */

@@ -32,6 +32,7 @@ const CFG = Object.assign({
   taut: [900, 9],      // the string's stretch spring once taut, and its damping
   whip: 12,            // the S-wave through the string when it snaps taut
   start: 0.8,          // how far up its string it's dropped from
+  stringScale: 1,      // the string drawn shorter, from its bottom end (its pin set to match)
 }, window.CHARM || {});
 const PARTS = CFG.parts;
 
@@ -64,6 +65,11 @@ PARTS.forEach((p) => {
   const spill = document.createElement('div');
   spill.className = 'part--spill';
   spill.style.inset = p.inset;
+  if (p.string && CFG.stringScale !== 1) {
+    // shortened from its bottom end, so it still meets the knot
+    spill.style.transformOrigin = '50% 100%';
+    spill.style.transform = `scaleY(${CFG.stringScale})`;
+  }
 
   const img = document.createElement('img');
   img.src = `assets/${p.dir || CFG.dir}/${p.src}.svg`;
@@ -94,6 +100,7 @@ PARTS.forEach((p) => {
 const STRING_TOP = 0.75;   // y of the string's ends in its own SVG
 const STRING_BOTTOM = 259.9;
 const STRING_LEN = STRING_BOTTOM - STRING_TOP;
+const SS = CFG.stringScale;  // the string's own units to the frame's, along it
 
 let stringPath = null;
 let stringRest = '';  // the Figma path, untouched
@@ -170,7 +177,7 @@ function bowFor(gap) {
 // the string's angle there, so the knot can ride along.
 function warpString(drop, side, wave) {
   if (!stringPath) return null;
-  const gap = STRING_LEN + drop;
+  const gap = STRING_LEN + drop / SS;
   const sp = spine(gap, BOW * bowFor(gap) + side, wave);
   const total = sp[SPINE_N][2];
   let angle = 0;
@@ -191,7 +198,7 @@ function warpString(drop, side, wave) {
   const fmt = (p) => { const [px, py] = map(p); return `${px.toFixed(2)} ${py.toFixed(2)}`; };
   stringPath.setAttribute('d', stringSegs.map(({ cmd, pts }) => cmd + pts.map(fmt).join(' ')).join(''));
   const [kx, ky] = map(KNOT);
-  return { x: kx - KNOT[0], y: ky - KNOT[1], angle };
+  return { x: kx - KNOT[0], y: (ky - KNOT[1]) * SS, angle };
 }
 
 const stringLayer = layer[PARTS.find((p) => p.string).src];
@@ -252,7 +259,7 @@ let grab = null;  // while dragging: the grabbed point on the charm, relative to
 let pointer = null;
 
 function drop() {
-  y = -START * STRING_LEN;  // fish displacement from rest along the string
+  y = -START * STRING_LEN * SS;  // fish displacement from rest along the string
   vy = 0;
   theta = 0.12;  // let go a little off-centre so it swings
   omega = 0;
@@ -302,7 +309,7 @@ function step(now) {
     // string can go slack but only stretch a little.
     const v = fromPin(pointer[0], pointer[1]);
     const nextTheta = angleOf(v) - angleOf(grab);
-    const nextY = Math.max(-0.9 * STRING_LEN, Math.min(DRAG_STRETCH, Math.hypot(...v) - Math.hypot(...grab)));
+    const nextY = Math.max(-0.9 * STRING_LEN * SS, Math.min(DRAG_STRETCH, Math.hypot(...v) - Math.hypot(...grab)));
     const nextOmega = dt ? (nextTheta - theta) / dt : 0;
     alpha = dt ? (nextOmega - omega) / dt : 0;
     alpha = Math.max(-200, Math.min(200, alpha));

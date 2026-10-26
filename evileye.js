@@ -19,12 +19,15 @@ window.CHARM = {
     // the knot, on its own so it can fall with the rest when the eye breaks
     { src: 'knot', box: [1.122, 147.497, 218, 246], inner: [218, 246], rot: 0, inset: '0' },
   ],
-  pin: [98.8, -69.7],
-  fit: [-10, 647],
+  // the string at 60% of the fish's, shortened from the knot up: its top
+  // (and where it's held) comes down to match
+  stringScale: 0.6,
+  pin: [102.3, 30.2],
+  fit: [20, 647],
   say: 'Bad Luck',
   clover: false,
   claimAfter: 4100,  // once it's stilled, risen, shaken, broken and the pieces have fallen
-  hit: 1.1,          // a gentler swing than the fish's
+  hit: 0.8,          // a gentler swing than the fish's
   // a stiffer cord than the fish's: it barely gives when it catches, and
   // settles at once
   taut: [5000, 120],
