@@ -26,6 +26,11 @@ window.CHARM = {
   clover: false,
   claimAfter: 4100,  // once it's stilled, risen, shaken, broken and the pieces have fallen
   hit: 1.1,          // a gentler swing than the fish's
+  // a stiffer cord than the fish's: it barely gives when it catches, and
+  // settles at once
+  taut: [5000, 120],
+  whip: 4,
+  start: 0.5,
 };
 
 // (in its own scope: charm.js shares the page's names)

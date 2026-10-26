@@ -29,6 +29,9 @@ const CFG = Object.assign({
   clover: true,        // the clover at the bar's end
   claimAfter: 350,     // ms from the last hit to the luck being claimed
   hit: 2.2,            // rad/s a hit knocks into the swing
+  taut: [900, 9],      // the string's stretch spring once taut, and its damping
+  whip: 12,            // the S-wave through the string when it snaps taut
+  start: 0.8,          // how far up its string it's dropped from
 }, window.CHARM || {});
 const PARTS = CFG.parts;
 
@@ -210,9 +213,9 @@ fetch(stringLayer.querySelector('img').src)
 // snaps taut, stretches and bounces, then the charm swings from the pin
 // with the string trailing a little and the fish swinging a beat behind.
 const G = 2600;           // px/s², fall
-const START = 0.8;        // how far up the string the fish starts (of its length)
-const TAUT_K = 900;       // string stretch spring once taut
-const TAUT_C = 9;         // ...and its damping
+const START = CFG.start;        // how far up the string the fish starts (of its length)
+const TAUT_K = CFG.taut[0];       // string stretch spring once taut
+const TAUT_C = CFG.taut[1];         // ...and its damping
 const SAG = G / TAUT_K;   // stretch under the fish's weight at rest
 const SWING_K = 7;        // pendulum stiffness (g / length)
 const SWING_C = 1.4;      // pendulum damping
@@ -221,7 +224,7 @@ const FISH_C = 3.2;
 const LAG = 1.4;          // how hard the fish lags the string's swing
 const BOW = -1;           // slack string bows to the left
 const TRAIL = 14;         // sideways bend per rad/s of swing
-const WHIP = 12;          // S-wave through the string when it snaps taut
+const WHIP = CFG.whip;          // S-wave through the string when it snaps taut
 const WHIP_DECAY = 7;     // per s
 const WHIP_FREQ = 26;     // rad/s
 
@@ -310,14 +313,20 @@ function step(now) {
     wasTaut = y + SAG > 0;
   } else {
     // Free fall while slack; a stiff spring once the string is taut
-    const stretch = y + SAG;
-    const taut = stretch > 0;
-    vy += (G - (taut ? TAUT_K * stretch + TAUT_C * vy : 0)) * dt;
-    y += vy * dt;
-    if (taut && !wasTaut && vy > 300) {
+    // (in short steps, so a stiff string stays steady)
+    const vyIn = vy;
+    let taut = false;
+    const n = Math.ceil(dt / 0.004);
+    for (let i = 0; i < n; i++) {
+      const stretch = y + SAG;
+      taut = stretch > 0;
+      vy += (G - (taut ? TAUT_K * stretch + TAUT_C * vy : 0)) * (dt / n);
+      y += vy * (dt / n);
+    }
+    if (taut && !wasTaut && vyIn > 300) {
       // Snap: the jolt sends a wave up the string and kicks the fish
-      snap(Math.min(1, vy / 1600));
-      omegaPhi += vy / 900;
+      snap(Math.min(1, vyIn / 1600));
+      omegaPhi += vyIn / 900;
     }
     wasTaut = taut;
 
