@@ -28,6 +28,7 @@ const CFG = Object.assign({
   say: '+ Luck',       // what rises from each hit
   clover: true,        // the clover at the bar's end
   claimAfter: 350,     // ms from the last hit to the luck being claimed
+  hit: 2.2,            // rad/s a hit knocks into the swing
 }, window.CHARM || {});
 const PARTS = CFG.parts;
 
@@ -224,7 +225,7 @@ const WHIP = 12;          // S-wave through the string when it snaps taut
 const WHIP_DECAY = 7;     // per s
 const WHIP_FREQ = 26;     // rad/s
 
-const HIT = 2.2;          // rad/s a click knocks into the swing
+const HIT = CFG.hit;      // rad/s a click knocks into the swing
 const DRAG_STRETCH = 6;   // px the string gives when pulled past its length
 const MAX_THROW = 3.2;    // rad/s cap on a released swing, so a flick can't loop it over the pin
 const MAX_THROW_Y = 1200; // px/s cap along the string
@@ -281,8 +282,19 @@ function step(now) {
   const dt = Math.min(0.032, (now - last) / 1000);
   last = now;
 
-  let alpha;
-  if (grab) {
+  let alpha = 0;
+  if (held !== null) {
+    // Held: the swing dies away to hanging still, and it rises `held` px up
+    // its string (which goes slack under it)
+    const k = 1 - Math.exp(-dt * 5);
+    theta -= theta * k;
+    phi -= phi * k;
+    omega = 0;
+    omegaPhi = 0;
+    y += (-held - y) * (1 - Math.exp(-dt * 3.5));
+    vy = 0;
+    wasTaut = true;
+  } else if (grab) {
     // Dragged: the grabbed point follows the pointer around the pin. The
     // string can go slack but only stretch a little.
     const v = fromPin(pointer[0], pointer[1]);
@@ -337,6 +349,11 @@ function step(now) {
   requestAnimationFrame(step);
 }
 
+// Another charm can hold this one still and lift it (evileye.js, when it's
+// about to break): charmHold(px) to rise that far, charmHold(null) to let go
+let held = null;
+window.charmHold = (px) => { held = px; };
+
 // How it's moving, for anything hung on it that moves along (evileye.js's tassel)
 window.charmMotion = () => ({ theta, omega, phi, omegaPhi });
 
@@ -374,12 +391,13 @@ function plusLuck(x, y) {
 addEventListener('message', (e) => {
   if (e.data !== 'luck-continue') return;
   hits = 0;
+  held = null;
   showProgress();
   dispatchEvent(new CustomEvent('charm-hit', { detail: 0 }));
 });
 
 stage.addEventListener('pointerdown', (e) => {
-  if (e.button !== 0) return;
+  if (e.button !== 0 || held !== null) return;
   const onCharm = !!e.target.closest('.part');
   press = { x: e.clientX, y: e.clientY, onCharm, moved: false };
   stage.setPointerCapture(e.pointerId);

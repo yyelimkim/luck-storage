@@ -1,9 +1,10 @@
 // Evil Eye (Figma 519:247): hung on a string as the pollock charm is (charm.js
 // does the dropping, swinging, hitting and dragging). Its string is the
 // pollock's, in the eye's dark brown, threaded down to the knot on top.
-// Each hit knocks bad luck into the eye: a crack runs further across it, and
-// it glows and trembles more. Full, it shakes harder and burns brighter till
-// it breaks into pieces, and everything hung on it falls away.
+// Each hit knocks bad luck into the eye (it swings less than the fish), and a
+// crack runs further across it. Full, it stops swinging and rises, glowing,
+// shakes harder and harder, and breaks into pieces; everything hung on it
+// falls away.
 
 // Each layer's box in the 221 x 647 frame (the Figma group's own bounds)
 window.CHARM = {
@@ -23,7 +24,8 @@ window.CHARM = {
   fit: [-10, 647],
   say: 'Bad Luck',
   clover: false,
-  claimAfter: 2900,  // once it's built up, broken and the pieces have fallen
+  claimAfter: 4100,  // once it's stilled, risen, shaken, broken and the pieces have fallen
+  hit: 1.1,          // a gentler swing than the fish's
 };
 
 // (in its own scope: charm.js shares the page's names)
@@ -150,8 +152,8 @@ function swingTassel(now) {
   requestAnimationFrame(swingTassel);
 }
 
-// The glow (the eye's own blue) and the tremble, stronger with each hit.
-// The tremble is the fish's `translate`, apart from the swing's transform.
+// The glow (the eye's own blue) and the shake, once the bar is full. The
+// shake is the fish's `translate`, apart from the swing's transform.
 let tremble = null;
 function glow(k) {
   fish.style.filter = k ? `drop-shadow(0 0 ${(4 + k * 5).toFixed(1)}px var(--v2-blue)) drop-shadow(0 0 ${(k * 2).toFixed(1)}px var(--ui-white))` : '';
@@ -163,18 +165,25 @@ function shake(px, ms, iterations = Infinity) {
     { translate: `${px * 0.6}px ${px * 0.3}px` }, { translate: `${-px}px ${-px * 0.3}px` }, { translate: '0 0' },
   ], { duration: ms, iterations }) : null;
 }
-// Full: a second of it building, shaking faster and harder and glowing
-// brighter, then it breaks
+// Full: the swing dies away, it rises up its string as it starts to glow,
+// then shakes faster and harder, burning brighter, till it breaks
+const STILL = 700;
+const RISE = 800;
+const SHAKE = 1300;
 function buildUp() {
-  const t0 = performance.now();
-  const D = 1100;
-  (function ramp(now) {
-    const u = Math.min(1, (now - t0) / D);
-    glow(5 + u * 5);
-    if (u < 1) requestAnimationFrame(ramp);
-  })(t0);
-  [[2.5, 90], [4, 70], [6, 55], [8, 45]].forEach(([px, ms], i) => setTimeout(() => shake(px, ms), i * (D / 4)));
-  setTimeout(() => { shake(0); shatter(); }, D);
+  window.charmHold(0);
+  setTimeout(() => {
+    window.charmHold(26);
+    const t0 = performance.now();
+    (function ramp(now) {
+      const u = Math.min(1, (now - t0) / (RISE + SHAKE));
+      glow(u * u * 10);
+      if (u < 1) requestAnimationFrame(ramp);
+    })(t0);
+    [[0.6, 110], [1.5, 85], [3, 65], [5, 50], [7.5, 40]].forEach(([px, ms], i) => setTimeout(() => shake(px, ms), RISE * 0.6 + i * (SHAKE / 5)));
+    // broken, the empty string falls straight again
+    setTimeout(() => { shake(0); shatter(); Sounds.crack(true); window.charmHold(null); }, RISE + SHAKE);
+  }, STILL);
 }
 
 // Broken: the eye in jagged pieces round its middle (108, 138 in its own
@@ -242,12 +251,7 @@ addEventListener('charm-hit', (e) => {
   if (!n) { mend(); return; }
   const last = n === CRACKS.length;
   setTimeout(() => Sounds.crack(), 60);
-  glow(n);
-  shake(n * 0.5, 120 - n * 10);
-  // the last crack runs right through: it builds, and it breaks
-  if (last) {
-    setTimeout(buildUp, 300);
-    setTimeout(() => Sounds.crack(true), 1400);
-  }
+  // the bar's full: it builds, and it breaks
+  if (last) setTimeout(buildUp, 250);
 });
 })();
