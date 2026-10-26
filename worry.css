@@ -27,7 +27,7 @@ html, body {
 .worry--grid {
   position: absolute;
   left: 50%;
-  top: calc((100% - 166px) / 2 + 6px);
+  top: calc((100% - 120px) / 2 + 6px);
   display: grid;
   grid-template-columns: repeat(2, 150px);
   gap: 26px 22px;
@@ -61,7 +61,7 @@ html, body {
 .worry--big {
   position: absolute;
   left: 50%;
-  top: calc((100% - 166px) / 2 + 10px);
+  top: calc((100% - 120px) / 2 + 10px);
   width: calc(366px * var(--g));
   translate: -50% -50%;
 }
@@ -120,8 +120,8 @@ html, body {
   z-index: 3;
   pointer-events: none;
   background:
-    linear-gradient(to bottom, var(--yellow-green), transparent 96px),
-    linear-gradient(to top, var(--yellow-green) 150px, transparent 250px);
+    linear-gradient(to bottom, var(--yellow-green), transparent 150px),
+    linear-gradient(to top, var(--yellow-green) 100px, transparent 290px);
 }
 .worry:not([data-step="tuck"]):not([data-step="done"]) .worry--fade { opacity: 0; visibility: hidden; }
 
@@ -171,7 +171,7 @@ html, body {
   position: absolute;
   left: 16px;
   right: 16px;
-  top: calc(100% - 166px);  /* the same spot in every ritual */
+  top: calc(100% - 120px);  /* the same spot in every ritual */
   z-index: 5;
   min-height: 26px;
   text-align: center;
@@ -251,6 +251,8 @@ html, body {
 /* 2 (telling): the words and the field a step higher, clear of the keyboard,
    and the doll a size smaller in the room above them */
 .worry[data-step="tell"] .worry--words { top: calc(100% - 226px); }
+/* with the button under them, the words sit above it */
+.worry[data-step="choose"] .worry--words { top: calc(100% - 166px); }
 .worry[data-step="tell"] .worry--field { top: calc(100% - 174px); }
 .worry--big { width: calc(280px * var(--g)); top: calc((100% - 226px) / 2 + 6px); }
 /* 3 and 4 (the bed): the words a little lower, under the bed's fade */

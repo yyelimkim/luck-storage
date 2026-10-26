@@ -44,7 +44,7 @@ const flames = FLAMES.map(([file, x, y, w, h]) => {
 const ZOOM = { intro: 1, wish: 1, blow: 1.39, done: 1.02 };
 const words = document.querySelector('.candles--words');
 function fit() {
-  const room = innerHeight - 166 - 24 - 40;  // the words' spot below, and the band above the cake
+  const room = innerHeight - 120 - 24 - 40;  // the words' spot below, and the band above the cake
   const w = Math.min(358 * (ZOOM[root.dataset.step] || 1), innerWidth - 24, room * W / H);
   root.style.setProperty('--w', `${Math.max(120, w)}px`);
 }

@@ -17,7 +17,7 @@ html, body {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 0 16px 166px;  /* the words sit below, at the rituals' spot */
+  padding: 0 16px 120px;  /* the words sit below, at the rituals' spot */
   font-family: var(--font-display);
   letter-spacing: var(--tracking);
   color: var(--system-black);
@@ -96,7 +96,7 @@ html, body {
   position: absolute;
   left: 16px;
   right: 16px;
-  top: calc(100% - 166px);  /* the same spot in every ritual */
+  top: calc(100% - 120px);  /* the same spot in every ritual */
   margin: 0 auto;
   max-width: 371px;
   display: none;

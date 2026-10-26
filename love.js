@@ -17,7 +17,7 @@ const send = document.getElementById('send');
 
 // The flower as big as fits above the words
 function fit() {
-  const room = innerHeight - 166;
+  const room = innerHeight - 120;
   root.style.setProperty('--f', Math.min(1, (innerWidth - 40) / 300, (room * 0.88) / 300).toFixed(3));
 }
 addEventListener('resize', fit);

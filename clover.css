@@ -20,15 +20,18 @@ html, body {
 }
 
 /* The field: one wide drawing, panned across as a whole (clover.js) above
-   the words; it fades out at its bottom edge into them */
+   the words; it fades out at its bottom edge into them. At the top nothing
+   is cut: the clovers keep below it. */
 .clover--field {
   position: absolute;
   left: 0;
   right: 0;
   top: 0;
-  bottom: 176px;
-  -webkit-mask-image: linear-gradient(to bottom, transparent, #000 24px, #000 calc(100% - 30px), transparent);
-  mask-image: linear-gradient(to bottom, transparent, #000 24px, #000 calc(100% - 30px), transparent);
+  bottom: 116px;
+  -webkit-mask-image: linear-gradient(to bottom, #000 calc(100% - 170px), transparent);
+  mask-image: linear-gradient(to bottom, #000 calc(100% - 170px), transparent);
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
   cursor: grab;
 }
 .clover.is-dragging .clover--field { cursor: grabbing; }
@@ -77,7 +80,7 @@ html, body {
   position: absolute;
   left: 16px;
   right: 16px;
-  top: calc(100% - 166px);  /* the same spot in every ritual */
+  top: calc(100% - 120px);  /* the same spot in every ritual */
   z-index: 5;
   min-height: 24px;
   text-align: center;

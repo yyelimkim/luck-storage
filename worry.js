@@ -46,7 +46,7 @@ function pick(i) {
 // Sizes: the grid and the big doll as big as fit above the words; the bed
 // across the width, its pillow a little above the middle of the room
 function fit() {
-  const room = innerHeight - 166 - 16;
+  const room = innerHeight - 120 - 16;
   root.style.setProperty('--g', Math.min(1, (innerWidth - 24) / 344, (room - 16) / 502).toFixed(3));
   const s = innerWidth / 402;
   root.style.setProperty('--s', s.toFixed(4));

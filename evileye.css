@@ -24,8 +24,10 @@
 /* the shorter string's top fades into the sheet as the fish's does (its
    top is 120px down its roomy box now) */
 .in-sheet .eye .part--string {
-  -webkit-mask-image: linear-gradient(to bottom, transparent 120px, #000 175px);
-  mask-image: linear-gradient(to bottom, transparent 120px, #000 175px);
+  -webkit-mask-image: linear-gradient(to bottom, transparent 80px, #000 215px);
+  mask-image: linear-gradient(to bottom, transparent 80px, #000 215px);
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
 }
 
 /* The cracks: the system's black line on a pale edge (so it reads on the

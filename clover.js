@@ -16,6 +16,7 @@ const SIZE = [0.88, 1.05];  // their scale, of the Figma clover (about 180 acros
 // Each clover's middle, where its leaves meet, in its own drawing
 const MID = { three: [89, 97], four: [95, 95] };
 const BOX = { three: [180, 194], four: [190, 191] };
+const TOP = 80;   // the clovers' middles keep this far down, so none reaches the top edge
 
 const rand = (a, b) => a + Math.random() * (b - a);
 let svg = null;
@@ -66,12 +67,13 @@ function layout(defs) {
   // short swipe the right way brings it in
   const onLeft = Math.random() < 0.5;
   const fx = onLeft ? vw - rand(0.15, 0.45) * vw : 2 * vw + rand(0.15, 0.45) * vw;
-  const fy = rand(0.3, 0.65) * H;
+  const fy = Math.max(TOP + 30, rand(0.3, 0.6) * H);
   const pts = [];
   for (let r = 0; r * GAP * 0.85 < H + GAP; r++) {
     for (let c = -1; c * GAP < W + GAP; c++) {
       const x = (c + (r % 2) * 0.5 + rand(-0.35, 0.35)) * GAP;
-      const y = (r + rand(-0.3, 0.3)) * GAP * 0.85;
+      const y = TOP + (r + rand(-0.3, 0.3)) * GAP * 0.85;
+      if (y < TOP) continue;
       if (Math.hypot(x - fx, y - fy) < 55) continue;  // its own spot
       pts.push([x, y]);
     }
@@ -85,6 +87,10 @@ function layout(defs) {
   four = clover('four', 0, 0, rand(0, 360), SIZE[1] * 1.08);
   spot.appendChild(four);
   svg.appendChild(spot);
+  // and one three-leaf over it, off to one side, half burying a leaf or two
+  const lean = rand(0, Math.PI * 2);
+  const reach = rand(88, 102);
+  svg.appendChild(clover('three', fx + Math.cos(lean) * reach, Math.max(TOP, fy + Math.sin(lean) * reach), rand(0, 360), SIZE[0]));
   fieldEl.replaceChildren(svg);
   pan = -(W - vw) / 2;  // starting in the middle
   vel = 0;

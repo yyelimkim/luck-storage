@@ -24,7 +24,7 @@ html, body {
 .hito--palm {
   position: absolute;
   left: 50%;
-  top: calc((100% - 166px) * 0.6);
+  top: calc((100% - 120px) * 0.6);
   width: 637px;
   height: 713px;
   --mid: 351px;  /* the tilted hand's middle across, measured by hito.js */
@@ -87,7 +87,7 @@ html, body {
   z-index: 4;
   pointer-events: none;
   /* solid by the wrist's end, so none of its edge shows, and clear of the 人 */
-  background: linear-gradient(to bottom, transparent, var(--v2-blue) 70px);
+  background: linear-gradient(to bottom, transparent, var(--v2-blue) 150px);
 }
 
 /* The words at the bottom, at the rituals' one spot */
@@ -95,7 +95,7 @@ html, body {
   position: absolute;
   left: 16px;
   right: 16px;
-  top: calc(100% - 166px);  /* the same spot in every ritual */
+  top: calc(100% - 120px);  /* the same spot in every ritual */
   z-index: 5;
   min-height: 24px;
   text-align: center;

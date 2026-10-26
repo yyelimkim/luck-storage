@@ -71,8 +71,10 @@ html, body {
    string (STRING_ROOM in charm.js), so the fade runs 120px down the string
    itself. Only the string, not its roomy box, takes taps. */
 .in-sheet .part--string {
-  -webkit-mask-image: linear-gradient(to bottom, transparent 75px, #000 140px);
-  mask-image: linear-gradient(to bottom, transparent 75px, #000 140px);
+  -webkit-mask-image: linear-gradient(to bottom, transparent 40px, #000 175px);
+  mask-image: linear-gradient(to bottom, transparent 40px, #000 175px);
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
   pointer-events: none;
 }
 .in-sheet .part--string svg { pointer-events: auto; }

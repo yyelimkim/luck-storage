@@ -39,7 +39,7 @@ const grapes = GRAPES.map(([cx, cy, r], i) => {
 // timer and words leave
 function fit() {
   // the timer sits at the top, clear of the bunch
-  const room = innerHeight - 60 - 166 - 24;  // the timer above, the words' spot below
+  const room = innerHeight - 60 - 120 - 24;  // the timer above, the words' spot below
   const w = Math.min(340, innerWidth - 24, room * 352 / 499);
   root.style.setProperty('--w', `${Math.max(120, w)}px`);
 }

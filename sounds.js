@@ -431,7 +431,7 @@ const Sounds = (() => {
     lp.type = 'lowpass';
     lp.frequency.value = 5000;
     const hiss = a.createGain();
-    hiss.gain.value = 0.045;
+    hiss.gain.value = 0.016;
     n.connect(hp).connect(lp).connect(hiss).connect(out);
     n.start(t);
     // the drops: tiny bright ticks, a few at a time, never in step
@@ -443,7 +443,7 @@ const Sounds = (() => {
       bp.frequency.value = 2500 + Math.random() * 4000;
       bp.Q.value = 3;
       const g = a.createGain();
-      g.gain.setValueAtTime(0.015 + Math.random() * 0.025, at);
+      g.gain.setValueAtTime(0.006 + Math.random() * 0.01, at);
       g.gain.exponentialRampToValueAtTime(0.0001, at + 0.018);
       d.connect(bp).connect(g).connect(out);
       d.start(at);
@@ -458,7 +458,7 @@ const Sounds = (() => {
         n.stop(now + 1.3);
         return;
       }
-      for (let i = 0; i < 3; i++) if (Math.random() < 0.7) drop();
+      if (Math.random() < 0.6) drop();
     }, 90);
   }
 

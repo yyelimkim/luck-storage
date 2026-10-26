@@ -24,7 +24,7 @@ html, body {
 .love--flower {
   position: absolute;
   left: 50%;
-  top: calc((100% - 166px) * 0.44);
+  top: calc((100% - 120px) * 0.44);
   width: 325px;
   height: 469px;
   margin: -140px 0 0 -170px;  /* the head (about 170, 140) on the spot */
@@ -53,7 +53,7 @@ html, body {
   position: absolute;
   left: 16px;
   right: 16px;
-  top: calc(100% - 166px);  /* the same spot in every ritual */
+  top: calc(100% - 120px);  /* the same spot in every ritual */
   z-index: 5;
   min-height: 24px;
   text-align: center;
@@ -74,6 +74,8 @@ html, body {
   translate: -50% 0;
   transition: opacity 0.35s, visibility 0s 0.35s;
 }
+/* with the field under them, the words sit above it */
+[data-step="ask"] .love--words { top: calc(100% - 166px); }
 [data-step]:not([data-step="ask"]) .love--field { opacity: 0; visibility: hidden; pointer-events: none; }
 .love--field input {
   width: 100%;
