@@ -8,42 +8,29 @@
   <link rel="icon" href="favicon-32.png" sizes="32x32" type="image/png">
   <link rel="apple-touch-icon" href="apple-touch-icon.png">
   <link rel="stylesheet" href="design-system.css?v=9">
-  <link rel="stylesheet" href="evileye.css?v=5">
+  <link rel="stylesheet" href="charm.css?v=18">
+  <link rel="stylesheet" href="evileye.css?v=6">
 </head>
 <body>
-  <!-- Evil Eye: bad luck drifts round the charm (the card's own, Figma
-       234:1196). Tap each bit and it's drawn into the eye; with each one a
-       crack runs further across it, till the eye has cracked right through,
-       taking the bad luck with it. -->
-  <main class="eye" id="eye" data-step="ready">
-    <!-- The progress bar, as the pollock charm's -->
-    <div class="progress" id="progress" role="progressbar" aria-label="Bad luck taken" aria-valuemin="0" aria-valuemax="5" aria-valuenow="0">
-      <div class="progress--track"><span class="progress--fill" id="fill"></span></div>
-      <img class="progress--clover" src="assets/mobile/clover-outline.svg" width="28" height="28" alt="">
-    </div>
-
-    <div class="eye--charm" id="charm">
-      <img class="eye--art" src="assets/evileye/charm.svg?v=1" width="249" height="656" alt="An evil eye charm">
-      <!-- The cracks, drawn over the eye a run at a time (in the charm's units) -->
-      <svg class="eye--cracks" id="cracks" viewBox="0 0 249 656" aria-hidden="true">
-        <path d="M78 197L94 222L86 241L103 260"/>
-        <path d="M103 260L124 254L139 268L160 261"/>
-        <path d="M160 261L181 247L205 240L226 242"/>
-        <path d="M103 260L95 281L110 300L99 322"/>
-        <path d="M160 261L167 285L190 300L212 322M99 322L108 346L92 371L86 392"/>
-      </svg>
-      <!-- the chip that breaks away at the end -->
-      <svg class="eye--chip" id="chip" viewBox="0 0 30 30" aria-hidden="true"><path d="M3 4L27 2L21 26Z"/></svg>
-    </div>
-
-    <div class="eye--wisps" id="wisps" aria-label="Bad luck"></div>
-
-    <div class="eye--words" role="status">
-      <p class="eye--say" id="say">Tap the bad luck into the eye</p>
+  <!-- Evil Eye (Figma 519:247), hung as the pollock charm is: it drops on its
+       string, threaded through the hole at the top of the eye and knotted,
+       and is caught when the string runs out. Hit it to knock the bad luck
+       into it, and with each hit a crack runs further across it; drag it to
+       pull it around, tap the empty canvas to drop it again. -->
+  <div class="progress" id="progress" role="progressbar" aria-label="Luck" aria-valuemin="0" aria-valuemax="5" aria-valuenow="0">
+    <div class="progress--track"><span class="progress--fill" id="progress-fill"></span></div>
+    <img class="progress--clover" id="progress-clover" src="assets/mobile/clover-outline.svg" width="28" height="28" alt="">
+  </div>
+  <main class="stage" id="stage">
+    <div class="charm--fit">
+      <div class="charm eye" id="charm">
+        <div class="charm--fish" id="fish"></div>
+      </div>
     </div>
   </main>
   <script src="sounds.js?v=19"></script>
   <script src="pointer.js?v=1"></script>
-  <script src="evileye.js?v=4"></script>
+  <script src="evileye.js?v=5"></script>
+  <script src="charm.js?v=21"></script>
 </body>
 </html>

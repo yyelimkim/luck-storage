@@ -1,170 +1,47 @@
-* { box-sizing: border-box; }
-
-html, body {
-  margin: 0;
-  height: 100%;
-  overflow: hidden;
-  background: transparent;  /* sits on the desktop canvas or the phone's card sheet */
+/* The evil eye on the pollock charm's string (charm.css does the rest).
+   Figma 519:247 is 221 x 647: the eye (its knot on top) and the beads,
+   little eye and tassel under it. The string comes down to the knot. */
+.charm.eye {
+  --pin-x: 98.8px;   /* matches window.CHARM.pin in evileye.js */
+  --pin-y: -69.7px;
+  left: calc(50% - 110px);  /* the eye runs 1–219 across; centre it */
+  /* centre the piece from just above the knot's string (-10) to the tassel's end (647) */
+  top: calc(50% - 657px / 2 + 10px);
+  width: 221px;
+  height: 647px;
 }
+.eye .charm--fish { transform-origin: 107.5px 180px; }  /* the knot */
+.in-sheet .charm.eye { margin-top: 0; }
 
-/* The charm hangs from above, the eye a little over the middle of the room
-   between the bar and the words; bad luck drifts round it */
-.eye {
-  --k: 1;           /* the charm's scale, set by evileye.js to fit */
-  --x: 0px;         /* where its top-left sits, set by evileye.js */
-  --y: 0px;
-  position: fixed;
+/* A tall charm is scaled to fit (charm.js), about the middle of the screen */
+.charm--fit {
+  position: absolute;
   inset: 0;
-  overflow: hidden;
-  font-family: var(--font-display);
-  letter-spacing: var(--tracking);
-  color: var(--system-black);
-  -webkit-user-select: none;
-  user-select: none;
-}
-
-/* The progress bar, as the pollock charm's */
-.progress {
-  position: absolute;
-  left: 50%;
-  top: 14px;
-  z-index: 5;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  width: min(370px, calc(100% - 32px));
-  transform: translateX(-50%);
   pointer-events: none;
 }
-.progress--track {
-  flex: 1;
-  height: 14px;
-  padding: 2px;
-  border-radius: 999px;
-  border: 0.771px solid var(--system-black);
-  background: var(--ui-white);
-}
-.progress--fill {
-  display: block;
-  width: 0;
-  height: 100%;
-  border-radius: 999px;
-  background: var(--system-black);
-  transition: width 0.3s cubic-bezier(0.3, 0.8, 0.2, 1);
-}
-.progress--clover { flex: none; display: block; }
+.charm--fit .part { pointer-events: auto; }
+.in-sheet .charm--fit .part--string { pointer-events: none; }
 
-/* The charm (249 x 656 in its own units), swaying a little on its string;
-   it fades out below the beads so the words stay clear */
-.eye--charm {
-  position: absolute;
-  left: var(--x);
-  top: var(--y);
-  width: 249px;
-  height: 656px;
-  z-index: 1;  /* under the bar, which the string runs up behind */
-  transform-origin: 0 0;
-  scale: var(--k);
-  pointer-events: none;
-  -webkit-mask: linear-gradient(to bottom, #000 66%, transparent 88%);
-  mask: linear-gradient(to bottom, #000 66%, transparent 88%);
-}
-.eye--art,
+/* The cracks: the system's black line on a pale edge (so it reads on the
+   dark blue too), run in a stretch at a time with each hit */
 .eye--cracks {
   position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  transform-origin: 126px 10px;  /* the top of its string */
-  animation: sway 5s ease-in-out infinite alternate;
+  left: 0;
+  top: 0;
+  width: 221px;
+  height: 647px;
+  overflow: visible;
+  pointer-events: none;
 }
-@keyframes sway { from { rotate: -1.6deg; } to { rotate: 1.6deg; } }
-.eye.is-gulp .eye--art,
-.eye.is-gulp .eye--cracks { animation: gulp 0.35s cubic-bezier(0.3, 1.6, 0.5, 1), sway 5s ease-in-out infinite alternate; }
-@keyframes gulp { 40% { scale: 0.97; } }
-.eye.is-shake .eye--art,
-.eye.is-shake .eye--cracks { animation: shake 0.45s ease-in-out, sway 5s ease-in-out infinite alternate; }
-@keyframes shake {
-  20% { translate: -3px 0; }
-  40% { translate: 3px 0; }
-  60% { translate: -2px 0; }
-  80% { translate: 1px 0; }
-}
-
-/* The cracks: the system's black line, run in a stretch at a time */
-.eye--cracks { overflow: visible; }
 .eye--cracks path {
   fill: none;
   stroke: var(--system-black);
-  stroke-width: 1.8px;
-  stroke-linejoin: miter;
+  stroke-width: 1.5px;
   stroke-linecap: round;
-  stroke-dasharray: 1 1.01;
+  stroke-linejoin: round;
+  stroke-dasharray: 1;
   stroke-dashoffset: 1;
-  transition: stroke-dashoffset 0.35s cubic-bezier(0.5, 0, 0.3, 1);
+  transition: stroke-dashoffset 0.35s cubic-bezier(0.3, 0.8, 0.2, 1);
 }
-.eye--cracks path.is-run { stroke-dashoffset: 0; }
 .eye--cracks path.is-edge { stroke: var(--ui-white); stroke-width: 4px; opacity: 0.85; }
-
-/* The chip that breaks off the eye's edge, and falls */
-.eye--chip {
-  position: absolute;
-  left: 205px;
-  top: 312px;
-  width: 22px;
-  height: 22px;
-  opacity: 0;
-  overflow: visible;
-}
-.eye--chip path { fill: #0032a6; stroke: var(--system-black); stroke-width: 1.5px; stroke-linejoin: round; }
-.eye[data-step="done"] .eye--chip { animation: chip 1.1s cubic-bezier(0.5, 0, 0.9, 0.6) 0.25s forwards; }
-@keyframes chip {
-  0% { opacity: 1; translate: 0 0; rotate: 0deg; }
-  100% { opacity: 0; translate: 26px 260px; rotate: 160deg; }
-}
-
-/* Bad luck: little dark puffs drifting about, each on its own path; tap one
-   and it's drawn into the eye */
-.eye--wisps { position: absolute; inset: 0; z-index: 3; }
-.wisp {
-  position: absolute;
-  width: 52px;
-  height: 52px;
-  margin: -26px 0 0 -26px;
-  padding: 0;
-  border: 0;
-  background: none;
-  cursor: pointer;
-  -webkit-tap-highlight-color: transparent;
-  animation: drift var(--t, 6s) ease-in-out infinite alternate;
-}
-.wisp svg { display: block; width: 100%; height: 100%; overflow: visible; animation: puff 1.6s ease-in-out infinite alternate; }
-.wisp path { fill: var(--system-black); }
-.wisp .wisp--eye { fill: var(--system-white); }
-@keyframes drift {
-  from { translate: 0 0; }
-  50% { translate: var(--dx) calc(var(--dy) * -1); }
-  to { translate: calc(var(--dx) * -0.6) var(--dy); }
-}
-@keyframes puff { to { scale: 1.08 0.94; } }
-.wisp:focus { outline: none; }
-.wisp:focus-visible svg { outline: 1.5px solid var(--system-black); outline-offset: 4px; border-radius: 50%; }
-.wisp.is-taken { pointer-events: none; animation: none; }
-
-/* The words at the bottom, at the rituals' one spot */
-.eye--words {
-  position: absolute;
-  left: 16px;
-  right: 16px;
-  top: calc(100% - 166px);  /* the same spot in every ritual */
-  z-index: 5;
-  min-height: 26px;
-  text-align: center;
-}
-.eye--say { margin: 0; font-size: 18px; line-height: 1.3; }
-.eye--say.is-new { animation: rise 0.45s cubic-bezier(0.3, 0.8, 0.2, 1); }
-@keyframes rise { from { opacity: 0; translate: 0 10px; } }
-
-@media (prefers-reduced-motion: reduce) {
-  .wisp, .wisp svg, .eye--art, .eye--cracks { animation: none; }
-}
+.eye--cracks path.is-run { stroke-dashoffset: 0; }

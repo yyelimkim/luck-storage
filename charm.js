@@ -1,9 +1,9 @@
 // Layers of Figma node 271:1240, positions relative to the "illust" frame.
 // box = axis-aligned bounds, inner = the vector's own size, rot = its rotation,
 // inset = how far the SVG's stroke spills past the vector (CSS inset)
-const PARTS = [
+const POLLOCK = [
   // the string, pulled straight (hidden layer 271:1241). Stays with the charm, not the fish.
-  { src: 'string-straight', box: [180.526, -67.313, 46.193, 260.124], inner: [39.235, 259.162], rot: -1.54, inset: '-0.29% -1.91%', fish: false },
+  { src: 'string-straight', string: true, box: [180.526, -67.313, 46.193, 260.124], inner: [39.235, 259.162], rot: -1.54, inset: '-0.29% -1.91%', fish: false },
   { src: 'body', box: [38.468, 168.062, 314.858, 154.324], inner: [308.999, 140.972], rot: 2.5, inset: '-0.53% -0.24%' },
   { src: 'eye', box: [68.389, 233.535, 16.332, 16.332], inner: [15.664, 15.664], rot: 2.5, inset: '0' },
   { src: 'scale', box: [104.576, 220.863, 12.971, 46.713], inner: [10.961, 46.279], rot: 2.5, inset: '-1.62% -6.84%' },
@@ -16,6 +16,17 @@ const PARTS = [
   // It rides on the end of the string, not the fish (fish: 'over' = above the fish, with the string)
   { src: 'knot-top', box: [185.446, 161.614, 48.508, 44.172], inner: [48.508, 44.172], rot: 0, inset: '0', fish: 'over' },
 ];
+
+// Another charm can hang on the same string, swing and take the same hits
+// (evileye.html): it sets window.CHARM before this script, with its own parts
+// and where its string is held and tied
+const CFG = Object.assign({
+  dir: 'charm',
+  parts: POLLOCK,
+  pin: [201, -66],     // the top of the string, in the frame (matches --pin-x / --pin-y)
+  fit: null,           // [top, bottom] of the piece, in the frame, to scale it down to fit the screen
+}, window.CHARM || {});
+const PARTS = CFG.parts;
 
 // On the phone the charm sits on a card's sheet (charm.html?sheet), where the
 // top of its string fades into the sheet like the other cards' artwork
@@ -48,14 +59,14 @@ PARTS.forEach((p) => {
   spill.style.inset = p.inset;
 
   const img = document.createElement('img');
-  img.src = `assets/charm/${p.src}.svg`;
+  img.src = `assets/${p.dir || CFG.dir}/${p.src}.svg`;
   img.alt = '';
   img.draggable = false;
 
   spill.appendChild(img);
   inner.appendChild(spill);
   part.appendChild(inner);
-  if (p.src === 'string-straight') {
+  if (p.string) {
     part.classList.add('part--string');
     if (IN_SHEET) {
       const [rx, ry] = STRING_ROOM;
@@ -176,10 +187,11 @@ function warpString(drop, side, wave) {
   return { x: kx - KNOT[0], y: ky - KNOT[1], angle };
 }
 
-fetch(layer['string-straight'].querySelector('img').src)
+const stringLayer = layer[PARTS.find((p) => p.string).src];
+fetch(stringLayer.querySelector('img').src)
   .then((r) => r.text())
   .then((txt) => {
-    const img = layer['string-straight'].querySelector('img');
+    const img = stringLayer.querySelector('img');
     const svg = document.importNode(new DOMParser().parseFromString(txt, 'image/svg+xml').documentElement, true);
     svg.removeAttribute('style');
     img.replaceWith(svg);
@@ -213,8 +225,20 @@ const HIT = 2.2;          // rad/s a click knocks into the swing
 const DRAG_STRETCH = 6;   // px the string gives when pulled past its length
 const MAX_THROW = 3.2;    // rad/s cap on a released swing, so a flick can't loop it over the pin
 const MAX_THROW_Y = 1200; // px/s cap along the string
-const PIN_X = 201;        // matches --pin-x / --pin-y in charm.css
-const PIN_Y = -66;
+const [PIN_X, PIN_Y] = CFG.pin;
+
+// A tall charm is scaled down about the middle of the screen to fit it
+// (with the string's top above the screen); taps and drags are measured in
+// its own units
+let SCALE = 1;
+function fit() {
+  if (!CFG.fit) return;
+  const [top, bottom] = CFG.fit;
+  SCALE = Math.min(1, (innerHeight - 60) / (bottom - top));
+  charm.parentElement.style.transform = SCALE < 1 ? `scale(${SCALE})` : '';
+}
+addEventListener('resize', fit);
+fit();
 
 let y, vy, theta, omega, phi, omegaPhi, whip, whipT, wasTaut, last;
 let grab = null;  // while dragging: the grabbed point on the charm, relative to the pin, at rest
@@ -238,10 +262,14 @@ function snap(strength) {
   whipT = 0;
 }
 
-// Pin position on the page (layout position, unaffected by the swing)
+// Pin position on the page (layout position, unaffected by the swing), and a
+// point on the page as an offset from it in the charm's own units
 function pinPos() {
-  return [charm.offsetLeft + PIN_X, charm.offsetTop + PIN_Y];
+  const cx = innerWidth / 2;
+  const cy = innerHeight / 2;
+  return [cx + (charm.offsetLeft + PIN_X - cx) * SCALE, cy + (charm.offsetTop + PIN_Y - cy) * SCALE];
 }
+const fromPin = (x, y2) => { const [px, py] = pinPos(); return [(x - px) / SCALE, (y2 - py) / SCALE]; };
 
 // Angle of a vector from straight down, in CSS rotate() terms
 const angleOf = ([vx, vy2]) => Math.atan2(-vx, vy2);
@@ -254,7 +282,7 @@ function step(now) {
   if (grab) {
     // Dragged: the grabbed point follows the pointer around the pin. The
     // string can go slack but only stretch a little.
-    const v = [pointer[0] - pinPos()[0], pointer[1] - pinPos()[1]];
+    const v = fromPin(pointer[0], pointer[1]);
     const nextTheta = angleOf(v) - angleOf(grab);
     const nextY = Math.max(-0.9 * STRING_LEN, Math.min(DRAG_STRETCH, Math.hypot(...v) - Math.hypot(...grab)));
     const nextOmega = dt ? (nextTheta - theta) / dt : 0;
@@ -295,13 +323,13 @@ function step(now) {
   charm.style.transform = `rotate(${theta}rad)`;
   fish.style.transform = `translateY(${y}px) rotate(${phi}rad)`;
   // Once the bends have died away, show the straight Figma string exactly
-  const knot = layer['knot-top'];
+  const knot = layer['knot-top'];  // the pollock's knot rides on the string's end
   if (Math.abs(y) < 0.5 && Math.abs(trail) < 0.4 && Math.abs(wave) < 0.4) {
     if (stringPath && stringPath.getAttribute('d') !== stringRest) stringPath.setAttribute('d', stringRest);
-    knot.style.transform = 'none';
+    if (knot) knot.style.transform = 'none';
   } else {
     const k = warpString(y, trail, wave);
-    if (k) knot.style.transform = `translate(${k.x}px, ${k.y}px) rotate(${k.angle}rad)`;
+    if (k && knot) knot.style.transform = `translate(${k.x}px, ${k.y}px) rotate(${k.angle}rad)`;
   }
   requestAnimationFrame(step);
 }
@@ -336,7 +364,12 @@ function plusLuck(x, y) {
   el.addEventListener('animationend', () => el.remove());
 }
 // The sheet's Continue starts the count again
-addEventListener('message', (e) => { if (e.data === 'luck-continue') { hits = 0; showProgress(); } });
+addEventListener('message', (e) => {
+  if (e.data !== 'luck-continue') return;
+  hits = 0;
+  showProgress();
+  dispatchEvent(new CustomEvent('charm-hit', { detail: 0 }));
+});
 
 stage.addEventListener('pointerdown', (e) => {
   if (e.button !== 0) return;
@@ -352,9 +385,7 @@ stage.addEventListener('pointermove', (e) => {
     press.moved = true;
     if (press.onCharm) {
       // Remember the grabbed point in the charm's rest frame (undo the swing and the drop)
-      const [px, py] = pinPos();
-      const vx = press.x - px;
-      const vy2 = press.y - py;
+      const [vx, vy2] = fromPin(press.x, press.y);
       const c = Math.cos(-theta);
       const sn = Math.sin(-theta);
       grab = [vx * c - vy2 * sn, vx * sn + vy2 * c - y];
@@ -379,6 +410,7 @@ function release() {
       unpoint();
       if (hits < HITS_TO_CLAIM) {
         hits++;
+        dispatchEvent(new CustomEvent('charm-hit', { detail: hits }));
         plusLuck(press.x, press.y);
         showProgress();
         if (hits === HITS_TO_CLAIM && IN_SHEET) setTimeout(() => parent.postMessage('luck-claimed', '*'), 350);  // no words to read first, so sooner
