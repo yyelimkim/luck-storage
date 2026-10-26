@@ -62,7 +62,7 @@ html, body {
 .pg--caught {
   position: absolute;
   left: 50%;
-  top: 14px;
+  top: 4px;
   z-index: 4;
   display: flex;
   align-items: flex-end;
