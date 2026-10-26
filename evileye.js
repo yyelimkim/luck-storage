@@ -19,10 +19,9 @@ window.CHARM = {
     // the knot, on its own so it can fall with the rest when the eye breaks
     { src: 'knot', box: [1.122, 147.497, 218, 246], inner: [218, 246], rot: 0, inset: '0' },
   ],
-  // the string at 60% of the fish's, shortened from the knot up: its top
-  // (and where it's held) comes down to match
-  stringScale: 0.6,
-  pin: [102.3, 30.2],
+  // the fish's string at its own length; only its last stretch shows, the
+  // rest (and its looped top) lost in the fade above
+  pin: [98.8, -69.7],
   fit: [20, 647],
   say: 'Bad Luck',
   clover: false,
