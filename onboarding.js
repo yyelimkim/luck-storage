@@ -11,6 +11,24 @@
   const ob = document.getElementById('ob');
   if (!ob) return;
   const root = document.documentElement;
+  // Returning (this browser has been through it before): straight to Home,
+  // with the name they gave. ?onboarding brings it back on cue (and O, in
+  // the desktop preview, reloads with it).
+  const ON_CUE = /[?&]onboarding(?:[=&?]|$)/.test(location.search);
+  let seen = false;
+  try { seen = localStorage.getItem('onboarded') === '1'; } catch (e) { /* no storage: show it */ }
+  addEventListener('keydown', (e) => {
+    if ((e.key === 'o' || e.key === 'O') && root.classList.contains('is-preview') && !root.classList.contains('is-onboarding')
+      && !(e.target.closest && e.target.closest('input, textarea'))) location.search = '?onboarding';
+  });
+  if (seen && !ON_CUE) {
+    let name = '';
+    try { name = localStorage.getItem('name') || ''; } catch (e) { /* the default name stays */ }
+    const nameEl = document.querySelector('.profile--name');
+    if (name && nameEl && nameEl.firstChild) nameEl.firstChild.textContent = `${name} `;
+    ob.remove();
+    return;
+  }
   const pages = Object.fromEntries([...ob.querySelectorAll('.ob--page')].map((p) => [p.dataset.page, p]));
   const fill = ob.querySelector('.ob--fill');
   const bar = ob.querySelector('.ob--bar');
@@ -123,6 +141,11 @@
       birthday = born;  // mobile.js's, read by Daily Fortune
       try { localStorage.setItem('birthday', born); } catch (e) { /* kept for this visit only */ }
     }
+    // remembered: next time, straight to Home
+    try {
+      localStorage.setItem('onboarded', '1');
+      localStorage.setItem('name', name);
+    } catch (e) { /* this visit only */ }
     ob.classList.add('is-done');
     root.classList.remove('is-onboarding');
     // the clover flies up into the count, as luck does, and the count rolls up
