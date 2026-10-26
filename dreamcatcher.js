@@ -11,12 +11,20 @@ const art = document.getElementById('art');
 const hoop = document.getElementById('hoop');
 const turn = document.getElementById('turn');
 // the rim's layers, through the hoop's thickness
-for (let z = -6; z <= 6; z += 1) {
+for (let z = -10; z <= 10; z += 1) {
   const rim = document.createElement('div');
   rim.className = 'dc--rim';
   rim.style.transform = `translateZ(${z}px)`;
   turn.insertBefore(rim, turn.querySelector('.dc--back'));
 }
+// and the strands, beads and feathers under it, a thickness of their own
+turn.querySelectorAll('.dc--strand').forEach((s) => {
+  for (const z of [-4, -3, -2, -1, 1, 2, 3, 4]) {
+    const layer = s.cloneNode();
+    layer.style.transform = `translateZ(${z}px)`;
+    s.before(layer);
+  }
+});
 const dreams = document.getElementById('dreams');
 
 // The drawing as big as fits, its hoop a little above the middle of the

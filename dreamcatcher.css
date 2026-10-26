@@ -74,7 +74,7 @@ html, body {
   top: 196px;
   width: 308px;
   height: 308px;
-  transform: translateZ(-7px) rotateY(180deg);
+  transform: translateZ(-11px) rotateY(180deg);
   backface-visibility: hidden;
   pointer-events: none;
 }
@@ -92,7 +92,7 @@ html, body {
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
   transition: filter 1.2s ease-out;
-  transform: translateZ(7px);
+  transform: translateZ(11px);
   backface-visibility: hidden;
 }
 .dc--hoop:focus { outline: none; }
