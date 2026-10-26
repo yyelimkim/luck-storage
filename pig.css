@@ -83,9 +83,9 @@ html, body {
   top: 50%;  /* just under the sun, set by pig.js */
   z-index: 4;
   margin: 0;
-  font-family: var(--font-title);
-  font-size: 23px;
-  letter-spacing: var(--tracking-title);
+  font-family: var(--font-display);
+  font-size: 22px;
+  letter-spacing: var(--tracking);
   text-align: center;
   opacity: 0;
   translate: 0 10px;

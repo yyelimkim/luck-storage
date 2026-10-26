@@ -218,7 +218,7 @@ const CARD_TEXT = {
 // Interactive pieces: on desktop they fill the canvas beside an opened card;
 // on the phone they take the illustration's place on the card's sheet
 const CANVAS_PAGES = {
-  '돼지꿈.png': 'pig.html?v=5',  // catch the three pigs as they pop up, then the coin sun
+  '돼지꿈.png': 'pig.html?v=6',  // catch the three pigs as they pop up, then the coin sun
   '빨간 옷 입기.png': 'wearred.html?v=5',  // swipe the bottoms and shoes till both are red
   '드림캐쳐.png': 'dreamcatcher.html?v=7',  // wake it, it catches the bad dreams
   '민들레 소원 빌기.png': 'dandelion.html?v=16',  // make a wish, blow the seeds away
