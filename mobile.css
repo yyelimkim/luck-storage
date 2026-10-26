@@ -1209,6 +1209,51 @@ button.fortune--card:active { transform: scale(0.98); }
   touch-action: none;
   transform-origin: 83px 0;  /* swings from the top of its string */
 }
+/* Rain, in bad weather: short slanted black lines falling across the sky
+   behind everything, two layers at two speeds; it stops once the doll is up.
+   Each tile is 120 x 160 and moves a whole tile's worth on the slant (one
+   across for four down), so it loops without a seam. */
+.teru--rain {
+  position: absolute;
+  left: -300px;
+  right: -300px;
+  top: -80px;
+  bottom: -300px;
+  z-index: -1;
+  pointer-events: none;
+  -webkit-mask-image: linear-gradient(to bottom, transparent, #000 80px);
+  mask-image: linear-gradient(to bottom, transparent, #000 80px);
+  transition: opacity 0.9s;
+}
+.teru--rain i {
+  position: absolute;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='160'%3E%3Cg stroke='%23272727' stroke-width='1.5' stroke-linecap='round'%3E%3Cpath d='M18 12l-4.5 18M78 40l-4.5 18M44 78l-4.5 18M104 96l-4.5 18M10 128l-4.5 18M64 134l-4.5 18'/%3E%3C/g%3E%3C/svg%3E");
+  animation: rain 0.75s linear infinite;
+}
+.teru--rain i + i {
+  background-position: 37px 61px;
+  opacity: 0.55;
+  animation-duration: 1.1s;
+  scale: 0.8;
+}
+@keyframes rain { to { background-position: -120px 480px; } }
+.teru--rain i + i { animation-name: rain-far; }
+@keyframes rain-far { from { background-position: 37px 61px; } to { background-position: -83px 541px; } }
+.ritual--teru:not(.is-gloomy) .teru--rain { opacity: 0; }
+.ritual--teru:not(.is-gloomy) .teru--rain i { animation-play-state: paused; }
+/* The cord strung across the sky, left to right, sagging a little at the
+   middle where the doll's loop goes over it (in front of the loop, so it
+   hangs on it) */
+.teru--line {
+  position: absolute;
+  left: -300px;
+  top: -20px;
+  z-index: 3;
+  overflow: visible;
+  pointer-events: none;
+}
+.teru--line path { fill: none; stroke: var(--system-black); stroke-width: 2.5px; stroke-linecap: round; }
 /* Only the loop at the top of the string takes hold of it */
 .teru--grip {
   position: absolute;

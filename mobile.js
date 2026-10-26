@@ -474,6 +474,8 @@ function ritualHTML(name) {
       // Bad weather until it's hung: a grey sky, no sun, a sad doll. The
       // hint (Blowing Candles' band and hand) shows where to take hold.
       ? `<div class="ritual--teru is-gloomy">
+          <div class="teru--rain" aria-hidden="true"><i></i><i></i></div>
+          <svg class="teru--line" viewBox="-300 -20 766 60" width="766" height="60" aria-hidden="true"><path d="M-300 -8Q83 32 466 -8"/></svg>
           <div class="teru--doll draw">${drawing(TERU_BIG, 'var(--system-black)', [110.09, 98])}
             <span class="teru--grip" aria-hidden="true"></span>
             <img class="teru--hand" src="assets/candles/hand.svg" alt="">
@@ -625,6 +627,8 @@ function teruRitual(el, k) {
   let hung = false;
   const set = (o) => { off = o; doll.style.transform = `translateY(${o}px)`; };
   set(TERU_DROP);
+  // it rains till the doll is hung (or the sheet's put away)
+  Sounds.rain(() => !hung && doll.isConnected && el.isConnected);
   const TERU_H = 417.5;  // the doll's drawn height
   const GRIP = 70;       // it can only be taken by the top of its string
   doll.addEventListener('pointerdown', (e) => {
@@ -1145,7 +1149,7 @@ const goClaim = () => openOnHome(luckyCard);
 // are any (till then, its examples)
 const recent = document.querySelector('.profile--recent');
 function showEarned() {
-  const list = store.get('earned', []);
+  const list = store.get('earned', []).filter((n) => IMAGES.includes(n));  // only cards there are
   if (!list.length) return;
   recent.innerHTML = list.map((name) => {
     // the name over two lines, broken near its middle

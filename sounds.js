@@ -411,6 +411,57 @@ const Sounds = (() => {
     lfo.stop(t + s + 0.05);
   }
 
+  // Rain, soft and steady, for as long as keep() says: a quiet hiss with
+  // little drops pattering through it; it fades in, and out once keep()
+  // turns false
+  function rain(keep) {
+    const a = audio();
+    const t = a.currentTime;
+    const out = a.createGain();
+    out.gain.setValueAtTime(0.0001, t);
+    out.gain.exponentialRampToValueAtTime(1, t + 1.5);
+    out.connect(a.destination);
+    // the hiss: looped noise, its lows and harshest highs taken off
+    const n = noise(a, 2);
+    n.loop = true;
+    const hp = a.createBiquadFilter();
+    hp.type = 'highpass';
+    hp.frequency.value = 700;
+    const lp = a.createBiquadFilter();
+    lp.type = 'lowpass';
+    lp.frequency.value = 5000;
+    const hiss = a.createGain();
+    hiss.gain.value = 0.045;
+    n.connect(hp).connect(lp).connect(hiss).connect(out);
+    n.start(t);
+    // the drops: tiny bright ticks, a few at a time, never in step
+    const drop = () => {
+      const at = a.currentTime + Math.random() * 0.08;
+      const d = noise(a, 0.02);
+      const bp = a.createBiquadFilter();
+      bp.type = 'bandpass';
+      bp.frequency.value = 2500 + Math.random() * 4000;
+      bp.Q.value = 3;
+      const g = a.createGain();
+      g.gain.setValueAtTime(0.015 + Math.random() * 0.025, at);
+      g.gain.exponentialRampToValueAtTime(0.0001, at + 0.018);
+      d.connect(bp).connect(g).connect(out);
+      d.start(at);
+    };
+    const timer = setInterval(() => {
+      if (!keep()) {
+        clearInterval(timer);
+        const now = a.currentTime;
+        out.gain.cancelScheduledValues(now);
+        out.gain.setValueAtTime(out.gain.value, now);
+        out.gain.exponentialRampToValueAtTime(0.0001, now + 1.2);
+        n.stop(now + 1.3);
+        return;
+      }
+      for (let i = 0; i < 3; i++) if (Math.random() < 0.7) drop();
+    }, 90);
+  }
+
   // A petal plucked: the little snap as it comes away — a tight, bright
   // tick of noise over a short, dull pop, then a breath of air
   function pluck() {
@@ -452,7 +503,7 @@ const Sounds = (() => {
     air.start(t + 0.02);
   }
 
-  return { hit, swoosh, flip, claim, chime, stone, tap, eat, tick, rub, shimmer, absorb, crack, surge, pluck, unlock };
+  return { hit, swoosh, flip, claim, chime, stone, tap, eat, tick, rub, shimmer, absorb, crack, surge, rain, pluck, unlock };
 })();
 
 // Every button, tab and link ticks when pressed (anything with its own
