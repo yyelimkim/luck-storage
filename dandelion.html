@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Dandelion Wish</title>
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="favicon-32.png" sizes="32x32" type="image/png">
+  <link rel="apple-touch-icon" href="apple-touch-icon.png">
+  <link rel="stylesheet" href="design-system.css?v=9">
+  <link rel="stylesheet" href="dandelion.css?v=1">
+</head>
+<body>
+  <!-- A dandelion wish (Figma 234:2052): make your wish, then blow — a
+       swipe left to right across it. The wind tips the dandelion over to
+       the right, its seeds lift off and float away, its yellow fading, and
+       we follow them along till the last has gone. -->
+  <main class="dl" id="dl" data-step="wish">
+    <div class="dl--world" id="world">
+      <div class="dl--art" id="art" aria-label="A hand holding up a dandelion clock"></div>
+    </div>
+    <div class="dl--fade" aria-hidden="true"></div>
+    <div class="dl--words" role="status">
+      <p class="dl--say" data-for="wish">What’s your wish?</p>
+      <p class="dl--say" data-for="blow">Swipe across to blow it</p>
+      <p class="dl--say" data-for="done">Your wish is on the wind</p>
+    </div>
+    <form class="dl--field" id="wish-form">
+      <input id="wish" type="text" maxlength="60" placeholder="I wish…" autocomplete="off" aria-label="What’s your wish?">
+      <button type="submit" class="dl--send" id="send" aria-label="Make the wish" disabled>
+        <svg width="20" height="20" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 13V3M3.5 7.5L8 3l4.5 4.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+    </form>
+  </main>
+  <script src="sounds.js?v=23"></script>
+  <script src="dandelion.js?v=2"></script>
+</body>
+</html>
