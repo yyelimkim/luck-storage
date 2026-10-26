@@ -540,6 +540,10 @@ function setSheet(p) {
 // The ritual's page is told when its sheet is fully up, so what it shows
 // first (a hand showing how) is seen; and told again if it loads after
 function shown() {
+  if (sheet && sheet.el.rain && !sheet.el.raining) {
+    sheet.el.raining = true;
+    Sounds.rain(sheet.el.rain);
+  }
   const frame = sheet && sheet.el.querySelector('.ritual--piece');
   if (!frame) return;
   frame.contentWindow?.postMessage('luck-shown', '*');
@@ -640,8 +644,11 @@ function teruRitual(el, k) {
   let hung = false;
   const set = (o) => { off = o; doll.style.transform = `translateY(${o}px)`; };
   set(TERU_DROP);
-  // it rains till the doll is hung (or the sheet's put away)
-  Sounds.rain(() => !hung && doll.isConnected && el.isConnected);
+  // it rains till the doll is hung (or the sheet's put away), starting once
+  // the sheet's fully up (see shown)
+  el.rain = () => !hung && doll.isConnected && el.isConnected;
+  el.raining = false;
+  if (el.classList.contains('is-full')) shown();
   const TERU_H = 417.5;  // the doll's drawn height
   const GRIP = 70;       // it can only be taken by the top of its string
   doll.addEventListener('pointerdown', (e) => {
