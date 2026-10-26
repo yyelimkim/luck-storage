@@ -357,6 +357,60 @@ const Sounds = (() => {
     o.stop(t + 0.6);
   }
 
+  // The eye about to break, `s` seconds of it: a low hum swelling and
+  // climbing as it glows, brighter as it goes, with a rattle that comes in
+  // and quickens as it shakes harder; it stops dead for the break
+  function surge(s = 2) {
+    const a = audio();
+    const t = a.currentTime;
+    const out = a.createGain();
+    out.gain.setValueAtTime(0.0001, t);
+    out.gain.exponentialRampToValueAtTime(0.35, t + s * 0.9);
+    out.gain.setValueAtTime(0.35, t + s - 0.02);
+    out.gain.linearRampToValueAtTime(0, t + s);
+    out.connect(a.destination);
+    // the hum: two slightly apart saws, rising, through an opening filter
+    const lp = a.createBiquadFilter();
+    lp.type = 'lowpass';
+    lp.Q.value = 4;
+    lp.frequency.setValueAtTime(220, t);
+    lp.frequency.exponentialRampToValueAtTime(2600, t + s);
+    lp.connect(out);
+    [0, 7].forEach((cents) => {
+      const o = a.createOscillator();
+      o.type = 'sawtooth';
+      o.detune.value = cents;
+      o.frequency.setValueAtTime(70, t);
+      o.frequency.exponentialRampToValueAtTime(190, t + s);
+      const g = a.createGain();
+      g.gain.value = 0.25;
+      o.connect(g).connect(lp);
+      o.start(t);
+      o.stop(t + s + 0.05);
+    });
+    // the rattle: noise chopped faster and faster, from halfway in
+    const n = noise(a, s);
+    const bp = a.createBiquadFilter();
+    bp.type = 'bandpass';
+    bp.frequency.value = 1400;
+    bp.Q.value = 1.2;
+    const chop = a.createGain();
+    chop.gain.value = 0;
+    const lfo = a.createOscillator();
+    lfo.type = 'square';
+    lfo.frequency.setValueAtTime(9, t);
+    lfo.frequency.exponentialRampToValueAtTime(32, t + s);
+    const depth = a.createGain();
+    depth.gain.setValueAtTime(0.0001, t);
+    depth.gain.setValueAtTime(0.0001, t + s * 0.35);
+    depth.gain.exponentialRampToValueAtTime(0.5, t + s);
+    lfo.connect(depth).connect(chop.gain);
+    n.connect(bp).connect(chop).connect(out);
+    n.start(t);
+    lfo.start(t);
+    lfo.stop(t + s + 0.05);
+  }
+
   // A petal plucked: the little snap as it comes away — a tight, bright
   // tick of noise over a short, dull pop, then a breath of air
   function pluck() {
@@ -398,7 +452,7 @@ const Sounds = (() => {
     air.start(t + 0.02);
   }
 
-  return { hit, swoosh, flip, claim, chime, stone, tap, eat, tick, rub, shimmer, absorb, crack, pluck, unlock };
+  return { hit, swoosh, flip, claim, chime, stone, tap, eat, tick, rub, shimmer, absorb, crack, surge, pluck, unlock };
 })();
 
 // Every button, tab and link ticks when pressed (anything with its own

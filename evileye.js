@@ -13,8 +13,7 @@ window.CHARM = {
     // the string, straight, its end tucked under the knot (the pollock's
     // string, its knot spot on the eye's)
     { src: 'string', string: true, box: [78.33, -71.0, 46.193, 260.124], inner: [39.235, 259.162], rot: -1.54, inset: '-0.29% -1.91%', fish: false },
-    // the tassel's strands, under the beads, each swinging on its own (below)
-    { src: 'tassel', box: [76.652, 388.215, 54, 259], inner: [54, 259], rot: 0, inset: '0' },
+    // the beads, the little eye and the tassel's strands, each swinging on its own (below)
     { src: 'tail', box: [76.652, 388.215, 54, 259], inner: [54, 259], rot: 0, inset: '0' },
     { src: 'eye', box: [1.122, 147.497, 218, 246], inner: [218, 246], rot: 0, inset: '0' },
     // the knot, on its own so it can fall with the rest when the eye breaks
@@ -72,8 +71,21 @@ addEventListener('DOMContentLoaded', () => {
   eye = part('eye');
   tail = part('tail');
   knot = part('knot');
-  hangTassel(part('tassel'));
+  hangChain();
 });
+
+// The beads, the little eye and the tassel are strung one under the other
+// from the eye's bottom: each hangs from the one above on its own joint,
+// swinging a beat behind it and looser the further down, with the slightest
+// sway of its own. Each joint's pivot is the top of what hangs from it (in
+// the tail's 54 x 259 units).
+const LINKS = [
+  { at: [33.9, 0.9], take: [0] },          // the top bead
+  { at: [34.1, 21.9], take: [1] },         // the big bead
+  { at: [31.3, 51.9], take: [2] },         // the small bead
+  { at: [28.0, 70.9], take: [4, 5, 6, 7] }, // the little eye
+  { at: [25.5, 114.2], take: [3] },        // the bead the tassel hangs from
+].map((l, i) => ({ ...l, a: 0, va: 0, k: 34 - i * 4, c: 2.6 - i * 0.2, drag: 0.03 + i * 0.012, loose: 0.3 + i * 0.08 }));
 
 // The tassel as strings: each strand is warped every frame, bending more
 // towards its end. It hangs straight down whatever way the eye has swung,
@@ -82,57 +94,64 @@ addEventListener('DOMContentLoaded', () => {
 const TOP = 123;   // where the strands come out of the little bead (the tail's units)
 const LEN = 135;   // their length
 let strands = [];
-let tasselPart = null;
-// The beads, the little eye and the tassel are on one string from the eye's
-// bottom (34, 1 in the tail's units): the whole string sways the slightest
-// bit, and lags the eye's swing a little
-const STRING_TOP = '33.9px 1px';
-const beads = { a: 0, va: 0 };
-function hangTassel(part) {
-  tasselPart = part;
-  [part, tail].forEach((el) => { el.style.transformOrigin = STRING_TOP; });
-  const img = part.querySelector('img');
-  fetch(img.src).then((r) => r.text()).then((txt) => {
-    const svg = document.importNode(new DOMParser().parseFromString(txt, 'image/svg+xml').documentElement, true);
+const NUM = /-?\d*\.?\d+(?:e-?\d+)?/g;
+function hangChain() {
+  const img = tail.querySelector('img');
+  const load = (url) => fetch(url).then((r) => r.text()).then((t) => new DOMParser().parseFromString(t, 'image/svg+xml').documentElement);
+  Promise.all([load(img.src), load(img.src.replace('/tail.svg', '/tassel.svg'))]).then(([beadSvg, tasselSvg]) => {
+    const svg = document.importNode(beadSvg, true);
     svg.style.cssText = 'display:block;width:100%;height:100%;overflow:visible';
-    img.replaceWith(svg);
-    strands = [...svg.querySelectorAll('path')].map((p, i) => {
-      const nums = p.getAttribute('d').match(/-?\d*\.?\d+(?:e-?\d+)?/g).map(Number);
-      return {
-        p,
-        rest: p.getAttribute('d'),
-        cmds: p.getAttribute('d').match(/[A-Za-z][^A-Za-z]*/g).map((c) => [c[0], (c.slice(1).match(/-?\d*\.?\d+(?:e-?\d+)?/g) || []).length]),
-        nums,
-        b: 0, vb: 0,
-        k: 55 + i * 9,          // each its own stiffness
-        c: 3.2 + (i % 2) * 0.8, // and damping
-        drag: 9 + i * 1.5,      // how far it trails per rad/s of swing
-      };
+    const circles = [...svg.querySelectorAll('circle')];
+    // each link a group inside the one above, so they turn on each other
+    let into = svg;
+    LINKS.forEach((l) => {
+      l.g = document.createElementNS(NS, 'g');
+      into.appendChild(l.g);
+      l.take.forEach((i) => l.g.appendChild(circles[i]));
+      into = l.g;
     });
-    requestAnimationFrame(swingTassel);
+    // the strands come out from under the last bead and the little eye
+    const last = LINKS[LINKS.length - 1].g;
+    const paths = [...tasselSvg.querySelectorAll('path')].map((p) => document.importNode(p, true));
+    paths.reverse().forEach((p) => last.prepend(p));
+    paths.reverse();
+    LINKS[3].g.prepend(last);
+    img.replaceWith(svg);
+    strands = paths.map((p, i) => ({
+      p,
+      rest: p.getAttribute('d'),
+      cmds: p.getAttribute('d').match(/[A-Za-z][^A-Za-z]*/g).map((c) => [c[0], (c.slice(1).match(NUM) || []).length]),
+      nums: p.getAttribute('d').match(NUM).map(Number),
+      b: 0, vb: 0,
+      k: 55 + i * 9,          // each its own stiffness
+      c: 3.2 + (i % 2) * 0.8, // and damping
+      drag: 9 + i * 1.5,      // how far it trails per rad/s of swing
+    }));
+    requestAnimationFrame(swingChain);
   });
 }
 let lastT = performance.now();
-function swingTassel(now) {
+function swingChain(now) {
   const dt = Math.min(0.032, (now - lastT) / 1000);
   lastT = now;
   const m = window.charmMotion ? window.charmMotion() : null;
   if (m && tail.getAnimations().length === 0) {
-    const tilt = m.theta + m.phi;     // how far the eye has turned from upright
+    let turned = m.theta + m.phi;     // how far the eye has turned from upright
     const spin = m.omega + m.omegaPhi;
-    // the bead string: back towards hanging straight down, behind the swing,
-    // and a slow breath of sway of its own (about a degree)
-    const idle = Math.sin(now / 1400) * 0.012 + Math.sin(now / 610) * 0.005;
-    const want = -tilt * 0.35 - spin * 0.06 + idle;
-    beads.va += (30 * (want - beads.a) - 3.5 * beads.va) * dt;
-    beads.a = Math.max(-0.14, Math.min(0.14, beads.a + beads.va * dt));
-    const turn = `rotate(${beads.a.toFixed(4)}rad)`;
-    tail.style.transform = turn;
-    tasselPart.style.transform = turn;
+    LINKS.forEach((l, i) => {
+      // back towards hanging straight down (as far as its string lets it),
+      // dragged behind the swing, and a slow breath of sway of its own
+      const idle = Math.sin(now / (1300 + i * 170) + i) * 0.012;
+      const want = -turned * l.loose - spin * l.drag + idle;
+      l.va += (l.k * (want - l.a) - l.c * l.va) * dt;
+      l.a = Math.max(-0.35, Math.min(0.35, l.a + l.va * dt));
+      l.g.setAttribute('transform', `rotate(${(l.a * 180 / Math.PI).toFixed(3)} ${l.at[0]} ${l.at[1]})`);
+      turned += l.a;
+    });
     strands.forEach((st) => {
-      // where its end wants to be, across, in the eye's own units: straight
-      // down the screen, and dragged back against the swing
-      const target = -Math.sin(tilt + beads.a) * LEN * 0.55 - spin * st.drag;
+      // where its end wants to be, across, in the last bead's units:
+      // straight down the screen, and dragged back against the swing
+      const target = -Math.sin(turned) * LEN * 0.55 - spin * st.drag;
       st.vb += (st.k * (target - st.b) - st.c * st.vb) * dt;
       st.b = Math.max(-45, Math.min(45, st.b + st.vb * dt));
       if (Math.abs(st.b) < 0.05 && Math.abs(st.vb) < 0.05) {
@@ -154,7 +173,7 @@ function swingTassel(now) {
       st.p.setAttribute('d', out.join(''));
     });
   }
-  requestAnimationFrame(swingTassel);
+  requestAnimationFrame(swingChain);
 }
 
 // The glow (the eye's own blue) and the shake, once the bar is full. The
@@ -179,6 +198,7 @@ function buildUp() {
   window.charmHold(0);
   setTimeout(() => {
     window.charmHold(26);
+    Sounds.surge((RISE + SHAKE) / 1000);
     const t0 = performance.now();
     (function ramp(now) {
       const u = Math.min(1, (now - t0) / (RISE + SHAKE));
@@ -233,7 +253,7 @@ function shatter() {
   // the glow goes out as it breaks
   fish.animate([{ filter: fish.style.filter }, { filter: 'drop-shadow(0 0 0 transparent)' }], { duration: 500, fill: 'forwards' });
   // and all that hung on it, the knot and the beads and tassel, falls too
-  [[tail, 18, 0], [tasselPart, 18, 0], [knot, -40, 30]].forEach(([el, spin, delay]) => el.animate([
+  [[tail, 18, 0], [knot, -40, 30]].forEach(([el, spin, delay]) => el.animate([
     { translate: '0 0', rotate: '0deg' },
     { translate: '0 -10px', rotate: `${spin * 0.2}deg`, offset: 0.15 },
     { translate: `${spin * 0.3}px 900px`, rotate: `${spin}deg` },
@@ -245,7 +265,7 @@ function mend() {
   if (!eye) return;
   eye.style.visibility = '';
   crackSvg.style.visibility = '';
-  [tail, tasselPart, knot, fish].forEach((el) => el.getAnimations().forEach((a) => a.cancel()));
+  [tail, knot, fish].forEach((el) => el.getAnimations().forEach((a) => a.cancel()));
   tremble = null;
   glow(0);
 }
