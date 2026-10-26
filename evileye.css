@@ -66,8 +66,8 @@ html, body {
   transform-origin: 0 0;
   scale: var(--k);
   pointer-events: none;
-  -webkit-mask: linear-gradient(to bottom, #000 72%, transparent 88%);
-  mask: linear-gradient(to bottom, #000 72%, transparent 88%);
+  -webkit-mask: linear-gradient(to bottom, #000 66%, transparent 88%);
+  mask: linear-gradient(to bottom, #000 66%, transparent 88%);
 }
 .eye--art,
 .eye--cracks {

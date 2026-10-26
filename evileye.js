@@ -29,7 +29,9 @@ let eyeAt = [0, 0];
 function fit() {
   const top = 60;
   const bottom = innerHeight - 166 - 16;
-  k = Math.min(1.15, (innerWidth - 60) / 249, (bottom - top) / 330);
+  // and short screens: the beads (fading out from 183 under the eye's
+  // middle, gone by 290) finished above the words
+  k = Math.min(1.15, (innerWidth - 60) / 249, (bottom - top) / 330, ((bottom - top) * 0.54 + 10) / 290);
   eyeAt = [innerWidth / 2, top + (bottom - top) * 0.46];
   root.style.setProperty('--k', k);
   root.style.setProperty('--x', `${eyeAt[0] - EYE[0] * k}px`);

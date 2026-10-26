@@ -8,7 +8,7 @@
   <link rel="icon" href="favicon-32.png" sizes="32x32" type="image/png">
   <link rel="apple-touch-icon" href="apple-touch-icon.png">
   <link rel="stylesheet" href="design-system.css?v=9">
-  <link rel="stylesheet" href="hito.css?v=10">
+  <link rel="stylesheet" href="hito.css?v=11">
 </head>
 <body>
   <!-- Hito (人) on the palm (Figma 510:8282, 510:8284, 510:8285): trace the
@@ -28,7 +28,8 @@
         </defs>
         <!-- at the drawing's own angle (kept as a group, to turn it if wanted) -->
         <g id="tilt" transform="rotate(0 351 390)">
-        <image href="assets/hito/hand.svg?v=2" width="637" height="713"/>
+        <!-- the hand alone turned 2° back, so its middle finger and wrist run straight up -->
+        <image href="assets/hito/hand.svg?v=2" width="637" height="713" transform="rotate(-2 351 470)"/>
         <g class="hito--char" transform="translate(253.21 320.87)">
           <!-- 510:8282's dashed outline to trace -->
           <path class="hito--dash" d="M93.6041 0.75C100.614 0.750071 106.296 6.43199 106.297 13.4414C106.297 16.1234 106.23 18.8183 106.092 21.5195C107.175 38.9836 111.861 56.0109 121.295 70.624C132.053 87.2897 149.52 101.672 176.981 109.975C183.691 112.003 187.486 119.086 185.458 125.796C183.429 132.505 176.346 136.3 169.636 134.272C136.838 124.357 114.224 106.474 99.9684 84.3906C97.5368 80.6239 95.3638 76.7606 93.4332 72.8232C91.4713 76.8407 89.2588 80.7798 86.774 84.6152C72.4997 106.648 49.8752 124.37 17.1178 134.273C10.4084 136.301 3.32501 132.506 1.2965 125.797C-0.731811 119.087 3.06342 112.004 9.77307 109.976C37.2751 101.661 54.7302 87.3913 65.4703 70.8135C74.9014 56.2558 79.5927 39.2204 80.6666 21.5381C80.526 18.8276 80.4576 16.1265 80.4576 13.4414C80.4577 6.43185 86.1405 0.750071 93.15 0.75C93.2257 0.750002 93.3012 0.750632 93.3766 0.751953C93.4523 0.750621 93.5281 0.750002 93.6041 0.75Z"/>
@@ -62,6 +63,6 @@
   </main>
   <script src="sounds.js?v=19"></script>
   <script src="pointer.js?v=1"></script>
-  <script src="hito.js?v=16"></script>
+  <script src="hito.js?v=18"></script>
 </body>
 </html>

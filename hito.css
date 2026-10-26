@@ -82,13 +82,12 @@ html, body {
   position: absolute;
   left: 0;
   right: 0;
+  top: var(--fade-top, 60%);  /* just above the wrist's end, set by hito.js */
   bottom: 0;
-  height: 290px;
   z-index: 4;
   pointer-events: none;
-  /* solid from above the wrist's end, so none of its edge shows, and
-     clear of the 人 */
-  background: linear-gradient(to bottom, transparent, var(--v2-blue) 26%);
+  /* solid by the wrist's end, so none of its edge shows, and clear of the 人 */
+  background: linear-gradient(to bottom, transparent, var(--v2-blue) 70px);
 }
 
 /* The words at the bottom, at the rituals' one spot */

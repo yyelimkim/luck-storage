@@ -30,8 +30,14 @@ const strokes = [document.getElementById('trace-1'), document.getElementById('tr
 const HAND = { left: 137, width: 428 };
 function fit() {
   const room = innerHeight - 166;
-  root.style.setProperty('--p', Math.min(1.5, (innerWidth * 1.02) / HAND.width, (room + 20) / 420).toFixed(3));
+  // and short screens: the fingertips (323 above the 人, which sits 60% down
+  // the room) kept clear of the top
+  root.style.setProperty('--p', Math.min(1.5, (innerWidth * 1.02) / HAND.width, (room * 0.6 - 8) / 323).toFixed(3));
   root.style.setProperty('--mid', `${HAND.left + HAND.width / 2}px`);
+  // the fade starts just above where the wrist ends (635 down the frame,
+  // 245 under the 人), whatever the screen's height
+  const p = Math.min(1.5, (innerWidth * 1.02) / HAND.width, (room * 0.6 - 8) / 323);
+  root.style.setProperty('--fade-top', `${room * 0.6 + 245 * p - 70}px`);
 }
 addEventListener('resize', fit);
 fit();
