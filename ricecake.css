@@ -14,7 +14,7 @@ html, body {
   overflow: hidden;
   font-family: var(--font-display);
   letter-spacing: var(--tracking);
-  color: var(--system-black);
+  color: var(--system-white);  /* on the Hot Pink card, white, as its sheet's words */
   -webkit-user-select: none;
   user-select: none;
 }
@@ -31,7 +31,10 @@ html, body {
   width: min(370px, calc(100% - 32px));
   transform: translateX(-50%);
   pointer-events: none;
+  opacity: 0;
+  animation: progress-in 0.4s 0.5s forwards;  /* fades in, as the Buddha's */
 }
+@keyframes progress-in { to { opacity: 1; } }
 .progress--track {
   flex: 1;
   height: 14px;

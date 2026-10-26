@@ -221,5 +221,5 @@ html, body {
   20%, 60% { translate: -6px 0; }
   40%, 80% { translate: 6px 0; }
 }
-.candles--congrats { margin: 0; font-size: 22px; line-height: 1.3; }
+.candles--congrats { margin: 0; font-size: 18px; line-height: 1.3; }  /* the closing line, 18 as all of them */
 .candles--echo { margin: 24px 0 0; font-size: 14px; }

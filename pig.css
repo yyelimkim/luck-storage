@@ -84,7 +84,7 @@ html, body {
   z-index: 4;
   margin: 0;
   font-family: var(--font-display);
-  font-size: 22px;
+  font-size: 18px;  /* the closing line, 18 as all of them */
   letter-spacing: var(--tracking);
   text-align: center;
   opacity: 0;

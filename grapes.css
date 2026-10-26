@@ -19,7 +19,7 @@ html, body {
   padding: 60px 16px 120px;  /* the timer above, the words below at the rituals' spot */
   font-family: var(--font-display);
   letter-spacing: var(--tracking);
-  color: var(--system-black);
+  color: var(--system-white);  /* on the Hot Pink card, white, as its sheet's words */
   -webkit-user-select: none;
   user-select: none;
 }
@@ -57,7 +57,7 @@ html, body {
 .timer--secs {
   flex: none;
   min-width: 28px;
-  font-size: 17px;
+  font-size: 16px;  /* the system's number size, as the clover count */
   text-align: center;
   font-variant-numeric: tabular-nums;
 }
