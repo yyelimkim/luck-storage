@@ -260,7 +260,7 @@ html, body {
   pointer-events: none;
   transition: opacity 0.4s;
 }
-[data-step="tell"] .worry--veil { opacity: 1; }
+[data-step="tell"]:not(.is-told) .worry--veil { opacity: 1; }  /* clear again as soon as it's told */
 /* 2 (telling): the field in the middle over the softened doll */
 /* with the button under them, the words sit above it */
 .worry[data-step="choose"] .worry--words { top: calc(100% - 166px); }

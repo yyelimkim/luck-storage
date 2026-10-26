@@ -57,7 +57,7 @@ addEventListener('resize', fit);
 fit();
 pick(0);
 
-const step = (name) => { root.dataset.step = name; };
+const step = (name) => { root.dataset.step = name; if (name !== 'tell') root.classList.remove('is-told'); };
 
 // 1 → 2
 document.getElementById('choose').addEventListener('click', () => {
@@ -77,6 +77,7 @@ form.addEventListener('submit', (e) => {
   if (!text) return;
   Sounds.unlock();
   input.blur();
+  root.classList.add('is-told');  // the blur lifts, to watch the worry go in
   // the words lift off the field and shrink into the doll's middle
   const f = form.getBoundingClientRect();
   const d = big.getBoundingClientRect();
