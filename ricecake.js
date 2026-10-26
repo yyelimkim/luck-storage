@@ -54,26 +54,21 @@ const UNDER = [
   { box: [185.46, 237.26, 463.149, 337.549], inner: [424.055, 186.312], rot: 23.06, rect: [63.803, B, B] },
   { box: [185.46, 242.68, 460.842, 332.131], inner: [424.055, 180.423], rot: 23.06, rect: [63.803, Wh, B] },
 ];
-// The four on the plate, each with its shadow, its flower and (the first
-// three) the little crease at its foot; the fourth's drawing is wider,
-// as Figma groups it
-const crease = (x, y) => ({ box: [x, y, 17.064, 5.193], src: 'crease' });
+// The four on the plate, each with its shadow and its flower; the
+// fourth's drawing is wider, as Figma groups it
 const PLATE = [
   { mid: [313.2, 359.1], parts: [
     { box: [206.54, 264.25, ...CAKE_BOX], inner: CAKE_INNER, rot: PLATE_ROT, src: 'shadow-1' },
     { box: [205.8, 262.03, ...CAKE_BOX], inner: CAKE_INNER, rot: PLATE_ROT, src: 'cake-1' },
-    { box: [242.59, 278.54, 386.436, 271.174], inner: [363.356, 134.164], rot: PLATE_ROT, src: 'flower-1' },
-    crease(295.5, 402.3)] },
+    { box: [242.59, 278.54, 386.436, 271.174], inner: [363.356, 134.164], rot: PLATE_ROT, src: 'flower-1' }] },
   { mid: [380.0, 389.1], parts: [
     { box: [273.4, 294.26, ...CAKE_BOX], inner: CAKE_INNER, rot: PLATE_ROT, src: 'shadow-2' },
     { box: [272.66, 292.03, ...CAKE_BOX], inner: CAKE_INNER, rot: PLATE_ROT, src: 'cake-2' },
-    { box: [242.59, 278.54, 386.436, 271.174], inner: [363.356, 134.164], rot: PLATE_ROT, src: 'flower-2' },
-    crease(364.5, 432.4)] },
+    { box: [242.59, 278.54, 386.436, 271.174], inner: [363.356, 134.164], rot: PLATE_ROT, src: 'flower-2' }] },
   { mid: [450.8, 420.9], parts: [
     { box: [344.21, 326.04, ...CAKE_BOX], inner: CAKE_INNER, rot: PLATE_ROT, src: 'shadow-3' },
     { box: [343.47, 323.81, ...CAKE_BOX], inner: CAKE_INNER, rot: PLATE_ROT, src: 'cake-3' },
-    { box: [242.59, 278.54, 386.436, 271.174], inner: [363.356, 134.164], rot: PLATE_ROT, src: 'flower-3' },
-    crease(436.5, 465.0)] },
+    { box: [242.59, 278.54, 386.436, 271.174], inner: [363.356, 134.164], rot: PLATE_ROT, src: 'flower-3' }] },
   { mid: [521.7, 452.7], parts: [
     { box: [415.03, 357.82, ...CAKE_BOX], inner: CAKE_INNER, rot: PLATE_ROT, src: 'shadow-4' },
     { box: [242.59, 278.54, 386.436, 271.174], inner: [363.356, 134.164], rot: PLATE_ROT, src: 'cake-4' },
