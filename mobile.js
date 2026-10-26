@@ -1086,7 +1086,8 @@ function loadFortune() {
   arc.style.animation = 'none';
   void arc.getBoundingClientRect();
   arc.style.animation = '';
-  fortuneTimer = setTimeout(() => fortuneStep('ready'), 2750);
+  // the circle done, the clovers turn yellow, with the finishing sparkle
+  fortuneTimer = setTimeout(() => { fortuneStep('ready'); Sounds.claim(); }, 2750);
 }
 function openFortune() {
   fortuneEl.querySelector('.fortune--result').scrollTop = 0;
