@@ -25,6 +25,9 @@ const CFG = Object.assign({
   parts: POLLOCK,
   pin: [201, -66],     // the top of the string, in the frame (matches --pin-x / --pin-y)
   fit: null,           // [top, bottom] of the piece, in the frame, to scale it down to fit the screen
+  say: '+ Luck',       // what rises from each hit
+  clover: true,        // the clover at the bar's end
+  claimAfter: 350,     // ms from the last hit to the luck being claimed
 }, window.CHARM || {});
 const PARTS = CFG.parts;
 
@@ -334,6 +337,9 @@ function step(now) {
   requestAnimationFrame(step);
 }
 
+// How it's moving, for anything hung on it that moves along (evileye.js's tassel)
+window.charmMotion = () => ({ theta, omega, phi, omegaPhi });
+
 // --- Hit and drag --------------------------------------------------------
 // Press on the charm: a tap hits it, a drag pulls it around. A tap on the
 // empty canvas drops it again.
@@ -348,6 +354,7 @@ setTimeout(() => { if (!hits) unpoint = pointAt(document.getElementById('fish'))
 const progress = document.getElementById('progress');
 const progressFill = document.getElementById('progress-fill');
 const progressClover = document.getElementById('progress-clover');
+if (!CFG.clover) progressClover.remove();
 function showProgress() {
   progressFill.style.width = `${(Math.min(hits, HITS_TO_CLAIM) / HITS_TO_CLAIM) * 100}%`;
   progress.setAttribute('aria-valuenow', String(Math.min(hits, HITS_TO_CLAIM)));
@@ -357,7 +364,7 @@ function showProgress() {
 function plusLuck(x, y) {
   const el = document.createElement('span');
   el.className = 'plus-luck';
-  el.textContent = '+ Luck';
+  el.textContent = CFG.say;
   el.style.left = `${x}px`;
   el.style.top = `${y}px`;
   document.body.appendChild(el);
@@ -413,7 +420,7 @@ function release() {
         dispatchEvent(new CustomEvent('charm-hit', { detail: hits }));
         plusLuck(press.x, press.y);
         showProgress();
-        if (hits === HITS_TO_CLAIM && IN_SHEET) setTimeout(() => parent.postMessage('luck-claimed', '*'), 350);  // no words to read first, so sooner
+        if (hits === HITS_TO_CLAIM && IN_SHEET) setTimeout(() => parent.postMessage('luck-claimed', '*'), CFG.claimAfter);  // no words to read first, so sooner
       }
     } else {
       drop();
