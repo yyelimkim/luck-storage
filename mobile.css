@@ -37,6 +37,8 @@ img { -webkit-user-drag: none; }
    window (mobile.js sets the height), header at the very top */
 .is-phone,
 .is-phone body { background: var(--system-white); overscroll-behavior: none; }
+/* Nothing scrolls past its ends (no rubber-band showing what's behind) */
+.stage, .stage * { overscroll-behavior: none; }
 .is-phone .stage {
   left: 0;
   top: 0;
@@ -338,6 +340,16 @@ img { -webkit-user-drag: none; }
   position: relative;
   height: calc(355px - var(--up));
   background: url("assets/profile/hero.svg") center bottom / 402px 355px no-repeat;
+}
+/* Pulled past its top, the hero's yellow carries on up (no white gap) */
+.profile--hero::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 100%;
+  height: 1000px;
+  background: var(--yellow-green);
 }
 /* Paper grain over the background, as on the card backs: multiplied, under
    the character */
