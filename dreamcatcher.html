@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Dreamcatcher</title>
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="favicon-32.png" sizes="32x32" type="image/png">
+  <link rel="apple-touch-icon" href="apple-touch-icon.png">
+  <link rel="stylesheet" href="design-system.css?v=9">
+  <link rel="stylesheet" href="dreamcatcher.css?v=2">
+</head>
+<body>
+  <!-- Dreamcatcher (the card's own, Figma 234:1369; the bad dreams, 529:450,
+       529:465, 529:455): tap it to wake it and it spins, glowing. The bad
+       dreams drift in one by one, flickering and wavering, and each melts
+       away as it reaches the web. With the last caught, the glow fades. -->
+  <main class="dc" id="dc" data-step="tap">
+    <div class="dc--art" id="art">
+      <img class="dc--string" src="assets/dreamcatcher/string.svg?v=1" alt="">
+      <button type="button" class="dc--hoop" id="hoop" aria-label="Wake the dreamcatcher">
+        <img src="assets/dreamcatcher/hoop.svg?v=1" alt="">
+      </button>
+    </div>
+    <div class="dc--dreams" id="dreams" aria-hidden="true"></div>
+    <div class="dc--words" role="status">
+      <p class="dc--say" data-for="tap">Tap the dreamcatcher to wake it</p>
+      <p class="dc--say" data-for="catch">Catching your bad dreams…</p>
+      <p class="dc--say" data-for="done">Only sweet dreams now</p>
+    </div>
+  </main>
+  <script src="sounds.js?v=24"></script>
+  <script src="pointer.js?v=1"></script>
+  <script src="dreamcatcher.js?v=2"></script>
+</body>
+</html>
