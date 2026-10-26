@@ -66,24 +66,83 @@
   const SLIP_SCALE = 1.25;  // the tags, a touch bigger than in the frame
 
   // A slip on its string from (x, y): the string, the tag, and a wider
-  // invisible hit area, since the slips are small
+  // invisible hit area, since the slips are small. Each is its own little
+  // svg, swinging from its string's top as a whole (drawn once, then just
+  // turned), so swaying slips never make the tree redraw.
   function hung([x, y, kind], fill, data) {
     const t = { ...TAGS[kind], w: TAGS[kind].w * SLIP_SCALE, h: TAGS[kind].h * SLIP_SCALE };
     const delay = (-rand() * 4).toFixed(2);
     const left = x - t.w / 2;
-    return `<g class="tree--wish" ${data} data-fill="${fill}" tabindex="0" role="button" aria-label="Read a wish"
-      style="transform-origin: ${x}px ${y}px; animation-delay: ${delay}s">
-      <rect x="${x - 22}" y="${y - 10}" width="44" height="${TAG_DROP + t.h + 26}" fill="transparent"/>
+    const h = TAG_DROP + t.h + 26;
+    return `<svg class="tree--wish" ${data} data-fill="${fill}" tabindex="0" role="button" aria-label="Read a wish"
+      viewBox="${x - 22} ${y - 10} 44 ${h}" width="44" height="${h}" overflow="visible"
+      style="left: ${x - 22}px; top: ${y - 10}px; animation-delay: ${delay}s">
+      <rect x="${x - 22}" y="${y - 10}" width="44" height="${h}" fill="transparent"/>
       <path d="M${x} ${y}V${y + STRING}" stroke="#272727" stroke-width="0.5"/>
       <image class="tree--paper" href="${t.src}" x="${left}" y="${y + TAG_DROP}" width="${t.w}" height="${t.h}"/>
-    </g>`;
+    </svg>`;
   }
   const strips = HANGS.map((hang, i) => hung(hang, C.white, `data-wish="${i}"`)).join('');
+
+  // Lift a moving part out of a layer's drawing into a little svg of its own,
+  // in the same place, so it moves as a whole (drawn once, then just turned
+  // or faded) and the big drawing behind it can stay still. `pad` leaves
+  // room round it (a blur's spread).
+  function liftOut(layer, g, cls, pad) {
+    const root = layer.querySelector('svg');
+    const rr = root.getBoundingClientRect();
+    const k = rr.width / W || 1;
+    const b = g.getBoundingClientRect();
+    const x = (b.left - rr.left) / k - pad;
+    const y = (b.top - rr.top) / k - pad;
+    const w = b.width / k + pad * 2;
+    const h = b.height / k + pad * 2;
+    const m = root.getScreenCTM().inverse().multiply(g.getScreenCTM());
+    const NS = 'http://www.w3.org/2000/svg';
+    const out = document.createElementNS(NS, 'svg');
+    out.setAttribute('class', cls);
+    out.setAttribute('viewBox', `${x} ${y} ${w} ${h}`);
+    out.setAttribute('width', w);
+    out.setAttribute('height', h);
+    out.setAttribute('overflow', 'visible');
+    Object.assign(out.style, { left: `${x}px`, top: `${y}px` });
+    // where the light swings from: the frame's top left
+    out.style.setProperty('--ox', `${-x}px`);
+    out.style.setProperty('--oy', `${-y}px`);
+    const defs = root.querySelector('defs');
+    if (defs) out.appendChild(defs.cloneNode(true));
+    const place = document.createElementNS(NS, 'g');
+    place.setAttribute('transform', `matrix(${m.a} ${m.b} ${m.c} ${m.d} ${m.e} ${m.f})`);
+    const copy = g.cloneNode(true);
+    copy.removeAttribute('transform');
+    copy.removeAttribute('id');
+    place.appendChild(copy);
+    out.appendChild(place);
+    layer.appendChild(out);
+    g.remove();
+    return out;
+  }
+
+  // The layers can only be measured once the Wish Tree is on screen: till
+  // then, what's to be done with them waits for it
+  const waiting = [];
+  function whenShown(layer, fn) {
+    if (layer.getBoundingClientRect().width) { fn(); return; }
+    waiting.push([layer, fn]);
+  }
+  new MutationObserver(() => {
+    requestAnimationFrame(() => {
+      for (let i = waiting.length - 1; i >= 0; i--) {
+        const [layer, fn] = waiting[i];
+        if (layer.getBoundingClientRect().width) { waiting.splice(i, 1); fn(); }
+      }
+    });
+  }).observe(document.getElementById('stage'), { attributes: true, attributeFilter: ['data-view'] });
 
   const scene = document.getElementById('tree-scene');
   scene.innerHTML = `<div class="tree--art">
     <div class="tree--layer" data-layer="back"></div>
-    <svg class="tree--slips" viewBox="0 0 ${W} ${H}" width="${W}" height="${H}"><g class="tree--wishes">${strips}</g></svg>
+    <div class="tree--slips"><div class="tree--wishes">${strips}</div></div>
     <div class="tree--layer" data-layer="front" aria-hidden="true"></div>
     <div class="tree--layer" data-layer="light" aria-hidden="true"></div>
     <div class="tree--sun" aria-hidden="true"></div>
@@ -95,18 +154,22 @@
       layer.innerHTML = svg
         .replace(/id="([^"]+)"/g, `id="${name}-$1"`)
         .replace(/url\(#([^)]+)\)/g, `url(#${name}-$1)`);
-      // The hanging strands (a stem line with leaves down it) drift from
-      // their tops, each in its own time
-      layer.querySelectorAll('g').forEach((g) => {
-        if (!g.querySelector(':scope > line')) return;
-        g.classList.add('tree--strand');
-        g.style.animationDelay = `${(-rand() * 6).toFixed(2)}s`;
-        g.style.animationDuration = `${(4.5 + rand() * 3).toFixed(2)}s`;
-      });
-      // Each beam of the moving light sways and breathes on its own
-      layer.querySelectorAll('[id="light-Vector"], [id="light-Vector_2"], [id="light-light"]').forEach((b, i) => {
-        b.classList.add('tree--beam');
-        b.style.animationDuration = `${[4.5, 6, 7.5][i]}s, ${[3.2, 4.4, 5.6][i]}s`;
+      whenShown(layer, () => {
+        // The hanging strands (a stem line with leaves down it) drift from
+        // their tops, each in its own time
+        layer.querySelectorAll('g').forEach((g) => {
+          if (!g.querySelector(':scope > line')) return;
+          const w = liftOut(layer, g, 'tree--strand', 4);
+          w.style.animationDelay = `${(-rand() * 6).toFixed(2)}s`;
+          w.style.animationDuration = `${(4.5 + rand() * 3).toFixed(2)}s`;
+        });
+        // Each beam of the moving light sways and breathes on its own
+        layer.querySelectorAll('[id="light-Vector"], [id="light-Vector_2"], [id="light-light"]').forEach((b, i) => {
+          const w = liftOut(layer, b, 'tree--beam', 80);
+          w.style.animationDuration = `${[4.5, 6, 7.5][i]}s, ${[3.2, 4.4, 5.6][i]}s`;
+        });
+        // what's left of the drawing never moves: drawn once and kept
+        layer.classList.add('is-still');
       });
     });
   }
