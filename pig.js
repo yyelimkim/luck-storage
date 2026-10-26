@@ -26,7 +26,7 @@ function img(src, [x, y, w, h], cls = '') {
 // ducks down to be out of sight
 const PIGS = [
   { src: 'pig-3', box: [266, 349, 97, 95], drop: 110, slot: [58, 57] },
-  { src: 'pig-2', box: [133, 432, 75, 69], drop: 85, slot: [50, 46] },
+  { src: 'pig-2', box: [133, 432, 75, 69], drop: 85, slot: [50, 46], lift: 22 },  // further up, clear of the hill in front
   { src: 'pig-1', box: [50, 553, 97, 94], drop: 110, slot: [49, 48] },
 ];
 const HILLS = [
@@ -95,12 +95,13 @@ function pop(p, ms = hold()) {
   if (p.caught || root.dataset.step !== 'catch' || demo) return;
   p.el.getAnimations().forEach((a) => a.cancel());
   p.up = true;
-  p.el.animate([{ transform: `translateY(${p.drop}px)` }, { transform: 'translateY(-6px)', offset: 0.75 }, { transform: 'translateY(0)' }],
+  const up = -(p.lift || 0);
+  p.el.animate([{ transform: `translateY(${p.drop}px)` }, { transform: `translateY(${up - 6}px)`, offset: 0.75 }, { transform: `translateY(${up}px)` }],
     { duration: 220, easing: 'cubic-bezier(0.3, 0.8, 0.4, 1)', fill: 'forwards' });
   later(() => {
     if (p.caught) return;
     p.up = false;
-    p.el.animate([{ transform: 'translateY(0)' }, { transform: `translateY(${p.drop}px)` }],
+    p.el.animate([{ transform: `translateY(${up}px)` }, { transform: `translateY(${p.drop}px)` }],
       { duration: 200, easing: 'cubic-bezier(0.5, 0, 0.8, 0.5)', fill: 'forwards' });
     later(() => pop(p), rand(900, 2300));
   }, 220 + ms);
