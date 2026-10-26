@@ -195,7 +195,7 @@ const CARD_TEXT = {
   },
   '시험 전 날 떡 먹기.png': {
     about: 'A Korean tradition of eating sticky rice cake (찹쌀떡) before an exam, believed to help your answers “stick” and bring good results.',
-    howTo: 'Drag the rice cake to your mouth. It visually “sticks” in place.',
+    howTo: 'Tap each rice cake to eat it.',
   },
   '악마의 눈.png': {
     about: 'A charm widely used across Mediterranean and Middle Eastern cultures, believed to ward off envy and ill will directed at you.',
@@ -218,6 +218,7 @@ const CARD_TEXT = {
 // Interactive pieces: on desktop they fill the canvas beside an opened card;
 // on the phone they take the illustration's place on the card's sheet
 const CANVAS_PAGES = {
+  '시험 전 날 떡 먹기.png': 'ricecake.html?v=2',  // eat all eight, the 100 at the bar's end
   '네잎 클로버 찾기.png': 'clover.html?v=13',  // swipe through the field, find the one four-leaf
   '명태 액막이.png': 'charm.html?v=35',  // the fish charm
   '촛불 한번에 불기.png': 'candles.html?v=24',  // make a wish, blow them all out

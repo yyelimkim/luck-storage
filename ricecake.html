@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Rice Cakes</title>
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="favicon-32.png" sizes="32x32" type="image/png">
+  <link rel="apple-touch-icon" href="apple-touch-icon.png">
+  <link rel="stylesheet" href="design-system.css?v=9">
+  <link rel="stylesheet" href="ricecake.css?v=2">
+</head>
+<body>
+  <!-- Rice cakes before an exam (Figma 234:1751): eight of them, four on
+       the plate and four in the box. Tap each to eat it; the bar fills a
+       step with each, and full, its 100 (Figma 522:375) gives a little shake. -->
+  <main class="rc" id="rc" data-step="eat">
+    <div class="progress" id="progress" role="progressbar" aria-label="Rice cakes eaten" aria-valuemin="0" aria-valuemax="8" aria-valuenow="0">
+      <div class="progress--track"><span class="progress--fill" id="fill"></span></div>
+      <img class="progress--end" id="hundred" src="assets/ricecake/hundred.svg" width="28" height="28" alt="">
+    </div>
+    <div class="rc--art" id="art" aria-label="Rice cakes on a plate and in a box"></div>
+    <div class="rc--words" role="status">
+      <p class="rc--say" data-for="eat">Tap the rice cakes to eat them</p>
+      <p class="rc--say" data-for="done">All eaten. It'll stick!</p>
+    </div>
+  </main>
+  <script src="sounds.js?v=22"></script>
+  <script src="pointer.js?v=1"></script>
+  <script src="ricecake.js?v=2"></script>
+</body>
+</html>
