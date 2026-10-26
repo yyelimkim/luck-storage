@@ -85,29 +85,22 @@ hoop.addEventListener('click', () => {
   Sounds.shimmer();
   root.dataset.step = 'catch';
   root.classList.add('is-awake');
-  spinTo = 200;  // deg a second: a turn every couple of seconds
+  rest = spin + 720;  // two turns, then still, facing us, for the catching
   GHOSTS.forEach((g) => timers.push(setTimeout(() => release(g), g.at)));
 });
 let timers = [];
 
 // --- Every frame: the spin, and the dreams drifting in ----------------------
 let spin = 0;
-let spinV = 0;
-let spinTo = 0;
-let rest = null;  // where it comes to rest, once it's done
+let rest = 0;  // where it's turning to, and comes to rest
 let caught = 0;
 let last = performance.now();
 function tick(now) {
   const dt = Math.min(0.033, (now - last) / 1000);
   last = now;
-  // it turns over and over, front to back, when woken; once it's done it
-  // slows and comes to rest facing us again
-  if (rest === null) {
-    spinV += (spinTo - spinV) * Math.min(1, dt * 1.2);
-    spin += spinV * dt;
-  } else {
-    spin += (rest - spin) * Math.min(1, dt * 1.6);
-  }
+  // it turns over twice when woken and when all are caught, front to back,
+  // each time slowing to rest facing us; still while it catches
+  spin += (rest - spin) * Math.min(1, dt * 1.6);
   // flat, at eye level: no perspective, so it narrows evenly to its edge
   turn.style.transform = `rotateY(${spin.toFixed(2)}deg)`;
 
@@ -157,7 +150,7 @@ function dissolve(g, x, y, op, c) {
 function calm() {
   root.classList.add('is-calm');
   root.dataset.step = 'done';
-  rest = (Math.ceil(spin / 360) + 1) * 360;  // on round, to facing us
+  rest = Math.round(spin / 360) * 360 + 720;  // two turns more, to facing us
   if (IN_SHEET) setTimeout(() => parent.postMessage('luck-claimed', '*'), 1600);
 }
 
@@ -169,7 +162,7 @@ addEventListener('message', (e) => {
   ghosts.forEach((g) => g.img.remove());
   ghosts = [];
   caught = 0;
-  spin = 0; spinV = 0; spinTo = 0; rest = null;
+  spin = 0; rest = 0;
   root.classList.remove('is-awake', 'is-calm');
   root.dataset.step = 'tap';
 });
