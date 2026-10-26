@@ -1665,10 +1665,10 @@ button.fortune--card:active { transform: scale(0.98); }
 .wish.is-open .wish--title { opacity: 1; }
 /* The header makes way for the close button while a wish is open */
 .is-reading .head { opacity: 0; pointer-events: none; }
-/* The 14px ×, UI White, in a 44px tap area */
+/* The ×, UI White, at the header icons' 28px, in a 44px tap area, its box on the 16px margin */
 .wish--close {
   position: absolute;
-  right: 6px;
+  right: 8px;
   top: 51px;
   width: 44px;
   height: 44px;
