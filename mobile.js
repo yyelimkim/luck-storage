@@ -829,7 +829,6 @@ function flyClover(src, dark = false) {
 function changeLuck(d) {
   luck += d;
   saveLuck();
-  if (d > 0) Sounds.chime();
   const dir = d > 0 ? 1 : -1;
   countIcon.animate([
     { transform: `scale(1.5) rotate(${-20 * dir}deg)` },
