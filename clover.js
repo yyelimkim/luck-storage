@@ -74,7 +74,7 @@ function layout(defs) {
       const x = (c + (r % 2) * 0.5 + rand(-0.35, 0.35)) * GAP;
       const y = TOP + (r + rand(-0.3, 0.3)) * GAP * 0.85;
       if (y < TOP) continue;
-      if (Math.hypot(x - fx, y - fy) < 55) continue;  // its own spot
+      if (Math.hypot(x - fx, y - fy) < 120) continue;  // room round it, so it isn't lost in a clump
       pts.push([x, y]);
     }
   }
