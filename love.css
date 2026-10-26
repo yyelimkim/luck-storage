@@ -91,7 +91,8 @@ html, body {
   user-select: text;
 }
 .love--field input::placeholder { color: var(--dark-grey); }
-.love--field input:focus-visible { box-shadow: 0 0 0 2px var(--system-black); }
+.love--field input:focus,
+.love--field input:focus-visible { box-shadow: 0 0 0 3px var(--ui-white), 0 0 0 4.5px var(--system-black); }  /* the double line, as the sign-up fields */
 .love--send {
   position: absolute;
   right: 7px;

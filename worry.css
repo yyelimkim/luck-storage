@@ -222,7 +222,8 @@ html, body {
   user-select: text;
 }
 .worry--field input::placeholder { color: var(--dark-grey); }
-.worry--field input:focus-visible { box-shadow: 0 0 0 2px var(--system-black); }
+.worry--field input:focus,
+.worry--field input:focus-visible { box-shadow: 0 0 0 3px var(--ui-white), 0 0 0 4.5px var(--system-black); }  /* the double line, as the sign-up fields */
 /* the send arrow, as Stacking Stones' */
 .worry--send {
   position: absolute;

@@ -178,7 +178,8 @@ html, body {
   user-select: text;
 }
 .candles--wish input::placeholder { color: var(--dark-grey); }
-.candles--wish input:focus-visible { box-shadow: 0 0 0 2px var(--system-white); }
+.candles--wish input:focus,
+.candles--wish input:focus-visible { box-shadow: 0 0 0 3px var(--ui-white), 0 0 0 4.5px var(--system-black); }  /* the double line, as the sign-up fields */
 .candles--send {
   position: absolute;
   right: 7px;

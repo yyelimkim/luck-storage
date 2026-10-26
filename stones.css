@@ -140,7 +140,8 @@ html, body {
   user-select: text;
 }
 .stones--field input::placeholder { color: var(--dark-grey); }
-.stones--field input:focus-visible { box-shadow: 0 0 0 2px var(--system-black); }
+.stones--field input:focus,
+.stones--field input:focus-visible { box-shadow: 0 0 0 3px var(--ui-white), 0 0 0 4.5px var(--system-black); }  /* the double line, as the sign-up fields */
 .stones--send {
   position: absolute;
   right: 7px;
