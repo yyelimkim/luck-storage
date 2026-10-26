@@ -39,10 +39,13 @@
   const STEPS = { signup: ['account', 'name', 'birthday'], login: ['account'] };
 
   root.classList.add('is-onboarding');
-  // the count starts empty: the first clovers come in at the end
+  // the count starts empty: the first clovers come in at the end (shown
+  // again on cue to someone who's been before, their clovers stay as they are)
   const START_LUCK = Number(countNum.textContent);
-  luck = 0;
-  countNum.textContent = '0';
+  if (!seen) {
+    luck = 0;
+    countNum.textContent = '0';
+  }
 
   function show(step, back = false) {
     const from = ob.dataset.step;
@@ -150,11 +153,14 @@
     root.classList.remove('is-onboarding');
     // the clover flies up into the count, as luck does, and the count rolls up
     const clover = pages.done.querySelector('.ob--done img');
-    if (how === 'start') {
+    if (seen) {
+      // been here before: their clovers as they were
+    } else if (how === 'start') {
       flyClover(clover, true).then(() => changeLuck(START_LUCK));
     } else {
       luck = START_LUCK;
       countNum.textContent = String(START_LUCK);
+      saveLuck();
     }
     setTimeout(() => ob.remove(), 600);
   }

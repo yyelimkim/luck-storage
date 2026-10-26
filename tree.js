@@ -267,7 +267,12 @@
   // at the top the slip spins, goes back on the tree, and the luck lands on it
   const HOLD_MS = 1300;
   const hold = document.getElementById('wish-hold');
-  const sent = new Set();
+  // (remembered between visits: the wishes you've sent luck to)
+  const keep = {
+    get(key, fallback) { try { const v = localStorage.getItem(key); return v == null ? fallback : JSON.parse(v); } catch (e) { return fallback; } },
+    set(key, value) { try { localStorage.setItem(key, JSON.stringify(value)); } catch (e) { /* this visit only */ } },
+  };
+  const sent = new Set(keep.get('sent', []));
   let traced = 0;
   let raf = 0;
   const key = () => from && (from.g.dataset.own != null ? `own${from.g.dataset.own}` : `w${from.g.dataset.wish}`);
@@ -313,6 +318,7 @@
       spinning = true;
       const k = key();
       sent.add(k);
+      keep.set('sent', [...sent]);
       slip.classList.add('is-sent');
       slip.classList.remove('is-twist');
       void slip.offsetWidth;
@@ -502,11 +508,18 @@
     input.focus({ preventScroll: true });
   });
 
+  // Your wishes from before, back on the tree where they hung
+  keep.get('wishes', []).forEach((wish) => {
+    const i = mine.push(wish) - 1;
+    scene.querySelector('.tree--wishes').insertAdjacentHTML('beforeend', hung(SPARE[i % SPARE.length], wish.fill, `data-own="${i}"`));
+  });
+
   // Up it goes: the slip leaves the sheet and flies to its spot on the
   // tree, shrinking into a strip, which swings as it takes the weight
   form.querySelector('.wishform--yes').addEventListener('click', async () => {
     const wish = { text: input.value.trim(), fill: paperFill };
     const i = mine.push(wish) - 1;
+    keep.set('wishes', mine);
     const spot = SPARE[i % SPARE.length];
     const group = scene.querySelector('.tree--wishes');
     group.insertAdjacentHTML('beforeend', hung(spot, wish.fill, `data-own="${i}"`));

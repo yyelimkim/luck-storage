@@ -569,19 +569,36 @@ function fitRitual(sh) {
   return k;
 }
 
-// Each card's luck can be claimed once a "day"; played again, it still
-// finishes, but nothing more is added. For now (in development) a day is one
-// visit: refreshing the page starts a new one.
-const played = new Set();
-const playedToday = (name) => played.has(name);
-const markPlayed = (name) => played.add(name);
+// What's remembered between visits, in this browser: the clovers, the
+// rituals played today, the luck earned lately (see also tree.js: your
+// wishes, and the wishes you've sent luck to)
+const store = {
+  get(key, fallback) {
+    try { const v = localStorage.getItem(key); return v == null ? fallback : JSON.parse(v); } catch (e) { return fallback; }
+  },
+  set(key, value) {
+    try { localStorage.setItem(key, JSON.stringify(value)); } catch (e) { /* this visit only */ }
+  },
+};
+
+// Each card's luck can be claimed once a day; played again, it still
+// finishes, but nothing more is added. The day turns over at midnight.
+const today = () => new Date().toLocaleDateString('en-CA');  // as 2026-10-26
+const playedLog = store.get('played', { day: today(), cards: [] });
+const played = new Set(playedLog.day === today() ? playedLog.cards : []);
+const playedToday = (name) => playedLog.day === today() && played.has(name);
+const markPlayed = (name) => {
+  if (playedLog.day !== today()) { played.clear(); playedLog.day = today(); }
+  played.add(name);
+  store.set('played', { day: today(), cards: [...played] });
+};
 
 function claimed() {
   if (!sheet || sheet.claimed) return;
   sheet.claimed = true;
   // The first time today it counts; after that it's only a replay
   sheet.counts = !playedToday(sheet.name);
-  if (sheet.counts) markPlayed(sheet.name);
+  if (sheet.counts) { markPlayed(sheet.name); earned(sheet.name); }
   Sounds.claim();  // the finishing sparkle plays every time, even on a replay
   sheet.el.querySelector('.claimed--title').textContent = sheet.counts ? 'Luck Claimed!' : 'Already claimed today';
   sheet.el.classList.add('is-claimed');
@@ -741,6 +758,12 @@ const countEl = document.getElementById('count');
 const countIcon = countEl.querySelector('img');
 const countNum = document.getElementById('count-num');
 let luck = Number(countNum.textContent);
+// a returning visit keeps its clovers
+{
+  const saved = store.get('luck', null);
+  if (typeof saved === 'number') { luck = saved; countNum.textContent = String(saved); }
+}
+const saveLuck = () => store.set('luck', luck);
 
 const CLOVER_FLY_MS = 820;
 // The claimed clover lifts off, shrinks along a curve up to the header's
@@ -781,6 +804,7 @@ function flyClover(src, dark = false) {
 // comes in, down as it's spent (on wishes, see tree.js)
 function changeLuck(d) {
   luck += d;
+  saveLuck();
   if (d > 0) Sounds.chime();
   const dir = d > 0 ? 1 : -1;
   countIcon.animate([
@@ -1117,8 +1141,35 @@ function openOnHome(i) {
 }
 // Today's lucky ritual, and the profile's recently earned luck
 const goClaim = () => openOnHome(luckyCard);
-document.querySelectorAll('.profile--earned').forEach((b) => {
-  b.addEventListener('click', () => openOnHome(IMAGES.indexOf(b.dataset.card)));
+// The luck earned lately, newest first: the profile shows these once there
+// are any (till then, its examples)
+const recent = document.querySelector('.profile--recent');
+function showEarned() {
+  const list = store.get('earned', []);
+  if (!list.length) return;
+  recent.innerHTML = list.map((name) => {
+    // the name over two lines, broken near its middle
+    const words = cardName(name).split(' ');
+    let cut = 1;
+    let best = Infinity;
+    for (let i = 1; i < words.length; i++) {
+      const d = Math.abs(words.slice(0, i).join(' ').length - words.slice(i).join(' ').length);
+      if (d < best) { best = d; cut = i; }
+    }
+    const label = words.length > 1 ? `${words.slice(0, cut).join(' ')}<br>${words.slice(cut).join(' ')}` : words[0];
+    return `<button type="button" class="profile--earned" data-card="${name}" style="--earned: ${CARD_COLOR[name]}">${miniImg(name, 'color', 100)}<p>${label}</p></button>`;
+  }).join('');
+}
+function earned(name) {
+  const list = store.get('earned', []).filter((n) => n !== name);
+  list.unshift(name);
+  store.set('earned', list.slice(0, 10));
+  showEarned();
+}
+showEarned();
+recent.addEventListener('click', (e) => {
+  const b = e.target.closest('.profile--earned');
+  if (b) openOnHome(IMAGES.indexOf(b.dataset.card));
 });
 document.getElementById('fortune-ritual').addEventListener('click', goClaim);
 
