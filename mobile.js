@@ -621,6 +621,8 @@ function claimed() {
   Sounds.claim();  // the finishing sparkle plays every time, even on a replay
   sheet.el.querySelector('.claimed--title').textContent = sheet.counts ? 'Luck Claimed!' : 'Already claimed today';
   sheet.el.classList.add('is-claimed');
+  // here from a shared link, new: now they've had a go, keep the luck?
+  if (Guest.visitor()) setTimeout(() => document.getElementById('link-nudge')?.dispatchEvent(new Event('open')), 2200);
 }
 // Replay: the ritual starts again from the beginning, on the same sheet
 function replay() {
@@ -1487,4 +1489,19 @@ function saveName(name) {
   nudge.addEventListener('click', (e) => { if (e.target === nudge) show(false); });
   nudge.querySelector('.nudge--join').addEventListener('click', () => Guest.join('signup'));
   addEventListener('keydown', (e) => { if (e.key === 'Escape') show(false); });
+})();
+
+// From a shared link, after claiming the card's luck: sign up to keep it,
+// or carry on as a guest (asked once)
+(() => {
+  const el = document.getElementById('link-nudge');
+  if (!el) return;
+  const show = (on) => { el.classList.toggle('is-open', on); el.setAttribute('aria-hidden', String(!on)); };
+  el.addEventListener('open', () => {
+    if (!Guest.visitor()) return;
+    show(true);
+    el.querySelector('.nudge--join').focus({ preventScroll: true });
+  });
+  el.querySelector('.nudge--later').addEventListener('click', () => { Guest.settle(); show(false); });
+  el.querySelector('.nudge--join').addEventListener('click', () => Guest.join('signup'));
 })();

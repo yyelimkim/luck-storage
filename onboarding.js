@@ -131,7 +131,6 @@
     check(pages.account);
   }
   swap.addEventListener('click', () => setMode(mode === 'login' ? 'signup' : 'login'));
-  if (goTo === 'signup' || goTo === 'login') { setMode(goTo); go('account'); }
   ob.addEventListener('click', (e) => {
     const b = e.target.closest('[data-go]');
     if (!b) return;
@@ -378,4 +377,8 @@
     if (ob.dataset.step === 'welcome') { setMode('signup'); go('account'); return; }
     fillIn(page);
   });
+
+  // from guest mode's "Sign up" (or "Log in"): straight to the account, once
+  // everything above is ready
+  if (goTo === 'signup' || goTo === 'login') { setMode(goTo); go('account'); }
 })();

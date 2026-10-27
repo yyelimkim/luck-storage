@@ -13,9 +13,13 @@ const Guest = (() => {
   const on = () => get('onboarded') === 'guest';
 
   function start() {
-    const stash = {};
-    KEYS.forEach((k) => { stash[k] = get(k); set(k, null); });
-    set('account-stash', JSON.stringify(stash));
+    // (what's already set aside stays: never overwritten by a guest's things)
+    if (!get('account-stash')) {
+      const stash = {};
+      KEYS.forEach((k) => { stash[k] = get(k); });
+      set('account-stash', JSON.stringify(stash));
+    }
+    KEYS.forEach((k) => set(k, null));
     set('onboarded', 'guest');
     set('name', 'Guest');
     try { sessionStorage.setItem('guest-live', '1'); } catch (e) { /* no session: ends on reload */ }
@@ -43,7 +47,18 @@ const Guest = (() => {
   let live = false;
   try { live = sessionStorage.getItem('guest-live') === '1'; } catch (e) { /* not known */ }
   if (on() && !live) { end(); set('onboarded', null); }
+  // Arriving from a shared card's link, new here: no splash or welcome, but
+  // in as a guest (3 clovers) with that card open; once they've claimed its
+  // luck, they're asked to sign up or carry on as a guest (mobile.js)
+  const arrived = new URLSearchParams(location.search).has('card');
+  if (arrived && !get('onboarded')) {
+    start();
+    set('luck', '3');
+    try { sessionStorage.setItem('link-visitor', '1'); } catch (e) { /* no nudge, then */ }
+  }
   if (on()) document.documentElement.classList.add('is-guest');
+  const visitor = () => { try { return on() && sessionStorage.getItem('link-visitor') === '1'; } catch (e) { return false; } };
+  const settle = () => { try { sessionStorage.removeItem('link-visitor'); } catch (e) { /* none */ } };
 
-  return { on, start, end, join };
+  return { on, start, end, join, arrived, visitor, settle };
 })();
