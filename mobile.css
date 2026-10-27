@@ -2594,12 +2594,11 @@ button.fortune--card:active { transform: scale(0.98); }
 .ob--ring {
   position: absolute;
   left: 50%;
-  top: 891px;  /* the top card's top 230px down */
+  top: 891px;  /* set by onboarding.js: the top card ends just above the words */
   width: 0;
   height: 0;
   animation: ob-turn 90s linear infinite;
 }
-.is-phone .ob--ring { top: 835px; }
 @keyframes ob-turn { to { rotate: 360deg; } }
 .ob--ring img {
   position: absolute;
@@ -2616,7 +2615,8 @@ button.fortune--card:active { transform: scale(0.98); }
   content: "";
   position: absolute;
   inset: 0;
-  background: linear-gradient(to bottom, transparent 52%, var(--system-white) 74%);
+  /* the cards fade out, long and soft, before the words begin */
+  background: linear-gradient(to bottom, transparent calc(var(--clear, 520px) - 170px), var(--system-white) calc(var(--clear, 520px) - 6px));
 }
 @media (prefers-reduced-motion: reduce) { .ob--ring { animation: none; } }
 .ob--logo {
