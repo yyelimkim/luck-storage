@@ -2044,6 +2044,9 @@ button.fortune--card:active { transform: scale(0.98); }
   animation: sun-breathe 7s ease-in-out infinite alternate;
 }
 .is-writing .head { z-index: 61; }
+/* the count, writing: no pill, in white on the dark green, on the margin */
+.is-writing .head--count { padding: 0; background: none; filter: none; color: var(--system-white); }
+.is-writing .head--count img { filter: brightness(0) invert(1); }
 .is-writing .head--page,
 .is-writing .head--title,
 .is-writing .head--tools { opacity: 0; pointer-events: none; }
