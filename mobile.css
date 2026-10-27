@@ -2567,7 +2567,7 @@ button.fortune--card:active { transform: scale(0.98); }
   border: 0;
   background: none;
   font: inherit;
-  font-size: 16px;
+  font-size: 14px;
   letter-spacing: var(--tracking);
   color: var(--system-black);
   cursor: pointer;
@@ -2906,3 +2906,89 @@ label.settings--row:active { background: var(--system-white); }
 .settings--volume input:focus { outline: none; }
 .settings--volume input:focus-visible::-webkit-slider-thumb { box-shadow: 0 0 0 3px var(--ui-white), 0 0 0 4.5px var(--system-black); }
 .settings--volume.is-off { opacity: 0.4; }
+
+/* Guest mode (guest.js): the profile's header as Figma 554:18473, a grey
+   sky and white clouds, the doll a Dark Grey silhouette with a question
+   mark (tapped, it asks you to sign up), the name not to be changed */
+.is-guest .profile--hero { background-image: url("assets/profile/guest-hero.svg"); }
+.is-guest .profile--hero::before { background: #b0b0b0; }  /* the sky's grey, carried on up */
+.is-guest .profile--avatar { display: none; }
+.is-guest .profile--name button { display: none; }
+.profile--who { display: none; }
+.is-guest .profile--who {
+  position: absolute;
+  left: 237.82px;
+  top: calc(164.28px - var(--up));
+  z-index: 2;
+  display: block;
+  width: 118.715px;
+  height: 245.127px;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+  transform-origin: 50% 100%;
+  -webkit-tap-highlight-color: transparent;
+  transition: transform 0.15s;
+}
+.profile--who img { position: absolute; display: block; }
+.profile--who-doll { left: 0; top: 0; }
+.profile--who-q { left: 47.1px; top: 106.6px; rotate: 4.27deg; }
+.is-guest [data-view="profile"] .profile--who { animation: profile-grow 0.6s cubic-bezier(0.3, 1.4, 0.5, 1) both; }
+.is-guest [data-view="profile"] .profile--who-q { animation: who-bob 2.4s ease-in-out infinite; }
+@keyframes who-bob { 50% { translate: 0 -4px; } }
+.profile--who:active { transform: scale(0.97); }
+/* its nudge: the wish form's dialog, over everything */
+.nudge {
+  position: absolute;
+  inset: 0;
+  z-index: 80;
+  display: grid;
+  place-items: center;
+  padding: 0 16px;
+  background: rgba(39, 39, 39, 0.4);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s, visibility 0s 0.3s;
+}
+.nudge.is-open { opacity: 1; visibility: visible; transition: opacity 0.3s; }
+.nudge .wishform--card { transform: scale(0.94); }
+.nudge.is-open .wishform--card { transform: none; }
+.nudge .wishform--yes { background: var(--system-black); color: var(--system-white); }
+
+/* Daily Fortune, for a guest: the birthday first, as onboarding asks it */
+.fortune--ask {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  padding: calc(var(--top) + 86px) 16px 40px;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.35s, visibility 0s 0.35s;
+}
+.fortune[data-step="ask"] .fortune--ask { opacity: 1; visibility: visible; transition: opacity 0.35s; }
+.fortune[data-step="ask"] .fortune--intro { opacity: 0; pointer-events: none; }
+.fortune .fortune--ask-title { margin: 0; font-family: var(--font-title); font-weight: 400; font-size: 27px; letter-spacing: var(--tracking-title); line-height: 1.15; color: var(--system-black); }
+.fortune .fortune--ask-sub { margin: 10px 0 32px; font-size: 16px; line-height: 1.35; }
+.fortune--ask .ob--btn { margin: auto auto 0; color: var(--system-white); }
+.fortune--ask .ob--btn:disabled { color: var(--dark-grey); }
+
+/* Settings, for a guest: what a guest is, and the way to keep it, in place
+   of your details and the account */
+.settings--guest { display: none; }
+.is-guest .settings--guest { display: flex; flex-direction: column; align-items: center; gap: 8px; padding: 6px 4px 0; text-align: center; }
+.settings--guest p { margin: 0 0 10px !important; font-size: 16px; line-height: 1.35; }
+.settings--guest .ob--link { padding: 6px 10px 0; }
+.is-guest .settings--account-only,
+.is-guest .settings--me { display: none; }
+/* a guest's Recently Earned Luck, before any: a word, in the tiles' line */
+.profile .profile--none {
+  flex: 1;
+  padding: 22px 16px;
+  border: 0.771px solid var(--system-black);
+  border-radius: 15px;
+  font-size: 16px;
+  line-height: 1.35;
+  text-align: center;
+}

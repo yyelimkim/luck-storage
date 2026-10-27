@@ -11,7 +11,7 @@
   <link rel="icon" href="favicon-32.png" sizes="32x32" type="image/png">
   <link rel="apple-touch-icon" href="apple-touch-icon.png">
   <link rel="stylesheet" href="design-system.css?v=9">
-  <link rel="stylesheet" href="mobile.css?v=237">
+  <link rel="stylesheet" href="mobile.css?v=241">
 </head>
 <body>
   <!-- iPhone 17 screen (Figma 97:630 at rest, 97:730 while dialing), laid out at
@@ -55,6 +55,12 @@
         <p class="profile--hello" id="hello">Good Morning,</p>
         <h2 class="profile--name"><span class="profile--name-text">Yelim</span> <button type="button" aria-label="Edit name"><img src="assets/profile/pencil-14.svg" width="14" height="14" alt=""></button></h2>
         <img class="profile--avatar" src="assets/profile/avatar.svg" width="144" height="254" alt="">
+        <!-- a guest: the doll in silhouette, a question mark on it; tapped,
+             it asks you to sign up -->
+        <button type="button" class="profile--who" id="profile-who" aria-label="Sign up to keep your luck">
+          <img class="profile--who-doll" src="assets/profile/guest-doll.svg" width="118.715" height="245.127" alt="">
+          <img class="profile--who-q" src="assets/profile/guest-question.svg" width="27" height="40" alt="">
+        </button>
       </div>
       <div class="profile--body">
         <h3 class="profile--label">Daily Fortune</h3>
@@ -197,6 +203,13 @@
         </button>
         <h2 class="fortune--title">Daily Fortune</h2>
       </div>
+      <!-- A guest's birthday, asked each visit (nothing's kept) -->
+      <form class="fortune--ask" id="fortune-ask" novalidate>
+        <h3 class="fortune--ask-title">When's your birthday?</h3>
+        <p class="fortune--ask-sub">Your fortune is read from it. As a guest, we’ll ask each visit.</p>
+        <label class="ob--field"><span>Birthday</span><input type="date" name="birthday" min="1900-01-01" required></label>
+        <button type="submit" class="ob--btn" disabled>See my fortune</button>
+      </form>
       <div class="fortune--intro">
         <p class="fortune--pill fortune--today"></p>
         <div class="fortune--ring" aria-hidden="true">
@@ -261,13 +274,19 @@
         <h2 class="settings--title">Settings</h2>
       </div>
       <div class="settings--body">
+        <!-- a guest: nothing kept, and the way to keep it -->
+        <div class="settings--guest">
+          <p>You’re in as a guest. Your clovers, wishes and earned luck are gone when you leave.</p>
+          <button type="button" class="ob--btn" id="set-guest-join">Sign up to keep your luck</button>
+          <button type="button" class="ob--link" id="set-guest-login"><span class="ob--muted">Already have an account?</span> <u>Log in</u></button>
+        </div>
         <div class="settings--me">
           <p class="settings--me-name" id="set-me-name"></p>
           <p class="settings--me-email" id="set-me-email"></p>
         </div>
 
-        <p class="settings--label">Profile</p>
-        <div class="settings--group">
+        <p class="settings--label settings--account-only">Profile</p>
+        <div class="settings--group settings--account-only">
           <label class="settings--row">
             <span>Name</span>
             <input class="settings--field" id="set-name" type="text" maxlength="20" autocomplete="off" spellcheck="false">
@@ -304,9 +323,8 @@
           </div>
         </div>
 
-        <p class="settings--label">Account</p>
-        <div class="settings--group">
-          <button type="button" class="settings--row" id="set-join"><span>Sign up or log in</span><img class="settings--go" src="assets/mobile/chevron.svg" width="13.3333" height="7.33333" alt=""></button>
+        <p class="settings--label settings--account-only">Account</p>
+        <div class="settings--group settings--account-only">
           <button type="button" class="settings--row" id="set-logout"><span>Log out</span></button>
           <button type="button" class="settings--row is-danger" id="set-delete"><span>Delete account</span></button>
         </div>
@@ -372,6 +390,17 @@
       <img src="assets/system/share.svg?v=2" width="28" height="28" alt="">
     </button>
     <p class="m-toast" id="m-toast" role="status">Link copied</p>
+    <!-- A guest tapping the doll: sign up to keep your luck -->
+    <div class="nudge" id="nudge" role="alertdialog" aria-labelledby="nudge-q" aria-describedby="nudge-a" aria-hidden="true">
+      <div class="wishform--card">
+        <p class="wishform--q" id="nudge-q">Make this luck yours</p>
+        <p class="wishform--a" id="nudge-a">As a guest, nothing’s kept when you leave. Sign up to keep your clovers, wishes and earned luck.</p>
+        <div class="wishform--choices">
+          <button type="button" class="wishform--no nudge--later">Not now</button>
+          <button type="button" class="wishform--yes nudge--join">Sign up</button>
+        </div>
+      </div>
+    </div>
     <!-- Share options for the open card, in the filter sheet's style -->
     <div class="filter sharesheet" id="sharesheet" aria-hidden="true">
       <div class="filter--scrim"></div>
@@ -486,11 +515,12 @@
     <span class="demo-hint--app">Demo: O to see onboarding again</span>
   </p>
 
+  <script src="guest.js?v=1"></script>
   <script src="cards.js?v=187"></script>
   <script src="sounds.js?v=30"></script>
-  <script src="mobile.js?v=124"></script>
+  <script src="mobile.js?v=126"></script>
   <script src="tree.js?v=55"></script>
-  <script src="splash.js?v=25"></script>
-  <script src="onboarding.js?v=19"></script>
+  <script src="splash.js?v=26"></script>
+  <script src="onboarding.js?v=21"></script>
 </body>
 </html>

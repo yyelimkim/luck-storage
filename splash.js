@@ -13,6 +13,10 @@
 (() => {
   const splash = document.getElementById('splash');
   if (!splash) return;
+  // straight back in after switching to guest mode: no splash again
+  let quiet = false;
+  try { quiet = sessionStorage.getItem('no-splash') === '1'; sessionStorage.removeItem('no-splash'); } catch (e) { /* play it */ }
+  if (quiet) { splash.remove(); return; }
   const holder = splash.querySelector('.splash--logo');
   const NS = 'http://www.w3.org/2000/svg';
   // (also when a second ? slips in, as in ?r=1?dial)

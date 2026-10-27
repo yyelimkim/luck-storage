@@ -97,6 +97,9 @@
   function go(step) { path.push(ob.dataset.step); show(step); }
   ob.querySelector('.ob--back').addEventListener('click', () => { if (path.length) show(path.pop(), true); });
   pages.welcome.classList.add('is-on');
+  // from guest mode's "Sign up" (or "Log in"): straight to the account
+  let goTo = null;
+  try { goTo = sessionStorage.getItem('onboard-go'); sessionStorage.removeItem('onboard-go'); } catch (e) { /* the welcome */ }
 
   // --- Welcome: every card in a ring, turning (mobile.css)
   const ring = document.getElementById('ob-ring');
@@ -128,6 +131,7 @@
     check(pages.account);
   }
   swap.addEventListener('click', () => setMode(mode === 'login' ? 'signup' : 'login'));
+  if (goTo === 'signup' || goTo === 'login') { setMode(goTo); go('account'); }
   ob.addEventListener('click', (e) => {
     const b = e.target.closest('[data-go]');
     if (!b) return;
@@ -293,20 +297,12 @@
   // --- In as a guest: no account, straight to Home with the first clovers;
   // Settings has the way to sign up or log in later
   function asGuest() {
-    const nameEl = document.querySelector('.profile--name');
-    if (nameEl && nameEl.firstChild) nameEl.firstChild.textContent = 'Guest ';
-    try {
-      localStorage.setItem('onboarded', 'guest');
-      localStorage.setItem('name', 'Guest');
-      localStorage.removeItem('email');
-      localStorage.removeItem('username');
-    } catch (e) { /* this visit only */ }
-    luck = START_LUCK;
-    countNum.textContent = String(START_LUCK);
+    Guest.start();
+    luck = 3;  // a guest's first clovers, as anyone's
     saveLuck();
-    ob.classList.add('is-done');
-    root.classList.remove('is-onboarding');
-    setTimeout(() => ob.remove(), 600);
+    // straight back in, everything drawn afresh from nothing (no splash)
+    try { sessionStorage.setItem('no-splash', '1'); } catch (e) { /* it plays */ }
+    location.reload();
   }
 
   // --- All set: your name on the profile, your birthday for the fortune

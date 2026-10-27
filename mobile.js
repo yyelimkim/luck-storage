@@ -1090,7 +1090,10 @@ function loadFortune() {
 }
 function openFortune() {
   fortuneEl.querySelector('.fortune--result').scrollTop = 0;
-  loadFortune();
+  // a guest gives their birthday first, each visit
+  let given = false;
+  try { given = !!localStorage.getItem('birthday'); } catch (e) { /* not known */ }
+  if (Guest.on() && !given) { fortuneStep('ask'); fortuneAsk.reset(); fortuneAsk.querySelector('button').disabled = true; } else loadFortune();
   fortuneEl.classList.add('is-open');
   fortuneEl.setAttribute('aria-hidden', 'false');
 }
@@ -1100,6 +1103,16 @@ function closeFortune() {
   fortuneEl.setAttribute('aria-hidden', 'true');
 }
 document.querySelector('.profile--fortune').addEventListener('click', openFortune);
+const fortuneAsk = document.getElementById('fortune-ask');
+fortuneAsk.addEventListener('input', () => { fortuneAsk.querySelector('button').disabled = !fortuneAsk.elements.birthday.value; });
+fortuneAsk.addEventListener('submit', (e) => {
+  e.preventDefault();
+  const b = fortuneAsk.elements.birthday.value;
+  if (!b) return;
+  birthday = b;
+  try { localStorage.setItem('birthday', b); } catch (err) { /* this visit only */ }  // gone with the guest
+  loadFortune();
+});
 fortuneEl.querySelector('.fortune--back').addEventListener('click', closeFortune);
 // The date pill carries over to the reading: it rises and shrinks into its
 // place there, its line and text easing to Dark Grey on the way
@@ -1170,6 +1183,8 @@ const goClaim = () => openOnHome(luckyCard);
 const recent = document.querySelector('.profile--recent');
 function showEarned() {
   const list = store.get('earned', []).filter((n) => IMAGES.includes(n));  // only cards there are
+  // a guest starts with none (the example ones are for the demo's account)
+  if (!list.length && Guest.on()) { recent.innerHTML = '<p class="profile--none">Luck you claim from a card shows up here.</p>'; return; }
   if (!list.length) return;
   recent.innerHTML = list.map((name) => {
     // each drawing the same size to the eye: sized by its area, not its
@@ -1381,12 +1396,6 @@ function saveName(name) {
     sound.setAttribute('aria-checked', String(!Sounds.muted()));
     vol.value = String(Math.round(Sounds.volume() * 100));
     showVol();
-    // a guest has no account to log out of or delete: just the way to make one
-    let guest = false;
-    try { guest = localStorage.getItem('onboarded') === 'guest'; } catch (e) { /* not known */ }
-    $('set-join').hidden = !guest;
-    $('set-logout').hidden = guest;
-    $('set-delete').hidden = guest;
   }
   function open() {
     fill();
@@ -1435,11 +1444,10 @@ function saveName(name) {
   vol.addEventListener('change', () => { Sounds.unlock(); Sounds.tap?.(); });
 
   $('set-share').addEventListener('click', () => window.shareApp && window.shareApp());
-  // A guest: signing up or logging in, from the welcome
-  $('set-join').addEventListener('click', () => {
-    try { localStorage.removeItem('onboarded'); } catch (e) { /* nothing kept */ }
-    location.href = location.pathname;
-  });
+  // A guest (mobile.css shows them this instead of the profile and account):
+  // signing up or logging in, from the welcome
+  $('set-guest-join').addEventListener('click', () => Guest.join('signup'));
+  $('set-guest-login').addEventListener('click', () => Guest.join('login'));
 
   // Log out: back to the welcome, the account kept on this phone to log into
   $('set-logout').addEventListener('click', () => {
@@ -1466,4 +1474,17 @@ function saveName(name) {
     if (e.key !== 'Escape' || !el.classList.contains('is-open')) return;
     if (el.classList.contains('is-confirming')) el.classList.remove('is-confirming'); else close();
   });
+})();
+
+// A guest's doll, tapped: sign up to keep your luck
+(() => {
+  const nudge = document.getElementById('nudge');
+  const who = document.getElementById('profile-who');
+  if (!nudge || !who) return;
+  const show = (on) => { nudge.classList.toggle('is-open', on); nudge.setAttribute('aria-hidden', String(!on)); };
+  who.addEventListener('click', () => { show(true); nudge.querySelector('.nudge--join').focus({ preventScroll: true }); });
+  nudge.querySelector('.nudge--later').addEventListener('click', () => show(false));
+  nudge.addEventListener('click', (e) => { if (e.target === nudge) show(false); });
+  nudge.querySelector('.nudge--join').addEventListener('click', () => Guest.join('signup'));
+  addEventListener('keydown', (e) => { if (e.key === 'Escape') show(false); });
 })();
