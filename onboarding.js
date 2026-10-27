@@ -104,20 +104,6 @@
   ring.style.setProperty('--r', `${R}px`);
   ring.innerHTML = IMAGES.map((name, i) =>
     `<img src="${englishSrc(name)}" alt="" style="--a:${(i * 360) / IMAGES.length}deg">`).join('');
-  // The ring sits on the words, never over them: the top card's foot just
-  // above "A little luck", the fade done by the time they begin
-  const art = ring.parentNode;
-  const hero = pages.welcome.querySelector('.ob--hero');
-  function placeRing() {
-    const k = art.getBoundingClientRect().height / art.offsetHeight || 1;
-    const clear = (hero.getBoundingClientRect().top - art.getBoundingClientRect().top) / k;
-    if (!clear) return;
-    ring.style.top = `${clear - 28 + R}px`;
-    art.style.setProperty('--clear', `${clear}px`);
-  }
-  placeRing();
-  addEventListener('resize', placeRing);
-  document.fonts?.ready.then(placeRing);
 
   // --- The account: create one, or log in
   const title = document.getElementById('ob-account-title');
