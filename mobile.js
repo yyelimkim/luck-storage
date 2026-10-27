@@ -1241,3 +1241,38 @@ document.getElementById('fortune-ritual').addEventListener('click', goClaim);
   stage.addEventListener('transitionend', later);
   later();
 })();
+
+// The name on the profile: its pencil makes it a field to change, kept on
+// this phone (and on the account, if there is one) as you finish
+(() => {
+  const heading = document.querySelector('.profile--name');
+  const pen = heading && heading.querySelector('button');
+  if (!pen) return;
+  pen.addEventListener('click', () => {
+    const text = heading.querySelector('.profile--name-text');
+    const was = text.textContent.trim();
+    const field = document.createElement('input');
+    field.className = 'profile--name-field';
+    field.value = was;
+    field.maxLength = 20;
+    field.setAttribute('aria-label', 'Your name');
+    text.replaceWith(field);
+    pen.hidden = true;
+    field.focus();
+    field.select();
+    const done = () => {
+      const name = field.value.trim() || was;
+      const span = document.createElement('span');
+      span.className = 'profile--name-text';
+      span.textContent = name;
+      field.replaceWith(span);
+      pen.hidden = false;
+      try { localStorage.setItem('name', name); } catch (e) { /* this visit only */ }  // plain, as onboarding.js reads it
+      const email = store.get('email', '');
+      const accounts = store.get('accounts', {});
+      if (email && accounts[email]) store.set('accounts', { ...accounts, [email]: { ...accounts[email], name } });
+    };
+    field.addEventListener('blur', done, { once: true });
+    field.addEventListener('keydown', (e) => { if (e.key === 'Enter') field.blur(); });
+  });
+})();

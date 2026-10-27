@@ -2,9 +2,12 @@
 // one, or log in) → your name → your birthday → all set, then Home. Signing
 // up takes all the steps; logging in goes straight to all set.
 //
-// This is a demo: nothing is sent anywhere. Pressing / fills the step you're
-// on with demo details, and S skips onboarding (the hint sits under the
-// phone, outside its screen).
+// This is a demo: nothing is sent anywhere, but what you sign up with is
+// kept on this phone (store, in mobile.js): your email, your name, your
+// birthday, and your password only as a hash, never itself. Logging in
+// checks against that and brings your name and birthday back. Pressing /
+// fills the step you're on with demo details, and S skips onboarding (the
+// hint sits under the phone, outside its screen).
 // Your name goes on the profile and your birthday seeds Daily Fortune.
 
 (() => {
@@ -35,6 +38,14 @@
   const DEMO = { email: 'yelim@luckcorner.app', password: 'fourleaf8', name: 'Yelim', birthday: '2006-04-15' };
 
   let mode = 'signup';  // or 'login'
+  // The accounts made on this phone, by email; and who's signing up or in
+  const accounts = () => store.get('accounts', {});
+  let pending = null;   // signing up: { email, pw }
+  let who = null;       // logged in: { name, birthday }
+  async function hash(pw) {
+    const bytes = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(`luck-corner:${pw}`));
+    return [...new Uint8Array(bytes)].map((b) => b.toString(16).padStart(2, '0')).join('');
+  }
   let path = [];        // the steps taken, for the way back
   const STEPS = { signup: ['account', 'name', 'birthday'], login: ['account'] };
 
@@ -98,6 +109,10 @@
       : '<span class="ob--muted">Already have an account?</span> <u>Log in</u>';
     password.autocomplete = login ? 'current-password' : 'new-password';
     password.placeholder = login ? 'Your password' : 'At least 8 characters';
+    // logging in, the email you used last time is already there
+    const email = pages.account.elements.email;
+    if (login && !email.value) email.value = store.get('email', '');
+    say('');
     check(pages.account);
   }
   swap.addEventListener('click', () => setMode(mode === 'login' ? 'signup' : 'login'));
@@ -106,7 +121,7 @@
     if (!b) return;
     const to = b.dataset.go;
     if (to === 'signup' || to === 'login') { setMode(to); go('account'); }
-    if (to === 'apple') { fillIn(pages.account); next('account'); }
+    if (to === 'apple') { fillIn(pages.account); account(pages.account).then((ok) => ok && next('account')); }
     if (to === 'home') finish('start');
   });
 
@@ -122,12 +137,45 @@
   }
   ['account', 'name', 'birthday'].forEach((step) => {
     const f = pages[step];
-    f.addEventListener('input', () => check(f));
-    f.addEventListener('submit', (e) => {
+    f.addEventListener('input', () => { check(f); if (step === 'account') say(''); });
+    f.addEventListener('submit', async (e) => {
       e.preventDefault();
-      if (valid[step](f)) next(step);
+      if (!valid[step](f)) return;
+      if (step === 'account' && !(await account(f))) return;
+      next(step);
     });
   });
+
+  // A word under the password when the account doesn't check out
+  const note = document.createElement('p');
+  note.className = 'ob--note';
+  note.setAttribute('role', 'alert');
+  password.closest('.ob--field').after(note);
+  function say(text) { note.textContent = text; }
+
+  // Signing up: the email's not taken here. Logging in: the account's here
+  // and the password matches (or it's the demo's)
+  async function account(f) {
+    const email = f.elements.email.value.trim().toLowerCase();
+    const pw = await hash(f.elements.password.value);
+    const acc = accounts()[email];
+    if (mode === 'signup') {
+      if (acc) { say('There’s already an account with this email. Log in instead.'); return false; }
+      pending = { email, pw };
+      return true;
+    }
+    if (acc) {
+      if (acc.pw !== pw) { say('That password doesn’t match this account.'); return false; }
+      who = { name: acc.name, birthday: acc.birthday };
+    } else if (email === DEMO.email) {
+      who = { name: DEMO.name, birthday: DEMO.birthday };
+    } else {
+      say('No account with that email on this phone yet.');
+      return false;
+    }
+    store.set('email', email);
+    return true;
+  }
   function next(step) {
     const steps = STEPS[mode];
     const i = steps.indexOf(step);
@@ -136,13 +184,18 @@
 
   // --- All set: your name on the profile, your birthday for the fortune
   function finish(how) {
-    const name = (mode === 'login' ? DEMO.name : pages.name.elements.name.value.trim()) || DEMO.name;
+    const name = (mode === 'login' ? who?.name : pages.name.elements.name.value.trim()) || DEMO.name;
     const nameEl = document.querySelector('.profile--name');
     if (nameEl && nameEl.firstChild) nameEl.firstChild.textContent = `${name} `;
-    const born = mode === 'login' ? null : pages.birthday.elements.birthday.value;
+    const born = mode === 'login' ? who?.birthday : pages.birthday.elements.birthday.value;
     if (born && typeof birthday !== 'undefined') {
       birthday = born;  // mobile.js's, read by Daily Fortune
       try { localStorage.setItem('birthday', born); } catch (e) { /* kept for this visit only */ }
+    }
+    // a new account is kept on this phone, to log back into
+    if (mode === 'signup' && pending) {
+      store.set('accounts', { ...accounts(), [pending.email]: { pw: pending.pw, name, birthday: born || null } });
+      store.set('email', pending.email);
     }
     // remembered: next time, straight to Home
     try {
@@ -167,7 +220,7 @@
   // the done step's words, as you arrive
   new MutationObserver(() => {
     if (ob.dataset.step !== 'done') return;
-    const name = mode === 'login' ? DEMO.name : pages.name.elements.name.value.trim();
+    const name = mode === 'login' ? (who?.name || DEMO.name) : pages.name.elements.name.value.trim();
     document.getElementById('ob-done-title').textContent = mode === 'login' ? `Welcome back, ${name}` : `You're all set, ${name}`;
     document.getElementById('ob-done-sub').textContent = mode === 'login'
       ? 'Your luck is right where you left it.'
