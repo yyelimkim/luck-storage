@@ -1990,7 +1990,8 @@ button.fortune--card:active { transform: scale(0.98); }
 .wishform--scrim {
   position: absolute;
   inset: 0;
-  background: color-mix(in srgb, var(--system-black) 80%, transparent);  /* the wish reader's */
+  /* the sketch's own (543:7897): the tree's sky, darkened, under the paper grain */
+  background: url("assets/system/paper-shade.png") 0 0 / 402px auto, url("assets/wish/write-bg.png") center / cover;
   opacity: 0;
   transition: opacity 0.4s;
 }
@@ -2058,24 +2059,34 @@ button.fortune--card:active { transform: scale(0.98); }
 }
 /* "Write a wish": Cooper, System White, as the reader's "Wish 1" */
 .wishform--title { font-family: var(--font-title); font-size: 19px; letter-spacing: var(--tracking-title); color: var(--system-white); }
-/* The blank slip, written on directly: as big as the room allows */
+/* The blank slip, written on directly: the open slip's own size and shape
+   (294.89 x 490.72), in the room left between the title and the switch,
+   scaled down to fit it if need be (tree.js sets --fit) */
+.wishform--room {
+  position: relative;
+  align-self: stretch;
+  flex: 1 1 auto;
+  min-height: 0;
+  margin-top: 14px;
+}
 .wishform--slip {
   --paper: var(--system-white);
-  position: relative;
-  width: min(334px, 100% - 52px);
-  flex: 1 1 auto;
-  min-height: 240px;
-  margin-top: 16px;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 294.89px;
+  height: 490.72px;
+  margin: -245.36px 0 0 -147.45px;
+  scale: var(--fit, 1);
 }
-.wishform--slip .wish--hole { top: 16px; }
-.wishform--slip .wish--paper { --hole-y: 22px; }
-/* the words as they read on an open slip */
+.wishform--slip .wish--tag { position: absolute; inset: 0; width: 100%; height: 100%; }
+/* the words where an open slip's are, at 16 */
 .wishform--slip textarea {
   position: absolute;
   left: 25px;
-  right: 25px;
-  top: 52px;
-  bottom: 76px;
+  top: 82.7px;
+  width: 244px;
+  height: 320px;
   padding: 0;
   border: 0;
   background: none;
@@ -2085,9 +2096,10 @@ button.fortune--card:active { transform: scale(0.98); }
   line-height: 1.35;
 }
 .wishform--slip textarea::placeholder { color: var(--dark-grey); }
-/* at its foot: how much is written, and who it's from */
-.wishform--count { position: absolute; left: 25px; bottom: 46px; font-size: 14px; color: var(--dark-grey); }
-.wishform--by { position: absolute; left: 25px; bottom: 20px; font-size: 14px; }
+/* at its foot: how much is written, and who it's from (where an open
+   slip's "Anonymous" is) */
+.wishform--count { position: absolute; left: 25px; top: 420px; font-size: 14px; color: var(--dark-grey); }
+.wishform--by { position: absolute; left: 25px; top: 442.7px; font-size: 14px; line-height: 1.35; }
 /* Anonymous or signed: a switch */
 .wishform--anon {
   align-self: stretch;
@@ -2104,24 +2116,25 @@ button.fortune--card:active { transform: scale(0.98); }
   width: 51px;
   height: 31px;
   padding: 0;
+  border: 0;
   border-radius: 999px;
-  border: 0.771px solid var(--ui-white);
-  background: transparent;
+  background: var(--dark-grey);  /* off */
   cursor: pointer;
   transition: background 0.2s;
 }
+/* the knob, centred in the track */
 .wishform--switch span {
   position: absolute;
   left: 3px;
-  top: 2.5px;
-  width: 24px;
-  height: 24px;
+  top: 3px;
+  width: 25px;
+  height: 25px;
   border-radius: 50%;
   background: var(--ui-white);
   transition: translate 0.25s cubic-bezier(0.3, 1.3, 0.5, 1);
 }
 .wishform--switch[aria-checked="true"] { background: var(--system-black); }
-.wishform--switch[aria-checked="true"] span { translate: 19px 0; }
+.wishform--switch[aria-checked="true"] span { translate: 20px 0; }
 .wishform--switch:focus-visible { box-shadow: 0 0 0 3px var(--system-black), 0 0 0 4.5px var(--ui-white); outline: none; }
 /* Hang it: System Black, the price in white; UI White and Dark Grey until
    there's a wish to hang (or clovers to pay with) */
@@ -2218,10 +2231,10 @@ button.fortune--card:active { transform: scale(0.98); }
 }
 .wishform--fly-text {
   position: absolute;
-  left: 18px;
-  right: 18px;
-  top: 46px;
-  font-size: 20px;
+  left: 25px;
+  top: 82.7px;
+  width: 244px;
+  font-size: 16px;
   line-height: 1.35;
   overflow: hidden;
 }

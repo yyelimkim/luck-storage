@@ -497,11 +497,20 @@
     // (the count's in the header; only a word when it's not enough)
     balance.textContent = enough ? '' : `You have ${plural(luck)}. Claim luck from a card to earn more.`;
   }
+  // the slip at its own size, or as big as fits the room for it
+  const room = form.querySelector('.wishform--room');
+  function fitSlip() {
+    const r = room.getBoundingClientRect();
+    const k = r.width / room.offsetWidth || 1;  // the stage's scale
+    draft.style.setProperty('--fit', Math.min(1, (r.height / k) / 490.72, (r.width / k) / 294.89).toFixed(3));
+  }
+  addEventListener('resize', () => { if (form.classList.contains('is-open')) fitSlip(); });
   function openForm() {
     input.value = '';
     setAnon(keep.get('anon', true));
     refresh();
     form.classList.add('is-open');
+    fitSlip();
     form.setAttribute('aria-hidden', 'false');
     stageEl.classList.add('is-writing');
     setTimeout(() => input.focus({ preventScroll: true }), 420);
@@ -559,7 +568,8 @@
     const fly = draft.cloneNode(true);
     fly.classList.add('wishform--fly');
     fly.querySelector('textarea').replaceWith(Object.assign(document.createElement('p'), { className: 'wishform--fly-text', textContent: wish.text }));
-    Object.assign(fly.style, { left: `${start.x}px`, top: `${start.y}px`, width: `${start.w}px`, height: `${start.h}px` });
+    // at its own size, centred where the draft is, scaled as it was
+    Object.assign(fly.style, { left: `${start.x + start.w / 2 - 147.45}px`, top: `${start.y + start.h / 2 - 245.36}px`, margin: 0 });
     stageEl.appendChild(fly);
     closeForm();
     changeLuck(-COST);

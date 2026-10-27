@@ -11,7 +11,7 @@
   <link rel="icon" href="favicon-32.png" sizes="32x32" type="image/png">
   <link rel="apple-touch-icon" href="apple-touch-icon.png">
   <link rel="stylesheet" href="design-system.css?v=9">
-  <link rel="stylesheet" href="mobile.css?v=211">
+  <link rel="stylesheet" href="mobile.css?v=213">
 </head>
 <body>
   <!-- iPhone 17 screen (Figma 97:630 at rest, 97:730 while dialing), laid out at
@@ -111,15 +111,16 @@
           <button type="button" class="wishform--close" aria-label="Back"><img src="assets/system/arrow-back.svg" width="28" height="28" alt=""></button>
           <h2 class="wishform--title">Write a wish</h2>
         </div>
-        <div class="wishform--slip">
-          <svg class="wish--paper" viewBox="0 0 240 440" preserveAspectRatio="none" aria-hidden="true">
-            <path d="M0.6 40L40 0.6H200L239.4 40V439.4H0.6Z" vector-effect="non-scaling-stroke"/>
+        <!-- the slip, exactly as a wish reads open (its shape, where the words
+             and who it's from go), scaled down only if the screen's short -->
+        <div class="wishform--room"><div class="wishform--slip">
+          <svg class="wish--tag" viewBox="0 0 294.89 490.723" aria-hidden="true">
+            <path fill-rule="evenodd" d="M259.273 0.5C261.301 0.500165 263.17 1.59637 264.16 3.36621L293.677 56.1416C294.144 56.9769 294.39 57.918 294.39 58.875V484.622C294.39 487.715 291.883 490.222 288.79 490.223H6.09961C3.00685 490.223 0.500053 487.715 0.5 484.622V59.0176C0.500083 57.9595 0.799426 56.923 1.36426 56.0283L34.7773 3.10938C35.8033 1.48462 37.5911 0.500076 39.5127 0.5H259.273ZM147.907 22.4355C144.838 22.4355 142.35 24.9214 142.35 27.9873C142.35 31.0531 144.838 33.5381 147.907 33.5381C150.976 33.538 153.465 31.053 153.465 27.9873C153.465 24.9214 150.976 22.4357 147.907 22.4355Z"/>
           </svg>
-          <span class="wish--hole"></span>
           <textarea id="wish-input" maxlength="100" rows="5" placeholder="I wish…" aria-label="Your wish"></textarea>
           <p class="wishform--count" id="wish-chars">0/100</p>
           <p class="wishform--by" id="wish-by">Anonymous</p>
-        </div>
+        </div></div>
         <div class="wishform--anon">
           <span id="wish-anon-label">Anonymous Post</span>
           <button type="button" class="wishform--switch" id="wish-anon" role="switch" aria-checked="true" aria-labelledby="wish-anon-label"><span></span></button>
@@ -365,7 +366,7 @@
   <script src="cards.js?v=186"></script>
   <script src="sounds.js?v=28"></script>
   <script src="mobile.js?v=118"></script>
-  <script src="tree.js?v=43"></script>
+  <script src="tree.js?v=45"></script>
   <script src="splash.js?v=25"></script>
   <script src="onboarding.js?v=13"></script>
 </body>
