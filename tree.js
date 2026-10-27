@@ -198,7 +198,7 @@
   function fill(g) {
     const own = g.dataset.own != null;
     text.textContent = own ? mine[Number(g.dataset.own)].text : WISHES[Number(g.dataset.wish) % WISHES.length];
-    fromEl.textContent = own ? 'Anonymous · yours' : 'Anonymous';
+    fromEl.textContent = own ? `${mine[Number(g.dataset.own)].from || 'Anonymous'} · yours` : 'Anonymous';
     // numbered as the arrows go, left to right
     titleEl.textContent = own ? 'Your wish' : `Wish ${inOrder().indexOf(g) + 1}`;
     slip.classList.remove('is-twist', 'is-pressing');
@@ -452,7 +452,7 @@
 
   // --- Writing a wish: write it on a slip, spend clovers, hang it up ---
   const COST = 3;
-  const MAX = 80;
+  const MAX = 100;
   const mine = [];
   const form = document.getElementById('wishform');
   const sheet = form.querySelector('.wishform--sheet');
@@ -464,9 +464,26 @@
   const balance = document.getElementById('wish-balance');
   const confirm = form.querySelector('.wishform--confirm');
   const confirmText = document.getElementById('wish-confirm-text');
-  const papers = [...form.querySelectorAll('.wishform--paper')];
   const toast = document.getElementById('wish-toast');
-  let paperFill = C.white;
+  const paperFill = C.white;  // the slips in the tree are all white
+  const by = document.getElementById('wish-by');
+  const anon = document.getElementById('wish-anon');
+  // signed with your handle (your name, as one word), or anonymous; which
+  // you chose last time is kept
+  const handle = () => {
+    let name = '';
+    try { name = localStorage.getItem('name') || ''; } catch (e) { /* none kept */ }
+    name = name || document.querySelector('.profile--name-text')?.textContent || 'you';
+    return `@${name.trim().toLowerCase().replace(/\s+/g, '')}`;
+  };
+  const isAnon = () => anon.getAttribute('aria-checked') === 'true';
+  function setAnon(on) {
+    anon.setAttribute('aria-checked', String(on));
+    by.textContent = on ? 'Anonymous' : handle();
+    keep.set('anon', on);
+  }
+  anon.addEventListener('click', () => setAnon(!isAnon()));
+  form.querySelectorAll('.wishform--hang-cost').forEach((c) => { c.lastChild.textContent = String(COST); });
 
   const plural = (n) => `${n} clover${n === 1 ? '' : 's'}`;
   // The button says what's missing: words, or clovers
@@ -477,18 +494,12 @@
     hang.disabled = !enough || n < 3;
     hangLabel.textContent = enough ? 'Hang it for' : 'Not enough clovers';
     hang.classList.toggle('is-short', !enough);
-    balance.textContent = enough
-      ? `You have ${plural(luck)}`
-      : `You have ${plural(luck)}. Claim luck from a card to earn more.`;
-  }
-  function pickPaper(btn) {
-    papers.forEach((p) => p.setAttribute('aria-checked', String(p === btn)));
-    paperFill = btn.dataset.fill;
-    draft.style.setProperty('--paper', paperFill);
+    // (the count's in the header; only a word when it's not enough)
+    balance.textContent = enough ? '' : `You have ${plural(luck)}. Claim luck from a card to earn more.`;
   }
   function openForm() {
     input.value = '';
-    pickPaper(papers[0]);
+    setAnon(keep.get('anon', true));
     refresh();
     form.classList.add('is-open');
     form.setAttribute('aria-hidden', 'false');
@@ -504,7 +515,6 @@
   document.getElementById('wish-write').addEventListener('click', openForm);
   form.querySelector('.wishform--scrim').addEventListener('click', closeForm);
   form.querySelector('.wishform--close').addEventListener('click', closeForm);
-  papers.forEach((p) => p.addEventListener('click', () => pickPaper(p)));
   input.addEventListener('input', refresh);
   addEventListener('keydown', (e) => {
     if (e.key !== 'Escape' || !form.classList.contains('is-open')) return;
@@ -534,7 +544,7 @@
   // Up it goes: the slip leaves the sheet and flies to its spot on the
   // tree, shrinking into a strip, which swings as it takes the weight
   form.querySelector('.wishform--yes').addEventListener('click', async () => {
-    const wish = { text: input.value.trim(), fill: paperFill };
+    const wish = { text: input.value.trim(), fill: paperFill, from: isAnon() ? 'Anonymous' : handle() };
     const i = mine.push(wish) - 1;
     keep.set('wishes', mine);
     const spot = SPARE[i % SPARE.length];
