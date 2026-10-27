@@ -1178,6 +1178,30 @@ button.fortune--card:active { transform: scale(0.98); }
    sheet fills the screen behind it */
 .sheet[data-ink="light"] .sheet--howto { color: var(--system-white); }
 .stage:has(.sheet.is-full[data-ink="light"]) .m-back img { filter: brightness(0) invert(1); }
+/* Share: the back arrow's twin, on the right */
+.m-share { left: auto; right: 8px; }
+/* A word that something's done (the link copied), as the wish tree's */
+.m-toast {
+  position: absolute;
+  left: 50%;
+  top: calc(44px + 54px + 8px);
+  z-index: 75;
+  margin: 0;
+  padding: 7px 18px;
+  border-radius: 36px;
+  background: var(--system-black);
+  color: var(--system-white);
+  font-family: var(--font-display);
+  font-size: 14px;
+  letter-spacing: var(--tracking);
+  white-space: nowrap;
+  transform: translate(-50%, -12px);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s, transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+.is-phone .m-toast { top: calc(54px + 8px); }
+.m-toast.is-shown { opacity: 1; transform: translate(-50%, 0); }
 /* The interaction, centred under the back arrow's row; only live once full */
 .sheet--ritual {
   position: absolute;

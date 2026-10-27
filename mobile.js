@@ -1276,3 +1276,25 @@ document.getElementById('fortune-ritual').addEventListener('click', goClaim);
     field.addEventListener('keydown', (e) => { if (e.key === 'Enter') field.blur(); });
   });
 })();
+
+// Sharing the open card: the phone's own share sheet (the card's name, what
+// it is, and the app's address), or else the address copied
+(() => {
+  const btn = document.getElementById('share');
+  const toast = document.getElementById('m-toast');
+  if (!btn) return;
+  btn.addEventListener('click', async () => {
+    if (!flip) return;
+    const name = IMAGES[cards.indexOf(flip.card)];
+    const title = cardName(name);
+    const url = `${location.origin}${location.pathname}`;
+    const text = `${title}: ${(CARD_TEXT[name] || {}).about || 'a little luck, every day.'}`;
+    if (navigator.share) {
+      try { await navigator.share({ title: `${title} · The Luck Corner`, text, url }); } catch (e) { /* closed without sharing */ }
+      return;
+    }
+    try { await navigator.clipboard.writeText(`${text} ${url}`); } catch (e) { return; }
+    toast.classList.add('is-shown');
+    setTimeout(() => toast.classList.remove('is-shown'), 1800);
+  });
+})();

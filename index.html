@@ -11,7 +11,7 @@
   <link rel="icon" href="favicon-32.png" sizes="32x32" type="image/png">
   <link rel="apple-touch-icon" href="apple-touch-icon.png">
   <link rel="stylesheet" href="design-system.css?v=9">
-  <link rel="stylesheet" href="mobile.css?v=219">
+  <link rel="stylesheet" href="mobile.css?v=220">
 </head>
 <body>
   <!-- iPhone 17 screen (Figma 97:630 at rest, 97:730 while dialing), laid out at
@@ -294,6 +294,11 @@
     <button type="button" class="m-back" id="back" aria-label="Back">
       <img src="assets/system/arrow-back.svg" width="28" height="28" alt="">
     </button>
+    <!-- Share the open card: across from the back arrow, in its style -->
+    <button type="button" class="m-back m-share" id="share" aria-label="Share this card">
+      <img src="assets/system/share.svg?v=1" width="28" height="28" alt="">
+    </button>
+    <p class="m-toast" id="m-toast" role="status">Link copied</p>
     <!-- The opened card's name, beside the way back -->
     <p class="m-title" id="title"></p>
 
@@ -372,7 +377,7 @@
 
   <script src="cards.js?v=186"></script>
   <script src="sounds.js?v=28"></script>
-  <script src="mobile.js?v=118"></script>
+  <script src="mobile.js?v=119"></script>
   <script src="tree.js?v=50"></script>
   <script src="splash.js?v=25"></script>
   <script src="onboarding.js?v=13"></script>
