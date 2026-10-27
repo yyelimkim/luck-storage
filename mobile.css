@@ -2012,18 +2012,20 @@ button.fortune--card:active { transform: scale(0.98); }
 }
 .wishform.is-open .wishform--light { opacity: 1; }
 .wishform--light img {
+  /* bigger than the screen all round, so as they sway no edge of them
+     ever comes into view */
   position: absolute;
-  left: 0;
-  top: 0;
-  width: 100%;
+  left: -35%;
+  top: -20%;
+  width: 170%;
   height: auto;
-  transform-origin: 0 0;
+  transform-origin: 20% 12%;
   filter: sepia(0.8) saturate(2.4) hue-rotate(-12deg) brightness(2.3);  /* yellow, and strong */
   will-change: transform, opacity;
   animation: beam-swing 9s ease-in-out infinite alternate, wish-beam 6s ease-in-out infinite alternate;
 }
 .wishform--light img:nth-child(2) { animation-duration: 12s, 8s; animation-delay: -5s, -3s; scale: 1.15; }
-.wishform--light img:nth-child(3) { animation-duration: 10s, 7s; animation-delay: -2s, -5s; scale: 0.85; translate: 60px 0; }
+.wishform--light img:nth-child(3) { animation-duration: 10s, 7s; animation-delay: -2s, -5s; scale: 0.9; }
 /* breathing, but never fading far */
 @keyframes wish-beam {
   0% { opacity: 0.55; }
