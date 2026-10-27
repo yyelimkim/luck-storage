@@ -197,8 +197,9 @@
   // Put a wish's words on the open slip
   function fill(g) {
     const own = g.dataset.own != null;
-    text.textContent = own ? mine[Number(g.dataset.own)].text : WISHES[Number(g.dataset.wish) % WISHES.length];
-    fromEl.textContent = own ? `${mine[Number(g.dataset.own)].from || 'Anonymous'} · yours` : 'Anonymous';
+    const other = g.dataset.other != null ? others[Number(g.dataset.other)] : null;
+    text.textContent = own ? mine[Number(g.dataset.own)].text : other ? other.text : WISHES[Number(g.dataset.wish) % WISHES.length];
+    fromEl.textContent = own ? `${mine[Number(g.dataset.own)].from || 'Anonymous'} · yours` : other ? (other.from || 'Anonymous') : 'Anonymous';
     // numbered as the arrows go, left to right
     titleEl.textContent = own ? 'Your wish' : `Wish ${inOrder().indexOf(g) + 1}`;
     slip.classList.remove('is-twist', 'is-pressing');
@@ -278,7 +279,8 @@
   const sent = new Set(keep.get('sent', []));
   let traced = 0;
   let raf = 0;
-  const key = () => from && (from.g.dataset.own != null ? `own${from.g.dataset.own}` : `w${from.g.dataset.wish}`);
+  const key = () => from && (from.g.dataset.own != null ? `own${from.g.dataset.own}`
+    : from.g.dataset.other != null ? `x${others[Number(from.g.dataset.other)].id}` : `w${from.g.dataset.wish}`);
   function setTrace(k) { traced = k; slip.style.setProperty('--trace', k.toFixed(4)); }
   function showSent(k) {
     const done = sent.has(k);
@@ -548,21 +550,41 @@
     input.focus({ preventScroll: true });
   });
 
-  // Your wishes from before, back on the tree where they hung
+  // Everyone's wishes on the tree: yours from this phone, then the ones
+  // others have hung (kept online, at /api/wishes), each taking the next
+  // spot along the branch; past those, a little along from an older one
+  const others = [];
+  let spots = 0;
+  const spot = () => { const i = spots++; const [x, y, k] = SPARE[i % SPARE.length]; return [x + (Math.floor(i / SPARE.length) % 3) * 9, y, k]; };
+  const newId = () => Math.random().toString(36).slice(2, 10) + Date.now().toString(36);
   keep.get('wishes', []).forEach((wish) => {
+    if (!wish.id) wish.id = newId();
     const i = mine.push(wish) - 1;
-    scene.querySelector('.tree--wishes').insertAdjacentHTML('beforeend', hung(SPARE[i % SPARE.length], wish.fill, `data-own="${i}"`));
+    scene.querySelector('.tree--wishes').insertAdjacentHTML('beforeend', hung(spot(), wish.fill, `data-own="${i}"`));
   });
+  keep.set('wishes', mine);
+  const ON_TREE = 21;  // the most of others' wishes hung at once: the latest
+  fetch('/api/wishes').then((r) => (r.ok ? r.json() : [])).then((list) => {
+    if (!Array.isArray(list)) return;
+    const ours = new Set(mine.map((w) => w.id));
+    const group = scene.querySelector('.tree--wishes');
+    list.filter((w) => w && !ours.has(w.id)).slice(-ON_TREE).forEach((w) => {
+      const i = others.push(w) - 1;
+      group.insertAdjacentHTML('beforeend', hung(spot(), w.fill, `data-other="${i}"`));
+    });
+  }).catch(() => { /* offline, or no store: just this phone's */ });
 
   // Up it goes: the slip leaves the sheet and flies to its spot on the
   // tree, shrinking into a strip, which swings as it takes the weight
   form.querySelector('.wishform--yes').addEventListener('click', async () => {
-    const wish = { text: input.value.trim(), fill: paperFill, from: isAnon() ? 'Anonymous' : handle() };
+    const wish = { id: newId(), text: input.value.trim(), fill: paperFill, from: isAnon() ? 'Anonymous' : handle() };
     const i = mine.push(wish) - 1;
     keep.set('wishes', mine);
-    const spot = SPARE[i % SPARE.length];
+    // up for everyone to see
+    fetch('/api/wishes', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(wish) })
+      .catch(() => { /* offline: it stays on this phone's tree */ });
     const group = scene.querySelector('.tree--wishes');
-    group.insertAdjacentHTML('beforeend', hung(spot, wish.fill, `data-own="${i}"`));
+    group.insertAdjacentHTML('beforeend', hung(spot(), wish.fill, `data-own="${i}"`));
     const g = group.lastElementChild;
     g.classList.add('is-new');
     g.style.visibility = 'hidden';
