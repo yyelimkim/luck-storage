@@ -577,7 +577,7 @@ img { -webkit-user-drag: none; }
   line-height: normal;
   color: var(--system-black);
 }
-.fortune--title { font-size: 17px; }
+.fortune .fortune--title { font-family: var(--font-title); font-size: 20px; letter-spacing: var(--tracking-title); }  /* Cooper, as an opened card's name */
 .fortune .fortune--pill {
   width: max-content;
   margin: 0 auto;
