@@ -773,9 +773,10 @@ button.fortune--card:active { transform: scale(0.98); }
 .fortune--ritual-name {
   display: flex;
   align-items: center;
-  gap: 6px;
-  font-size: 17px;
+  gap: 4px;
+  font-size: 14px;  /* as the colour's name beside it */
 }
+.fortune--ritual-name img { width: 15px; height: 15px; }
 .fortune--ritual-name img { transform: rotate(180deg); }
 .fortune--ritual:hover .fortune--ritual-name img,
 .fortune--ritual:focus-visible .fortune--ritual-name img { animation: fortune-nudge-r 1s ease-in-out infinite; }
