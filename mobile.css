@@ -2669,7 +2669,12 @@ button.fortune--card:active { transform: scale(0.98); }
   pointer-events: none;
   transition: opacity 0.4s;
 }
-.is-preview.is-onboarding .demo-hint { opacity: 1; }
+.is-preview .demo-hint { opacity: 1; }
+/* onboarding up: fill in, skip, start over; in the app: bring it back */
+.demo-hint--app,
+.is-onboarding .demo-hint--ob { display: inline; }
+.demo-hint--ob,
+.is-onboarding .demo-hint--app { display: none; }
 .wish--hold { transition: opacity 0.3s; }
 
 /* --- The iPhone keyboard, in the desktop preview (keyboard.js) --------------

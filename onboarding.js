@@ -18,7 +18,16 @@
   // with the name they gave. Logging out brings the welcome back.
   let seen = false;
   try { seen = ['1', 'guest'].includes(localStorage.getItem('onboarded')); } catch (e) { /* no storage: show it */ }
-  if (seen) {
+  // Demo: O brings onboarding back on cue, even signed in (for this one
+  // load; your account and luck stay as they are)
+  let onCue = false;
+  try { onCue = sessionStorage.getItem('onboard-cue') === '1'; sessionStorage.removeItem('onboard-cue'); } catch (e) { /* no cue */ }
+  addEventListener('keydown', (e) => {
+    if ((e.key !== 'o' && e.key !== 'O') || (e.target.closest && e.target.closest('input, textarea'))) return;
+    try { sessionStorage.setItem('onboard-cue', '1'); } catch (e2) { return; }
+    location.reload();
+  });
+  if (seen && !onCue) {
     let name = '';
     try { name = localStorage.getItem('name') || ''; } catch (e) { /* the default name stays */ }
     const nameEl = document.querySelector('.profile--name');
