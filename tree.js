@@ -451,7 +451,7 @@
   addEventListener('keydown', (e) => { if (e.key === 'Escape') closeWish(); });
 
   // --- Writing a wish: write it on a slip, spend clovers, hang it up ---
-  const COST = 3;
+  const COST = 10;
   const MAX = 100;
   const mine = [];
   const form = document.getElementById('wishform');

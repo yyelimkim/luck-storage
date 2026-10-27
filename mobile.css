@@ -1994,12 +1994,44 @@ button.fortune--card:active { transform: scale(0.98); }
      beams of light through it (the tree's own light layer), under the grain */
   background:
     url("assets/system/paper-shade.png") 0 0 / 402px auto,
-    url("assets/wishtree/light.svg?v=2") center top / 100% auto no-repeat,
     url("assets/wish/write-bg.png") center / cover;
   opacity: 0;
   transition: opacity 0.4s;
 }
 .wishform.is-open .wishform--scrim { opacity: 1; }
+/* The forest's light over it: the tree's beams, warmer and stronger, each
+   swaying from the top left and breathing in its own time, and a sun glow */
+.wishform--light {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.6s;
+}
+.wishform.is-open .wishform--light { opacity: 1; }
+.wishform--light img {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: auto;
+  transform-origin: 0 0;
+  filter: sepia(0.8) saturate(2.2) hue-rotate(-12deg) brightness(1.7);  /* yellow */
+  will-change: transform, opacity;
+  animation: beam-swing 9s ease-in-out infinite alternate, beam-breathe 6s ease-in-out infinite alternate;
+}
+.wishform--light img + img { animation-duration: 12s, 8s; animation-delay: -5s, -3s; scale: 1.15; }
+.wishform--sun {
+  position: absolute;
+  left: -260px;
+  top: 40px;
+  width: 520px;
+  height: 520px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255, 244, 170, 0.38), rgba(255, 236, 150, 0.14) 40%, rgba(255, 230, 140, 0) 70%);
+  animation: sun-breathe 7s ease-in-out infinite alternate;
+}
 .is-writing .head { z-index: 61; }
 .is-writing .head--page,
 .is-writing .head--title,
@@ -2155,18 +2187,17 @@ button.fortune--card:active { transform: scale(0.98); }
   height: 51px;
   padding: 0;
   border-radius: 43px;
-  border: 0.771px solid var(--ui-white);
+  border: 0;  /* the system's main button: no line */
   background: var(--system-black);
   color: var(--system-white);
   font-size: 16px;  /* main buttons' text */
   cursor: pointer;
-  transition: background 0.2s, color 0.2s, border-color 0.2s, transform 0.15s;
+  transition: background 0.2s, color 0.2s, transform 0.15s;
 }
 .wishform--hang:active { transform: scale(0.97); }
 .wishform--hang-cost { display: inline-flex; align-items: center; gap: 2px; }
 .wishform--hang:disabled {
   background: var(--ui-white);
-  border-color: var(--ui-white);
   color: var(--dark-grey);
   cursor: default;
 }
