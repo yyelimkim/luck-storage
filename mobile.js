@@ -1277,24 +1277,48 @@ document.getElementById('fortune-ritual').addEventListener('click', goClaim);
   });
 })();
 
-// Sharing the open card: the phone's own share sheet (the card's name, what
-// it is, and the app's address), or else the address copied
+// Sharing the open card: a sheet of ways to send it (the card's name, what
+// it is, and the app's address); More hands it to the phone's own sheet
 (() => {
   const btn = document.getElementById('share');
+  const sheet = document.getElementById('sharesheet');
   const toast = document.getElementById('m-toast');
-  if (!btn) return;
-  btn.addEventListener('click', async () => {
+  if (!btn || !sheet) return;
+  const more = sheet.querySelector('[data-to="more"]');
+  if (!navigator.share) more.remove();
+  let msg = null;
+  const open = () => { sheet.classList.add('is-open'); sheet.setAttribute('aria-hidden', 'false'); };
+  const close = () => { sheet.classList.remove('is-open'); sheet.setAttribute('aria-hidden', 'true'); };
+  btn.addEventListener('click', () => {
     if (!flip) return;
     const name = IMAGES[cards.indexOf(flip.card)];
     const title = cardName(name);
-    const url = `${location.origin}${location.pathname}`;
-    const text = `${title}: ${(CARD_TEXT[name] || {}).about || 'a little luck, every day.'}`;
-    if (navigator.share) {
-      try { await navigator.share({ title: `${title} · The Luck Corner`, text, url }); } catch (e) { /* closed without sharing */ }
-      return;
-    }
-    try { await navigator.clipboard.writeText(`${text} ${url}`); } catch (e) { return; }
-    toast.classList.add('is-shown');
-    setTimeout(() => toast.classList.remove('is-shown'), 1800);
+    msg = {
+      title: `${title} · The Luck Corner`,
+      text: `${title}: ${(CARD_TEXT[name] || {}).about || 'a little luck, every day.'}`,
+      url: `${location.origin}${location.pathname}`,
+    };
+    open();
   });
+  sheet.querySelector('.filter--scrim').addEventListener('click', close);
+  sheet.querySelector('.filter--close').addEventListener('click', close);
+  addEventListener('keydown', (e) => { if (e.key === 'Escape') close(); });
+  sheet.querySelectorAll('[data-to]').forEach((o) => o.addEventListener('click', async () => {
+    if (!msg) return;
+    const { title, text, url } = msg;
+    const both = encodeURIComponent(`${text} ${url}`);
+    close();
+    switch (o.dataset.to) {
+      case 'copy':
+        try { await navigator.clipboard.writeText(`${text} ${url}`); } catch (e) { return; }
+        toast.classList.add('is-shown');
+        setTimeout(() => toast.classList.remove('is-shown'), 1800);
+        break;
+      case 'sms': location.href = `sms:?&body=${both}`; break;
+      case 'mail': location.href = `mailto:?subject=${encodeURIComponent(title)}&body=${both}`; break;
+      case 'x': window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}`, '_blank', 'noopener'); break;
+      case 'facebook': window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`, '_blank', 'noopener'); break;
+      case 'more': try { await navigator.share({ title, text, url }); } catch (e) { /* closed without sharing */ } break;
+    }
+  }));
 })();

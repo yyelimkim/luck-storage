@@ -11,7 +11,7 @@
   <link rel="icon" href="favicon-32.png" sizes="32x32" type="image/png">
   <link rel="apple-touch-icon" href="apple-touch-icon.png">
   <link rel="stylesheet" href="design-system.css?v=9">
-  <link rel="stylesheet" href="mobile.css?v=226">
+  <link rel="stylesheet" href="mobile.css?v=227">
 </head>
 <body>
   <!-- iPhone 17 screen (Figma 97:630 at rest, 97:730 while dialing), laid out at
@@ -296,9 +296,29 @@
     </button>
     <!-- Share the open card: across from the back arrow, in its style -->
     <button type="button" class="m-back m-share" id="share" aria-label="Share this card">
-      <img src="assets/system/share.svg?v=1" width="28" height="28" alt="">
+      <img src="assets/system/share.svg?v=2" width="28" height="28" alt="">
     </button>
     <p class="m-toast" id="m-toast" role="status">Link copied</p>
+    <!-- Share options for the open card, in the filter sheet's style -->
+    <div class="filter sharesheet" id="sharesheet" aria-hidden="true">
+      <div class="filter--scrim"></div>
+      <div class="filter--sheet" role="dialog" aria-label="Share">
+        <div class="filter--bar">
+          <button type="button" class="filter--close" aria-label="Close">
+            <img src="assets/filter/close.svg" width="26" height="26" alt="">
+          </button>
+        </div>
+        <p class="filter--label">Share</p>
+        <div class="filter--options" id="share-options">
+          <button type="button" class="filter--opt" data-to="copy"><span class="sharesheet--icon"><img src="assets/share/link.svg" alt=""></span><span class="filter--name">Copy link</span></button>
+          <button type="button" class="filter--opt" data-to="sms"><span class="sharesheet--icon"><img src="assets/share/message.svg" alt=""></span><span class="filter--name">Messages</span></button>
+          <button type="button" class="filter--opt" data-to="mail"><span class="sharesheet--icon"><img src="assets/share/mail.svg" alt=""></span><span class="filter--name">Email</span></button>
+          <button type="button" class="filter--opt" data-to="x"><span class="sharesheet--icon"><img src="assets/share/x.svg" alt=""></span><span class="filter--name">X</span></button>
+          <button type="button" class="filter--opt" data-to="facebook"><span class="sharesheet--icon"><img src="assets/share/facebook.svg" alt=""></span><span class="filter--name">Facebook</span></button>
+          <button type="button" class="filter--opt" data-to="more"><span class="sharesheet--icon"><img src="assets/share/more.svg" alt=""></span><span class="filter--name">More</span></button>
+        </div>
+      </div>
+    </div>
     <!-- The opened card's name, beside the way back -->
     <p class="m-title" id="title"></p>
 
@@ -377,7 +397,7 @@
 
   <script src="cards.js?v=186"></script>
   <script src="sounds.js?v=28"></script>
-  <script src="mobile.js?v=119"></script>
+  <script src="mobile.js?v=120"></script>
   <script src="tree.js?v=51"></script>
   <script src="splash.js?v=25"></script>
   <script src="onboarding.js?v=13"></script>
