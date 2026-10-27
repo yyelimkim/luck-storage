@@ -2032,6 +2032,7 @@ button.fortune--card:active { transform: scale(0.98); }
   inset: 0;
   overflow: hidden;
   pointer-events: none;
+  container-type: inline-size;
   opacity: 0;
   transition: opacity 0.6s;
 }
@@ -2040,11 +2041,11 @@ button.fortune--card:active { transform: scale(0.98); }
   /* bigger than the screen all round, so as they sway no edge of them
      ever comes into view */
   position: absolute;
-  left: -35%;
-  top: -20%;
-  width: 170%;
+  left: -111.1%;  /* the drawing's frame is wider than its beams, so none is cut */
+  top: calc(-20% - 63.4cqw);
+  width: 397.5%;
   height: auto;
-  transform-origin: 20% 12%;
+  transform-origin: 27.7% 20.9%;
   filter: sepia(0.8) saturate(2.4) hue-rotate(-12deg) brightness(2.3);  /* yellow, and strong */
   will-change: transform, opacity;
   animation: beam-swing 9s ease-in-out infinite alternate, wish-beam 6s ease-in-out infinite alternate;
@@ -2068,7 +2069,7 @@ button.fortune--card:active { transform: scale(0.98); }
   background: radial-gradient(circle, rgba(255, 244, 170, 0.5), rgba(255, 236, 150, 0.2) 40%, rgba(255, 230, 140, 0) 70%);
   animation: sun-breathe 7s ease-in-out infinite alternate;
 }
-.is-writing .head { z-index: 61; }
+.is-writing .head { z-index: 61; pointer-events: none; }  /* shown over it, but taps go through to the back arrow */
 /* the count, writing: no pill, in white on the dark green, on the margin */
 .is-writing .head--count { padding: 0; background: none; filter: none; color: var(--system-white); }
 .is-writing .head--count img { filter: brightness(0) invert(1); }
@@ -2295,7 +2296,11 @@ button.fortune--card:active { transform: scale(0.98); }
   cursor: pointer;
 }
 .wishform--no { background: var(--ui-white); }
+/* not enough clovers: one button, to close it */
+.wishform.is-short .wishform--choices { grid-template-columns: 1fr; }
+.wishform.is-short .wishform--yes { display: none; }
 .wishform .wishform--yes { background: var(--system-black); color: var(--system-white); }
+.wishform.is-short .wishform--no { background: var(--system-black); color: var(--system-white); border-color: var(--system-black); }  /* the one way out, so the main button */
 .wishform--choices button:focus { outline: none; }
 .wishform--choices button:focus-visible { box-shadow: 0 0 0 3px var(--ui-white), 0 0 0 4.5px var(--system-black); }  /* the system's double line */
 /* The slip on its way up to the tree */

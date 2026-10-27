@@ -464,6 +464,7 @@
   const balance = document.getElementById('wish-balance');
   const confirm = form.querySelector('.wishform--confirm');
   const confirmText = document.getElementById('wish-confirm-text');
+  const confirmTitle = document.getElementById('wish-confirm-title');
   const toast = document.getElementById('wish-toast');
   const paperFill = C.white;  // the slips in the tree are all white
   const by = document.getElementById('wish-by');
@@ -490,12 +491,9 @@
   function refresh() {
     const n = input.value.trim().length;
     chars.textContent = `${input.value.length}/${MAX}`;
-    const enough = luck >= COST;
-    hang.disabled = !enough || n < 3;
-    hangLabel.textContent = enough ? 'Hang it for' : 'Not enough clovers';
-    hang.classList.toggle('is-short', !enough);
-    // (the count's in the header; only a word when it's not enough)
-    balance.textContent = enough ? '' : `You have ${plural(luck)}. Claim luck from a card to earn more.`;
+    // ready once there's a wish; whether there are clovers enough is said
+    // when you try to hang it
+    hang.disabled = n < 3;
   }
   // the slip at its own size, or as big as fits the room for it
   const room = form.querySelector('.wishform--room');
@@ -535,9 +533,15 @@
   sheet.addEventListener('submit', (e) => {
     e.preventDefault();
     if (hang.disabled) return;
-    confirmText.textContent = `This uses ${plural(COST)}. You’ll have ${luck - COST} left.`;
+    const enough = luck >= COST;
+    confirmTitle.textContent = enough ? 'Hang your wish?' : 'Not enough clovers';
+    confirmText.textContent = enough
+      ? `This uses ${plural(COST)}. You’ll have ${luck - COST} left.`
+      : `You have ${plural(luck)}. Claim luck from a card to earn more.`;
+    form.classList.toggle('is-short', !enough);
+    form.querySelector('.wishform--no').textContent = enough ? 'Not yet' : 'Got it';
     form.classList.add('is-confirming');
-    form.querySelector('.wishform--yes').focus({ preventScroll: true });
+    form.querySelector(enough ? '.wishform--yes' : '.wishform--no').focus({ preventScroll: true });
   });
   form.querySelector('.wishform--no').addEventListener('click', () => {
     form.classList.remove('is-confirming');
