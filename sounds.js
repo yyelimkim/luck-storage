@@ -4,11 +4,35 @@
 // swipe calls unlock() as the finger goes down, before its swoosh.
 const Sounds = (() => {
   let ctx = null;
+  let master = null;
+  // Settings' "Sound effects": off, everything plays into silence (kept in
+  // this browser, so the ritual pages hear it too)
+  const muted = () => { try { return localStorage.getItem('sound') === 'off'; } catch (e) { return false; } };
+  // and how loud, 0 to 1 (Settings' slider)
+  const volume = () => { try { const v = Number(localStorage.getItem('volume')); return localStorage.getItem('volume') == null || Number.isNaN(v) ? 1 : Math.min(1, Math.max(0, v)); } catch (e) { return 1; } };
+  const level = () => (muted() ? 0 : volume());
   const audio = () => {
-    if (!ctx) ctx = new (window.AudioContext || window.webkitAudioContext)();
+    if (!ctx) {
+      ctx = new (window.AudioContext || window.webkitAudioContext)();
+      // every sound goes through one volume, so off is one switch
+      master = ctx.createGain();
+      master.gain.value = level();
+      master.connect(ctx.destination);
+      Object.defineProperty(ctx, 'destination', { value: master });
+    }
     if (ctx.state === 'suspended') ctx.resume();
     return ctx;
   };
+  function setMuted(off) {
+    try { localStorage.setItem('sound', off ? 'off' : 'on'); } catch (e) { /* this visit only */ }
+    if (master) master.gain.value = level();
+  }
+  function setVolume(v) {
+    try { localStorage.setItem('volume', String(v)); } catch (e) { /* this visit only */ }
+    if (master) master.gain.value = level();
+  }
+  // switched on the app's page, the ritual pages follow
+  addEventListener('storage', (e) => { if ((e.key === 'sound' || e.key === 'volume') && master) master.gain.value = level(); });
   // A burst of white noise, length s seconds
   const noise = (a, s) => {
     const buf = a.createBuffer(1, Math.ceil(a.sampleRate * s), a.sampleRate);
@@ -667,7 +691,7 @@ const Sounds = (() => {
     air.start(t + 0.02);
   }
 
-  return { hit, swoosh, flip, claim, chime, stone, tap, eat, tick, rub, shimmer, absorb, crack, surge, rain, fanfare, blow, capture, pop, oink, coin, pluck, unlock };
+  return { hit, swoosh, flip, claim, chime, stone, tap, eat, tick, rub, shimmer, absorb, crack, surge, rain, fanfare, blow, capture, pop, oink, coin, pluck, unlock, muted, setMuted, volume, setVolume };
 })();
 
 // Every button, tab and link ticks when pressed (anything with its own

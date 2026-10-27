@@ -14,17 +14,11 @@
   const ob = document.getElementById('ob');
   if (!ob) return;
   const root = document.documentElement;
-  // Returning (this browser has been through it before): straight to Home,
-  // with the name they gave. ?onboarding brings it back on cue (and O, in
-  // the desktop preview, reloads with it).
-  const ON_CUE = /[?&]onboarding(?:[=&?]|$)/.test(location.search);
+  // Signed in, or in as a guest, before (in this browser): straight to Home,
+  // with the name they gave. Logging out brings the welcome back.
   let seen = false;
-  try { seen = localStorage.getItem('onboarded') === '1'; } catch (e) { /* no storage: show it */ }
-  addEventListener('keydown', (e) => {
-    if ((e.key === 'o' || e.key === 'O') && root.classList.contains('is-preview') && !root.classList.contains('is-onboarding')
-      && !(e.target.closest && e.target.closest('input, textarea'))) location.search = '?onboarding';
-  });
-  if (seen && !ON_CUE) {
+  try { seen = ['1', 'guest'].includes(localStorage.getItem('onboarded')); } catch (e) { /* no storage: show it */ }
+  if (seen) {
     let name = '';
     try { name = localStorage.getItem('name') || ''; } catch (e) { /* the default name stays */ }
     const nameEl = document.querySelector('.profile--name');
@@ -35,7 +29,7 @@
   const pages = Object.fromEntries([...ob.querySelectorAll('.ob--page')].map((p) => [p.dataset.page, p]));
   const fill = ob.querySelector('.ob--fill');
   const bar = ob.querySelector('.ob--bar');
-  const DEMO = { email: 'yelim@luckcorner.app', password: 'fourleaf8', name: 'Yelim', birthday: '2006-04-15' };
+  const DEMO = { email: 'yelim@luckcorner.app', password: 'fourleaf8', username: 'lucky4eva', name: 'Yelim', birthday: '2006-04-15' };
 
   let mode = 'signup';  // or 'login'
   // The accounts made on this phone, by email; and who's signing up or in
@@ -47,7 +41,15 @@
     return [...new Uint8Array(bytes)].map((b) => b.toString(16).padStart(2, '0')).join('');
   }
   let path = [];        // the steps taken, for the way back
-  const STEPS = { signup: ['account', 'name', 'birthday'], login: ['account'] };
+  const STEPS = { signup: ['account', 'verify', 'name', 'birthday'], login: ['account'] };
+  // Asking the server (api/): null when it can't say (offline, or not set up)
+  async function ask(url, opts) {
+    try {
+      const r = await fetch(url, opts);
+      if ([404, 405, 501, 503].includes(r.status)) return null;  // no such server, or not set up
+      return { status: r.status, ...(await r.json().catch(() => ({}))) };
+    } catch (e) { return null; }
+  }
 
   root.classList.add('is-onboarding');
   // the count starts empty: the first clovers come in at the end (shown
@@ -77,6 +79,7 @@
     bar.style.visibility = mode === 'login' ? 'hidden' : '';
     fill.style.setProperty('--done', `${((i + 1) / steps.length) * 100}%`);
     bar.setAttribute('aria-valuenow', String(i + 1));
+    bar.setAttribute('aria-valuemax', String(steps.length));
     // the first field ready to type in (not on a phone, where it'd pop the keyboard)
     const input = next.querySelector('input');
     if (input && root.classList.contains('is-preview')) setTimeout(() => input.focus({ preventScroll: true }), 350);
@@ -121,28 +124,45 @@
     if (!b) return;
     const to = b.dataset.go;
     if (to === 'signup' || to === 'login') { setMode(to); go('account'); }
-    if (to === 'apple') { fillIn(pages.account); account(pages.account).then((ok) => ok && next('account')); }
+    if (to === 'apple') { fillIn(pages.account); pages.account.requestSubmit(); }
     if (to === 'home') finish('start');
+    if (to === 'guest') asGuest();
   });
 
   // --- Each form: its button wakes once it's filled in properly
   const valid = {
     account: (f) => /\S+@\S+\.\S+/.test(f.elements.email.value) && f.elements.password.value.length >= (mode === 'login' ? 1 : 8),
-    name: (f) => f.elements.name.value.trim().length > 0,  // (f.name is the form's own name)
+    name: (f) => f.elements.name.value.trim().length > 0 && userFree === f.elements.username.value.trim().toLowerCase(),  // (f.name is the form's own name)
+    verify: (f) => /^\d{6}$/.test(f.elements.code.value.trim()),
     birthday: (f) => !!f.elements.birthday.value,
   };
   function check(page) {
     const btn = page.querySelector('[type="submit"]');
     if (btn) btn.disabled = !valid[page.dataset.page](page);
   }
-  ['account', 'name', 'birthday'].forEach((step) => {
+  ['account', 'verify', 'name', 'birthday'].forEach((step) => {
     const f = pages[step];
     f.addEventListener('input', () => { check(f); if (step === 'account') say(''); });
     f.addEventListener('submit', async (e) => {
       e.preventDefault();
       if (!valid[step](f)) return;
-      if (step === 'account' && !(await account(f))) return;
-      next(step);
+      const btn = f.querySelector('[type="submit"]');
+      btn.disabled = true;
+      try {
+        if (step === 'account') {
+          if (!(await account(f))) return;
+          if (mode === 'signup') {
+            // a code to the email, to show it's yours (straight on to your
+            // name if verifying isn't set up)
+            const sent = await sendCode();
+            if (sent === false) return;
+            go(sent ? 'verify' : 'name');
+            return;
+          }
+        }
+        if (step === 'verify' && !(await verifyCode(f))) return;
+        next(step);
+      } finally { check(f); }
     });
   });
 
@@ -151,7 +171,86 @@
   note.className = 'ob--note';
   note.setAttribute('role', 'alert');
   password.closest('.ob--field').after(note);
-  function say(text) { note.textContent = text; }
+  // (with a way to log in instead, when the email's already got an account)
+  function say(text, loginLink = false) {
+    note.textContent = text;
+    if (!loginLink) return;
+    const b = document.createElement('button');
+    b.type = 'button';
+    b.textContent = 'Log in';
+    b.addEventListener('click', () => setMode('login'));
+    note.append(' ', b);
+  }
+  const TAKEN = 'There’s already an account with this email.';
+  // is the email taken? this phone's accounts, then everyone's
+  async function emailTaken(email) {
+    if (accounts()[email] || email === DEMO.email) return true;
+    const r = await ask(`/api/accounts?email=${encodeURIComponent(email)}`);
+    return !!(r && r.taken);
+  }
+  // said as you type it, once it looks like an email
+  let emailTimer = 0;
+  pages.account.elements.email.addEventListener('input', () => {
+    clearTimeout(emailTimer);
+    if (mode !== 'signup') return;
+    const email = pages.account.elements.email.value.trim().toLowerCase();
+    if (!/\S+@\S+\.\S+/.test(email)) return;
+    emailTimer = setTimeout(async () => {
+      if (await emailTaken(email) && mode === 'signup' && pages.account.elements.email.value.trim().toLowerCase() === email) say(TAKEN, true);
+    }, 450);
+  });
+
+  // --- Verify: a code to your email
+  const vNote = document.getElementById('ob-verify-note');
+  async function sendCode() {
+    const email = pending.email;
+    document.getElementById('ob-verify-sub').textContent = `We sent a 6-digit code to ${email}.`;
+    const r = await ask('/api/verify', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email }) });
+    if (!r) return null;  // not set up: no verifying
+    if (r.status === 200) { vNote.textContent = ''; pages.verify.elements.code.value = ''; return true; }
+    say(r.error || 'The code couldn’t be sent. Try again.');
+    return false;
+  }
+  async function verifyCode(f) {
+    const r = await ask('/api/verify', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email: pending.email, code: f.elements.code.value.trim() }) });
+    if (r && r.ok) { vNote.textContent = ''; return true; }
+    vNote.textContent = (r && r.error) || 'That code couldn’t be checked. Try again.';
+    return false;
+  }
+  pages.verify.elements.code.addEventListener('input', () => { vNote.textContent = ''; });
+  document.getElementById('ob-resend').addEventListener('click', async () => {
+    const r = await ask('/api/verify', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email: pending.email }) });
+    vNote.classList.toggle('is-ok', !!(r && r.status === 200));
+    vNote.textContent = r && r.status === 200 ? 'A new code is on its way.' : ((r && r.error) || 'The code couldn’t be sent. Try again.');
+  });
+  pages.verify.elements.code.addEventListener('input', () => vNote.classList.remove('is-ok'));
+
+  // --- Username: 3 to 20 of a-z, 0-9, . and _; checked as you type that
+  // no one has it (on this phone, then everyone)
+  const uNote = document.getElementById('ob-user-note');
+  const uField = pages.name.elements.username;
+  let userFree = null;  // the name last found free
+  let userTimer = 0;
+  function sayUser(text, ok = false) { uNote.textContent = text; uNote.classList.toggle('is-ok', ok); }
+  uField.addEventListener('input', () => {
+    clearTimeout(userTimer);
+    const name = uField.value.trim().toLowerCase();
+    if (uField.value !== uField.value.toLowerCase()) uField.value = uField.value.toLowerCase();
+    userFree = null;
+    check(pages.name);
+    if (!name) { sayUser(''); return; }
+    if (!/^[a-z0-9._]{3,20}$/.test(name)) { sayUser('3 to 20 letters, numbers, . or _'); return; }
+    sayUser('Checking…', true);
+    userTimer = setTimeout(async () => {
+      const here = Object.values(accounts()).some((a) => a.username === name) || name === DEMO.username;
+      const r = here ? null : await ask(`/api/accounts?username=${encodeURIComponent(name)}`);
+      if (uField.value.trim().toLowerCase() !== name) return;  // typed on since
+      if (here || (r && r.taken)) { sayUser(`@${name} is taken`); return; }
+      userFree = name;
+      sayUser(`@${name} is available`, true);
+      check(pages.name);
+    }, 400);
+  });
 
   // Signing up: the email's not taken here. Logging in: the account's here
   // and the password matches (or it's the demo's)
@@ -160,15 +259,15 @@
     const pw = await hash(f.elements.password.value);
     const acc = accounts()[email];
     if (mode === 'signup') {
-      if (acc) { say('There’s already an account with this email. Log in instead.'); return false; }
+      if (await emailTaken(email)) { say(TAKEN, true); return false; }
       pending = { email, pw };
       return true;
     }
     if (acc) {
       if (acc.pw !== pw) { say('That password doesn’t match this account.'); return false; }
-      who = { name: acc.name, birthday: acc.birthday };
+      who = { name: acc.name, username: acc.username, birthday: acc.birthday };
     } else if (email === DEMO.email) {
-      who = { name: DEMO.name, birthday: DEMO.birthday };
+      who = { name: DEMO.name, username: DEMO.username, birthday: DEMO.birthday };
     } else {
       say('No account with that email on this phone yet.');
       return false;
@@ -182,6 +281,25 @@
     go(i < steps.length - 1 ? steps[i + 1] : 'done');
   }
 
+  // --- In as a guest: no account, straight to Home with the first clovers;
+  // Settings has the way to sign up or log in later
+  function asGuest() {
+    const nameEl = document.querySelector('.profile--name');
+    if (nameEl && nameEl.firstChild) nameEl.firstChild.textContent = 'Guest ';
+    try {
+      localStorage.setItem('onboarded', 'guest');
+      localStorage.setItem('name', 'Guest');
+      localStorage.removeItem('email');
+      localStorage.removeItem('username');
+    } catch (e) { /* this visit only */ }
+    luck = START_LUCK;
+    countNum.textContent = String(START_LUCK);
+    saveLuck();
+    ob.classList.add('is-done');
+    root.classList.remove('is-onboarding');
+    setTimeout(() => ob.remove(), 600);
+  }
+
   // --- All set: your name on the profile, your birthday for the fortune
   function finish(how) {
     const name = (mode === 'login' ? who?.name : pages.name.elements.name.value.trim()) || DEMO.name;
@@ -193,10 +311,14 @@
       try { localStorage.setItem('birthday', born); } catch (e) { /* kept for this visit only */ }
     }
     // a new account is kept on this phone, to log back into
+    const username = mode === 'login' ? who?.username : (userFree || DEMO.username);
     if (mode === 'signup' && pending) {
-      store.set('accounts', { ...accounts(), [pending.email]: { pw: pending.pw, name, birthday: born || null } });
+      store.set('accounts', { ...accounts(), [pending.email]: { pw: pending.pw, username, name, birthday: born || null } });
       store.set('email', pending.email);
+      // and the username and email taken, for everyone
+      ask('/api/accounts', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ username, email: pending.email }) });
     }
+    try { if (username) localStorage.setItem('username', username); } catch (e) { /* this visit only */ }
     // remembered: next time, straight to Home
     try {
       localStorage.setItem('onboarded', '1');
@@ -233,6 +355,8 @@
     page.querySelectorAll('input').forEach((input) => {
       if (DEMO[input.name] != null) input.value = DEMO[input.name];
     });
+    // the demo's username is its own, so free for it
+    if (page === pages.name) { userFree = DEMO.username; sayUser(`@${DEMO.username} is available`, true); }
     if (page.querySelector('[type="submit"]')) check(page);
   }
   addEventListener('keydown', (e) => {

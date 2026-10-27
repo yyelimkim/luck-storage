@@ -492,11 +492,11 @@
   const paperFill = C.white;  // the slips in the tree are all white
   const by = document.getElementById('wish-by');
   const anon = document.getElementById('wish-anon');
-  // signed with your handle (your name, as one word), or anonymous; which
+  // signed with your handle (your username, or your name as one word), or anonymous; which
   // you chose last time is kept
   const handle = () => {
     let name = '';
-    try { name = localStorage.getItem('name') || ''; } catch (e) { /* none kept */ }
+    try { name = localStorage.getItem('username') || localStorage.getItem('name') || ''; } catch (e) { /* none kept */ }
     name = name || document.querySelector('.profile--name-text')?.textContent || 'you';
     return `@${name.trim().toLowerCase().replace(/\s+/g, '')}`;
   };

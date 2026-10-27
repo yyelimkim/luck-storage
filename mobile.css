@@ -2532,6 +2532,9 @@ button.fortune--card:active { transform: scale(0.98); }
 .ob--field input[type="date"] { line-height: 49px; }
 /* a word under the password when the account doesn't check out */
 .ob--note { margin: -6px 0 0; min-height: 18px; font-size: 14px; color: var(--hot-pink); }
+.ob--note.is-ok { color: var(--system-black); }  /* a name that's free */
+.ob--note + .ob--field { margin-top: 10px; }
+.ob--note button { padding: 0; border: 0; background: none; font: inherit; letter-spacing: inherit; color: inherit; text-decoration: underline; text-underline-offset: 3px; cursor: pointer; }
 
 .ob--actions {
   display: flex;
@@ -2740,3 +2743,159 @@ button.fortune--card:active { transform: scale(0.98); }
 .ob--page { transition: opacity 0.35s, translate 0.45s cubic-bezier(0.3, 0.8, 0.2, 1), visibility 0s 0.45s, padding-bottom 0.38s cubic-bezier(0.32, 0.72, 0, 1); }
 /* From onboarding's light screen the clover starts dark, as it's drawn there */
 .clover-fly.is-dark img:first-child { filter: brightness(0.16); }
+
+/* Settings (the profile's gear): slides in over the profile as Daily
+   Fortune does; a grouped list, each group an outlined UI White card
+   (the filter tiles' line and corner), rows split by a System White rule */
+.settings {
+  --top: 0px;
+  position: absolute;
+  inset: 0;
+  z-index: 65;
+  overflow: hidden;
+  background: var(--system-white);
+  font-family: var(--font-display);
+  letter-spacing: var(--tracking);
+  color: var(--system-black);
+  transform: translateX(100%);
+  visibility: hidden;
+  transition: transform 0.45s cubic-bezier(0.32, 0.72, 0, 1), visibility 0s 0.45s;
+}
+.is-preview .settings { --top: 44px; }
+.settings.is-open { transform: none; visibility: visible; transition: transform 0.45s cubic-bezier(0.32, 0.72, 0, 1); }
+.settings--bar {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: calc(var(--top) + 10px);
+  height: 44px;
+  display: grid;
+  place-items: center;
+  z-index: 3;
+}
+.settings--back { position: absolute; left: 8px; top: 0; padding: 8px; border: 0; background: none; cursor: pointer; }
+.settings--back img { display: block; }
+.settings p { margin: 0; }
+.settings--title { margin: 0; font-family: var(--font-title); font-weight: 400; font-size: 20px; letter-spacing: var(--tracking-title); }  /* Cooper, as Daily Fortune's */
+.settings--body {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: calc(var(--top) + 64px);
+  bottom: 0;
+  overflow-y: auto;
+  padding: 8px 16px 48px;
+  scrollbar-width: none;
+}
+.settings--body::-webkit-scrollbar { display: none; }
+/* You, at the top: your name in Cooper, your email under it */
+.settings--me { padding: 6px 4px 4px; }
+.settings--me-name { font-family: var(--font-title); font-size: 27px; letter-spacing: var(--tracking-title); }
+.settings--me-email { margin-top: 4px !important; font-size: 14px; }
+.settings--me-email:empty { display: none; }
+.settings--label { margin: 26px 4px 8px !important; font-size: 14px; }
+.settings--group {
+  overflow: hidden;
+  border: 0.771px solid var(--system-black);
+  border-radius: 15px;
+  background: var(--ui-white);
+}
+.settings--row {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  width: 100%;
+  min-height: 54px;
+  padding: 0 16px;
+  box-sizing: border-box;
+  border: 0;
+  background: none;
+  font-family: var(--font-display);
+  font-size: 16px;
+  letter-spacing: var(--tracking);
+  color: var(--system-black);
+  text-align: left;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: background-color 0.15s;
+}
+div.settings--row { cursor: default; }
+.settings--row[hidden] { display: none; }
+.settings--row + .settings--row { border-top: 1px solid var(--system-white); }
+button.settings--row:active,
+label.settings--row:active { background: var(--system-white); }
+.settings--row:focus-visible { outline: 1.5px solid var(--system-black); outline-offset: -3px; }
+.settings--value { margin-left: auto; }
+.settings--go { width: 13.3333px; height: 7.33333px; rotate: -90deg; opacity: 0.7; }
+.settings--row.is-danger { color: var(--hot-pink); }
+/* Name: typed into straight from the row */
+.settings--field {
+  flex: 1;
+  min-width: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  font: inherit;
+  letter-spacing: inherit;
+  color: inherit;
+  text-align: right;
+  outline: none;
+}
+/* Birthday: the date shown as words, the phone's own picker over it */
+.settings--date { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer; }
+.settings--date::-webkit-calendar-picker-indicator { position: absolute; inset: 0; width: 100%; height: 100%; cursor: pointer; }
+/* Delete account: the wish form's dialog */
+.settings--confirm {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  display: grid;
+  place-items: center;
+  padding: 0 16px;
+  background: rgba(39, 39, 39, 0.4);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s, visibility 0s 0.3s;
+}
+.settings.is-confirming .settings--confirm { opacity: 1; visibility: visible; transition: opacity 0.3s; }
+.settings--confirm .wishform--card { transform: scale(0.94); }
+.settings.is-confirming .wishform--card { transform: none; }
+.settings .wishform--yes { background: var(--system-black); color: var(--system-white); }
+/* Volume: quiet and loud at the ends; the track System White in the line,
+   filled System Black to the knob (the switch's knob); faded with sound off */
+.settings--volume { gap: 12px; cursor: default; }
+.settings--volume img { flex: none; display: block; }
+.settings--volume input {
+  --v: 100%;
+  flex: 1;
+  min-width: 0;
+  height: 31px;
+  margin: 0;
+  background: none;
+  -webkit-appearance: none;
+  appearance: none;
+  cursor: pointer;
+}
+.settings--volume input::-webkit-slider-runnable-track {
+  height: 6px;
+  border-radius: 999px;
+  border: 0.771px solid var(--system-black);
+  background: linear-gradient(to right, var(--system-black) var(--v), var(--system-white) var(--v));
+}
+.settings--volume input::-moz-range-track { height: 6px; border-radius: 999px; border: 0.771px solid var(--system-black); background: var(--system-white); }
+.settings--volume input::-moz-range-progress { height: 6px; border-radius: 999px; background: var(--system-black); }
+.settings--volume input::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 25px;
+  height: 25px;
+  margin-top: -10.5px;
+  border-radius: 50%;
+  border: 0.771px solid var(--system-black);
+  background: var(--ui-white);
+}
+.settings--volume input::-moz-range-thumb { width: 25px; height: 25px; border-radius: 50%; border: 0.771px solid var(--system-black); background: var(--ui-white); }
+.settings--volume input:focus { outline: none; }
+.settings--volume input:focus-visible::-webkit-slider-thumb { box-shadow: 0 0 0 3px var(--ui-white), 0 0 0 4.5px var(--system-black); }
+.settings--volume.is-off { opacity: 0.4; }

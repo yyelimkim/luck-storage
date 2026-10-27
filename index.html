@@ -11,7 +11,7 @@
   <link rel="icon" href="favicon-32.png" sizes="32x32" type="image/png">
   <link rel="apple-touch-icon" href="apple-touch-icon.png">
   <link rel="stylesheet" href="design-system.css?v=9">
-  <link rel="stylesheet" href="mobile.css?v=230">
+  <link rel="stylesheet" href="mobile.css?v=233">
 </head>
 <body>
   <!-- iPhone 17 screen (Figma 97:630 at rest, 97:730 while dialing), laid out at
@@ -251,6 +251,79 @@
       </div>
     </section>
 
+    <!-- Settings (the profile's gear): your details, sound, and the account,
+         as a grouped list in the design system's line and type -->
+    <section class="settings" id="settings" aria-label="Settings" aria-hidden="true">
+      <div class="settings--bar">
+        <button type="button" class="settings--back" aria-label="Back">
+          <img src="assets/fortune/back.svg" width="28" height="28" alt="">
+        </button>
+        <h2 class="settings--title">Settings</h2>
+      </div>
+      <div class="settings--body">
+        <div class="settings--me">
+          <p class="settings--me-name" id="set-me-name"></p>
+          <p class="settings--me-email" id="set-me-email"></p>
+        </div>
+
+        <p class="settings--label">Profile</p>
+        <div class="settings--group">
+          <label class="settings--row">
+            <span>Name</span>
+            <input class="settings--field" id="set-name" type="text" maxlength="20" autocomplete="off" spellcheck="false">
+          </label>
+          <label class="settings--row">
+            <span>Birthday</span>
+            <span class="settings--value" id="set-birthday-text"></span>
+            <input class="settings--date" id="set-birthday" type="date" aria-label="Birthday">
+          </label>
+        </div>
+
+        <p class="settings--label">Preferences</p>
+        <div class="settings--group">
+          <div class="settings--row">
+            <span id="set-sound-label">Sound effects</span>
+            <button type="button" class="wishform--switch" id="set-sound" role="switch" aria-checked="true" aria-labelledby="set-sound-label"><span></span></button>
+          </div>
+          <div class="settings--row settings--volume">
+            <img src="assets/settings/quiet.svg" width="20" height="20" alt="">
+            <input type="range" id="set-volume" min="0" max="100" step="1" value="100" aria-label="Volume">
+            <img src="assets/settings/loud.svg" width="20" height="20" alt="">
+          </div>
+        </div>
+
+        <p class="settings--label">About</p>
+        <div class="settings--group">
+          <button type="button" class="settings--row" id="set-share">
+            <span>Share The Luck Corner</span>
+            <img class="settings--go" src="assets/mobile/chevron.svg" width="13.3333" height="7.33333" alt="">
+          </button>
+          <div class="settings--row">
+            <span>Version</span>
+            <span class="settings--value">1.0</span>
+          </div>
+        </div>
+
+        <p class="settings--label">Account</p>
+        <div class="settings--group">
+          <button type="button" class="settings--row" id="set-join"><span>Sign up or log in</span><img class="settings--go" src="assets/mobile/chevron.svg" width="13.3333" height="7.33333" alt=""></button>
+          <button type="button" class="settings--row" id="set-logout"><span>Log out</span></button>
+          <button type="button" class="settings--row is-danger" id="set-delete"><span>Delete account</span></button>
+        </div>
+      </div>
+      <!-- Delete account: are you sure? -->
+      <div class="settings--confirm" role="alertdialog" aria-labelledby="set-confirm-q" aria-describedby="set-confirm-a">
+        <div class="wishform--card">
+          <p class="wishform--q" id="set-confirm-q">Delete your account?</p>
+          <p class="wishform--a" id="set-confirm-a">Your clovers, wishes and earned luck on this phone will be gone. This can’t be undone.</p>
+          <div class="wishform--choices">
+            <button type="button" class="wishform--no settings--keep">Keep it</button>
+            <button type="button" class="wishform--yes settings--gone">Delete</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
     <!-- Behind the tab bar: what scrolls under it blurs away -->
     <div class="m-navfade" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
 
@@ -341,6 +414,7 @@
         <h2 class="ob--hero">A little luck,<br>every day.</h2>
         <div class="ob--actions">
           <button type="button" class="ob--btn" data-go="signup">Get started</button>
+          <button type="button" class="ob--btn is-line" data-go="guest">Continue as guest</button>
           <button type="button" class="ob--link" data-go="login"><span class="ob--muted">Already have an account?</span> <u>Log in</u></button>
         </div>
       </div>
@@ -359,10 +433,24 @@
         </div>
       </form>
 
+      <!-- Verify: the code sent to your email -->
+      <form class="ob--page" data-page="verify" novalidate>
+        <h2 class="ob--title">Check your email</h2>
+        <p class="ob--sub" id="ob-verify-sub">We sent you a 6-digit code.</p>
+        <label class="ob--field"><span>Code</span><input type="text" name="code" inputmode="numeric" autocomplete="one-time-code" placeholder="123456" maxlength="6" required></label>
+        <p class="ob--note" id="ob-verify-note" role="alert"></p>
+        <div class="ob--actions">
+          <button type="submit" class="ob--btn" disabled>Verify</button>
+          <button type="button" class="ob--link" id="ob-resend"><span class="ob--muted">Didn’t get it?</span> <u>Send a new code</u></button>
+        </div>
+      </form>
+
       <!-- Name -->
       <form class="ob--page" data-page="name" novalidate>
         <h2 class="ob--title">What should we call you?</h2>
         <p class="ob--sub">It's how we'll greet you each day.</p>
+        <label class="ob--field"><span>Username</span><input type="text" name="username" autocomplete="username" placeholder="yourname" maxlength="20" autocapitalize="none" spellcheck="false" required></label>
+        <p class="ob--note" id="ob-user-note" role="status"></p>
         <label class="ob--field"><span>Name</span><input type="text" name="name" autocomplete="given-name" placeholder="Your name" maxlength="20" required></label>
         <div class="ob--actions"><button type="submit" class="ob--btn" disabled>Continue</button></div>
       </form>
@@ -396,10 +484,10 @@
   <p class="demo-hint" id="demo-hint">Demo: press / to fill in the details · S to skip</p>
 
   <script src="cards.js?v=187"></script>
-  <script src="sounds.js?v=28"></script>
-  <script src="mobile.js?v=121"></script>
-  <script src="tree.js?v=54"></script>
+  <script src="sounds.js?v=30"></script>
+  <script src="mobile.js?v=124"></script>
+  <script src="tree.js?v=55"></script>
   <script src="splash.js?v=25"></script>
-  <script src="onboarding.js?v=13"></script>
+  <script src="onboarding.js?v=16"></script>
 </body>
 </html>

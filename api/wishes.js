@@ -1,12 +1,11 @@
 // The Wish Tree's shared wishes, kept in Upstash Redis (connected to the
-// Vercel project under Storage, which sets the URL and token below).
+// Vercel project under Storage, which sets the URL and token).
 //   GET  /api/wishes  -> the latest wishes, oldest first
 //   POST /api/wishes  {id, text, fill, from} -> hangs one for everyone
 //   GET  /api/wishes?luck=<id>  -> {count}: how many have sent it luck
 //   POST /api/wishes?luck=<id>  -> sends it yours (once per address), {count}
 // A wish comes down after three days, and its luck with it.
-const URL_ = process.env.KV_REST_API_URL || process.env.UPSTASH_REDIS_REST_URL;
-const TOKEN = process.env.KV_REST_API_TOKEN || process.env.UPSTASH_REDIS_REST_TOKEN;
+const { redis, connected } = require('./_redis');
 const KEY = 'wishes';
 const KEEP = 500;  // the most kept; older ones fall off
 const SHOW = 200;  // the most handed out at once
@@ -14,20 +13,9 @@ const PER_HOUR = 10;  // wishes one address can hang in an hour
 const LIFE = 3 * 24 * 60 * 60;  // seconds a wish stays up
 const FILLS = new Set(['#F0F0F0', '#F0F2A1', '#FC91B1']);  // the slips' paper colours
 
-async function redis(...cmd) {
-  const r = await fetch(URL_, {
-    method: 'POST',
-    headers: { Authorization: `Bearer ${TOKEN}`, 'Content-Type': 'application/json' },
-    body: JSON.stringify(cmd),
-  });
-  const j = await r.json();
-  if (j.error) throw new Error(j.error);
-  return j.result;
-}
-
 module.exports = async (req, res) => {
   res.setHeader('Cache-Control', 'no-store');
-  if (!URL_ || !TOKEN) return res.status(503).json({ error: 'The wish store is not connected yet.' });
+  if (!connected()) return res.status(503).json({ error: 'The wish store is not connected yet.' });
   try {
     const ip = String(req.headers['x-forwarded-for'] || '').split(',')[0].trim() || 'unknown';
     const luckId = typeof req.query?.luck === 'string' ? req.query.luck : null;

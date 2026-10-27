@@ -1242,8 +1242,17 @@ document.getElementById('fortune-ritual').addEventListener('click', goClaim);
   later();
 })();
 
-// The name on the profile: its pencil makes it a field to change, kept on
-// this phone (and on the account, if there is one) as you finish
+// Your name: on the profile, kept on this phone (plain, as onboarding.js
+// reads it) and on the account, if there is one
+function saveName(name) {
+  const text = document.querySelector('.profile--name-text');
+  if (text) text.textContent = name;
+  try { localStorage.setItem('name', name); } catch (e) { /* this visit only */ }
+  const email = store.get('email', '');
+  const accounts = store.get('accounts', {});
+  if (email && accounts[email]) store.set('accounts', { ...accounts, [email]: { ...accounts[email], name } });
+}
+// The name on the profile: its pencil makes it a field to change
 (() => {
   const heading = document.querySelector('.profile--name');
   const pen = heading && heading.querySelector('button');
@@ -1267,10 +1276,7 @@ document.getElementById('fortune-ritual').addEventListener('click', goClaim);
       span.textContent = name;
       field.replaceWith(span);
       pen.hidden = false;
-      try { localStorage.setItem('name', name); } catch (e) { /* this visit only */ }  // plain, as onboarding.js reads it
-      const email = store.get('email', '');
-      const accounts = store.get('accounts', {});
-      if (email && accounts[email]) store.set('accounts', { ...accounts, [email]: { ...accounts[email], name } });
+      saveName(name);
     };
     field.addEventListener('blur', done, { once: true });
     field.addEventListener('keydown', (e) => { if (e.key === 'Enter') field.blur(); });
@@ -1288,6 +1294,11 @@ document.getElementById('fortune-ritual').addEventListener('click', goClaim);
   if (!navigator.share) more.remove();
   let msg = null;
   const open = () => { sheet.classList.add('is-open'); sheet.setAttribute('aria-hidden', 'false'); };
+  // Settings' "Share The Luck Corner": the same sheet, for the app itself
+  window.shareApp = () => {
+    msg = { title: 'The Luck Corner', text: 'The Luck Corner: a little luck, every day.', url: `${location.origin}/` };
+    open();
+  };
   const close = () => { sheet.classList.remove('is-open'); sheet.setAttribute('aria-hidden', 'true'); };
   btn.addEventListener('click', () => {
     if (!flip) return;
@@ -1334,4 +1345,125 @@ document.getElementById('fortune-ritual').addEventListener('click', goClaim);
     if (document.getElementById('splash') || document.getElementById('ob')) { setTimeout(wait, 200); return; }
     setTimeout(() => openOnHome(IMAGES.indexOf(name)), 300);
   }());
+})();
+
+// Settings (the profile's gear): your name and birthday, sound, sharing the
+// app, and the account
+(() => {
+  const el = document.getElementById('settings');
+  const gear = document.querySelector('.head--tools button[aria-label="Settings"]');
+  if (!el || !gear) return;
+  const $ = (id) => document.getElementById(id);
+  const nameField = $('set-name');
+  const dateField = $('set-birthday');
+  const sound = $('set-sound');
+  const vol = $('set-volume');
+  const showVol = () => {
+    vol.style.setProperty('--v', `${vol.value}%`);
+    const off = sound.getAttribute('aria-checked') !== 'true';
+    vol.closest('.settings--volume').classList.toggle('is-off', off);
+    vol.disabled = off;
+  };
+  const account = () => store.get('accounts', {})[store.get('email', '')] || null;
+  const longDate = (d) => new Date(`${d}T00:00`).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+  function fill() {
+    let name = '';
+    try { name = localStorage.getItem('name') || ''; } catch (e) { /* none kept */ }
+    name = name || document.querySelector('.profile--name-text')?.textContent.trim() || '';
+    const me = account();
+    $('set-me-name').textContent = name;
+    let username = me?.username || '';
+    try { username = username || localStorage.getItem('username') || ''; } catch (e) { /* none kept */ }
+    $('set-me-email').textContent = [username ? `@${username}` : '', store.get('email', '')].filter(Boolean).join(' · ');
+    nameField.value = name;
+    dateField.value = birthday;
+    $('set-birthday-text').textContent = longDate(birthday);
+    sound.setAttribute('aria-checked', String(!Sounds.muted()));
+    vol.value = String(Math.round(Sounds.volume() * 100));
+    showVol();
+    // a guest has no account to log out of or delete: just the way to make one
+    let guest = false;
+    try { guest = localStorage.getItem('onboarded') === 'guest'; } catch (e) { /* not known */ }
+    $('set-join').hidden = !guest;
+    $('set-logout').hidden = guest;
+    $('set-delete').hidden = guest;
+  }
+  function open() {
+    fill();
+    el.querySelector('.settings--body').scrollTop = 0;
+    el.classList.add('is-open');
+    el.setAttribute('aria-hidden', 'false');
+  }
+  function close() {
+    nameField.blur();
+    el.classList.remove('is-open', 'is-confirming');
+    el.setAttribute('aria-hidden', 'true');
+  }
+  gear.addEventListener('click', open);
+  el.querySelector('.settings--back').addEventListener('click', close);
+
+  // Name: kept as you finish typing
+  const keepName = () => {
+    const name = nameField.value.trim();
+    if (!name) { fill(); return; }
+    saveName(name);
+    $('set-me-name').textContent = name;
+  };
+  nameField.addEventListener('change', keepName);
+  nameField.addEventListener('keydown', (e) => { if (e.key === 'Enter') nameField.blur(); });
+
+  // Birthday: the fortune reads it afresh
+  dateField.addEventListener('change', () => {
+    if (!dateField.value) return;
+    birthday = dateField.value;
+    try { localStorage.setItem('birthday', birthday); } catch (e) { /* this visit only */ }
+    if (birthInput) birthInput.value = birthday;
+    const me = account();
+    if (me) store.set('accounts', { ...store.get('accounts', {}), [store.get('email', '')]: { ...me, birthday } });
+    $('set-birthday-text').textContent = longDate(birthday);
+  });
+
+  sound.addEventListener('click', () => {
+    const on = sound.getAttribute('aria-checked') !== 'true';
+    sound.setAttribute('aria-checked', String(on));
+    Sounds.setMuted(!on);
+    showVol();
+    if (on) { Sounds.unlock(); Sounds.tap?.(); }
+  });
+  // as it slides, louder or softer; let go, a tap to hear how loud
+  vol.addEventListener('input', () => { Sounds.setVolume(Number(vol.value) / 100); showVol(); });
+  vol.addEventListener('change', () => { Sounds.unlock(); Sounds.tap?.(); });
+
+  $('set-share').addEventListener('click', () => window.shareApp && window.shareApp());
+  // A guest: signing up or logging in, from the welcome
+  $('set-join').addEventListener('click', () => {
+    try { localStorage.removeItem('onboarded'); } catch (e) { /* nothing kept */ }
+    location.href = location.pathname;
+  });
+
+  // Log out: back to the welcome, the account kept on this phone to log into
+  $('set-logout').addEventListener('click', () => {
+    try { localStorage.removeItem('onboarded'); } catch (e) { /* nothing kept */ }
+    location.href = location.pathname;
+  });
+  // Delete account: asked first; then the account and everything kept here go
+  $('set-delete').addEventListener('click', () => {
+    el.classList.add('is-confirming');
+    el.querySelector('.settings--keep').focus({ preventScroll: true });
+  });
+  el.querySelector('.settings--keep').addEventListener('click', () => el.classList.remove('is-confirming'));
+  el.querySelector('.settings--gone').addEventListener('click', () => {
+    const email = store.get('email', '');
+    const accounts = store.get('accounts', {});
+    delete accounts[email];
+    try {
+      Object.keys(localStorage).forEach((k) => { if (k !== 'accounts') localStorage.removeItem(k); });
+    } catch (e) { /* nothing kept */ }
+    store.set('accounts', accounts);
+    location.href = location.pathname;
+  });
+  addEventListener('keydown', (e) => {
+    if (e.key !== 'Escape' || !el.classList.contains('is-open')) return;
+    if (el.classList.contains('is-confirming')) el.classList.remove('is-confirming'); else close();
+  });
 })();
