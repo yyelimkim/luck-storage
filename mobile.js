@@ -1296,7 +1296,7 @@ document.getElementById('fortune-ritual').addEventListener('click', goClaim);
     msg = {
       title: `${title} · The Luck Corner`,
       text: `${title}: ${(CARD_TEXT[name] || {}).about || 'a little luck, every day.'}`,
-      url: `${location.origin}${location.pathname}`,
+      url: `${location.origin}/c/${SHARE_SLUG[name]}.html`,
     };
     open();
   });
@@ -1321,4 +1321,17 @@ document.getElementById('fortune-ritual').addEventListener('click', goClaim);
       case 'more': try { await navigator.share({ title, text, url }); } catch (e) { /* closed without sharing */ } break;
     }
   }));
+})();
+
+// Arriving from a shared card (?card=<slug>): once the splash and the welcome
+// are out of the way, that card opens
+(() => {
+  const slug = new URLSearchParams(location.search).get('card');
+  const name = Object.keys(SHARE_SLUG).find((n) => SHARE_SLUG[n] === slug);
+  if (!name) return;
+  history.replaceState(null, '', location.pathname);
+  (function wait() {
+    if (document.getElementById('splash') || document.getElementById('ob')) { setTimeout(wait, 200); return; }
+    setTimeout(() => openOnHome(IMAGES.indexOf(name)), 300);
+  }());
 })();

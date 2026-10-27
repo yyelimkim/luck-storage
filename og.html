@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Share Previews</title>
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="design-system.css?v=9">
+  <style>
+    /* The picture a shared card shows in Messages (Figma 548:16970): the
+       card's colour, the app's name, the clover, and the card's drawing.
+       Without ?card it lays every card out to look over; with ?card=<slug>
+       it's that one alone, at the picture's size, to be saved as the PNG. */
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      padding: 40px 24px 80px;
+      background: var(--system-white);
+      font-family: var(--font-display);
+      letter-spacing: var(--tracking);
+      color: var(--system-black);
+    }
+    h1 { margin: 0 0 6px; font-family: var(--font-title); font-weight: 400; font-size: 28px; letter-spacing: var(--tracking-title); }
+    .lede { margin: 0 0 32px; font-size: 14px; color: var(--dark-grey); }
+    .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(454px, 1fr)); gap: 36px 28px; }
+    figure { margin: 0; }
+    figcaption { margin-top: 10px; font-size: 14px; }
+    figcaption span { color: var(--dark-grey); }
+
+    .og {
+      --ink: var(--system-black);
+      position: relative;
+      width: 454px;
+      height: 266px;
+      overflow: hidden;
+      border-radius: 25.5px;
+      background: var(--bg);
+      color: var(--ink);
+    }
+    .og[data-ink="light"] { --ink: var(--system-white); }
+    .og--name {
+      position: absolute;
+      left: 24px;
+      top: 20px;
+      margin: 0;
+      font-family: var(--font-title);
+      font-weight: 400;
+      font-size: 36px;
+      line-height: 0.95;
+      letter-spacing: var(--tracking-title);
+    }
+    .og--clover {
+      position: absolute;
+      left: 22px;
+      bottom: 30px;
+      width: 38px;
+      height: 38px;
+      background: var(--ink);
+      -webkit-mask: url("assets/og/clover.svg") center / contain no-repeat;
+      mask: url("assets/og/clover.svg") center / contain no-repeat;
+    }
+    .og--art {
+      position: absolute;
+      right: 22px;
+      top: 12px;
+      width: 54%;
+      height: calc(100% - 24px);
+      display: block;
+      object-fit: contain;
+      object-position: right center;
+    }
+
+    /* one alone, edge to edge, for the picture */
+    .is-shot body { padding: 0; background: none; }
+    .is-shot .og { border-radius: 0; }
+  </style>
+</head>
+<body>
+  <main id="out"></main>
+  <script src="cards.js?v=187"></script>
+  <script>
+    const ink = (c) => (['var(--forest-green)', 'var(--hot-pink)'].includes(c) ? 'light' : 'dark');
+    const card = (name) => `<div class="og" style="--bg: ${CARD_COLOR[name]}" data-ink="${ink(CARD_COLOR[name])}">
+        <p class="og--name">The Luck<br>Corner</p>
+        <span class="og--clover"></span>
+        <img class="og--art" src="assets/og/art/${SHARE_SLUG[name]}.svg" alt="">
+      </div>`;
+    const want = new URLSearchParams(location.search).get('card');
+    const out = document.getElementById('out');
+    const one = IMAGES.find((n) => SHARE_SLUG[n] === want);
+    if (one) {
+      document.documentElement.classList.add('is-shot');
+      out.innerHTML = card(one);
+    } else {
+      out.innerHTML = `<h1>Share previews</h1>
+        <p class="lede">What each card shows when it's sent in Messages.</p>
+        <div class="grid">${IMAGES.map((n) => `<figure>${card(n)}<figcaption>${cardName(n)} <span>· ${SHARE_SLUG[n]}</span></figcaption></figure>`).join('')}</div>`;
+    }
+  </script>
+</body>
+</html>
