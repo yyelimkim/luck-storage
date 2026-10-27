@@ -737,7 +737,7 @@ img { -webkit-user-drag: none; }
   width: 100%;
   border-radius: 16px;
   background: var(--ui-white);
-  border: 0.771px solid var(--system-black);
+  border: 1px solid var(--system-black);  /* a firmer line, 1 */
   text-align: center;
 }
 button.fortune--card {
@@ -785,7 +785,7 @@ button.fortune--card:active { transform: scale(0.98); }
   width: 72px;
   height: 72px;
   border-radius: 50%;
-  border: 0.771px solid var(--system-black);
+  border: 1px solid var(--system-black);
 }
 .fortune--swatch-name { font-size: 14px; }
 /* Each piece arrives in turn */
