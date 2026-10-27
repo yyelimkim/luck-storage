@@ -1840,8 +1840,6 @@ button.fortune--card:active { transform: scale(0.98); }
 .wish--hold.is-sent { animation: hold-rise 0.45s cubic-bezier(0.2, 0.8, 0.2, 1); }
 @keyframes hold-rise { from { opacity: 0; translate: 0 10px; } }
 .wish--hold.is-holding { font-size: 16px; }
-/* how many others sent theirs: a line under, in the same white */
-.wish--hold-count { display: block; margin-top: 2px; animation: hold-rise 0.45s cubic-bezier(0.2, 0.8, 0.2, 1); }
 /* Under the slip (497:8058): ‹ Wish 1 of 10 ›, 270 wide, 29 below it;
    the chevrons the header's, in #c4c4c4, each in a 44px tap area */
 .wish--nav {

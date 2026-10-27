@@ -298,18 +298,14 @@
     if (d.other != null) return others[Number(d.other)].id;
     return `w${d.wish}`;
   };
-  // Under "Your luck is sent": how many others sent theirs too
+  // Once it's known, "Your luck is sent" becomes how many sent theirs with you
   function countLuck(id, method) {
     if (!id) return;
     const shownFor = from && from.g;
     fetch(`/api/wishes?luck=${encodeURIComponent(id)}`, { method }).then((r) => (r.ok ? r.json() : null)).then((j) => {
       if (!j || !from || from.g !== shownFor || !sent.has(key())) return;
       const n = Math.max(0, j.count - 1);  // everyone but you
-      const line = document.createElement('span');
-      line.className = 'wish--hold-count';
-      line.textContent = n ? `${n} other${n === 1 ? '' : 's'} sent theirs too` : 'You’re the first to send luck';
-      hold.querySelector('.wish--hold-count')?.remove();
-      hold.appendChild(line);
+      hold.textContent = n ? `You and ${n} other${n === 1 ? '' : 's'} sent luck ✦` : 'You’re the first to send luck ✦';
     }).catch(() => { /* offline: just the first line */ });
   }
   // run the trace towards a target at a pace, then call back
