@@ -1990,8 +1990,12 @@ button.fortune--card:active { transform: scale(0.98); }
 .wishform--scrim {
   position: absolute;
   inset: 0;
-  /* the sketch's own (543:7897): the tree's sky, darkened, under the paper grain */
-  background: url("assets/system/paper-shade.png") 0 0 / 402px auto, url("assets/wish/write-bg.png") center / cover;
+  /* the sketch's own (543:7897): the tree's sky, darkened, with the forest's
+     beams of light through it (the tree's own light layer), under the grain */
+  background:
+    url("assets/system/paper-shade.png") 0 0 / 402px auto,
+    url("assets/wishtree/light.svg?v=2") center top / 100% auto no-repeat,
+    url("assets/wish/write-bg.png") center / cover;
   opacity: 0;
   transition: opacity 0.4s;
 }
@@ -2060,8 +2064,9 @@ button.fortune--card:active { transform: scale(0.98); }
 /* "Write a wish": Cooper, System White, as the reader's "Wish 1" */
 .wishform--title { font-family: var(--font-title); font-size: 19px; letter-spacing: var(--tracking-title); color: var(--system-white); }
 /* The blank slip, written on directly: the open slip's own size and shape
-   (294.89 x 490.72), in the room left between the title and the switch,
-   scaled down to fit it if need be (tree.js sets --fit) */
+   (294.89 x 490.72), a little bigger, as the sketch's (332 across), in the
+   room left between the title and the switch; smaller if it must be
+   (tree.js sets --fit) */
 .wishform--room {
   position: relative;
   align-self: stretch;
@@ -2102,11 +2107,12 @@ button.fortune--card:active { transform: scale(0.98); }
 .wishform--by { position: absolute; left: 25px; top: 442.7px; font-size: 14px; line-height: 1.35; }
 /* Anonymous or signed: a switch */
 .wishform--anon {
-  align-self: stretch;
+  /* as wide as the slip, so its words and switch line up with its edges */
+  width: calc(294.89px * var(--fit, 1));
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin: 18px 26px 18px;
+  margin: 18px 0;
   font-size: 16px;
   color: var(--system-white);
 }

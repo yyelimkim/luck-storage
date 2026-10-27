@@ -502,7 +502,7 @@
   function fitSlip() {
     const r = room.getBoundingClientRect();
     const k = r.width / room.offsetWidth || 1;  // the stage's scale
-    draft.style.setProperty('--fit', Math.min(1, (r.height / k) / 490.72, (r.width / k) / 294.89).toFixed(3));
+    form.style.setProperty('--fit', Math.min(1.126, (r.height / k) / 490.72, (r.width / k) / 294.89).toFixed(3));  // up to the sketch's 332 x 553
   }
   addEventListener('resize', () => { if (form.classList.contains('is-open')) fitSlip(); });
   function openForm() {
