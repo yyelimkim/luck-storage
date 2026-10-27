@@ -11,7 +11,7 @@
   <link rel="icon" href="favicon-32.png" sizes="32x32" type="image/png">
   <link rel="apple-touch-icon" href="apple-touch-icon.png">
   <link rel="stylesheet" href="design-system.css?v=9">
-  <link rel="stylesheet" href="mobile.css?v=216">
+  <link rel="stylesheet" href="mobile.css?v=217">
 </head>
 <body>
   <!-- iPhone 17 screen (Figma 97:630 at rest, 97:730 while dialing), laid out at
@@ -110,6 +110,7 @@
       <div class="wishform--light" aria-hidden="true">
         <img src="assets/wishtree/light.svg?v=2" alt="">
         <img src="assets/wishtree/light.svg?v=2" alt="">
+        <img src="assets/wishtree/light.svg?v=2" alt="">
         <span class="wishform--sun"></span>
       </div>
       <form class="wishform--sheet" role="dialog" aria-label="Write a wish">
@@ -123,8 +124,8 @@
           <svg class="wish--tag" viewBox="0 0 294.89 490.723" aria-hidden="true">
             <path fill-rule="evenodd" d="M259.273 0.5C261.301 0.500165 263.17 1.59637 264.16 3.36621L293.677 56.1416C294.144 56.9769 294.39 57.918 294.39 58.875V484.622C294.39 487.715 291.883 490.222 288.79 490.223H6.09961C3.00685 490.223 0.500053 487.715 0.5 484.622V59.0176C0.500083 57.9595 0.799426 56.923 1.36426 56.0283L34.7773 3.10938C35.8033 1.48462 37.5911 0.500076 39.5127 0.5H259.273ZM147.907 22.4355C144.838 22.4355 142.35 24.9214 142.35 27.9873C142.35 31.0531 144.838 33.5381 147.907 33.5381C150.976 33.538 153.465 31.053 153.465 27.9873C153.465 24.9214 150.976 22.4357 147.907 22.4355Z"/>
           </svg>
-          <textarea id="wish-input" maxlength="300" rows="5" placeholder="I wish…" aria-label="Your wish"></textarea>
-          <p class="wishform--count" id="wish-chars">0/300</p>
+          <textarea id="wish-input" maxlength="250" rows="5" placeholder="I wish…" aria-label="Your wish"></textarea>
+          <p class="wishform--count" id="wish-chars">0/250</p>
           <p class="wishform--by" id="wish-by">Anonymous</p>
         </div></div>
         <div class="wishform--anon">
@@ -372,7 +373,7 @@
   <script src="cards.js?v=186"></script>
   <script src="sounds.js?v=28"></script>
   <script src="mobile.js?v=118"></script>
-  <script src="tree.js?v=49"></script>
+  <script src="tree.js?v=50"></script>
   <script src="splash.js?v=25"></script>
   <script src="onboarding.js?v=13"></script>
 </body>

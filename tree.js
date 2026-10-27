@@ -452,7 +452,7 @@
 
   // --- Writing a wish: write it on a slip, spend clovers, hang it up ---
   const COST = 10;
-  const MAX = 300;
+  const MAX = 250;
   const mine = [];
   const form = document.getElementById('wishform');
   const sheet = form.querySelector('.wishform--sheet');

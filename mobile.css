@@ -1999,6 +1999,7 @@ button.fortune--card:active { transform: scale(0.98); }
   transition: opacity 0.4s;
 }
 .wishform.is-open .wishform--scrim { opacity: 1; }
+.wishform--scrim { filter: hue-rotate(-38deg) saturate(1.15); }  /* the sky turned greener, as the forest's */
 /* The forest's light over it: the tree's beams, warmer and stronger, each
    swaying from the top left and breathing in its own time, and a sun glow */
 .wishform--light {
@@ -2017,11 +2018,19 @@ button.fortune--card:active { transform: scale(0.98); }
   width: 100%;
   height: auto;
   transform-origin: 0 0;
-  filter: sepia(0.8) saturate(2.2) hue-rotate(-12deg) brightness(1.7);  /* yellow */
+  filter: sepia(0.8) saturate(2.4) hue-rotate(-12deg) brightness(2.3);  /* yellow, and strong */
   will-change: transform, opacity;
-  animation: beam-swing 9s ease-in-out infinite alternate, beam-breathe 6s ease-in-out infinite alternate;
+  animation: beam-swing 9s ease-in-out infinite alternate, wish-beam 6s ease-in-out infinite alternate;
 }
-.wishform--light img + img { animation-duration: 12s, 8s; animation-delay: -5s, -3s; scale: 1.15; }
+.wishform--light img:nth-child(2) { animation-duration: 12s, 8s; animation-delay: -5s, -3s; scale: 1.15; }
+.wishform--light img:nth-child(3) { animation-duration: 10s, 7s; animation-delay: -2s, -5s; scale: 0.85; translate: 60px 0; }
+/* breathing, but never fading far */
+@keyframes wish-beam {
+  0% { opacity: 0.55; }
+  40% { opacity: 1; }
+  70% { opacity: 0.7; }
+  100% { opacity: 0.95; }
+}
 .wishform--sun {
   position: absolute;
   left: -260px;
@@ -2029,7 +2038,7 @@ button.fortune--card:active { transform: scale(0.98); }
   width: 520px;
   height: 520px;
   border-radius: 50%;
-  background: radial-gradient(circle, rgba(255, 244, 170, 0.38), rgba(255, 236, 150, 0.14) 40%, rgba(255, 230, 140, 0) 70%);
+  background: radial-gradient(circle, rgba(255, 244, 170, 0.5), rgba(255, 236, 150, 0.2) 40%, rgba(255, 230, 140, 0) 70%);
   animation: sun-breathe 7s ease-in-out infinite alternate;
 }
 .is-writing .head { z-index: 61; }
