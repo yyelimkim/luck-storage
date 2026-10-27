@@ -287,6 +287,30 @@
     slip.classList.toggle('is-sent', done);
     hold.classList.remove('is-holding');
     hold.textContent = done ? 'Your luck is sent ✦' : 'Hold the slip to send your luck';
+    if (done) countLuck(wishId(), 'GET');
+  }
+  // The wish's own id, online: yours and others' as they were hung, the
+  // tree's first ones by their number
+  const wishId = () => {
+    if (!from) return null;
+    const d = from.g.dataset;
+    if (d.own != null) return mine[Number(d.own)].id;
+    if (d.other != null) return others[Number(d.other)].id;
+    return `w${d.wish}`;
+  };
+  // Under "Your luck is sent": how many others sent theirs too
+  function countLuck(id, method) {
+    if (!id) return;
+    const shownFor = from && from.g;
+    fetch(`/api/wishes?luck=${encodeURIComponent(id)}`, { method }).then((r) => (r.ok ? r.json() : null)).then((j) => {
+      if (!j || !from || from.g !== shownFor || !sent.has(key())) return;
+      const n = Math.max(0, j.count - 1);  // everyone but you
+      const line = document.createElement('span');
+      line.className = 'wish--hold-count';
+      line.textContent = n ? `${n} other${n === 1 ? '' : 's'} sent theirs too` : 'You’re the first to send luck';
+      hold.querySelector('.wish--hold-count')?.remove();
+      hold.appendChild(line);
+    }).catch(() => { /* offline: just the first line */ });
   }
   // run the trace towards a target at a pace, then call back
   function runTrace(to, ms, done) {
@@ -331,6 +355,7 @@
       Sounds.chime();
       hold.classList.remove('is-holding');
       hold.textContent = 'Your luck is sent ✦';
+      countLuck(wishId(), 'POST');
       // after the spin the slip stays; the luck clover comes up above it,
       // then shrinks away up out of the frame, off with the luck
       setTimeout(cloverAway, 950);
@@ -557,8 +582,10 @@
   let spots = 0;
   const spot = () => { const i = spots++; const [x, y, k] = SPARE[i % SPARE.length]; return [x + (Math.floor(i / SPARE.length) % 3) * 9, y, k]; };
   const newId = () => Math.random().toString(36).slice(2, 10) + Date.now().toString(36);
-  keep.get('wishes', []).forEach((wish) => {
+  const LIFE = 3 * 24 * 60 * 60 * 1000;  // a wish comes down after three days
+  keep.get('wishes', []).filter((w) => !w.t || w.t > Date.now() - LIFE).forEach((wish) => {
     if (!wish.id) wish.id = newId();
+    if (!wish.t) wish.t = Date.now();
     const i = mine.push(wish) - 1;
     scene.querySelector('.tree--wishes').insertAdjacentHTML('beforeend', hung(spot(), wish.fill, `data-own="${i}"`));
   });
@@ -577,7 +604,7 @@
   // Up it goes: the slip leaves the sheet and flies to its spot on the
   // tree, shrinking into a strip, which swings as it takes the weight
   form.querySelector('.wishform--yes').addEventListener('click', async () => {
-    const wish = { id: newId(), text: input.value.trim(), fill: paperFill, from: isAnon() ? 'Anonymous' : handle() };
+    const wish = { id: newId(), t: Date.now(), text: input.value.trim(), fill: paperFill, from: isAnon() ? 'Anonymous' : handle() };
     const i = mine.push(wish) - 1;
     keep.set('wishes', mine);
     // up for everyone to see
