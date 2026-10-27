@@ -1309,9 +1309,9 @@ function saveName(name) {
   if (!navigator.share) more.remove();
   let msg = null;
   const open = () => { sheet.classList.add('is-open'); sheet.setAttribute('aria-hidden', 'false'); };
-  // Settings' "Share The Luck Corner": the same sheet, for the app itself
+  // Settings' "Share Luck Corner": the same sheet, for the app itself
   window.shareApp = () => {
-    msg = { title: 'The Luck Corner', text: 'The Luck Corner: a little luck, every day.', url: `${location.origin}/` };
+    msg = { title: 'Luck Corner', text: 'Luck Corner: a little luck, every day.', url: `${location.origin}/` };
     open();
   };
   const close = () => { sheet.classList.remove('is-open'); sheet.setAttribute('aria-hidden', 'true'); };
@@ -1320,7 +1320,7 @@ function saveName(name) {
     const name = IMAGES[cards.indexOf(flip.card)];
     const title = cardName(name);
     msg = {
-      title: `${title} · The Luck Corner`,
+      title: `${title} · Luck Corner`,
       text: `${title}: ${(CARD_TEXT[name] || {}).about || 'a little luck, every day.'}`,
       url: `${location.origin}/c/${SHARE_SLUG[name]}.html`,
     };

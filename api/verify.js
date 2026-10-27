@@ -6,7 +6,7 @@
 const crypto = require('crypto');
 const { redis, connected, ipOf, bodyOf, limited, emailKey } = require('./_redis');
 const KEY = process.env.RESEND_API_KEY;
-const FROM = process.env.VERIFY_FROM || 'The Luck Corner <onboarding@resend.dev>';
+const FROM = process.env.VERIFY_FROM || 'Luck Corner <onboarding@resend.dev>';
 const EMAIL = /^\S+@\S+\.\S+$/;
 
 module.exports = async (req, res) => {
@@ -32,7 +32,7 @@ module.exports = async (req, res) => {
           from: FROM,
           to: [email],
           subject: `${code} is your Luck Corner code`,
-          text: `Your code for The Luck Corner is ${code}.\n\nIt works for 10 minutes. If you didn't ask for it, you can ignore this email.`,
+          text: `Your code for Luck Corner is ${code}.\n\nIt works for 10 minutes. If you didn't ask for it, you can ignore this email.`,
         }),
       });
       if (!sent.ok) return res.status(502).json({ error: 'The code couldn’t be sent.' });
