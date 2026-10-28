@@ -126,7 +126,7 @@
     password.placeholder = login ? 'Your password' : 'At least 8 characters';
     // logging in, the email you used last time is already there
     const email = pages.account.elements.email;
-    if (login && !email.value) email.value = store.get('email', '');
+    if (login && !email.value) email.value = store.get('email', '') || store.get('last-email', '');
     say('');
     check(pages.account);
   }
@@ -306,6 +306,17 @@
 
   // --- All set: your name on the profile, your birthday for the fortune
   function finish(how) {
+    // Logging in: your things back, just as you left them
+    if (mode === 'login' && Guest.bringBack(store.get('email', ''))) {
+      try {
+        localStorage.setItem('onboarded', '1');
+        sessionStorage.setItem('no-splash', '1');
+      } catch (e) { /* this visit only */ }
+      location.reload();
+      return;
+    }
+    // Signing up: a new account starts from nothing
+    if (mode === 'signup' && pending) { Guest.putAway(); Guest.clear(); }  // (anyone signed in here: theirs put away first)
     const name = (mode === 'login' ? who?.name : pages.name.elements.name.value.trim()) || DEMO.name;
     const nameEl = document.querySelector('.profile--name');
     if (nameEl && nameEl.firstChild) nameEl.firstChild.textContent = `${name} `;

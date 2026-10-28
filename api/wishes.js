@@ -55,6 +55,8 @@ module.exports = async (req, res) => {
       const n = await redis('INCR', `rl:${ip}`);
       if (n === 1) await redis('EXPIRE', `rl:${ip}`, '3600');
       if (n > PER_HOUR) return res.status(429).json({ error: 'That’s a lot of wishes. Try again in a while.' });
+      // once only: a wish tried again (it went up, but the answer was lost) isn't hung twice
+      if (!(await redis('SET', `wishid:${id}`, '1', 'NX', 'EX', String(LIFE)))) return res.status(200).json({ id, already: true });
       const wish = { id, text, fill, from: from || 'Anonymous', t: Date.now() };
       await redis('LPUSH', KEY, JSON.stringify(wish));
       await redis('LTRIM', KEY, '0', String(KEEP - 1));

@@ -1453,7 +1453,7 @@ function saveName(name) {
 
   // Log out: back to the welcome, the account kept on this phone to log into
   $('set-logout').addEventListener('click', () => {
-    try { localStorage.removeItem('onboarded'); } catch (e) { /* nothing kept */ }
+    Guest.logOut();  // your things put away in your account, till you log back in
     location.href = location.pathname;
   });
   // Delete account: asked first; then the account and everything kept here go

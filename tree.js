@@ -600,6 +600,18 @@
     const i = others.push(w) - 1;
     scene.querySelector('.tree--wishes').insertAdjacentHTML('beforeend', hung(spot(), w.fill, `data-other="${i}"`));
   });
+  // Up on the shared tree for everyone (api/wishes.js). A wish that couldn't
+  // go up (offline, or the store not there yet) is tried again next visit,
+  // till it does
+  function hangUp(wish) {
+    return fetch('/api/wishes', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(wish) })
+      .then((r) => {
+        if (r.status !== 201 && r.status !== 200) return;
+        wish.posted = true;
+        keep.set('wishes', mine);
+      }).catch(() => { /* not this time */ });
+  }
+  mine.filter((w) => !w.posted).forEach(hangUp);
   const ON_TREE = 21;  // the most of others' wishes hung at once: the latest
   fetch('/api/wishes').then((r) => (r.ok ? r.json() : [])).then((list) => {
     if (!Array.isArray(list)) return;
@@ -618,8 +630,7 @@
     const i = mine.push(wish) - 1;
     keep.set('wishes', mine);
     // up for everyone to see
-    fetch('/api/wishes', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(wish) })
-      .catch(() => { /* offline: it stays on this phone's tree */ });
+    hangUp(wish);
     const group = scene.querySelector('.tree--wishes');
     group.insertAdjacentHTML('beforeend', hung(spot(), wish.fill, `data-own="${i}"`));
     const g = group.lastElementChild;
