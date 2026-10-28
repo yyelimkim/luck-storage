@@ -8,7 +8,7 @@
 const Guest = (() => {
   // what's someone's own (accounts themselves, and the sound settings,
   // belong to the phone, so stay)
-  const KEYS = ['luck', 'earned', 'wishes', 'sent', 'played', 'name', 'birthday', 'username', 'anon'];
+  const KEYS = ['luck', 'earned', 'wishes', 'sent', 'played', 'name', 'birthday', 'username', 'anon', 'fortune-seen'];
   const get = (k) => { try { return localStorage.getItem(k); } catch (e) { return null; } };
   const set = (k, v) => { try { if (v == null) localStorage.removeItem(k); else localStorage.setItem(k, v); } catch (e) { /* this visit only */ } };
   const json = (k, fallback) => { try { const v = JSON.parse(get(k)); return v == null ? fallback : v; } catch (e) { return fallback; } };

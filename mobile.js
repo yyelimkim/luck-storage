@@ -1095,7 +1095,10 @@ function openFortune() {
   // a guest gives their birthday first, each visit
   let given = false;
   try { given = !!localStorage.getItem('birthday'); } catch (e) { /* not known */ }
-  if (Guest.on() && !given) { fortuneStep('ask'); fortuneAsk.reset(); fortuneAsk.querySelector('button').disabled = true; } else loadFortune();
+  if (Guest.on() && !given) { fortuneStep('ask'); fortuneAsk.reset(); fortuneAsk.querySelector('button').disabled = true; }
+  // seen already today: straight to the reading, no loading again
+  else if (store.get('fortune-seen', '') === today()) { clearTimeout(fortuneTimer); fillFortune(); fortuneStep('result'); }
+  else loadFortune();
   fortuneEl.classList.add('is-open');
   fortuneEl.setAttribute('aria-hidden', 'false');
 }
@@ -1148,6 +1151,7 @@ function flyPill() {
 fortuneSee.addEventListener('click', () => {
   flyPill();
   fortuneStep('result');
+  store.set('fortune-seen', today());  // (the rest of today, it opens on the reading)
 });
 // A new birthday reads the fortune again
 fortuneEl.querySelector('.fortune--birth').addEventListener('click', (e) => {
