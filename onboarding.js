@@ -38,7 +38,7 @@
   const pages = Object.fromEntries([...ob.querySelectorAll('.ob--page')].map((p) => [p.dataset.page, p]));
   const fill = ob.querySelector('.ob--fill');
   const bar = ob.querySelector('.ob--bar');
-  const DEMO = { email: 'yelim@luckcorner.app', password: 'fourleaf8', username: 'lucky4eva', name: 'Yelim', birthday: '2006-04-15' };
+  const DEMO = { email: 'yelim@luckcorner.app', password: 'fourleaf8', username: 'yelim', name: 'Yelim', birthday: '2006-04-15' };
 
   let mode = 'signup';  // or 'login'
   // The accounts made on this phone, by email; and who's signing up or in
@@ -196,7 +196,7 @@
   const TAKEN = 'There’s already an account with this email.';
   // is the email taken? this phone's accounts, then everyone's
   async function emailTaken(email) {
-    if (accounts()[email] || email === DEMO.email) return true;
+    if (accounts()[email]) return true;
     const r = await ask(`/api/accounts?email=${encodeURIComponent(email)}`);
     return !!(r && r.taken);
   }
@@ -254,7 +254,7 @@
     if (!/^[a-z0-9._]{3,20}$/.test(name)) { sayUser('3 to 20 letters, numbers, . or _'); return; }
     sayUser('Checking…', true);
     userTimer = setTimeout(async () => {
-      const here = Object.values(accounts()).some((a) => a.username === name) || name === DEMO.username;
+      const here = Object.values(accounts()).some((a) => a.username === name);
       const r = here ? null : await ask(`/api/accounts?username=${encodeURIComponent(name)}`);
       if (uField.value.trim().toLowerCase() !== name) return;  // typed on since
       if (here || (r && r.taken)) { sayUser(`@${name} is taken`); return; }
@@ -296,8 +296,6 @@
           body: JSON.stringify({ action: 'signup', email, password, username: acc.username, name: acc.name, birthday: acc.birthday, data }) });
         if (up && up.status === 201) Guest.adopt(email, up.token, up.account, pw);
       }
-    } else if (email === DEMO.email) {
-      who = { name: DEMO.name, username: DEMO.username, birthday: DEMO.birthday };
     } else {
       say(r && r.missing ? 'No account with that email yet.' : 'No account with that email on this phone yet.');
       return false;
@@ -391,8 +389,8 @@
     page.querySelectorAll('input').forEach((input) => {
       if (DEMO[input.name] != null) input.value = DEMO[input.name];
     });
-    // the demo's username is its own, so free for it
-    if (page === pages.name) { userFree = DEMO.username; sayUser(`@${DEMO.username} is available`, true); }
+    // (its username checked like any other)
+    if (page === pages.name) uField.dispatchEvent(new Event('input'));
     if (page.querySelector('[type="submit"]')) check(page);
   }
   addEventListener('keydown', (e) => {
