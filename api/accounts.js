@@ -3,13 +3,13 @@
 //   GET  /api/accounts?username=<name>  -> {taken}
 //   GET  /api/accounts?email=<email>    -> {taken}
 //   POST /api/accounts {username, email} -> claims both: 201, or 409 {taken: 'username' | 'email'}
-const { redis, connected, ipOf, bodyOf, limited, emailKey } = require('./_redis');
+const { redis, connected, ipOf, bodyOf, limited, emailKey, seen } = require('./_redis');
 const NAME = /^[a-z0-9._]{3,20}$/;
 const EMAIL = /^\S+@\S+\.\S+$/;
 
 module.exports = async (req, res) => {
   res.setHeader('Cache-Control', 'no-store');
-  if (!connected()) return res.status(503).json({ error: 'The store is not connected yet.' });
+  if (!connected()) return res.status(503).json({ error: 'The store is not connected yet.', found: seen() });
   try {
     if (req.method === 'GET') {
       const username = String(req.query?.username || '').toLowerCase();

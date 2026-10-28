@@ -5,7 +5,7 @@
 //   GET  /api/wishes?luck=<id>  -> {count}: how many have sent it luck
 //   POST /api/wishes?luck=<id>  -> sends it yours (once per address), {count}
 // A wish comes down after three days, and its luck with it.
-const { redis, connected } = require('./_redis');
+const { redis, connected, seen } = require('./_redis');
 const KEY = 'wishes';
 const KEEP = 500;  // the most kept; older ones fall off
 const SHOW = 200;  // the most handed out at once
@@ -15,7 +15,7 @@ const FILLS = new Set(['#F0F0F0', '#F0F2A1', '#FC91B1']);  // the slips' paper c
 
 module.exports = async (req, res) => {
   res.setHeader('Cache-Control', 'no-store');
-  if (!connected()) return res.status(503).json({ error: 'The wish store is not connected yet.' });
+  if (!connected()) return res.status(503).json({ error: 'The wish store is not connected yet.', found: seen() });
   try {
     const ip = String(req.headers['x-forwarded-for'] || '').split(',')[0].trim() || 'unknown';
     const luckId = typeof req.query?.luck === 'string' ? req.query.luck : null;

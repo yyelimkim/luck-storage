@@ -1,7 +1,23 @@
 // Upstash Redis over its REST API (connected to the Vercel project under
 // Storage, which sets the URL and token). Shared by the api/ functions.
-const URL_ = process.env.KV_REST_API_URL || process.env.UPSTASH_REDIS_REST_URL;
-const TOKEN = process.env.KV_REST_API_TOKEN || process.env.UPSTASH_REDIS_REST_TOKEN;
+// Found under whatever prefix Vercel gave them (KV_, UPSTASH_REDIS_, or a
+// custom one, as STORAGE_KV_...), or from a plain redis:// URL
+const env = process.env;
+const pick = (end) => {
+  const k = Object.keys(env).find((n) => n.endsWith(end) && env[n]);
+  return k ? env[k] : null;
+};
+let URL_ = pick('KV_REST_API_URL') || pick('REDIS_REST_URL');
+let TOKEN = pick('KV_REST_API_TOKEN') || pick('REDIS_REST_TOKEN');
+if (!URL_ || !TOKEN) {
+  const raw = pick('REDIS_URL') || pick('KV_URL');
+  try {
+    const u = new URL(raw);
+    if (u.hostname && u.password) { URL_ = `https://${u.hostname}`; TOKEN = decodeURIComponent(u.password); }
+  } catch (e) { /* not a URL */ }
+}
+// for working out why it isn't: the names of what's set (never the values)
+const seen = () => Object.keys(env).filter((n) => /REDIS|KV|UPSTASH/i.test(n));
 
 async function redis(...cmd) {
   const r = await fetch(URL_, {
@@ -29,4 +45,4 @@ async function limited(key, max) {
 // emails are kept only as a hash
 const emailKey = (email) => require('crypto').createHash('sha256').update(`luck-corner:${String(email).trim().toLowerCase()}`).digest('hex');
 
-module.exports = { redis, connected, ipOf, bodyOf, limited, emailKey };
+module.exports = { redis, connected, ipOf, bodyOf, limited, emailKey, seen };
