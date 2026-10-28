@@ -2992,3 +2992,12 @@ label.settings--row:active { background: var(--system-white); }
   line-height: 1.35;
   text-align: center;
 }
+
+/* Every button with words in it: at least 10px inside on each side, so the
+   words never run up to its edge */
+.ob--btn,
+.wishform--choices button,
+.wishform--hang,
+.tree--write,
+.filter--confirm,
+.fortune--see { padding-left: 10px; padding-right: 10px; }

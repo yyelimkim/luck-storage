@@ -251,7 +251,7 @@ const CANVAS_PAGES = {
   '포도 12알 먹기.png': 'grapes.html?v=19',  // eat all twelve before the clock runs out
   '돌팝 쌓기.png': 'stones.html?v=29',  // drop the stones in, the wish on top
   '악마의 눈.png': 'evileye.html?v=23',  // hung on a string like the fish charm; hit, it cracks
-  '걱정인형.png': 'worry.html?v=21',  // tell the doll your worries, tuck it in
+  '걱정인형.png': 'worry.html?v=22',  // tell the doll your worries, tuck it in
   '꽃잎 점.png': 'love.html?v=15',  // loves me, loves me not... ends on love
   '손바닥의 인 쓰기.png': 'hito.html?v=26',  // trace 人, then swallow it
 };

@@ -204,6 +204,7 @@ html, body {
   letter-spacing: var(--tracking);
   cursor: pointer;
 }
+.worry--btn { padding: 0 10px; }  /* at least 10px inside, as every button */
 .worry--btn:active { transform: scale(0.97); }
 .worry--field { margin: 0; }
 .worry--field input {
