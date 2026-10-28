@@ -1,23 +1,23 @@
 // Upstash Redis over its REST API (connected to the Vercel project under
 // Storage, which sets the URL and token). Shared by the api/ functions.
 // Found under whatever prefix Vercel gave them (KV_, UPSTASH_REDIS_, or a
-// custom one, as STORAGE_KV_...), or from a plain redis:// URL
+// custom one, as STORAGE_REST_API_URL), or from a plain redis:// URL
 const env = process.env;
 const pick = (end) => {
-  const k = Object.keys(env).find((n) => n.endsWith(end) && env[n]);
+  const k = Object.keys(env).find((n) => n.endsWith(end) && !/READ_ONLY/.test(n) && env[n]);
   return k ? env[k] : null;
 };
-let URL_ = pick('KV_REST_API_URL') || pick('REDIS_REST_URL');
-let TOKEN = pick('KV_REST_API_TOKEN') || pick('REDIS_REST_TOKEN');
+let URL_ = pick('REST_API_URL') || pick('REDIS_REST_URL');
+let TOKEN = pick('REST_API_TOKEN') || pick('REDIS_REST_TOKEN');
 if (!URL_ || !TOKEN) {
-  const raw = pick('REDIS_URL') || pick('KV_URL');
+  const raw = pick('REDIS_URL') || pick('KV_URL') || pick('STORAGE_URL');
   try {
     const u = new URL(raw);
     if (u.hostname && u.password) { URL_ = `https://${u.hostname}`; TOKEN = decodeURIComponent(u.password); }
   } catch (e) { /* not a URL */ }
 }
 // for working out why it isn't: the names of what's set (never the values)
-const seen = () => Object.keys(env).filter((n) => /REDIS|KV|UPSTASH/i.test(n));
+const seen = () => Object.keys(env).filter((n) => /REDIS|KV|UPSTASH|STORAGE|REST_API/i.test(n));
 
 async function redis(...cmd) {
   const r = await fetch(URL_, {
