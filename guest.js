@@ -40,11 +40,48 @@ const Guest = (() => {
     set('tree-local', JSON.stringify([...json('tree-local', []), ...theirs]));
   }
 
-  // Logging out: your things put away in your account, the phone cleared
-  // (your email kept only to fill in next time you log in)
+  // --- Online (api/auth.js): signed in, this phone holds a session, and the
+  // account's things are saved up as they change, so they're there on any
+  // phone you log in on
+  const snapshot = () => { const d = {}; KEYS.forEach((k) => { d[k] = get(k); }); return d; };
+  let lastSaved = '';
+  function sync(leaving = false) {
+    const token = get('session');
+    if (!token || get('onboarded') !== '1') return;
+    const data = snapshot();
+    const s = JSON.stringify(data);
+    if (s === lastSaved) return;
+    lastSaved = s;
+    try {
+      fetch('/api/auth', { method: 'POST', headers: { 'Content-Type': 'application/json' }, keepalive: leaving, body: JSON.stringify({ action: 'save', token, data }) })
+        .then((r) => { if (r.status === 401) set('session', null); })  // signed out elsewhere, or it ran out
+        .catch(() => { lastSaved = ''; });
+    } catch (e) { lastSaved = ''; }
+  }
+  setInterval(sync, 15000);
+  addEventListener('visibilitychange', () => { if (document.visibilityState === 'hidden') sync(true); });
+  addEventListener('pagehide', () => sync(true));
+  // signed in (or up) online: the session kept, and the account's things
+  // ready to bring back (in its record here, as logging out leaves them)
+  function adopt(who, token, account, pw) {
+    set('session', token);
+    const accounts = json('accounts', {});
+    accounts[who] = {
+      ...(accounts[who] || {}),
+      ...(pw ? { pw } : {}),
+      username: account.username, name: account.name, birthday: account.birthday,
+      ...(account.data ? { data: account.data } : {}),
+    };
+    set('accounts', JSON.stringify(accounts));
+  }
+
+  // Logging out: your things put away in your account (and saved up), the
+  // phone cleared (your email kept only to fill in next time you log in)
   function logOut() {
+    sync(true);
     putAway();
     clear();
+    set('session', null);
     if (email()) set('last-email', JSON.stringify(email()));
     set('onboarded', null);
     set('email', null);
@@ -101,5 +138,5 @@ const Guest = (() => {
   const visitor = () => { try { return on() && sessionStorage.getItem('link-visitor') === '1'; } catch (e) { return false; } };
   const settle = () => { try { sessionStorage.removeItem('link-visitor'); } catch (e) { /* none */ } };
 
-  return { on, start, end, join, logOut, putAway, bringBack, clear, arrived, visitor, settle };
+  return { on, start, end, join, logOut, putAway, bringBack, clear, arrived, visitor, settle, sync, adopt, snapshot };
 })();

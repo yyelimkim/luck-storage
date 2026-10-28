@@ -268,20 +268,38 @@
   // and the password matches (or it's the demo's)
   async function account(f) {
     const email = f.elements.email.value.trim().toLowerCase();
-    const pw = await hash(f.elements.password.value);
+    const password = f.elements.password.value;
+    const pw = await hash(password);
     const acc = accounts()[email];
     if (mode === 'signup') {
       if (await emailTaken(email)) { say(TAKEN, true); return false; }
-      pending = { email, pw };
+      pending = { email, pw, password };  // (the password itself only till it's sent up, at the end)
       return true;
     }
+    // Logging in: online first, so it works on any phone
+    const r = await ask('/api/auth', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ action: 'login', email, password }) });
+    if (r && r.status === 200) {
+      Guest.adopt(email, r.token, r.account, pw);
+      who = { name: r.account.name, username: r.account.username, birthday: r.account.birthday };
+      store.set('email', email);
+      return true;
+    }
+    if (r && (r.status === 401 || r.status === 429)) { say(r.error); return false; }
+    // not online yet: this phone's own account, which then goes up
     if (acc) {
       if (acc.pw !== pw) { say('That password doesn’t match this account.'); return false; }
       who = { name: acc.name, username: acc.username, birthday: acc.birthday };
+      if (r && acc.username) {
+        // made here before accounts were online: up it goes, with its things
+        const data = store.get('email', '') === email ? Guest.snapshot() : (acc.data || null);
+        const up = await ask('/api/auth', { method: 'POST', headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ action: 'signup', email, password, username: acc.username, name: acc.name, birthday: acc.birthday, data }) });
+        if (up && up.status === 201) Guest.adopt(email, up.token, up.account, pw);
+      }
     } else if (email === DEMO.email) {
       who = { name: DEMO.name, username: DEMO.username, birthday: DEMO.birthday };
     } else {
-      say('No account with that email on this phone yet.');
+      say(r && r.missing ? 'No account with that email yet.' : 'No account with that email on this phone yet.');
       return false;
     }
     store.set('email', email);
@@ -330,8 +348,11 @@
     if (mode === 'signup' && pending) {
       store.set('accounts', { ...accounts(), [pending.email]: { pw: pending.pw, username, name, birthday: born || null } });
       store.set('email', pending.email);
-      // and the username and email taken, for everyone
-      ask('/api/accounts', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ username, email: pending.email }) });
+      // and the account online, so it works on any phone (the username and
+      // email taken for everyone with it)
+      ask('/api/auth', { method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'signup', email: pending.email, password: pending.password, username, name, birthday: born || null }) })
+        .then((up) => { if (up && up.status === 201) { Guest.adopt(pending.email, up.token, up.account, pending.pw); Guest.sync(); } });
     }
     try { if (username) localStorage.setItem('username', username); } catch (e) { /* this visit only */ }
     // remembered: next time, straight to Home

@@ -1462,7 +1462,13 @@ function saveName(name) {
     el.querySelector('.settings--keep').focus({ preventScroll: true });
   });
   el.querySelector('.settings--keep').addEventListener('click', () => el.classList.remove('is-confirming'));
-  el.querySelector('.settings--gone').addEventListener('click', () => {
+  el.querySelector('.settings--gone').addEventListener('click', async () => {
+    // gone online too
+    let token = null;
+    try { token = localStorage.getItem('session'); } catch (e) { /* none */ }
+    if (token) {
+      try { await fetch('/api/auth', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ action: 'delete', token }) }); } catch (e) { /* offline */ }
+    }
     const email = store.get('email', '');
     const accounts = store.get('accounts', {});
     delete accounts[email];
