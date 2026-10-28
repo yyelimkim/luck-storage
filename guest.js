@@ -25,8 +25,16 @@ const Guest = (() => {
     try { sessionStorage.setItem('guest-live', '1'); } catch (e) { /* no session: ends on reload */ }
     document.documentElement.classList.add('is-guest');
   }
-  // the guest's things gone; what was set aside, back
+  // the guest's things gone; what was set aside, back. (Their wishes stay on
+  // this phone's tree, as anyone's: wishes are the tree's, not the guest's.)
   function end() {
+    try {
+      const theirs = JSON.parse(get('wishes') || '[]');
+      if (on() && Array.isArray(theirs) && theirs.length) {
+        const kept = JSON.parse(get('tree-local') || '[]');
+        set('tree-local', JSON.stringify([...kept, ...theirs.map((w) => ({ ...w, own: undefined }))]));
+      }
+    } catch (e) { /* none to keep */ }
     let stash = {};
     try { stash = JSON.parse(get('account-stash') || '{}') || {}; } catch (e) { /* nothing set aside */ }
     KEYS.forEach((k) => set(k, stash[k] ?? null));

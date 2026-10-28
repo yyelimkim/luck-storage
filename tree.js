@@ -586,12 +586,26 @@
     scene.querySelector('.tree--wishes').insertAdjacentHTML('beforeend', hung(spot(), wish.fill, `data-own="${i}"`));
   });
   keep.set('wishes', mine);
+  // Others' wishes this phone has seen hung: a past guest's, and, while a
+  // guest is in, the account's set aside (both shown as anyone's)
+  const fresh = (w) => w && w.text && (!w.t || w.t > Date.now() - LIFE);
+  const shown = new Set(mine.map((w) => w.id));
+  let setAside = [];
+  try { setAside = JSON.parse(JSON.parse(localStorage.getItem('account-stash') || '{}').wishes || '[]'); } catch (e) { /* none */ }
+  const local = [...keep.get('tree-local', []), ...(Array.isArray(setAside) ? setAside : [])].filter(fresh);
+  keep.set('tree-local', keep.get('tree-local', []).filter(fresh));
+  local.forEach((w) => {
+    if (shown.has(w.id)) return;
+    shown.add(w.id);
+    const i = others.push(w) - 1;
+    scene.querySelector('.tree--wishes').insertAdjacentHTML('beforeend', hung(spot(), w.fill, `data-other="${i}"`));
+  });
   const ON_TREE = 21;  // the most of others' wishes hung at once: the latest
   fetch('/api/wishes').then((r) => (r.ok ? r.json() : [])).then((list) => {
     if (!Array.isArray(list)) return;
-    const ours = new Set(mine.map((w) => w.id));
     const group = scene.querySelector('.tree--wishes');
-    list.filter((w) => w && !ours.has(w.id)).slice(-ON_TREE).forEach((w) => {
+    list.filter((w) => w && !shown.has(w.id)).slice(-ON_TREE).forEach((w) => {
+      shown.add(w.id);
       const i = others.push(w) - 1;
       group.insertAdjacentHTML('beforeend', hung(spot(), w.fill, `data-other="${i}"`));
     });
