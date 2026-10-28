@@ -2934,8 +2934,8 @@ label.settings--row:active { background: var(--system-white); }
 .profile--who img { position: absolute; display: block; }
 .profile--who-doll { left: 0; top: 0; }
 .profile--who-q { left: 47.1px; top: 106.6px; rotate: 4.27deg; }
-.is-guest [data-view="profile"] .profile--who { animation: profile-grow 0.6s cubic-bezier(0.3, 1.4, 0.5, 1) both; }
-.is-guest [data-view="profile"] .profile--who-q { animation: who-bob 2.4s ease-in-out infinite; }
+/* the doll and its question mark bob together, as one */
+.is-guest [data-view="profile"] .profile--who { animation: profile-grow 0.6s cubic-bezier(0.3, 1.4, 0.5, 1) both, who-bob 2.4s 0.6s ease-in-out infinite; }
 @keyframes who-bob { 50% { translate: 0 -4px; } }
 .profile--who:active { transform: scale(0.97); }
 /* its nudge: the wish form's dialog, over everything */
