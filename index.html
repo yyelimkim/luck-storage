@@ -13,7 +13,21 @@
   <!-- installed as an app (Chrome's Install): its name and icon (Figma 495:8045) -->
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="stylesheet" href="design-system.css?v=9">
-  <link rel="stylesheet" href="mobile.css?v=243">
+  <link rel="stylesheet" href="mobile.css?v=244">
+  <script>
+    // Demo branch: on a desktop the site opens on the demo (the home screen)
+    // unless Actual was picked in the switch. Phones, the installed app and
+    // demo.html's own phone (?embed) always get the actual app.
+    (() => {
+      const real = innerWidth <= 500 || matchMedia('(display-mode: standalone)').matches || navigator.standalone;
+      if (real || /[?&](embed|actual)(?:[=&]|$)/.test(location.search)) return;
+      let view = null;
+      try { view = localStorage.getItem('lc-view'); } catch (e) {}
+      if (view !== 'actual') location.replace('demo.html');
+    })();
+  </script>
+  <link rel="stylesheet" href="demo-switch.css?v=1">
+  <script src="demo-switch.js?v=1"></script>
 </head>
 <body>
   <!-- iPhone 17 screen (Figma 97:630 at rest, 97:730 while dialing), laid out at
@@ -531,7 +545,7 @@
   <script src="guest.js?v=7"></script>
   <script src="cards.js?v=188"></script>
   <script src="sounds.js?v=30"></script>
-  <script src="mobile.js?v=131"></script>
+  <script src="mobile.js?v=132"></script>
   <script src="tree.js?v=57"></script>
   <script src="splash.js?v=27"></script>
   <script src="onboarding.js?v=25"></script>
