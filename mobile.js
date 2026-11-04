@@ -108,18 +108,11 @@ function place(st, y, f) {
 // (the real status bar is above the page). Anything wider shows the 402 x 874
 // frame in a phone-shaped preview.
 let fitScale = 1;
-// demo.html shows the app in its own phone (?embed): the preview layout, with
-// its status bar, filling the frame edge to edge with no frame of its own
-const EMBED = /[?&]embed(?:[=&]|$)/.test(location.search);
-document.documentElement.classList.toggle('is-embed', EMBED);
 function fit() {
-  const phone = !EMBED && innerWidth <= 500;
+  const phone = innerWidth <= 500;
   document.documentElement.classList.toggle('is-phone', phone);
   document.documentElement.classList.toggle('is-preview', !phone);
-  if (EMBED) {
-    fitScale = innerWidth / STAGE_W;
-    stageH = innerHeight / fitScale;
-  } else if (phone) {
+  if (phone) {
     fitScale = innerWidth / STAGE_W;
     stageH = innerHeight / fitScale;
   } else {
@@ -128,7 +121,7 @@ function fit() {
     stageH = FIGMA_H;
   }
   stage.style.height = `${stageH}px`;
-  stage.style.transform = phone || EMBED ? `scale(${fitScale})` : `translateY(-14px) scale(${fitScale})`;
+  stage.style.transform = phone ? `scale(${fitScale})` : `translateY(-14px) scale(${fitScale})`;
   const headTop = phone ? 0 : 44;
   // The tab bar (and every button at its height, through --nav-bottom), then
   // the dial's lines LINE_GAP above it, then the fan in what's left
