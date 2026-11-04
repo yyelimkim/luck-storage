@@ -37,6 +37,10 @@ img { -webkit-user-drag: none; }
    window (mobile.js sets the height), header at the very top */
 .is-phone,
 .is-phone body { background: var(--system-white); overscroll-behavior: none; }
+/* Inside demo.html's phone (?embed): the page is the screen, in the preview
+   layout; the demo draws the phone, so no frame, and no hint under it */
+.is-embed .stage { left: 0; top: 0; margin: 0; transform-origin: 0 0; border-radius: 0; box-shadow: none; }
+.is-embed .demo-hint { display: none; }
 /* Nothing scrolls past its ends (no rubber-band showing what's behind) */
 .stage, .stage * { overscroll-behavior: none; }
 .is-phone .stage {
