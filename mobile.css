@@ -2530,7 +2530,7 @@ button.fortune--card:active { transform: scale(0.98); }
   appearance: none;
 }
 .ob--field input::placeholder { color: var(--neutral-700); }
-.ob--field input:focus-visible { box-shadow: 0 0 0 1.5px var(--system-white), 0 0 0 3px var(--system-black); }  /* selected: the ring close in */
+.ob--field input:focus { border-color: var(--system-black); }  /* selected: the Neutral 500 line turns System Black, no second ring */
 .ob--field input[type="date"] { line-height: 49px; }
 /* the field's name sits in it as the placeholder; once you type it rises
    small to the top, and the words drop under it (as Headspace's) */
@@ -2546,7 +2546,7 @@ button.fortune--card:active { transform: scale(0.98); }
   transform-origin: left top;
   transition: transform 0.18s ease, color 0.18s ease;
 }
-.ob--field input { transition: padding-top 0.18s ease; }
+.ob--field input { transition: padding-top 0.18s ease, border-color 0.15s; }
 .ob--field input::placeholder { color: transparent; }
 .ob--field:has(input:not(:placeholder-shown)) > span:first-child,
 .ob--field:has(input[type="date"]) > span:first-child { transform: translateY(-10px) scale(0.75); }  /* 16 → 12, 9px from the top */
@@ -2568,7 +2568,6 @@ button.fortune--card:active { transform: scale(0.98); }
   caret-color: var(--system-black);
   transition: background-color 600000s 0s, padding-top 0.18s ease;
 }
-.ob--field input:-webkit-autofill:focus-visible { -webkit-box-shadow: 0 0 0 100px var(--system-white) inset, 0 0 0 1.5px var(--system-white), 0 0 0 3px var(--system-black); }
 .ob--field input:-webkit-autofill::first-line { font-family: var(--font-display); font-size: 16px; letter-spacing: var(--tracking); }
 /* a word under the password when the account doesn't check out */
 .ob--note { margin: -6px 0 0; min-height: 18px; font-size: 14px; color: var(--hot-pink); }
