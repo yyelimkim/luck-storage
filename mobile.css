@@ -455,7 +455,7 @@ img { -webkit-user-drag: none; }
 }
 .profile--fortune .profile--date,
 .profile--fortune .profile--find { position: relative; }
-.profile--fortune .profile--date { font-size: 14px; white-space: pre; color: var(--neutral-700); }
+.profile--fortune .profile--date { font-size: 13px; white-space: pre; color: var(--neutral-700); }
 .profile--fortune .profile--find { width: 181px; font-size: 20px; }
 .profile--fortune + .profile--label { margin-top: 32px; }
 /* Edge to edge, so the row runs off the screen */
@@ -675,7 +675,7 @@ img { -webkit-user-drag: none; }
   align-items: center;
   gap: 5px;
   font-weight: 500;
-  font-size: 14px;
+  font-size: 13px;
   color: var(--neutral-700);
   cursor: pointer;
 }
@@ -712,7 +712,7 @@ img { -webkit-user-drag: none; }
 .fortune--result .fortune--pill {
   border-color: var(--neutral-700);
   font-weight: 500;
-  font-size: 14px;
+  font-size: 13px;
   color: var(--neutral-700);
 }
 .fortune--hero {
@@ -773,7 +773,7 @@ button.fortune--card:active { transform: scale(0.98); }
   display: flex;
   align-items: center;
   gap: 4px;
-  font-size: 14px;  /* as the colour's name beside it */
+  font-size: 13px;  /* as the colour's name beside it */
 }
 .fortune--ritual-name img { width: 15px; height: 15px; }
 .fortune--ritual-name img { transform: rotate(180deg); }
@@ -787,7 +787,7 @@ button.fortune--card:active { transform: scale(0.98); }
   border-radius: 50%;
   border: 1px solid var(--system-black);
 }
-.fortune--swatch-name { font-size: 14px; }
+.fortune--swatch-name { font-size: 13px; }
 /* Each piece arrives in turn */
 .fortune[data-step="result"] .fortune--pig { animation: fortune-hop 0.6s 0.15s cubic-bezier(0.3, 1.5, 0.5, 1) both; }
 .fortune[data-step="result"] .fortune--coin { animation: fortune-float 3.2s ease-in-out infinite; }
@@ -939,7 +939,7 @@ button.fortune--card:active { transform: scale(0.98); }
 }
 .filter--name {
   font-family: var(--font-display);
-  font-size: 14px;
+  font-size: 13px;
   letter-spacing: var(--tracking);
   line-height: normal;
   white-space: nowrap;
@@ -1192,7 +1192,7 @@ button.fortune--card:active { transform: scale(0.98); }
   background: var(--system-black);
   color: var(--neutral-100);
   font-family: var(--font-display);
-  font-size: 14px;
+  font-size: 13px;
   letter-spacing: var(--tracking);
   white-space: nowrap;
   transform: translate(-50%, -12px);
@@ -1707,7 +1707,7 @@ button.fortune--card:active { transform: scale(0.98); }
   margin: 0 auto;
   /* 460:5296: plain System White words over the canopy */
   font-family: var(--font-display);
-  font-size: 14px;
+  font-size: 13px;
   letter-spacing: var(--tracking);
   color: var(--system-white);
   z-index: 1;
@@ -1828,7 +1828,7 @@ button.fortune--card:active { transform: scale(0.98); }
   margin: 0;
   text-align: center;
   font-family: var(--font-display);
-  font-size: 14px;
+  font-size: 13px;
   line-height: 19px;
   letter-spacing: var(--tracking);
   color: var(--neutral-100);
@@ -1936,7 +1936,7 @@ button.fortune--card:active { transform: scale(0.98); }
 }
 /* The wish at 16 from the top left; who it's from at 14, at the foot */
 .wish--slip .wish--text { position: absolute; left: 25px; top: 82.7px; width: 244px; font-size: 16px; }
-.wish--slip .wish--from { position: absolute; left: 25px; top: 442.7px; width: 244px; font-size: 14px; }
+.wish--slip .wish--from { position: absolute; left: 25px; top: 442.7px; width: 244px; font-size: 13px; }
 
 /* Writing a wish. The button sits over the tree, just above the tab bar, in
    the System Black of the app's main actions, its price in a small pill */
@@ -1983,7 +1983,7 @@ button.fortune--card:active { transform: scale(0.98); }
   background: var(--system-black);
   color: var(--neutral-100);
   font-family: var(--font-display);
-  font-size: 14px;
+  font-size: 13px;
   letter-spacing: var(--tracking);
   white-space: nowrap;
   transform: translate(-50%, -12px);
@@ -2179,8 +2179,8 @@ button.fortune--card:active { transform: scale(0.98); }
 .wishform--slip textarea::placeholder { color: var(--neutral-700); }
 /* at its foot: how much is written, and who it's from (where an open
    slip's "Anonymous" is) */
-.wishform--count { position: absolute; left: 25px; top: 420px; font-size: 14px; color: var(--neutral-700); }
-.wishform--by { position: absolute; left: 25px; top: 442.7px; font-size: 14px; line-height: 1.35; }
+.wishform--count { position: absolute; left: 25px; top: 420px; font-size: 13px; color: var(--neutral-700); }
+.wishform--by { position: absolute; left: 25px; top: 442.7px; font-size: 13px; line-height: 1.35; }
 /* Anonymous or signed: a switch */
 .wishform--anon {
   /* as wide as the slip, so its words and switch line up with its edges */
@@ -2250,7 +2250,7 @@ button.fortune--card:active { transform: scale(0.98); }
 .wishform--balance {
   min-height: 17px;
   margin-top: 10px;
-  font-size: 14px;
+  font-size: 13px;
   text-align: center;
   color: var(--neutral-100);
 }
@@ -2511,7 +2511,7 @@ button.fortune--card:active { transform: scale(0.98); }
 }
 .ob--sub { margin: 10px 0 32px; font-size: 16px; line-height: 1.35; }
 .ob--field { display: block; margin-bottom: 16px; }
-.ob--field span { display: block; margin-bottom: 8px; font-size: 14px; }
+.ob--field span { display: block; margin-bottom: 8px; font-size: 13px; }
 .ob--field input {
   display: block;
   width: 100%;
@@ -2533,7 +2533,7 @@ button.fortune--card:active { transform: scale(0.98); }
 .ob--field input:focus-visible { box-shadow: 0 0 0 3px var(--system-white), 0 0 0 4.5px var(--system-black); }
 .ob--field input[type="date"] { line-height: 49px; }
 /* a word under the password when the account doesn't check out */
-.ob--note { margin: -6px 0 0; min-height: 18px; font-size: 14px; color: var(--hot-pink); }
+.ob--note { margin: -6px 0 0; min-height: 18px; font-size: 13px; color: var(--hot-pink); }
 .ob--note.is-ok { color: var(--system-black); }  /* a name that's free */
 .ob--note + .ob--field { margin-top: 10px; }
 .ob--note button { padding: 0; border: 0; background: none; font: inherit; letter-spacing: inherit; color: inherit; text-decoration: underline; text-underline-offset: 3px; cursor: pointer; }
@@ -2569,7 +2569,7 @@ button.fortune--card:active { transform: scale(0.98); }
   border: 0;
   background: none;
   font: inherit;
-  font-size: 14px;
+  font-size: 13px;
   letter-spacing: var(--tracking);
   color: var(--system-black);
   cursor: pointer;
@@ -2583,7 +2583,7 @@ button.fortune--card:active { transform: scale(0.98); }
   width: 100%;
   max-width: 371px;
   margin: 2px 0;
-  font-size: 14px;
+  font-size: 13px;
 }
 .ob--or::before,
 .ob--or::after { content: ""; flex: 1; height: 1px; background: var(--system-black); }
@@ -2660,21 +2660,28 @@ button.fortune--card:active { transform: scale(0.98); }
 .ob--page.is-centred .ob--sub { text-align: center; }
 .ob--page.is-centred .ob--btn { align-self: center; flex: none; }
 /* the email and log-in steps open on the clover, as All set does */
-.ob--page[data-page="email"],
 .ob--page[data-page="login"] { padding-top: 150px; }
-.is-phone .ob--page[data-page="email"],
 .is-phone .ob--page[data-page="login"] { padding-top: 100px; }
+/* Email: laid out as Reddit's — the mark a quarter down, the field and
+   Continue just past the middle, the way to log in low over its rule */
+.ob--page[data-page="email"] { padding-top: 204px; }
+.is-phone .ob--page[data-page="email"] { padding-top: 160px; }
+.ob--page[data-page="email"] .ob--sub { margin: 23px 0 41px; }
+.ob--page[data-page="email"] .ob--note + .ob--btn { margin-top: 0; }  /* Continue 28px under the field, as Reddit's */
+/* a field whose placeholder names it: the label kept for screen readers only */
+.ob--field.is-bare > span { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
 /* a title with no line under it keeps the line's room above the field */
 .ob--page[data-page="password"] .ob--title { margin-bottom: 32px; }
 /* the wordmark, as the welcome's (Figma 626:213: 160 × 68) */
-.ob--wordmark { align-self: center; width: 160px; height: auto; margin-bottom: 20px; }
+.ob--wordmark { align-self: center; width: 160px; height: auto; margin-bottom: 18px; }
 /* the terms, under the button */
-.ob--legal { margin: 12px 0 0; font-size: 14px; line-height: 1.35; text-align: center; color: var(--neutral-700); }  /* secondary words in Neutral 700 */
+.ob--legal { margin: 15px 0 0; font-size: 13px; line-height: 1.35; text-align: center; color: var(--neutral-700); }  /* secondary words in Neutral 700 */
 .ob--legal u { text-underline-offset: 3px; color: var(--system-black); }  /* the links, as "Log in" after its grey question */
 /* the other way in, at the foot over the system line */
 .ob--foot {
   margin-top: auto;
-  padding-top: 8px;
+  margin-bottom: 28px;  /* the rule well up from the foot, as Reddit's */
+  padding-top: 20px;
   border-top: 1px solid var(--system-black);
   display: flex;
   justify-content: center;
@@ -2711,7 +2718,7 @@ button.fortune--card:active { transform: scale(0.98); }
 .ob--note.is-hint { color: var(--system-black); }
 .ob--note + .ob--btn { margin-top: 12px; }  /* a word under the field keeps clear of the button */
 /* Username ideas: pills in the tags' height and line */
-.ob--ideas-label { margin: 14px 0 10px; font-size: 14px; }
+.ob--ideas-label { margin: 14px 0 10px; font-size: 13px; }
 .ob--ideas { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 8px; }
 .ob--chip {
   height: 33px;  /* the card tags' height and line */
@@ -2720,7 +2727,7 @@ button.fortune--card:active { transform: scale(0.98); }
   border-radius: 999px;
   background: var(--system-white);
   font: inherit;
-  font-size: 14px;
+  font-size: 13px;
   letter-spacing: var(--tracking);
   color: var(--system-black);
   cursor: pointer;
@@ -2891,9 +2898,9 @@ button.fortune--card:active { transform: scale(0.98); }
 /* You, at the top: your name in Cooper, your email under it */
 .settings--me { padding: 6px 4px 4px; }
 .settings--me-name { font-family: var(--font-title); font-size: 27px; letter-spacing: var(--tracking-title); }
-.settings--me-email { margin-top: 4px !important; font-size: 14px; }
+.settings--me-email { margin-top: 4px !important; font-size: 13px; }
 .settings--me-email:empty { display: none; }
-.settings--label { margin: 26px 4px 8px !important; font-size: 14px; }
+.settings--label { margin: 26px 4px 8px !important; font-size: 13px; }
 .settings--group {
   overflow: hidden;
   border: 1px solid var(--system-black);
