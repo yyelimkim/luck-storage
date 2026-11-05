@@ -13,7 +13,7 @@
   <!-- installed as an app (Chrome's Install): its name and icon (Figma 495:8045) -->
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="stylesheet" href="design-system.css?v=9">
-  <link rel="stylesheet" href="mobile.css?v=245">
+  <link rel="stylesheet" href="mobile.css?v=249">
 </head>
 <body>
   <!-- iPhone 17 screen (Figma 97:630 at rest, 97:730 while dialing), laid out at
@@ -439,43 +439,44 @@
 
     <div class="homebar"></div>
 
-    <!-- Onboarding: welcome (three slides), an account (create one or log
-         in), your name and birthday, then all set. Drawn from the design
-         system: Cooper titles, Paperlogy 16/17, the 371 x 51 buttons. -->
+    <!-- Onboarding, in the shape of Reddit's: the welcome (Get started, or
+         I already have an account) → a sheet of ways in → your email →
+         the code sent to it → your username → a password → your birthday
+         → all set. Logging in: email and password, then all set. Drawn from
+         the design system: Cooper titles, Paperlogy 16/17, the 371 x 51
+         buttons, the 0.771px line, the filter sheet. -->
     <section class="ob" id="ob" aria-label="Welcome" data-step="welcome">
       <div class="ob--top">
         <button type="button" class="ob--back" aria-label="Back"><img src="assets/system/arrow-back.svg" width="28" height="28" alt=""></button>
-        <div class="ob--bar" role="progressbar" aria-label="Setting up" aria-valuemin="0" aria-valuemax="3"><span class="ob--fill"></span></div>
+        <img class="ob--mark" src="assets/mobile/clover.svg" width="27" height="27" alt="">
       </div>
 
-      <!-- Welcome: one screen. Every card in a ring, as Home fans them,
-           turning slowly round behind the logo; the line and the way in below -->
+      <!-- Welcome: the line up top, every card in a ring turning below it,
+           and the two ways in at the foot -->
       <div class="ob--page" data-page="welcome">
         <div class="ob--art" aria-hidden="true"><div class="ob--ring" id="ob-ring"></div></div>
         <img class="ob--logo" src="assets/splash/wordmark.svg?v=2" width="2264" height="961" alt="Luck Corner">
         <h2 class="ob--hero">A little luck,<br>every day.</h2>
         <div class="ob--actions">
-          <button type="button" class="ob--btn" data-go="signup">Get started</button>
-          <button type="button" class="ob--link" data-go="login"><span class="ob--muted">Already have an account?</span> <u>Log in</u></button>
+          <button type="button" class="ob--btn" data-go="ways">Get started</button>
+          <button type="button" class="ob--btn is-line" data-go="login">I already have an account</button>
         </div>
       </div>
 
-      <!-- Create an account / log in -->
-      <form class="ob--page" data-page="account" novalidate>
-        <h2 class="ob--title" id="ob-account-title">Create your account</h2>
-        <p class="ob--sub" id="ob-account-sub">Keep your luck safe across devices.</p>
+      <!-- Email: the first step of signing up -->
+      <form class="ob--page is-centred" data-page="email" novalidate>
+        <img class="ob--clover" src="assets/system/clover-claimed.svg" width="76.6022" height="76.6022" alt="">
+        <h2 class="ob--title">Hi new friend,<br>welcome to Luck Corner</h2>
+        <p class="ob--sub">Enter your email to get started</p>
         <label class="ob--field"><span>Email</span><input type="email" name="email" autocomplete="email" placeholder="you@example.com" required></label>
-        <label class="ob--field"><span>Password</span><input type="password" name="password" autocomplete="new-password" placeholder="At least 8 characters" minlength="8" required></label>
-        <div class="ob--actions">
-          <button type="submit" class="ob--btn" disabled>Continue</button>
-          <p class="ob--or"><span>or</span></p>
-          <button type="button" class="ob--btn is-line" data-go="apple">Continue with Apple</button>
-          <button type="button" class="ob--link" id="ob-switch"><span class="ob--muted">Already have an account?</span> <u>Log in</u></button>
-        </div>
+        <p class="ob--note" id="ob-email-note" role="alert"></p>
+        <button type="submit" class="ob--btn" disabled>Continue</button>
+        <p class="ob--legal">By continuing, you agree to our <u>Terms</u> and acknowledge that you understand the <u>Privacy Policy</u>.</p>
+        <div class="ob--foot"><button type="button" class="ob--link" data-go="login"><u>Log into existing account</u></button></div>
       </form>
 
       <!-- Verify: the code sent to your email -->
-      <form class="ob--page" data-page="verify" novalidate>
+      <form class="ob--page is-centred" data-page="verify" novalidate>
         <h2 class="ob--title">Check your email</h2>
         <p class="ob--sub" id="ob-verify-sub">We sent you a 6-digit code.</p>
         <label class="ob--field"><span>Code</span><input type="text" name="code" inputmode="numeric" autocomplete="one-time-code" placeholder="123456" maxlength="6" required></label>
@@ -486,22 +487,44 @@
         </div>
       </form>
 
-      <!-- Name -->
-      <form class="ob--page" data-page="name" novalidate>
-        <h2 class="ob--title">What should we call you?</h2>
-        <p class="ob--sub">It's how we'll greet you each day.</p>
-        <label class="ob--field"><span>Username</span><input type="text" name="username" autocomplete="username" placeholder="yourname" maxlength="20" autocapitalize="none" spellcheck="false" required></label>
+      <!-- Username: one ready for you, checked as you type, with others to pick -->
+      <form class="ob--page is-centred" data-page="name" novalidate>
+        <h2 class="ob--title">Create your username</h2>
+        <p class="ob--sub">Pick a name to use on Luck Corner. Choose carefully, you won’t be able to change it later.</p>
+        <label class="ob--field has-mark"><span>Username</span><input type="text" name="username" autocomplete="username" placeholder="yourname" maxlength="20" autocapitalize="none" spellcheck="false" required><img class="ob--ok" src="assets/filter/check.svg" width="10" height="7.3773" alt=""></label>
         <p class="ob--note" id="ob-user-note" role="status"></p>
-        <label class="ob--field"><span>Name</span><input type="text" name="name" autocomplete="given-name" placeholder="Your name" maxlength="20" required></label>
+        <p class="ob--ideas-label">Need inspiration? Try one of these:</p>
+        <div class="ob--ideas" id="ob-ideas"></div>
+        <button type="button" class="ob--chip is-more" id="ob-more">See more options</button>
+        <div class="ob--actions"><button type="submit" class="ob--btn" disabled>Continue</button></div>
+      </form>
+
+      <!-- Password: at least 8, to see as you type it if you like -->
+      <form class="ob--page is-centred" data-page="password" novalidate>
+        <h2 class="ob--title">Set a password</h2>
+        <label class="ob--field has-mark"><span>Password</span><input type="password" name="password" autocomplete="new-password" placeholder="Password" minlength="8" required><img class="ob--ok" src="assets/filter/check.svg" width="10" height="7.3773" alt=""><button type="button" class="ob--peek" aria-label="Show password" aria-pressed="false"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M2.5 12S6 5.5 12 5.5 21.5 12 21.5 12 18 18.5 12 18.5 2.5 12 2.5 12Z" stroke="#272727" stroke-width="1.48" stroke-linejoin="round"/><circle cx="12" cy="12" r="3" stroke="#272727" stroke-width="1.48"/><path class="ob--peek-off" d="M4 4l16 16" stroke="#272727" stroke-width="1.48" stroke-linecap="round"/></svg></button></label>
+        <p class="ob--note is-hint" id="ob-pw-note">Password must be at least 8 characters</p>
         <div class="ob--actions"><button type="submit" class="ob--btn" disabled>Continue</button></div>
       </form>
 
       <!-- Birthday -->
-      <form class="ob--page" data-page="birthday" novalidate>
-        <h2 class="ob--title">When's your birthday?</h2>
+      <form class="ob--page is-centred" data-page="birthday" novalidate>
+        <h2 class="ob--title">When’s your birthday?</h2>
         <p class="ob--sub">Your daily fortune is read from it.</p>
         <label class="ob--field"><span>Birthday</span><input type="date" name="birthday" min="1900-01-01" required></label>
         <div class="ob--actions"><button type="submit" class="ob--btn" disabled>Continue</button></div>
+      </form>
+
+      <!-- Log in -->
+      <form class="ob--page is-centred" data-page="login" novalidate>
+        <img class="ob--clover" src="assets/system/clover-claimed.svg" width="76.6022" height="76.6022" alt="">
+        <h2 class="ob--title">Welcome back</h2>
+        <p class="ob--sub">Log in to pick up your luck where you left it.</p>
+        <label class="ob--field"><span>Email</span><input type="email" name="email" autocomplete="email" placeholder="you@example.com" required></label>
+        <label class="ob--field"><span>Password</span><input type="password" name="password" autocomplete="current-password" placeholder="Your password" required></label>
+        <p class="ob--note" id="ob-login-note" role="alert"></p>
+        <button type="submit" class="ob--btn" disabled>Log in</button>
+        <div class="ob--foot"><button type="button" class="ob--link" data-go="ways"><span class="ob--muted">New here?</span> <u>Create an account</u></button></div>
       </form>
 
       <!-- All set -->
@@ -512,6 +535,21 @@
           <p class="ob--sub" id="ob-done-sub">Here are 3 clovers to start with.</p>
         </div>
         <div class="ob--actions"><button type="button" class="ob--btn" data-go="home">Start</button></div>
+      </div>
+
+      <!-- Get started: the ways in, on the filter's sheet over the welcome -->
+      <div class="filter ob--ways" id="ob-ways" aria-hidden="true">
+        <div class="filter--scrim"></div>
+        <div class="filter--sheet" role="dialog" aria-labelledby="ob-ways-title">
+          <h2 class="ob--title" id="ob-ways-title">Get started</h2>
+          <div class="ob--ways-list">
+            <button type="button" class="ob--btn is-line has-icon" data-go="google"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M17.66 6.34A8 8 0 1 0 20 12h-7.5" stroke="#272727" stroke-width="1.48" stroke-linecap="round" stroke-linejoin="round"/></svg>Continue with Google</button>
+            <button type="button" class="ob--btn is-line has-icon" data-go="apple"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M15.6 3.5c.1 1.1-.3 2.1-1 2.9-.7.8-1.7 1.3-2.7 1.2-.1-1 .4-2.1 1-2.8.7-.8 1.8-1.3 2.7-1.3ZM18.9 16.3c-.5 1.1-.7 1.6-1.3 2.5-.9 1.3-2.1 2.9-3.6 2.9-1.3 0-1.7-.8-3.4-.8-1.8 0-2.2.8-3.5.8-1.5 0-2.6-1.5-3.5-2.8C1.2 15.4 1 11.4 2.4 9.3c1-1.5 2.5-2.4 4-2.4 1.5 0 2.4.8 3.6.8 1.2 0 1.9-.8 3.6-.8 1.3 0 2.7.7 3.7 1.9-3.2 1.8-2.7 6.4.6 7.5Z" stroke="#272727" stroke-width="1.48" stroke-linejoin="round"/></svg>Continue with Apple</button>
+            <button type="button" class="ob--btn is-line has-icon" data-go="email"><img src="assets/share/mail.svg" width="24" height="24" alt="">Continue with email</button>
+          </div>
+          <p class="ob--legal">By continuing, you agree to our <u>Terms</u> and acknowledge that you understand the <u>Privacy Policy</u>.</p>
+          <button type="button" class="ob--link" data-go="cancel">Cancel</button>
+        </div>
       </div>
     </section>
 
@@ -533,6 +571,6 @@
   <script src="mobile.js?v=131"></script>
   <script src="tree.js?v=57"></script>
   <script src="splash.js?v=27"></script>
-  <script src="onboarding.js?v=26"></script>
+  <script src="onboarding.js?v=27"></script>
 </body>
 </html>

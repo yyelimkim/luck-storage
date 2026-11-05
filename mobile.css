@@ -2442,7 +2442,6 @@ button.fortune--card:active { transform: scale(0.98); }
   z-index: 2;
   display: flex;
   align-items: center;
-  gap: 8px;
   height: 44px;
 }
 .is-phone .ob--top { top: 10px; }
@@ -2459,25 +2458,16 @@ button.fortune--card:active { transform: scale(0.98); }
   transition: opacity 0.3s;
 }
 .ob--back img { display: block; }
-.ob--bar {
-  flex: 1;
-  height: 14px;
-  margin-right: 8px;  /* across to the screen's 16px margin */
-  padding: 2px;
-  box-sizing: border-box;
-  border-radius: 999px;
-  border: 0.771px solid var(--system-black);
-  background: var(--ui-white);
+/* the clover, small and centred, over each step (as Reddit's mark) */
+.ob--mark {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  translate: -50% -50%;
   transition: opacity 0.3s;
 }
-.ob--fill {
-  display: block;
-  width: var(--done, 0%);
-  height: 100%;
-  border-radius: 999px;
-  background: var(--system-black);
-  transition: width 0.4s cubic-bezier(0.3, 0.8, 0.2, 1);
-}
+.ob[data-step="email"] .ob--mark,
+.ob[data-step="login"] .ob--mark { opacity: 0; }
 .ob[data-step="welcome"] .ob--top,
 .ob[data-step="done"] .ob--top { opacity: 0; pointer-events: none; }
 
@@ -2594,12 +2584,12 @@ button.fortune--card:active { transform: scale(0.98); }
 .ob--ring {
   position: absolute;
   left: 50%;
-  top: 875px;  /* the top card's top 214px down */
+  top: 961px;  /* the top card's top 300px down, clear of the line */
   width: 0;
   height: 0;
   animation: ob-turn 90s linear infinite;
 }
-.is-phone .ob--ring { top: 819px; }
+.is-phone .ob--ring { top: 905px; }
 @keyframes ob-turn { to { rotate: 360deg; } }
 .ob--ring img {
   position: absolute;
@@ -2616,7 +2606,7 @@ button.fortune--card:active { transform: scale(0.98); }
   content: "";
   position: absolute;
   inset: 0;
-  background: linear-gradient(to bottom, transparent 52%, var(--system-white) 74%);
+  background: linear-gradient(to bottom, transparent 60%, var(--system-white) 80%);  /* a long, soft fade above the buttons */
 }
 @media (prefers-reduced-motion: reduce) { .ob--ring { animation: none; } }
 .ob--logo {
@@ -2629,7 +2619,7 @@ button.fortune--card:active { transform: scale(0.98); }
 .is-phone .ob--logo { margin-top: 30px; }
 .ob--hero {
   position: relative;
-  margin: auto 0 22px;
+  margin: 24px 0 0;
   text-align: center;
   font-family: var(--font-title);
   font-weight: 400;
@@ -2637,11 +2627,7 @@ button.fortune--card:active { transform: scale(0.98); }
   letter-spacing: var(--tracking-title);
   line-height: 1.1;
 }
-.ob--page[data-page="welcome"] .ob--actions { position: relative; margin-top: 0; gap: 8px; }
-/* with no guest option, the words keep their place: 60px above Get started (Figma 626:2) */
-.ob--page[data-page="welcome"] .ob--hero { margin-bottom: 60px; }
-/* the welcome's two choices sit close, so the words stay clear of the cards */
-.ob--page[data-page="welcome"] .ob--link { padding: 6px 10px 0; }
+.ob--page[data-page="welcome"] .ob--actions { position: relative; }
 
 /* All set: the clover from Luck Claimed, a swing as it lands */
 .ob--done {
@@ -2656,6 +2642,95 @@ button.fortune--card:active { transform: scale(0.98); }
 .ob--page.is-on .ob--done img { animation: ob-clover 0.8s 0.2s cubic-bezier(0.3, 1.5, 0.5, 1) both; }
 @keyframes ob-clover { from { opacity: 0; scale: 0.3; rotate: -40deg; } }
 .ob--done .ob--sub { margin-bottom: 0; }
+
+/* Reddit's shape: each step's words centred, the fields and notes as before */
+.ob--page.is-centred .ob--title,
+.ob--page.is-centred .ob--sub { text-align: center; }
+.ob--page.is-centred .ob--btn { align-self: center; flex: none; }
+/* the email and log-in steps open on the clover, as All set does */
+.ob--page[data-page="email"],
+.ob--page[data-page="login"] { padding-top: 150px; }
+.is-phone .ob--page[data-page="email"],
+.is-phone .ob--page[data-page="login"] { padding-top: 100px; }
+/* a title with no line under it keeps the line's room above the field */
+.ob--page[data-page="password"] .ob--title { margin-bottom: 32px; }
+.ob--clover { align-self: center; margin-bottom: 20px; filter: brightness(0.16); }
+/* the terms, under the button */
+.ob--legal { margin: 12px 0 0; font-size: 14px; line-height: 1.35; text-align: center; }
+.ob--legal u { text-underline-offset: 3px; }
+/* the other way in, at the foot over the system line */
+.ob--foot {
+  margin-top: auto;
+  padding-top: 8px;
+  border-top: 0.771px solid var(--system-black);
+  display: flex;
+  justify-content: center;
+}
+/* a tick in the field once it's good (the filter's Confirm check), and the
+   password's eye beside it */
+.ob--field.has-mark { position: relative; }
+.ob--field.has-mark input { padding-right: 48px; }
+.ob--ok {
+  position: absolute;
+  right: 20px;
+  bottom: 22px;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+.ob--field.is-ok .ob--ok { opacity: 1; }
+.ob--page[data-page="password"] .ob--field.has-mark input { padding-right: 84px; }
+.ob--page[data-page="password"] .ob--ok { right: 56px; }
+.ob--peek {
+  position: absolute;
+  right: 8px;
+  bottom: 4px;
+  width: 44px;
+  height: 43px;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+}
+.ob--peek svg { display: block; }
+.ob--peek[aria-pressed="true"] .ob--peek-off { display: none; }
+.ob--note.is-hint { color: var(--system-black); }
+.ob--note + .ob--btn { margin-top: 12px; }  /* a word under the field keeps clear of the button */
+/* Username ideas: pills in the tags' height and line */
+.ob--ideas-label { margin: 14px 0 10px; font-size: 14px; }
+.ob--ideas { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 8px; }
+.ob--chip {
+  height: 33.172px;  /* the card tags' height and line */
+  padding: 0 14px;
+  border: 0.771px solid var(--system-black);
+  border-radius: 999px;
+  background: var(--ui-white);
+  font: inherit;
+  font-size: 14px;
+  letter-spacing: var(--tracking);
+  color: var(--system-black);
+  cursor: pointer;
+  transition: transform 0.15s;
+}
+.ob--chip:active { transform: scale(0.95); }
+.ob--chip.is-more { align-self: flex-start; }
+.ob--chip.is-more::before { content: "↻ "; }
+
+/* Get started: the ways in, on the filter's sheet over the welcome */
+.ob--ways { z-index: 3; }
+.ob--ways .filter--sheet {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 28px 16px 40px;
+}
+.ob--ways .ob--title { margin-bottom: 24px; text-align: center; }
+.ob--ways-list { display: flex; flex-direction: column; align-items: center; gap: 10px; width: 100%; }
+.ob--btn.has-icon { position: relative; }
+.ob--btn.has-icon > svg,
+.ob--btn.has-icon > img { position: absolute; left: 20px; top: 50%; translate: 0 -50%; display: block; }
+.ob--ways .ob--legal { margin: 16px 0 6px; }
 
 /* Demo only: under the phone, very small, while onboarding is up */
 .demo-hint {
