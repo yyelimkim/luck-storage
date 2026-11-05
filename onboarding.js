@@ -51,6 +51,10 @@
   // The accounts made on this phone, by email; and who's signing up or in
   const accounts = () => store.get('accounts', {});
   let pending = null;   // signing up: { email, pw, password }
+  // Test sign-ups (Yelim trying it out): the whole flow, but nothing kept,
+  // here or online, and no code sent to a real inbox (any 6 digits do)
+  const TEST_EMAILS = ['lol@gmail.com'];
+  const isTest = (email) => TEST_EMAILS.includes(String(email || '').trim().toLowerCase());
   let who = null;       // logged in: { name, username, birthday }
   async function hash(pw) {
     const bytes = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(`luck-corner:${pw}`));
@@ -245,6 +249,7 @@
   const eNote = document.getElementById('ob-email-note');
   const TAKEN = 'There’s already an account with this email.';
   async function emailTaken(email) {
+    if (isTest(email)) return false;
     if (accounts()[email]) return true;
     const r = await ask(`/api/accounts?email=${encodeURIComponent(email)}`);
     return !!(r && r.taken);
@@ -286,6 +291,7 @@
   async function sendCode() {
     const email = pending.email;
     document.getElementById('ob-verify-sub').textContent = `We sent a 6-digit code to ${email}.`;
+    if (isTest(email)) { vNote.textContent = ''; pages.verify.elements.code.value = ''; return true; }
     const r = await ask('/api/verify', json({ email }));
     if (!r) return null;  // not set up: no verifying
     if (r.status === 200) { vNote.textContent = ''; pages.verify.elements.code.value = ''; return true; }
@@ -293,6 +299,7 @@
     return false;
   }
   async function verifyCode(f) {
+    if (isTest(pending.email)) return /^\d{6}$/.test(f.elements.code.value.trim());
     const r = await ask('/api/verify', json({ email: pending.email, code: f.elements.code.value.trim() }));
     if (r && r.ok) { vNote.textContent = ''; return true; }
     vNote.textContent = (r && r.error) || 'That code couldn’t be checked. Try again.';
@@ -434,8 +441,18 @@
       birthday = born;  // mobile.js's, read by Daily Fortune
       try { localStorage.setItem('birthday', born); } catch (e) { /* kept for this visit only */ }
     }
+    // a test sign-up: Home as anyone would see it, but nothing remembered
+    const testing = mode === 'signup' && pending && isTest(pending.email);
+    if (testing) {
+      try {
+        const acc = accounts();
+        if (acc[pending.email]) { delete acc[pending.email]; store.set('accounts', acc); }
+        ['onboarded', 'name', 'username', 'birthday'].forEach((k) => localStorage.removeItem(k));
+        if (isTest(store.get('email', ''))) localStorage.removeItem('email');
+      } catch (e) { /* nothing kept anyway */ }
+    }
     // a new account is kept on this phone, to log back into
-    if (mode === 'signup' && pending && pending.pw) {
+    if (mode === 'signup' && pending && pending.pw && !testing) {
       store.set('accounts', { ...accounts(), [pending.email]: { pw: pending.pw, username, name, birthday: born || null } });
       store.set('email', pending.email);
       // and the account online, so it works on any phone (the username and
@@ -443,9 +460,9 @@
       ask('/api/auth', json({ action: 'signup', email: pending.email, password: pending.password, username, name, birthday: born || null }))
         .then((up) => { if (up && up.status === 201) { Guest.adopt(pending.email, up.token, up.account, pending.pw); Guest.sync(); } });
     }
-    try { if (username) localStorage.setItem('username', username); } catch (e) { /* this visit only */ }
+    if (!testing) try { if (username) localStorage.setItem('username', username); } catch (e) { /* this visit only */ }
     // remembered: next time, straight to Home
-    try {
+    if (!testing) try {
       localStorage.setItem('onboarded', '1');
       localStorage.setItem('name', name);
     } catch (e) { /* this visit only */ }

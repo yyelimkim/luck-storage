@@ -4,7 +4,7 @@
 // Needs RESEND_API_KEY (and VERIFY_FROM, an address on a domain verified in
 // Resend) set on the Vercel project, as well as the store.
 const crypto = require('crypto');
-const { redis, connected, ipOf, bodyOf, limited, emailKey } = require('./_redis');
+const { redis, connected, ipOf, bodyOf, limited, emailKey, isTest } = require('./_redis');
 const KEY = process.env.RESEND_API_KEY;
 const FROM = process.env.VERIFY_FROM || 'Luck Corner <onboarding@resend.dev>';
 const EMAIL = /^\S+@\S+\.\S+$/;
@@ -17,6 +17,8 @@ module.exports = async (req, res) => {
     const b = bodyOf(req);
     const email = String(b.email || '').trim().toLowerCase();
     if (!EMAIL.test(email)) return res.status(400).json({ error: 'Not an email.' });
+    // a test email: no code sent to a real inbox; any 6 digits do
+    if (isTest(email)) return res.status(200).json(b.code == null ? { sent: true } : { ok: /^\d{6}$/.test(String(b.code).trim()) });
     const k = `verify:${emailKey(email)}`;
     if (b.code == null) {
       if (await limited(`rlv:${emailKey(email)}`, 5) || await limited(`rlvi:${ipOf(req)}`, 15)) {

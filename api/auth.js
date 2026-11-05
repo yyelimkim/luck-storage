@@ -11,7 +11,7 @@
 //   POST /api/auth {action: 'delete', token}          -> {ok}
 // A token lasts 90 days, renewed whenever it's used.
 const crypto = require('crypto');
-const { redis, connected, ipOf, bodyOf, limited, emailKey, seen } = require('./_redis');
+const { redis, connected, ipOf, bodyOf, limited, emailKey, seen, isTest, forgetTest } = require('./_redis');
 const EMAIL = /^\S+@\S+\.\S+$/;
 const NAME = /^[a-z0-9._]{3,20}$/;
 const SESSION = 90 * 24 * 60 * 60;
@@ -55,6 +55,12 @@ module.exports = async (req, res) => {
     const b = bodyOf(req);
     const email = String(b.email || '').trim().toLowerCase();
     const password = typeof b.password === 'string' ? b.password : '';
+
+    // a test email: never kept online
+    if (isTest(email) && (b.action === 'signup' || b.action === 'login')) {
+      await forgetTest(email);
+      return res.status(422).json({ test: true, missing: true, error: 'A test account: nothing is kept.' });
+    }
 
     if (b.action === 'signup') {
       const username = String(b.username || '').toLowerCase();

@@ -45,4 +45,18 @@ async function limited(key, max) {
 // emails are kept only as a hash
 const emailKey = (email) => require('crypto').createHash('sha256').update(`luck-corner:${String(email).trim().toLowerCase()}`).digest('hex');
 
-module.exports = { redis, connected, ipOf, bodyOf, limited, emailKey, seen };
+// Test sign-ups: run through the whole flow, but nothing about them is kept
+// (and what was kept before is cleared away)
+const TEST_EMAILS = ['lol@gmail.com'];
+const isTest = (email) => TEST_EMAILS.includes(String(email || '').trim().toLowerCase());
+async function forgetTest(email) {
+  const ek = emailKey(email);
+  const raw = await redis('GET', `acct:${ek}`);
+  let username = await redis('GET', `email:${ek}`);
+  try { username = JSON.parse(raw).username || username; } catch (e) { /* no account */ }
+  if (username) await redis('DEL', `user:${username}`);
+  await redis('DEL', `acct:${ek}`);
+  await redis('DEL', `email:${ek}`);
+}
+
+module.exports = { redis, connected, ipOf, bodyOf, limited, emailKey, seen, isTest, forgetTest };

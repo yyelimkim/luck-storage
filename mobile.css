@@ -2518,7 +2518,7 @@ button.fortune--card:active { transform: scale(0.98); }
   height: 58px;  /* a touch taller than the buttons: room above and below the risen name */
   padding: 0 18px;
   box-sizing: border-box;
-  border: 1px solid var(--system-black);
+  border: 1px solid var(--neutral-500);
   border-radius: 16px;
   background: var(--system-white);
   font: inherit;
