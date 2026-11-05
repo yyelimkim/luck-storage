@@ -101,7 +101,6 @@
       fill.style.setProperty('--done', `${((i + 1) / steps.length) * 100}%`);
       bar.setAttribute('aria-valuenow', String(i + 1));
     }
-    if (step === 'name') suggestName();
     // the first field ready to type in (not on a phone, where it'd pop the keyboard)
     const input = next.querySelector('input');
     if (input && root.classList.contains('is-preview') && step !== 'name') setTimeout(() => input.focus({ preventScroll: true }), 350);
@@ -176,8 +175,6 @@
     }
     if (to === 'login') {
       begin('login', 'login');
-      const email = pages.login.elements.email;
-      if (!email.value) email.value = store.get('email', '') || store.get('last-email', '');
       check(pages.login);
     }
     if (to === 'home') finish('start');
@@ -350,21 +347,6 @@
     }, 400);
   }
   uField.addEventListener('input', checkUser);
-  // one ready for you: two luck words and a number, as a username can be
-  const WORDS = {
-    a: ['lucky', 'golden', 'sunny', 'starry', 'merry', 'charmed', 'minty', 'happy', 'cosy', 'brave', 'gentle', 'jolly'],
-    b: ['clover', 'charm', 'acorn', 'pebble', 'wish', 'comet', 'tulip', 'ladybug', 'horseshoe', 'penny', 'acorn', 'dandelion'],
-  };
-  const pick = (list) => list[Math.floor(Math.random() * list.length)];
-  function idea() {
-    for (;;) {
-      const name = `${pick(WORDS.a)}_${pick(WORDS.b)}${Math.floor(Math.random() * 9000) + 1000}`;
-      if (name.length <= 20) return name;
-    }
-  }
-  function suggestName() {
-    if (!uField.value) { uField.value = idea(); checkUser(); }
-  }
 
   // --- Password: shown on a tap of the eye; the hint says when it's long enough
   const pw = pages.password.elements.password;
