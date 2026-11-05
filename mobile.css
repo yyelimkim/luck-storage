@@ -2534,7 +2534,8 @@ button.fortune--card:active { transform: scale(0.98); }
 .ob--field input[type="date"] { line-height: 49px; }
 /* a word under the password when the account doesn't check out */
 .ob--note { margin: -6px 0 0; min-height: 18px; font-size: 13px; color: var(--hot-pink); }
-.ob--note.is-ok { color: var(--system-black); }  /* a name that's free */
+.ob--note.is-ok { color: var(--forest-green); }  /* good news: a name that's free, a long-enough password, a code on its way */
+.ob--note.is-wait { color: var(--neutral-700); }  /* still checking */
 .ob--note + .ob--field { margin-top: 10px; }
 .ob--note button { padding: 0; border: 0; background: none; font: inherit; letter-spacing: inherit; color: inherit; text-decoration: underline; text-underline-offset: 3px; cursor: pointer; }
 
@@ -2717,26 +2718,6 @@ button.fortune--card:active { transform: scale(0.98); }
 .ob--peek[aria-pressed="true"] .ob--peek-off { display: none; }
 .ob--note.is-hint { color: var(--system-black); }
 .ob--note + .ob--btn { margin-top: 12px; }  /* a word under the field keeps clear of the button */
-/* Username ideas: pills in the tags' height and line */
-.ob--ideas-label { margin: 14px 0 10px; font-size: 13px; }
-.ob--ideas { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 8px; }
-.ob--chip {
-  height: 33px;  /* the card tags' height and line */
-  padding: 0 14px;
-  border: 1px solid var(--system-black);
-  border-radius: 999px;
-  background: var(--system-white);
-  font: inherit;
-  font-size: 13px;
-  letter-spacing: var(--tracking);
-  color: var(--system-black);
-  cursor: pointer;
-  transition: transform 0.15s;
-}
-.ob--chip:active { transform: scale(0.95); }
-.ob--chip.is-more { align-self: flex-start; }
-.ob--chip.is-more::before { content: "↻ "; }
-
 /* Get started: the ways in, on the filter's sheet over the welcome */
 .ob--ways { z-index: 3; }
 .ob--ways .filter--sheet {

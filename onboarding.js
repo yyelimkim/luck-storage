@@ -298,7 +298,12 @@
   const uLabel = uField.closest('.ob--field');
   let userFree = null;  // the name last found free
   let userTimer = 0;
-  function sayUser(text, ok = false) { uNote.textContent = text; uNote.classList.toggle('is-ok', ok); }
+  // a word under the name: an error (pink), still checking (grey) or free (green)
+  function sayUser(text, state = '') {
+    uNote.textContent = text;
+    uNote.classList.toggle('is-ok', state === 'ok');
+    uNote.classList.toggle('is-wait', state === 'wait');
+  }
   function checkUser() {
     clearTimeout(userTimer);
     const name = uField.value.trim().toLowerCase();
@@ -308,7 +313,7 @@
     check(pages.name);
     if (!name) { sayUser(''); return; }
     if (!/^[a-z0-9._]{3,20}$/.test(name)) { sayUser('3 to 20 letters, numbers, . or _'); return; }
-    sayUser('Checking…', true);
+    sayUser('Checking…', 'wait');
     userTimer = setTimeout(async () => {
       const here = Object.values(accounts()).some((a) => a.username === name);
       const r = here ? null : await ask(`/api/accounts?username=${encodeURIComponent(name)}`);
@@ -316,12 +321,12 @@
       if (here || (r && r.taken)) { sayUser(`@${name} is taken`); return; }
       userFree = name;
       uLabel.classList.add('is-ok');
-      sayUser('Great name! It’s not taken, so it’s all yours.', true);
+      sayUser('Great name! It’s not taken, so it’s all yours.', 'ok');
       check(pages.name);
     }, 400);
   }
   uField.addEventListener('input', checkUser);
-  // the ideas: two luck words and a number, as a username can be
+  // one ready for you: two luck words and a number, as a username can be
   const WORDS = {
     a: ['lucky', 'golden', 'sunny', 'starry', 'merry', 'charmed', 'minty', 'happy', 'cosy', 'brave', 'gentle', 'jolly'],
     b: ['clover', 'charm', 'acorn', 'pebble', 'wish', 'comet', 'tulip', 'ladybug', 'horseshoe', 'penny', 'acorn', 'dandelion'],
@@ -333,19 +338,7 @@
       if (name.length <= 20) return name;
     }
   }
-  const ideas = document.getElementById('ob-ideas');
-  function drawIdeas() {
-    ideas.innerHTML = [idea(), idea(), idea()].map((n) => `<button type="button" class="ob--chip">${n}</button>`).join('');
-  }
-  ideas.addEventListener('click', (e) => {
-    const b = e.target.closest('.ob--chip');
-    if (!b) return;
-    uField.value = b.textContent;
-    checkUser();
-  });
-  document.getElementById('ob-more').addEventListener('click', drawIdeas);
   function suggestName() {
-    if (!ideas.children.length) drawIdeas();
     if (!uField.value) { uField.value = idea(); checkUser(); }
   }
 
