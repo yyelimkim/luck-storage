@@ -338,7 +338,7 @@
       if (here || (r && r.taken)) { sayUser(`@${name} is taken`); return; }
       userFree = name;
       uLabel.classList.add('is-ok');
-      sayUser('Great name! It’s not taken, so it’s all yours.', 'ok');
+      sayUser('');  // the tick says it's free
       check(pages.name);
     }, 400);
   }
@@ -472,7 +472,6 @@
     document.getElementById('ob-done-sub').textContent = mode === 'login'
       ? 'Your luck is right where you left it.'
       : 'Here are 3 clovers to start with.';
-    Sounds.claim();
   }).observe(ob, { attributes: true, attributeFilter: ['data-step'] });
 
   // --- Demo: / fills in the step you're on

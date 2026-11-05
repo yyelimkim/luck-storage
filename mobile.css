@@ -431,7 +431,7 @@ img { -webkit-user-drag: none; }
   width: 370px;
   padding: 21px 16px 23px;
   box-sizing: border-box;
-  border: 1px solid var(--system-black);
+  border: 1px solid var(--neutral-300);
   border-radius: 16px;
   background: var(--neutral-100);
   box-shadow: 0 4px 2px rgba(168, 164, 164, 0.2);  /* the system shadow */
@@ -480,7 +480,7 @@ img { -webkit-user-drag: none; }
   height: 180px;
   padding: 18px 16px;
   box-sizing: border-box;
-  border: 1px solid var(--system-black);
+  border: 1px solid var(--neutral-300);
   border-radius: 16px;
   background: var(--neutral-100);  /* Neutral 100; only the icon carries the card's colours */
   scroll-snap-align: start;
@@ -897,7 +897,7 @@ button.fortune--card:active { transform: scale(0.98); }
   justify-content: center;
   gap: 6px;
   padding: 0;
-  border: 1px solid var(--system-black);
+  border: 1px solid var(--neutral-300);
   border-radius: 15px;
   background: var(--neutral-100);
   color: var(--system-black);
@@ -2515,7 +2515,7 @@ button.fortune--card:active { transform: scale(0.98); }
 .ob--field input {
   display: block;
   width: 100%;
-  height: 51px;
+  height: 58px;  /* a touch taller than the buttons: room above and below the risen name */
   padding: 0 18px;
   box-sizing: border-box;
   border: 1px solid var(--system-black);
@@ -2532,6 +2532,27 @@ button.fortune--card:active { transform: scale(0.98); }
 .ob--field input::placeholder { color: var(--neutral-700); }
 .ob--field input:focus-visible { box-shadow: 0 0 0 1.5px var(--system-white), 0 0 0 3px var(--system-black); }  /* selected: the ring close in */
 .ob--field input[type="date"] { line-height: 49px; }
+/* the field's name sits in it as the placeholder; once you type it rises
+   small to the top, and the words drop under it (as Headspace's) */
+.ob--field { position: relative; }
+.ob--field > span:first-child {
+  position: absolute;
+  left: 19px;
+  top: 19px;
+  margin: 0;
+  font-size: 16px;
+  color: var(--neutral-700);
+  pointer-events: none;
+  transform-origin: left top;
+  transition: transform 0.18s ease, color 0.18s ease;
+}
+.ob--field input { transition: padding-top 0.18s ease; }
+.ob--field input::placeholder { color: transparent; }
+.ob--field:has(input:not(:placeholder-shown)) > span:first-child,
+.ob--field:has(input[type="date"]) > span:first-child { transform: translateY(-10px) scale(0.75); }  /* 16 → 12, 9px from the top */
+.ob--field:has(input:not(:placeholder-shown)) input,
+.ob--field input[type="date"] { padding-top: 18px; }
+.ob--field input[type="date"] { line-height: 38px; }
 /* a word under the password when the account doesn't check out */
 .ob--note { margin: -6px 0 0; min-height: 18px; font-size: 14px; color: var(--hot-pink); }
 .ob--note.is-ok { color: var(--forest-green); }  /* good news: a name that's free, a long-enough password, a code on its way */
@@ -2672,8 +2693,6 @@ button.fortune--card:active { transform: scale(0.98); }
 .ob--page[data-page="email"] .ob--sub { margin: 23px 0 41px; }
 .ob--page[data-page="email"] .ob--note + .ob--btn { margin-top: 0; }  /* Continue 28px under the field, as Reddit's */
 .ob--page[data-page="email"] .ob--note:not(:empty) { margin-bottom: 16px; }  /* and clear of a word under it */
-/* a field whose placeholder names it: the label kept for screen readers only */
-.ob--field.is-bare > span { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
 /* a title with no line under it keeps the line's room above the field */
 .ob--page[data-page="password"] .ob--title { margin-bottom: 32px; }
 /* the wordmark, as the welcome's (Figma 626:213: 160 × 68) */
@@ -2681,11 +2700,14 @@ button.fortune--card:active { transform: scale(0.98); }
 /* the terms, under the button */
 .ob--legal { margin: 15px 0 0; font-size: 14px; line-height: 1.35; text-align: center; color: var(--neutral-700); }  /* secondary words in Neutral 700 */
 .ob--legal u { text-underline-offset: 3px; color: var(--system-black); }  /* the links, as "Log in" after its grey question */
+/* email: the terms drop to sit just over the foot's line */
+.ob--page[data-page="email"] .ob--legal { margin-top: auto; padding-bottom: 20px; }
+.ob--legal + .ob--foot { margin-top: 0; }
 /* the other way in, at the foot over the system line */
 .ob--foot {
   margin-top: auto;
   padding-top: 20px;
-  border-top: 1px solid var(--neutral-900);  /* a step lighter than the words */
+  border-top: 1px solid var(--neutral-300);
   display: flex;
   justify-content: center;
 }
@@ -2695,17 +2717,18 @@ button.fortune--card:active { transform: scale(0.98); }
 .ob--field.has-mark input { padding-right: 48px; }
 .ob--ok {
   position: absolute;
-  right: 20px;
-  bottom: 22px;
+  right: 17px;
+  bottom: 21px;
   opacity: 0;
   transition: opacity 0.2s;
 }
 .ob--field.is-ok .ob--ok { opacity: 1; }
+.ob--field.is-ok + .ob--note { visibility: hidden; }  /* the tick says it: no word under it */
 /* while it's checked: a little wheel where the tick will come */
 .ob--spin {
   position: absolute;
   right: 18px;
-  bottom: 18px;
+  bottom: 21px;
   width: 15px;
   height: 15px;
   box-sizing: border-box;
@@ -2721,7 +2744,7 @@ button.fortune--card:active { transform: scale(0.98); }
 .ob--peek {
   position: absolute;
   right: 8px;
-  bottom: 4px;
+  bottom: 7px;
   width: 44px;
   height: 43px;
   display: grid;
@@ -3099,3 +3122,113 @@ label.settings--row:active { background: var(--neutral-100); }
 .tree--write,
 .filter--confirm,
 .fortune--see { padding-left: 10px; padding-right: 10px; }
+
+/* --- The calendar ---------------------------------------------------------
+   Every date field's picker, on the filter's sheet: close and Confirm over
+   the Neutral 100 rule, then the month (Cooper, as the sheet's label) with
+   its arrows, the weekdays over a second rule, and six weeks of days. One
+   day is picked at a time: filled System Black, its number in white. */
+.datepick { z-index: 68; }
+.datepick .filter--confirm:disabled { color: var(--neutral-500); cursor: default; transform: none; }
+.datepick .filter--confirm:disabled img { opacity: 0.35; }
+.datepick--head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 20px 20px 14px 26px;
+}
+.datepick--title {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 0;
+  border: 0;
+  background: none;
+  font-family: var(--font-title);
+  font-weight: 400;
+  font-size: 20px;
+  letter-spacing: var(--tracking-title);
+  color: var(--system-black);
+  cursor: pointer;
+}
+.datepick--title svg { display: block; transition: transform 0.2s; }
+.datepick--title[aria-expanded="true"] svg { transform: rotate(180deg); }
+.datepick--arrows { display: flex; gap: 8px; }
+.datepick--arrows button {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  border: 1px solid var(--neutral-300);
+  border-radius: 50%;
+  background: none;
+  cursor: pointer;
+  transition: transform 0.15s, opacity 0.2s;
+}
+.datepick--arrows button:active { transform: scale(0.92); }
+.datepick--arrows button:disabled { opacity: 0.35; cursor: default; transform: none; }
+.datepick.is-years .datepick--arrows { visibility: hidden; }
+.datepick--week,
+.datepick--days {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  padding: 0 16px;
+}
+.datepick--week {
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--neutral-100);
+  font-size: 14px;
+  text-align: center;
+  color: var(--neutral-700);
+}
+.datepick.is-years .datepick--week { visibility: hidden; }
+.datepick--body { position: relative; padding-top: 8px; }
+.datepick--days button {
+  justify-self: center;
+  width: 40px;
+  height: 40px;
+  margin: 2px 0;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: none;
+  font-family: var(--font-display);
+  font-size: 16px;
+  letter-spacing: var(--tracking);
+  color: var(--system-black);
+  cursor: pointer;
+  transition: background-color 0.15s, transform 0.15s;
+}
+.datepick--days button:active { transform: scale(0.92); }
+.datepick--days .is-out { color: var(--neutral-500); }
+.datepick--days .is-today { box-shadow: inset 0 0 0 1px var(--neutral-500); }
+.datepick--days .is-on { background: var(--system-black); color: var(--system-white); box-shadow: none; }
+.datepick--days button:disabled { color: var(--neutral-300); cursor: default; transform: none; }
+/* the years, over the days in their place */
+.datepick--years {
+  position: absolute;
+  inset: -20px 0 0;  /* over the weekdays too */
+  display: none;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  align-content: start;
+  gap: 6px 10px;
+  padding: 0 26px 8px;
+  overflow-y: auto;
+  background: var(--system-white);
+}
+.datepick.is-years .datepick--years { display: grid; }
+.datepick.is-years .datepick--days { visibility: hidden; }
+.datepick--years button {
+  height: 40px;
+  padding: 0;
+  border: 0;
+  border-radius: 999px;
+  background: none;
+  font-family: var(--font-display);
+  font-size: 16px;
+  letter-spacing: var(--tracking);
+  color: var(--system-black);
+  cursor: pointer;
+}
+.datepick--years .is-on { background: var(--system-black); color: var(--system-white); }

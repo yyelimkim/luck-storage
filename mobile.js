@@ -1156,7 +1156,7 @@ fortuneSee.addEventListener('click', () => {
 // A new birthday reads the fortune again
 fortuneEl.querySelector('.fortune--birth').addEventListener('click', (e) => {
   e.preventDefault();
-  try { birthInput.showPicker(); } catch (err) { birthInput.focus(); }
+  if (typeof DatePick !== 'undefined') DatePick.open(birthInput);
 });
 birthInput.addEventListener('change', () => {
   if (!birthInput.value) return;
