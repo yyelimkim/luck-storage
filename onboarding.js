@@ -182,9 +182,9 @@
   // --- Each form: its button wakes once it's filled in properly
   const EMAIL = /\S+@\S+\.\S+/;
   const valid = {
-    email: (f) => EMAIL.test(f.elements.email.value),
+    email: (f) => emailFree === f.elements.email.value.trim().toLowerCase(),  // checked free first
     verify: (f) => /^\d{6}$/.test(f.elements.code.value.trim()),
-    name: (f) => userFree === f.elements.username.value.trim().toLowerCase(),
+    name: (f) => userFree === f.elements.username.value.trim().toLowerCase() && !!f.elements.name.value.trim(),
     password: (f) => f.elements.password.value.length >= 8,
     birthday: (f) => !!f.elements.birthday.value,
     login: (f) => EMAIL.test(f.elements.email.value) && f.elements.password.value.length > 0,
@@ -198,7 +198,8 @@
     f.addEventListener('input', () => check(f));
     f.addEventListener('submit', async (e) => {
       e.preventDefault();
-      if (!valid[step](f)) return;
+      // (an email sent straight on, as Google's and Apple's, is checked as it's sent)
+      if (step === 'email' ? !EMAIL.test(f.elements.email.value) : !valid[step](f)) return;
       const btn = f.querySelector('[type="submit"]');
       btn.disabled = true;
       try {
@@ -248,15 +249,29 @@
     const r = await ask(`/api/accounts?email=${encodeURIComponent(email)}`);
     return !!(r && r.taken);
   }
-  // said as you type it, once it looks like an email
+  // checked as you type it, once it looks like an email: the wheel turns in
+  // the field, then a tick (free; Continue wakes) or the word that it's taken
+  const eField = pages.email.elements.email;
+  const eLabel = eField.closest('.ob--field');
+  let emailFree = null;  // the email last found free
   let emailTimer = 0;
-  pages.email.elements.email.addEventListener('input', () => {
+  eField.addEventListener('input', () => {
     clearTimeout(emailTimer);
     say(eNote, '');
-    const email = pages.email.elements.email.value.trim().toLowerCase();
+    emailFree = null;
+    eLabel.classList.remove('is-ok', 'is-wait');
+    check(pages.email);
+    const email = eField.value.trim().toLowerCase();
     if (!EMAIL.test(email)) return;
+    eLabel.classList.add('is-wait');
     emailTimer = setTimeout(async () => {
-      if (await emailTaken(email) && pages.email.elements.email.value.trim().toLowerCase() === email) say(eNote, TAKEN, true);
+      const taken = await emailTaken(email);
+      if (eField.value.trim().toLowerCase() !== email) return;  // typed on since
+      eLabel.classList.remove('is-wait');
+      if (taken) { say(eNote, TAKEN, true); return; }
+      emailFree = email;
+      eLabel.classList.add('is-ok');
+      check(pages.email);
     }, 450);
   });
   async function startSignup(f) {
@@ -298,26 +313,28 @@
   const uLabel = uField.closest('.ob--field');
   let userFree = null;  // the name last found free
   let userTimer = 0;
-  // a word under the name: an error (pink), still checking (grey) or free (green)
+  // a word under the name: an error (pink) or free (green); while it's
+  // checked, the wheel turns in the field
   function sayUser(text, state = '') {
     uNote.textContent = text;
     uNote.classList.toggle('is-ok', state === 'ok');
-    uNote.classList.toggle('is-wait', state === 'wait');
   }
   function checkUser() {
     clearTimeout(userTimer);
     const name = uField.value.trim().toLowerCase();
     if (uField.value !== uField.value.toLowerCase()) uField.value = uField.value.toLowerCase();
     userFree = null;
-    uLabel.classList.remove('is-ok');
+    uLabel.classList.remove('is-ok', 'is-wait');
     check(pages.name);
     if (!name) { sayUser(''); return; }
     if (!/^[a-z0-9._]{3,20}$/.test(name)) { sayUser('3 to 20 letters, numbers, . or _'); return; }
-    sayUser('Checking…', 'wait');
+    sayUser('');
+    uLabel.classList.add('is-wait');
     userTimer = setTimeout(async () => {
       const here = Object.values(accounts()).some((a) => a.username === name);
       const r = here ? null : await ask(`/api/accounts?username=${encodeURIComponent(name)}`);
       if (uField.value.trim().toLowerCase() !== name) return;  // typed on since
+      uLabel.classList.remove('is-wait');
       if (here || (r && r.taken)) { sayUser(`@${name} is taken`); return; }
       userFree = name;
       uLabel.classList.add('is-ok');
@@ -394,7 +411,8 @@
   }
 
   // --- All set: your name on the profile, your birthday for the fortune
-  const signedUpName = () => userFree || uField.value.trim() || DEMO.username;
+  // the name you gave (what Home greets you by), the username failing that
+  const signedUpName = () => pages.name.elements.name.value.trim() || userFree || uField.value.trim() || DEMO.name;
   function finish(how) {
     // Logging in: your things back, just as you left them
     if (mode === 'login' && Guest.bringBack(store.get('email', ''))) {
@@ -407,11 +425,10 @@
     }
     // Signing up: a new account starts from nothing
     if (mode === 'signup' && pending) { Guest.putAway(); Guest.clear(); }  // (anyone signed in here: theirs put away first)
-    // the username stands as the name till it's changed in Settings
     const username = mode === 'login' ? who?.username : (userFree || DEMO.username);
     const name = (mode === 'login' ? who?.name : signedUpName()) || DEMO.name;
-    const nameEl = document.querySelector('.profile--name');
-    if (nameEl && nameEl.firstChild) nameEl.firstChild.textContent = `${name} `;
+    const nameEl = document.querySelector('.profile--name-text');
+    if (nameEl) nameEl.textContent = name;
     const born = mode === 'login' ? who?.birthday : pages.birthday.elements.birthday.value;
     if (born && typeof birthday !== 'undefined') {
       birthday = born;  // mobile.js's, read by Daily Fortune
