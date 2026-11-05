@@ -2638,7 +2638,9 @@ button.fortune--card:active { transform: scale(0.98); }
   line-height: 1.1;
 }
 .ob--page[data-page="welcome"] .ob--actions { position: relative; margin-top: 0; gap: 8px; }
-/* the welcome's three choices sit close, so the words stay clear of the cards */
+/* with no guest option, the words keep their place: 60px above Get started (Figma 626:2) */
+.ob--page[data-page="welcome"] .ob--hero { margin-bottom: 60px; }
+/* the welcome's two choices sit close, so the words stay clear of the cards */
 .ob--page[data-page="welcome"] .ob--link { padding: 6px 10px 0; }
 
 /* All set: the clover from Luck Claimed, a swing as it lands */

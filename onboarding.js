@@ -138,7 +138,6 @@
     if (to === 'signup' || to === 'login') { setMode(to); go('account'); }
     if (to === 'apple') { fillIn(pages.account); pages.account.requestSubmit(); }
     if (to === 'home') finish('start');
-    if (to === 'guest') asGuest();
   });
 
   // --- Each form: its button wakes once it's filled in properly
@@ -307,17 +306,6 @@
     const steps = STEPS[mode];
     const i = steps.indexOf(step);
     go(i < steps.length - 1 ? steps[i + 1] : 'done');
-  }
-
-  // --- In as a guest: no account, straight to Home with the first clovers;
-  // Settings has the way to sign up or log in later
-  function asGuest() {
-    Guest.start();
-    luck = 3;  // a guest's first clovers, as anyone's
-    saveLuck();
-    // straight back in, everything drawn afresh from nothing (no splash)
-    try { sessionStorage.setItem('no-splash', '1'); } catch (e) { /* it plays */ }
-    location.reload();
   }
 
   // --- All set: your name on the profile, your birthday for the fortune
