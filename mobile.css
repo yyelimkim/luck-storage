@@ -2739,7 +2739,14 @@ button.fortune--card:active { transform: scale(0.98); }
   transition: opacity 0.2s;
 }
 .ob--field.is-ok .ob--ok { opacity: 1; }
-.ob--field.is-ok + .ob--note { visibility: hidden; }  /* the tick says it: no word under it */
+.ob--field.is-ok + .ob--note { display: none; }  /* the tick says it: no word under it */
+/* no word under a field: no room kept for one either; the fields sit at
+   their usual 16px, and shift down only when a word comes */
+.ob--note:empty { min-height: 0; margin: 0; }
+.ob--note:empty + .ob--field,
+.ob--field.is-ok + .ob--note + .ob--field { margin-top: 0; }
+.ob--note:empty + .ob--btn { margin-top: 24px; }  /* buttons keep where they stood */
+.ob--page[data-page="email"] .ob--note:empty + .ob--btn { margin-top: 12px; }
 /* while it's checked: a little wheel where the tick will come */
 .ob--spin {
   position: absolute;
