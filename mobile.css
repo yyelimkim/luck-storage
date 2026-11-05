@@ -2583,12 +2583,12 @@ button.fortune--card:active { transform: scale(0.98); }
 .ob--ring {
   position: absolute;
   left: 50%;
-  top: 961px;  /* the top card's top 300px down, clear of the line */
+  top: 875px;  /* the top card's top 214px down */
   width: 0;
   height: 0;
   animation: ob-turn 90s linear infinite;
 }
-.is-phone .ob--ring { top: 905px; }
+.is-phone .ob--ring { top: 819px; }
 @keyframes ob-turn { to { rotate: 360deg; } }
 .ob--ring img {
   position: absolute;
@@ -2605,7 +2605,7 @@ button.fortune--card:active { transform: scale(0.98); }
   content: "";
   position: absolute;
   inset: 0;
-  background: linear-gradient(to bottom, transparent 60%, var(--neutral-100) 80%);  /* a long, soft fade above the buttons */
+  background: linear-gradient(to bottom, transparent 52%, var(--neutral-100) 74%);
 }
 @media (prefers-reduced-motion: reduce) { .ob--ring { animation: none; } }
 .ob--logo {
@@ -2618,7 +2618,7 @@ button.fortune--card:active { transform: scale(0.98); }
 .is-phone .ob--logo { margin-top: 30px; }
 .ob--hero {
   position: relative;
-  margin: 24px 0 0;
+  margin: auto 0 60px;  /* under the ring, 60px above Get started (Figma 626:2) */
   text-align: center;
   font-family: var(--font-title);
   font-weight: 400;
@@ -2626,7 +2626,7 @@ button.fortune--card:active { transform: scale(0.98); }
   letter-spacing: var(--tracking-title);
   line-height: 1.1;
 }
-.ob--page[data-page="welcome"] .ob--actions { position: relative; }
+.ob--page[data-page="welcome"] .ob--actions { position: relative; margin-top: 0; }
 
 /* All set: the clover from Luck Claimed, a swing as it lands */
 .ob--done {
