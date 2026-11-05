@@ -2270,9 +2270,9 @@ button.fortune--card:active { transform: scale(0.98); }
 .wishform--card {
   width: 100%;
   max-width: 371px;
-  padding: 26px 16px 16px;
+  padding: 26px 24px 24px;  /* more room at the sides */
   box-sizing: border-box;
-  border-radius: 30px;
+  border-radius: 16px;  /* radius-field, as the fields and fortune cards */
   border: 1px solid var(--system-black);
   background: var(--system-white);
   text-align: center;
