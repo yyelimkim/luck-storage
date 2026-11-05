@@ -431,7 +431,7 @@ img { -webkit-user-drag: none; }
   width: 370px;
   padding: 21px 16px 23px;
   box-sizing: border-box;
-  border: 1px solid var(--neutral-300);
+  border: 1px solid var(--neutral-500);
   border-radius: 16px;
   background: var(--neutral-100);
   box-shadow: 0 4px 2px rgba(168, 164, 164, 0.2);  /* the system shadow */
@@ -480,7 +480,7 @@ img { -webkit-user-drag: none; }
   height: 180px;
   padding: 18px 16px;
   box-sizing: border-box;
-  border: 1px solid var(--neutral-300);
+  border: 1px solid var(--neutral-500);
   border-radius: 16px;
   background: var(--neutral-100);  /* Neutral 100; only the icon carries the card's colours */
   scroll-snap-align: start;
@@ -897,7 +897,7 @@ button.fortune--card:active { transform: scale(0.98); }
   justify-content: center;
   gap: 6px;
   padding: 0;
-  border: 1px solid var(--neutral-300);
+  border: 1px solid var(--neutral-500);
   border-radius: 15px;
   background: var(--neutral-100);
   color: var(--system-black);
@@ -2723,7 +2723,7 @@ button.fortune--card:active { transform: scale(0.98); }
 .ob--foot {
   margin-top: auto;
   padding-top: 20px;
-  border-top: 1px solid var(--neutral-300);
+  border-top: 1px solid var(--neutral-500);
   display: flex;
   justify-content: center;
 }
