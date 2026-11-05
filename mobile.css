@@ -163,7 +163,7 @@ img { -webkit-user-drag: none; }
   /* The artwork carries its own rounded edge (85px on the 1040 x 1486 English
      cards); the shadow follows the same curve */
   border-radius: 8.2% / 5.72%;
-  box-shadow: 0 4.429px 4.429px rgba(0, 0, 0, calc(0.15 * var(--focus, 0)));
+  box-shadow: 0 4px 2px rgba(168, 164, 164, calc(0.2 * var(--focus, 0)));  /* the system shadow (shadow-float), as the card comes to the front */
 }
 .m-card img {
   display: block;
@@ -395,7 +395,7 @@ img { -webkit-user-drag: none; }
   width: 7.5em;
   padding: 0 0 4px;
   border: 0;
-  border-bottom: 0.771px solid var(--system-black);
+  border-bottom: 1px solid var(--system-black);
   background: none;
   font: inherit;
   letter-spacing: inherit;
@@ -431,10 +431,10 @@ img { -webkit-user-drag: none; }
   width: 370px;
   padding: 21px 16px 23px;
   box-sizing: border-box;
-  border: 0.771px solid var(--system-black);
+  border: 1px solid var(--system-black);
   border-radius: 16px;
   background: var(--neutral-100);
-  box-shadow: 0 4px 4px rgba(168, 164, 164, 0.2);
+  box-shadow: 0 4px 2px rgba(168, 164, 164, 0.2);  /* the system shadow */
   text-align: left;
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
@@ -442,7 +442,7 @@ img { -webkit-user-drag: none; }
 }
 .profile--fortune:active { transform: scale(0.98); }
 .profile--clouds, .profile--dial, .profile--go { position: absolute; display: block; }
-.profile--clouds { left: -0.771px; top: -0.771px; }
+.profile--clouds { left: -1px; top: -1px; }
 /* The fortune wheel (395:7995) turns slowly, cut off by the card's edge */
 .profile--dial { left: 222.23px; top: -45.77px; animation: wheel-turn 90s linear infinite; }
 @keyframes wheel-turn { to { rotate: 360deg; } }
@@ -480,7 +480,7 @@ img { -webkit-user-drag: none; }
   height: 180px;
   padding: 18px 16px;
   box-sizing: border-box;
-  border: 0.771px solid var(--system-black);
+  border: 1px solid var(--system-black);
   border-radius: 16px;
   background: var(--neutral-100);  /* Neutral 100; only the icon carries the card's colours */
   scroll-snap-align: start;
@@ -645,7 +645,7 @@ img { -webkit-user-drag: none; }
   height: 51px;
   display: grid;
   place-items: center;
-  border-radius: 43px;
+  border-radius: 999px;
   background: var(--neutral-300);  /* disabled (Figma 638:287) */
   border: 1px solid transparent;
   color: var(--neutral-900);
@@ -828,7 +828,7 @@ button.fortune--card:active { transform: scale(0.98); }
   padding: 0 0 48px;  /* clear of the home indicator */
   border-radius: 30px 30px 0 0;
   background: var(--system-white);
-  border-top: 0.771px solid var(--system-black);
+  border-top: 1px solid var(--system-black);
   transform: translateY(100%);
   transition: transform 0.42s cubic-bezier(0.32, 0.72, 0, 1);
 }
@@ -897,7 +897,7 @@ button.fortune--card:active { transform: scale(0.98); }
   justify-content: center;
   gap: 6px;
   padding: 0;
-  border: 0.771px solid var(--system-black);
+  border: 1px solid var(--system-black);
   border-radius: 15px;
   background: var(--neutral-100);
   color: var(--system-black);
@@ -1037,7 +1037,7 @@ button.fortune--card:active { transform: scale(0.98); }
 .m-flip--back {
   transform: rotateY(180deg);
   overflow: hidden;
-  border: calc(0.771px * var(--k, 1)) solid var(--system-black);  /* same line as the tags */
+  border: calc(1px * var(--k, 1)) solid var(--system-black);  /* same line as the tags */
 }
 .panel {
   position: absolute;
@@ -1451,7 +1451,7 @@ button.fortune--card:active { transform: scale(0.98); }
   width: 371px;
   height: 51px;
   padding: 0 15px;
-  border-radius: 43px;
+  border-radius: 999px;
   background: var(--system-white);
   border: 1px solid var(--neutral-500);  /* outlined (Figma 637:282) */
   color: var(--system-black);
@@ -1955,7 +1955,7 @@ button.fortune--card:active { transform: scale(0.98); }
   padding: 0;
   transform: translateX(-50%);
   border: 0;  /* main (Figma 636:272): no line */
-  border-radius: 43px;
+  border-radius: 999px;
   background: var(--system-black);
   color: var(--system-white);
   font-family: var(--font-display);
@@ -2230,7 +2230,7 @@ button.fortune--card:active { transform: scale(0.98); }
   max-width: 371px;
   height: 51px;
   padding: 0;
-  border-radius: 43px;
+  border-radius: 999px;
   border: 0;  /* the system's main button: no line */
   background: var(--system-black);
   color: var(--system-white);
@@ -2273,7 +2273,7 @@ button.fortune--card:active { transform: scale(0.98); }
   padding: 26px 16px 16px;
   box-sizing: border-box;
   border-radius: 30px;
-  border: 0.771px solid var(--system-black);
+  border: 1px solid var(--system-black);
   background: var(--system-white);
   text-align: center;
   transform: scale(0.94);
@@ -2294,7 +2294,7 @@ button.fortune--card:active { transform: scale(0.98); }
   justify-content: center;
   gap: 8px;
   height: 51px;
-  border-radius: 43px;
+  border-radius: 999px;
   border: 1px solid var(--neutral-500);  /* outlined (Figma 637:282) */
   font-size: 16px;  /* main buttons' text */
   cursor: pointer;
@@ -2410,7 +2410,7 @@ button.fortune--card:active { transform: scale(0.98); }
    Over everything but the splash, the status bar and the home indicator:
    Neutral 100 under the paper grain. Every value is the design system's:
    Cooper titles (27), Paperlogy 17 / 16 / 14, the 371 x 51 buttons, the
-   0.771px line, the rituals' progress bar. */
+   1px line, the rituals' progress bar. */
 .ob {
   position: absolute;
   inset: 0;
@@ -2505,7 +2505,7 @@ button.fortune--card:active { transform: scale(0.98); }
   height: 51px;
   padding: 0 18px;
   box-sizing: border-box;
-  border: 0.771px solid var(--system-black);
+  border: 1px solid var(--system-black);
   border-radius: 16px;
   background: var(--system-white);
   font: inherit;
@@ -2538,7 +2538,7 @@ button.fortune--card:active { transform: scale(0.98); }
   max-width: 371px;
   height: 51px;
   padding: 0;
-  border-radius: 43px;
+  border-radius: 999px;
   border: 1px solid transparent;  /* main (Figma 636:272): no line showing */
   background: var(--system-black);
   color: var(--system-white);
@@ -2573,7 +2573,7 @@ button.fortune--card:active { transform: scale(0.98); }
   font-size: 14px;
 }
 .ob--or::before,
-.ob--or::after { content: ""; flex: 1; height: 0.771px; background: var(--system-black); }
+.ob--or::after { content: ""; flex: 1; height: 1px; background: var(--system-black); }
 
 /* Welcome: one screen. All the cards in a ring, as Home fans them, each
    leaning out from the middle, turning slowly round (a turn a minute and a
@@ -2599,7 +2599,7 @@ button.fortune--card:active { transform: scale(0.98); }
   border-radius: 18.4px;  /* the cards' corners at this size */
   transform-origin: 112.5px calc(var(--r) + 321px);
   rotate: var(--a);
-  box-shadow: 0 4px 4px rgba(0, 0, 0, 0.15);  /* as the cards on Home */
+  box-shadow: 0 4px 2px rgba(168, 164, 164, 0.2);  /* the system shadow, as the cards on Home */
 }
 .ob--art::after {
   content: "";
@@ -2662,7 +2662,7 @@ button.fortune--card:active { transform: scale(0.98); }
 .ob--foot {
   margin-top: auto;
   padding-top: 8px;
-  border-top: 0.771px solid var(--system-black);
+  border-top: 1px solid var(--system-black);
   display: flex;
   justify-content: center;
 }
@@ -2701,9 +2701,9 @@ button.fortune--card:active { transform: scale(0.98); }
 .ob--ideas-label { margin: 14px 0 10px; font-size: 14px; }
 .ob--ideas { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 8px; }
 .ob--chip {
-  height: 33.172px;  /* the card tags' height and line */
+  height: 33px;  /* the card tags' height and line */
   padding: 0 14px;
-  border: 0.771px solid var(--system-black);
+  border: 1px solid var(--system-black);
   border-radius: 999px;
   background: var(--system-white);
   font: inherit;
@@ -2880,7 +2880,7 @@ button.fortune--card:active { transform: scale(0.98); }
 .settings--label { margin: 26px 4px 8px !important; font-size: 14px; }
 .settings--group {
   overflow: hidden;
-  border: 0.771px solid var(--system-black);
+  border: 1px solid var(--system-black);
   border-radius: 15px;
   background: var(--system-white);
 }
@@ -2965,10 +2965,10 @@ label.settings--row:active { background: var(--neutral-100); }
 .settings--volume input::-webkit-slider-runnable-track {
   height: 6px;
   border-radius: 999px;
-  border: 0.771px solid var(--system-black);
+  border: 1px solid var(--system-black);
   background: linear-gradient(to right, var(--system-black) var(--v), var(--neutral-100) var(--v));
 }
-.settings--volume input::-moz-range-track { height: 6px; border-radius: 999px; border: 0.771px solid var(--system-black); background: var(--neutral-100); }
+.settings--volume input::-moz-range-track { height: 6px; border-radius: 999px; border: 1px solid var(--system-black); background: var(--neutral-100); }
 .settings--volume input::-moz-range-progress { height: 6px; border-radius: 999px; background: var(--system-black); }
 .settings--volume input::-webkit-slider-thumb {
   -webkit-appearance: none;
@@ -2976,10 +2976,10 @@ label.settings--row:active { background: var(--neutral-100); }
   height: 25px;
   margin-top: -10.5px;
   border-radius: 50%;
-  border: 0.771px solid var(--system-black);
+  border: 1px solid var(--system-black);
   background: var(--system-white);
 }
-.settings--volume input::-moz-range-thumb { width: 25px; height: 25px; border-radius: 50%; border: 0.771px solid var(--system-black); background: var(--system-white); }
+.settings--volume input::-moz-range-thumb { width: 25px; height: 25px; border-radius: 50%; border: 1px solid var(--system-black); background: var(--system-white); }
 .settings--volume input:focus { outline: none; }
 .settings--volume input:focus-visible::-webkit-slider-thumb { box-shadow: 0 0 0 3px var(--system-white), 0 0 0 4.5px var(--system-black); }
 .settings--volume.is-off { opacity: 0.4; }
@@ -3063,7 +3063,7 @@ label.settings--row:active { background: var(--neutral-100); }
 .profile .profile--none {
   flex: 1;
   padding: 22px 16px;
-  border: 0.771px solid var(--system-black);
+  border: 1px solid var(--system-black);
   border-radius: 15px;
   font-size: 16px;
   line-height: 1.35;

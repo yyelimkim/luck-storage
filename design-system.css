@@ -67,8 +67,8 @@
    category's icon. <span class="tag" data-category="protection">…</span>,
    built by categoryTag() in cards.js. */
 .tag {
-  --tag-h: 33.172px;
-  --tag-stroke: 0.771px;
+  --tag-h: 33px;
+  --tag-stroke: 1px;
   display: inline-flex;
   width: 175.889px;
   height: var(--tag-h);

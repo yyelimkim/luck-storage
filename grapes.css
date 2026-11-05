@@ -43,7 +43,7 @@ html, body {
   height: 14px;
   padding: 2px;
   border-radius: 999px;
-  border: 0.771px solid var(--system-black);
+  border: 1px solid var(--system-black);
   background: var(--system-white);
 }
 .timer--fill {

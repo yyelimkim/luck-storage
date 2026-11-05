@@ -103,7 +103,7 @@ html, body {
   height: 14px;
   padding: 2px;
   border-radius: 999px;
-  border: 0.771px solid var(--system-black);  /* the system's line */
+  border: 1px solid var(--system-black);  /* the system's line */
   background: var(--system-white);
 }
 .progress--fill {

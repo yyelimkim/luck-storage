@@ -166,8 +166,8 @@ html, body {
   width: 100%;
   height: 100%;
   padding: 0 58px 0 22px;
-  border-radius: 43px;
-  border: 0.771px solid var(--system-black);
+  border-radius: 999px;
+  border: 1px solid var(--system-black);
   background: var(--system-white);
   font: inherit;
   font-size: 16px;  /* fields' text: body size */
