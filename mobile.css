@@ -2733,8 +2733,8 @@ button.fortune--card:active { transform: scale(0.98); }
 .ob--field.has-mark input { padding-right: 48px; }
 .ob--ok {
   position: absolute;
-  right: 17px;
-  bottom: 21px;
+  right: 15px;
+  bottom: 19px;
   opacity: 0;
   transition: opacity 0.2s;
 }
@@ -2752,10 +2752,10 @@ button.fortune--card:active { transform: scale(0.98); }
 /* while it's checked: a little wheel where the tick will come */
 .ob--spin {
   position: absolute;
-  right: 17px;
-  bottom: 21px;
-  width: 16px;  /* every mark in a field: 16px, as the tick */
-  height: 16px;
+  right: 15px;
+  bottom: 19px;
+  width: 20px;  /* every mark in a field: 20px, as the tick */
+  height: 20px;
   box-sizing: border-box;
   border: 1.5px solid var(--neutral-300);
   border-top-color: var(--system-black);
