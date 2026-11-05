@@ -182,7 +182,7 @@ function swingChain(now) {
 // shake is the fish's `translate`, apart from the swing's transform.
 let tremble = null;
 function glow(k) {
-  fish.style.filter = k ? `drop-shadow(0 0 ${(4 + k * 5).toFixed(1)}px var(--v2-blue)) drop-shadow(0 0 ${(k * 2).toFixed(1)}px var(--ui-white))` : '';
+  fish.style.filter = k ? `drop-shadow(0 0 ${(4 + k * 5).toFixed(1)}px var(--v2-blue)) drop-shadow(0 0 ${(k * 2).toFixed(1)}px var(--system-white))` : '';
 }
 function shake(px, ms, iterations = Infinity) {
   if (tremble) tremble.cancel();

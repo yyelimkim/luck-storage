@@ -100,8 +100,8 @@ html, body {
 /* Awake: it spins, glowing, the glow breathing */
 .is-awake .dc--hoop { animation: dc-glow 2.4s ease-in-out infinite alternate; cursor: default; }
 @keyframes dc-glow {
-  from { filter: drop-shadow(0 0 10px var(--yellow)) drop-shadow(0 0 22px var(--ui-white)); }
-  to { filter: drop-shadow(0 0 22px var(--yellow)) drop-shadow(0 0 44px var(--ui-white)); }
+  from { filter: drop-shadow(0 0 10px var(--yellow)) drop-shadow(0 0 22px var(--system-white)); }
+  to { filter: drop-shadow(0 0 22px var(--yellow)) drop-shadow(0 0 44px var(--system-white)); }
 }
 /* the last caught: the glow fades away */
 .is-calm .dc--hoop { animation: none; filter: drop-shadow(0 0 0 transparent); }

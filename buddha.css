@@ -17,7 +17,7 @@ html, body {
   overflow: hidden;
   font-family: var(--font-display);
   letter-spacing: var(--tracking);
-  color: var(--system-white);
+  color: var(--neutral-100);
   -webkit-user-select: none;
   user-select: none;
 }
@@ -41,7 +41,7 @@ html, body {
   z-index: 2;
   border-radius: 999px;
   border: 1px dashed var(--system-black);
-  background: color-mix(in srgb, var(--system-white) 50%, transparent);
+  background: color-mix(in srgb, var(--neutral-100) 50%, transparent);
   opacity: 0;
   touch-action: none;
   transition: opacity 0.4s, border-color 0.4s;
@@ -68,7 +68,7 @@ html, body {
   scale: 0;
   pointer-events: none;
 }
-.buddha--spark path { fill: var(--system-white); stroke: var(--system-black); stroke-width: 1.5px; vector-effect: non-scaling-stroke; }
+.buddha--spark path { fill: var(--neutral-100); stroke: var(--system-black); stroke-width: 1.5px; vector-effect: non-scaling-stroke; }
 .buddha.is-glowing .buddha--spark { animation: spark-up 0.5s cubic-bezier(0.3, 1.6, 0.5, 1) forwards, twinkle 1.2s 0.5s ease-in-out infinite alternate; }
 @keyframes spark-up { to { opacity: 1; scale: 1; } }
 @keyframes twinkle { from { opacity: 1; scale: 1; } to { opacity: 1; scale: 0.8; rotate: 20deg; } }
@@ -145,7 +145,7 @@ html, body {
   padding: 2px;
   border-radius: 999px;
   border: 0.771px solid var(--system-black);
-  background: var(--ui-white);
+  background: var(--system-white);
 }
 .progress--fill {
   display: block;

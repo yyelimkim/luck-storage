@@ -14,7 +14,7 @@ html, body {
   overflow: hidden;
   font-family: var(--font-display);
   letter-spacing: var(--tracking);
-  color: var(--system-white);  /* on the Hot Pink card, white, as its sheet's words */
+  color: var(--neutral-100);  /* on the Hot Pink card, white, as its sheet's words */
   -webkit-user-select: none;
   user-select: none;
 }
@@ -41,7 +41,7 @@ html, body {
   padding: 2px;
   border-radius: 999px;
   border: 0.771px solid var(--system-black);  /* the system's line */
-  background: var(--ui-white);
+  background: var(--system-white);
 }
 .progress--fill {
   display: block;
@@ -104,12 +104,12 @@ html, body {
   width: 100%;
   height: auto;
   overflow: visible;
-  filter: drop-shadow(0 0 18px var(--ui-white));
+  filter: drop-shadow(0 0 18px var(--system-white));
   animation: hundred-flash 1.2s cubic-bezier(0.3, 0.8, 0.2, 1) both;
 }
 .rc--hundred p {
   margin: 4px -40px 0;
-  color: var(--system-white);  /* white over the stepped-back plate */
+  color: var(--neutral-100);  /* white over the stepped-back plate */
   font-size: 18px;  /* the rituals' step-words size */
   line-height: 1.3;
   animation: rise 0.45s cubic-bezier(0.3, 0.8, 0.2, 1) 0.5s both;

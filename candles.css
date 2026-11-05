@@ -21,7 +21,7 @@ html, body {
   padding: 0 16px 120px;  /* the words sit below, at the rituals' spot */
   font-family: var(--font-display);
   letter-spacing: var(--tracking);
-  color: var(--system-white);
+  color: var(--neutral-100);
   -webkit-user-select: none;
   user-select: none;
 }
@@ -100,7 +100,7 @@ html, body {
   100% { opacity: 0; translate: 2px -30px; clip-path: inset(0 0 0 0); filter: blur(2px); }
 }
 
-/* The swipe band over the flames (438:289): a dashed System White line
+/* The swipe band over the flames (438:289): a dashed Neutral 100 line
    round a faint white wash; and the hand, sweeping across it */
 .candles--band {
   position: absolute;
@@ -110,8 +110,8 @@ html, body {
   height: 24%;
   z-index: 3;
   border-radius: 999px;
-  border: 1.4px dashed var(--system-white);
-  background: color-mix(in srgb, var(--ui-white) 20%, transparent);
+  border: 1.4px dashed var(--neutral-100);
+  background: color-mix(in srgb, var(--system-white) 20%, transparent);
   opacity: 0;
   transition: opacity 0.3s;
   pointer-events: none;
@@ -168,7 +168,7 @@ html, body {
   padding: 0 58px 0 22px;
   border-radius: 43px;
   border: 0.771px solid var(--system-black);
-  background: var(--ui-white);
+  background: var(--system-white);
   font: inherit;
   font-size: 16px;  /* fields' text: a step under 17 */
   letter-spacing: var(--tracking);
@@ -177,9 +177,9 @@ html, body {
   -webkit-user-select: text;
   user-select: text;
 }
-.candles--wish input::placeholder { color: var(--dark-grey); }
+.candles--wish input::placeholder { color: var(--neutral-700); }
 .candles--wish input:focus,
-.candles--wish input:focus-visible { box-shadow: 0 0 0 3px var(--ui-white), 0 0 0 4.5px var(--system-black); }  /* the double line, as the sign-up fields */
+.candles--wish input:focus-visible { box-shadow: 0 0 0 3px var(--system-white), 0 0 0 4.5px var(--system-black); }  /* the double line, as the sign-up fields */
 .candles--send {
   position: absolute;
   right: 7px;
@@ -196,7 +196,7 @@ html, body {
   cursor: pointer;
   transition: opacity 0.2s, transform 0.15s;
 }
-.candles--send:disabled { opacity: 0.35; cursor: default; }
+.candles--send:disabled { background: var(--neutral-300); color: var(--neutral-900); cursor: default; }  /* disabled (Figma 638:287) */
 .candles--send:not(:disabled):active { transform: scale(0.92); }
 
 /* The words under the cake, one step at a time */

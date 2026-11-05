@@ -15,7 +15,7 @@ html, body {
   overflow: hidden;
   font-family: var(--font-display);
   letter-spacing: var(--tracking);
-  color: var(--system-white);  /* on the green, as the Buddha's words */
+  color: var(--neutral-100);  /* on the green, as the Buddha's words */
   -webkit-user-select: none;
   user-select: none;
   touch-action: none;
@@ -50,7 +50,7 @@ html, body {
 .wr--slot { position: absolute; }
 .wr--slot img { position: absolute; left: 0; top: 0; width: 100%; height: 100%; }
 
-/* The arrows either side of each, as the design's: System White chevrons
+/* The arrows either side of each, as the design's: Neutral 100 chevrons
    in 44px tap areas */
 .wr--arrow {
   position: absolute;
@@ -62,7 +62,7 @@ html, body {
   padding: 0;
   border: 0;
   background: none;
-  color: var(--system-white);
+  color: var(--neutral-100);
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
   transition: transform 0.15s, opacity 0.3s;

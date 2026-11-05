@@ -19,7 +19,7 @@ html, body {
   padding: 60px 16px 120px;  /* the timer above, the words below at the rituals' spot */
   font-family: var(--font-display);
   letter-spacing: var(--tracking);
-  color: var(--system-white);  /* on the Hot Pink card, white, as its sheet's words */
+  color: var(--neutral-100);  /* on the Hot Pink card, white, as its sheet's words */
   -webkit-user-select: none;
   user-select: none;
 }
@@ -44,7 +44,7 @@ html, body {
   padding: 2px;
   border-radius: 999px;
   border: 0.771px solid var(--system-black);
-  background: var(--ui-white);
+  background: var(--system-white);
 }
 .timer--fill {
   display: block;

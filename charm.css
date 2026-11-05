@@ -104,7 +104,7 @@ html, body {
   padding: 2px;
   border-radius: 999px;
   border: 0.771px solid var(--system-black);  /* the system's line */
-  background: var(--ui-white);
+  background: var(--system-white);
 }
 .progress--fill {
   display: block;

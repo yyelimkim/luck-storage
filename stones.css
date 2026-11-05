@@ -8,7 +8,7 @@ html, body {
 }
 
 .stones {
-  /* The pink-grey of the sketch's stones: System White shaded towards Hot Pink */
+  /* The pink-grey of the sketch's stones: Neutral 100 shaded towards Hot Pink */
   --stone-pink: color-mix(in srgb, var(--hot-pink) 12%, #e4dadd);
   --w: min(300px, 76vw);  /* set by stones.js to fit the screen */
   position: fixed;
@@ -44,7 +44,7 @@ html, body {
 .stone--fill path { fill: var(--fill, var(--system-black)); stroke: var(--system-black); stroke-width: 1.5px; }
 .stone--dash path {
   fill: transparent;  /* empty: the background shows through (still tappable) */
-  stroke: var(--system-white);  /* dashed white, as the candles' swipe band */
+  stroke: var(--neutral-100);  /* dashed white, as the candles' swipe band */
   stroke-width: 1.4px;
   stroke-dasharray: 8 8;
   stroke-linecap: round;
@@ -84,7 +84,7 @@ html, body {
 .stones--orb .orb--ball { position: absolute; left: 18.6%; top: 4.6%; width: 73.5%; height: 95.4%; }
 .orb--ball circle { fill: var(--light-pink); stroke: var(--system-black); stroke-width: 1.5px; vector-effect: non-scaling-stroke; }
 .orb--spark { position: absolute; }
-.orb--spark path { fill: var(--system-white); stroke: var(--system-black); stroke-width: 1.5px; vector-effect: non-scaling-stroke; }
+.orb--spark path { fill: var(--neutral-100); stroke: var(--system-black); stroke-width: 1.5px; vector-effect: non-scaling-stroke; }
 .stones--orb .orb--spark-big { left: 62%; top: 0; width: 38%; height: 49.4%; animation: twinkle 1.8s ease-in-out infinite alternate; }
 .stones--orb .orb--spark-small { left: 0; top: 69%; width: 18.6%; height: 24.1%; animation: twinkle 1.8s 0.6s ease-in-out infinite alternate; }
 @keyframes twinkle { to { scale: 0.7; rotate: 20deg; } }
@@ -130,7 +130,7 @@ html, body {
   padding: 0 58px 0 22px;
   border-radius: 43px;
   border: 0.771px solid var(--system-black);
-  background: var(--ui-white);
+  background: var(--system-white);
   font: inherit;
   font-size: 16px;  /* fields' text: a step under 17 */
   letter-spacing: var(--tracking);
@@ -139,9 +139,9 @@ html, body {
   -webkit-user-select: text;
   user-select: text;
 }
-.stones--field input::placeholder { color: var(--dark-grey); }
+.stones--field input::placeholder { color: var(--neutral-700); }
 .stones--field input:focus,
-.stones--field input:focus-visible { box-shadow: 0 0 0 3px var(--ui-white), 0 0 0 4.5px var(--system-black); }  /* the double line, as the sign-up fields */
+.stones--field input:focus-visible { box-shadow: 0 0 0 3px var(--system-white), 0 0 0 4.5px var(--system-black); }  /* the double line, as the sign-up fields */
 .stones--send {
   position: absolute;
   right: 7px;
@@ -158,7 +158,7 @@ html, body {
   cursor: pointer;
   transition: opacity 0.2s, transform 0.15s;
 }
-.stones--send:disabled { opacity: 0.35; cursor: default; }  /* as the candles' */
+.stones--send:disabled { background: var(--neutral-300); color: var(--neutral-900); cursor: default; }  /* disabled (Figma 638:287) */  /* as the candles' */
 .stones--send:not(:disabled):active { transform: scale(0.92); }
 
 /* 2: the hint */

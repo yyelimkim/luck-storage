@@ -39,10 +39,16 @@
   --light-pink: #fc91b1;
   --hot-pink: #da236f;
   --yellow: #f0f2a1;
-  --system-white: #f0f0f0;
+  /* Neutrals (Figma: SystemWhite, Neutral100–900, System Black). System
+     White is the raised surface (fields, sheets, buttons); Neutral 100 the
+     paper every screen sits on */
+  --system-white: #fafafa;
+  --neutral-100: #f0f0f0;
+  --neutral-300: #dbdbdb;  /* disabled buttons' fill */
+  --neutral-500: #c4c4c4;  /* outlined buttons' line; the current tab's ring */
+  --neutral-700: #878787;
+  --neutral-900: #565656;  /* disabled buttons' words */
   --system-black: #272727;
-  --dark-grey: #878787;
-  --ui-white: #fafafa;
 
   /* Type */
   --font-display: "Paperlogy", sans-serif;
@@ -80,7 +86,7 @@
   flex: 1;
   display: grid;
   place-items: center;
-  background: var(--system-white);
+  background: var(--neutral-100);
   border-block: var(--tag-stroke) solid var(--system-black);
   font-family: var(--font-display);
   font-weight: 400;

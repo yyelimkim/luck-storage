@@ -196,7 +196,7 @@ html, body {
 }
 .worry--btn {
   border-radius: 43px;
-  border: 1px solid var(--system-black);
+  border: 0;  /* main (Figma 636:272): no line */
   background: var(--system-black);
   color: var(--system-white);
   font: inherit;
@@ -213,7 +213,7 @@ html, body {
   padding: 0 58px 0 22px;
   border-radius: 43px;
   border: 0.771px solid var(--system-black);
-  background: var(--ui-white);
+  background: var(--system-white);
   font: inherit;
   font-size: 16px;  /* fields' text */
   letter-spacing: var(--tracking);
@@ -222,9 +222,9 @@ html, body {
   -webkit-user-select: text;
   user-select: text;
 }
-.worry--field input::placeholder { color: var(--dark-grey); }
+.worry--field input::placeholder { color: var(--neutral-700); }
 .worry--field input:focus,
-.worry--field input:focus-visible { box-shadow: 0 0 0 3px var(--ui-white), 0 0 0 4.5px var(--system-black); }  /* the double line, as the sign-up fields */
+.worry--field input:focus-visible { box-shadow: 0 0 0 3px var(--system-white), 0 0 0 4.5px var(--system-black); }  /* the double line, as the sign-up fields */
 /* the send arrow, as Stacking Stones' */
 .worry--send {
   position: absolute;
@@ -242,7 +242,7 @@ html, body {
   cursor: pointer;
   transition: opacity 0.2s, transform 0.15s;
 }
-.worry--send:disabled { opacity: 0.35; cursor: default; }
+.worry--send:disabled { background: var(--neutral-300); color: var(--neutral-900); cursor: default; }  /* disabled (Figma 638:287) */
 .worry--send:not(:disabled):active { transform: scale(0.92); }
 
 @media (prefers-reduced-motion: reduce) {

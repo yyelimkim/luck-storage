@@ -37,7 +37,7 @@ function part(p) {
 }
 
 const B = 'var(--system-black)';
-const Wh = 'var(--system-white)';
+const Wh = 'var(--neutral-100)';
 const PLATE_ROT = 24.17;
 const BOX_ROT = 50.3;
 const CAKE_INNER = [175.162, 134.163];

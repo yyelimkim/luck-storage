@@ -37,7 +37,7 @@ html, body {
 
 /* The 人: dashed to trace (510:8282), then Hot Pink as it's traced (510:8284) */
 .hito--dash {
-  fill: var(--system-white);
+  fill: var(--neutral-100);
   stroke: var(--system-black);
   stroke-width: 1.2px;
   stroke-dasharray: 4 3;

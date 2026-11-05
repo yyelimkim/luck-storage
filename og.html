@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Share Previews</title>
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
-  <link rel="stylesheet" href="design-system.css?v=9">
+  <link rel="stylesheet" href="design-system.css?v=10">
   <style>
     /* The picture a shared card shows in Messages (Figma 548:16970): the
        card's colour, the app's name, the clover, and the card's drawing.
@@ -15,17 +15,17 @@
     body {
       margin: 0;
       padding: 40px 24px 80px;
-      background: var(--system-white);
+      background: var(--neutral-100);
       font-family: var(--font-display);
       letter-spacing: var(--tracking);
       color: var(--system-black);
     }
     h1 { margin: 0 0 6px; font-family: var(--font-title); font-weight: 400; font-size: 28px; letter-spacing: var(--tracking-title); }
-    .lede { margin: 0 0 32px; font-size: 14px; color: var(--dark-grey); }
+    .lede { margin: 0 0 32px; font-size: 14px; color: var(--neutral-700); }
     .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(454px, 1fr)); gap: 36px 28px; }
     figure { margin: 0; }
     figcaption { margin-top: 10px; font-size: 14px; }
-    figcaption span { color: var(--dark-grey); }
+    figcaption span { color: var(--neutral-700); }
 
     .og {
       --ink: var(--system-black);
@@ -37,7 +37,7 @@
       background: var(--bg);
       color: var(--ink);
     }
-    .og[data-ink="light"] { --ink: var(--system-white); }
+    .og[data-ink="light"] { --ink: var(--neutral-100); }
     .og--name {
       position: absolute;
       left: 24px;

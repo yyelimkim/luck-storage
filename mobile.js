@@ -1120,7 +1120,7 @@ fortuneAsk.addEventListener('submit', (e) => {
 });
 fortuneEl.querySelector('.fortune--back').addEventListener('click', closeFortune);
 // The date pill carries over to the reading: it rises and shrinks into its
-// place there, its line and text easing to Dark Grey on the way
+// place there, its line and text easing to Neutral 700 on the way
 function flyPill() {
   const [a, b] = fortuneEl.querySelectorAll('.fortune--today');
   const box = fortuneEl.getBoundingClientRect();
@@ -1224,7 +1224,7 @@ document.getElementById('fortune-ritual').addEventListener('click', goClaim);
 // The phone's status bar (saved to the home screen, the app's own top) takes
 // the colour of what's at the top of the screen, so the app runs up under it
 // seamlessly: the Wish Tree's dark canopy, the profile's yellow, an open
-// card's colour, System White elsewhere.
+// card's colour, Neutral 100 elsewhere.
 (() => {
   const meta = document.querySelector('meta[name="theme-color"]');
   if (!meta) return;

@@ -134,7 +134,7 @@ html, body {
   padding: 0 58px 0 22px;
   border-radius: 43px;
   border: 0.771px solid var(--system-black);
-  background: var(--ui-white);
+  background: var(--system-white);
   font: inherit;
   font-size: 16px;  /* fields' text */
   letter-spacing: var(--tracking);
@@ -143,9 +143,9 @@ html, body {
   -webkit-user-select: text;
   user-select: text;
 }
-.dl--field input::placeholder { color: var(--dark-grey); }
+.dl--field input::placeholder { color: var(--neutral-700); }
 .dl--field input:focus,
-.dl--field input:focus-visible { box-shadow: 0 0 0 3px var(--ui-white), 0 0 0 4.5px var(--system-black); }  /* the double line, as the sign-up fields */
+.dl--field input:focus-visible { box-shadow: 0 0 0 3px var(--system-white), 0 0 0 4.5px var(--system-black); }  /* the double line, as the sign-up fields */
 .dl--send {
   position: absolute;
   right: 7px;
@@ -162,5 +162,5 @@ html, body {
   cursor: pointer;
   transition: opacity 0.2s, transform 0.15s;
 }
-.dl--send:disabled { opacity: 0.35; cursor: default; }
+.dl--send:disabled { background: var(--neutral-300); color: var(--neutral-900); cursor: default; }  /* disabled (Figma 638:287) */
 .dl--send:not(:disabled):active { transform: scale(0.92); }

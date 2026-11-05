@@ -6,7 +6,7 @@ html, body {
   margin: 0;
   height: 100%;
   overflow: hidden;
-  background: var(--system-white);
+  background: var(--neutral-100);
   color: var(--system-black);
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   -webkit-tap-highlight-color: transparent;
@@ -25,7 +25,7 @@ img { -webkit-user-drag: none; }
   width: 402px;
   height: 874px;
   margin: -437px 0 0 -201px;
-  background: var(--system-white);
+  background: var(--neutral-100);
   overflow: hidden;
 }
 /* Desktop preview: the screen sits in a phone-shaped frame */
@@ -36,7 +36,7 @@ img { -webkit-user-drag: none; }
 /* On a phone the page itself is the screen: full width, as tall as the
    window (mobile.js sets the height), header at the very top */
 .is-phone,
-.is-phone body { background: var(--system-white); overscroll-behavior: none; }
+.is-phone body { background: var(--neutral-100); overscroll-behavior: none; }
 /* Nothing scrolls past its ends (no rubber-band showing what's behind) */
 .stage, .stage * { overscroll-behavior: none; }
 .is-phone .stage {
@@ -138,7 +138,7 @@ img { -webkit-user-drag: none; }
   padding: 0 18px;
   box-sizing: border-box;
   border-radius: 36px;
-  background: var(--ui-white);
+  background: var(--system-white);
   filter: drop-shadow(0 4px 2px rgba(168, 164, 164, 0.2));
   color: var(--system-black);
 }
@@ -196,14 +196,14 @@ img { -webkit-user-drag: none; }
   width: 1.5px;
   height: 16px;
   border-radius: 1px;
-  background: color-mix(in srgb, var(--dark-grey) 40%, transparent);  /* Dark Grey, faint */
+  background: color-mix(in srgb, var(--neutral-700) 40%, transparent);  /* Neutral 700, faint */
   transform-origin: 50% 0;
   pointer-events: none;
   transition: background-color 180ms cubic-bezier(0.22, 1, 0.36, 1), height 180ms cubic-bezier(0.22, 1, 0.36, 1);
 }
-.dial--line.is-current { height: 20px; background: var(--dark-grey); }
+.dial--line.is-current { height: 20px; background: var(--neutral-700); }
 
-/* Behind the tab bar: mostly a System White gradient, with a light blur
+/* Behind the tab bar: mostly a Neutral 100 gradient, with a light blur
    that builds up towards the bar. It reaches 24px above the bar; the blur
    stops at the bar's bottom edge so it never reaches the frame's rounded
    corners. */
@@ -217,8 +217,8 @@ img { -webkit-user-drag: none; }
   pointer-events: none;
   background: linear-gradient(to bottom,
     transparent,
-    color-mix(in srgb, var(--system-white) 55%, transparent) 50%,
-    color-mix(in srgb, var(--system-white) 92%, transparent));
+    color-mix(in srgb, var(--neutral-100) 55%, transparent) 50%,
+    color-mix(in srgb, var(--neutral-100) 92%, transparent));
 }
 .m-navfade i {
   position: absolute;
@@ -254,9 +254,9 @@ img { -webkit-user-drag: none; }
   padding: 4px;  /* even all round, so the end tabs nest in the bar's curve */
   gap: 4px;
   box-sizing: border-box;
-  background: var(--ui-white);
+  background: var(--system-white);
   border-radius: 999px;
-  box-shadow: 0 4px 4px rgba(168, 164, 164, 0.2);
+  filter: drop-shadow(0 4px 2px rgba(168, 164, 164, 0.2));  /* Figma 635:247 */
 }
 .m-nav--tab {
   position: relative;
@@ -270,8 +270,8 @@ img { -webkit-user-drag: none; }
   -webkit-tap-highlight-color: transparent;
 }
 .m-nav--tab[aria-current] {
-  background: var(--system-white);
-  border-color: var(--dark-grey);
+  background: var(--neutral-100);
+  border-color: var(--neutral-500);
 }
 /* Each icon sits in a 28px square in the tab's middle, placed as in Figma */
 .m-nav--tab img {
@@ -316,7 +316,7 @@ img { -webkit-user-drag: none; }
   overflow-y: auto;
   padding-bottom: 116px;  /* clear of the tab bar */
   box-sizing: border-box;
-  background: var(--ui-white);
+  background: var(--system-white);
   opacity: 0;
   visibility: hidden;
   transform: translateY(10px);
@@ -421,7 +421,7 @@ img { -webkit-user-drag: none; }
 }
 /* One rhythm: 12 from a label to its cards (as between the Daily Fortune
    cards), 32 between sections */
-.profile--label { margin-bottom: 12px; padding-left: 4px; color: var(--dark-grey); }  /* section titles in Dark Grey, 4px in */
+.profile--label { margin-bottom: 12px; padding-left: 4px; color: var(--neutral-700); }  /* section titles in Neutral 700, 4px in */
 .profile--fortune {
   position: relative;
   overflow: hidden;
@@ -433,7 +433,7 @@ img { -webkit-user-drag: none; }
   box-sizing: border-box;
   border: 0.771px solid var(--system-black);
   border-radius: 16px;
-  background: var(--system-white);
+  background: var(--neutral-100);
   box-shadow: 0 4px 4px rgba(168, 164, 164, 0.2);
   text-align: left;
   cursor: pointer;
@@ -455,7 +455,7 @@ img { -webkit-user-drag: none; }
 }
 .profile--fortune .profile--date,
 .profile--fortune .profile--find { position: relative; }
-.profile--fortune .profile--date { font-size: 14px; white-space: pre; color: var(--dark-grey); }
+.profile--fortune .profile--date { font-size: 14px; white-space: pre; color: var(--neutral-700); }
 .profile--fortune .profile--find { width: 181px; font-size: 20px; }
 .profile--fortune + .profile--label { margin-top: 32px; }
 /* Edge to edge, so the row runs off the screen */
@@ -482,7 +482,7 @@ img { -webkit-user-drag: none; }
   box-sizing: border-box;
   border: 0.771px solid var(--system-black);
   border-radius: 16px;
-  background: var(--system-white);  /* System White; only the icon carries the card's colours */
+  background: var(--neutral-100);  /* Neutral 100; only the icon carries the card's colours */
   scroll-snap-align: start;
   font: inherit;
   text-align: left;
@@ -534,7 +534,7 @@ img { -webkit-user-drag: none; }
   inset: 0;
   z-index: 65;
   overflow: hidden;
-  background: var(--system-white);
+  background: var(--neutral-100);
   transform: translateX(100%);
   visibility: hidden;
   transition: transform 0.45s cubic-bezier(0.32, 0.72, 0, 1), visibility 0s 0.45s;
@@ -583,7 +583,7 @@ img { -webkit-user-drag: none; }
   margin: 0 auto;
   padding: 7px 18px;
   border-radius: 36px;
-  background: var(--system-white);
+  background: var(--neutral-100);
   border: 1px solid var(--system-black);
   filter: drop-shadow(0 4px 2px rgba(168, 164, 164, 0.2));
 }
@@ -646,9 +646,9 @@ img { -webkit-user-drag: none; }
   display: grid;
   place-items: center;
   border-radius: 43px;
-  background: var(--ui-white);
-  border: 1px solid var(--dark-grey);
-  color: var(--dark-grey);
+  background: var(--neutral-300);  /* disabled (Figma 638:287) */
+  border: 1px solid transparent;
+  color: var(--neutral-900);
   font-size: 16px;  /* main buttons' text */
   -webkit-tap-highlight-color: transparent;
   transition: background 0.3s, border-color 0.3s, color 0.3s, transform 0.15s;
@@ -657,7 +657,6 @@ img { -webkit-user-drag: none; }
 .fortune--see .is-on { opacity: 0; }
 .fortune--see:not(:disabled) {
   background: var(--system-black);
-  border-color: var(--system-black);
   color: var(--system-white);
   cursor: pointer;
 }
@@ -677,7 +676,7 @@ img { -webkit-user-drag: none; }
   gap: 5px;
   font-weight: 500;
   font-size: 14px;
-  color: var(--dark-grey);
+  color: var(--neutral-700);
   cursor: pointer;
 }
 .fortune--birth span {
@@ -698,7 +697,7 @@ img { -webkit-user-drag: none; }
   inset: 0;
   overflow-y: auto;
   padding: calc(var(--top) + 55px) 16px 37px;
-  background: linear-gradient(to bottom, var(--v2-blue), var(--system-white) 93.862%) top / 100% 874px no-repeat, var(--system-white);
+  background: linear-gradient(to bottom, var(--v2-blue), var(--neutral-100) 93.862%) top / 100% 874px no-repeat, var(--neutral-100);
   scrollbar-width: none;
   opacity: 0;
   visibility: hidden;
@@ -711,10 +710,10 @@ img { -webkit-user-drag: none; }
   transition: opacity 0.45s;
 }
 .fortune--result .fortune--pill {
-  border-color: var(--dark-grey);
+  border-color: var(--neutral-700);
   font-weight: 500;
   font-size: 14px;
-  color: var(--dark-grey);
+  color: var(--neutral-700);
 }
 .fortune--hero {
   position: relative;
@@ -736,7 +735,7 @@ img { -webkit-user-drag: none; }
   box-sizing: border-box;
   width: 100%;
   border-radius: 16px;
-  background: var(--ui-white);
+  background: var(--system-white);
   border: 1px solid var(--system-black);  /* a firmer line, 1 */
   text-align: center;
 }
@@ -803,7 +802,7 @@ button.fortune--card:active { transform: scale(0.98); }
 
 /* Filter: a dimmed screen and a sheet rising from the bottom, its options in
    the design system's button style (the Luck Claimed button), the picked one
-   on System White with a firmer line */
+   on Neutral 100 with a firmer line */
 .head--title img { transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1); }
 .head--title[aria-expanded="true"] img { transform: rotate(180deg); }
 .filter {
@@ -828,13 +827,13 @@ button.fortune--card:active { transform: scale(0.98); }
   bottom: 0;
   padding: 0 0 48px;  /* clear of the home indicator */
   border-radius: 30px 30px 0 0;
-  background: var(--ui-white);
+  background: var(--system-white);
   border-top: 0.771px solid var(--system-black);
   transform: translateY(100%);
   transition: transform 0.42s cubic-bezier(0.32, 0.72, 0, 1);
 }
 .filter.is-open .filter--sheet { transform: none; }
-/* Top bar: close and Confirm, over a System White rule */
+/* Top bar: close and Confirm, over a Neutral 100 rule */
 .filter--bar {
   display: flex;
   justify-content: space-between;
@@ -842,7 +841,7 @@ button.fortune--card:active { transform: scale(0.98); }
   height: 71px;
   padding: 6px 20px 0;
   box-sizing: border-box;
-  border-bottom: 1px solid var(--system-white);
+  border-bottom: 1px solid var(--neutral-100);
 }
 .filter--close,
 .filter--confirm {
@@ -881,7 +880,7 @@ button.fortune--card:active { transform: scale(0.98); }
 .filter--label { margin: 20px 26px 14px; }
 /* Tiles, three to a row: outlined in the design system's line, a deck's
    icon over its name. Picked, a tile fills with its category's colour and
-   its icon colours in; the rest stay System White. */
+   its icon colours in; the rest stay Neutral 100. */
 .filter--options {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -889,7 +888,7 @@ button.fortune--card:active { transform: scale(0.98); }
   padding: 0 26px;
 }
 .filter--opt {
-  --tile: var(--system-white);
+  --tile: var(--neutral-100);
   --ink: var(--system-black);
   aspect-ratio: 1;
   display: flex;
@@ -900,7 +899,7 @@ button.fortune--card:active { transform: scale(0.98); }
   padding: 0;
   border: 0.771px solid var(--system-black);
   border-radius: 15px;
-  background: var(--system-white);
+  background: var(--neutral-100);
   color: var(--system-black);
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
@@ -908,8 +907,8 @@ button.fortune--card:active { transform: scale(0.98); }
 }
 .filter--opt:active { transform: scale(0.95); }
 .filter--opt[data-deck="all"] { --tile: var(--light-pink); }
-.filter--opt[data-deck="protection"] { --tile: var(--protection); --ink: var(--ui-white); }
-.filter--opt[data-deck="calm"] { --tile: var(--calm); --ink: var(--ui-white); }
+.filter--opt[data-deck="protection"] { --tile: var(--protection); --ink: var(--system-white); }
+.filter--opt[data-deck="calm"] { --tile: var(--calm); --ink: var(--system-white); }
 .filter--opt[data-deck="luck"] { --tile: var(--luck); }
 .filter--opt[data-deck="success"] { --tile: var(--success); }
 .filter--opt[aria-pressed="true"] {
@@ -1080,7 +1079,7 @@ button.fortune--card:active { transform: scale(0.98); }
   bottom: 24.3px;
   border: 0.773px solid var(--system-black);
   border-radius: 24.74px;
-  background: var(--system-white);
+  background: var(--neutral-100);
   pointer-events: none;
 }
 .info--frame::after {
@@ -1139,14 +1138,14 @@ button.fortune--card:active { transform: scale(0.98); }
   cursor: pointer;
 }
 .sheet.is-full { cursor: auto; }
-/* While it peeks, its top melts from System White into the card's colour */
+/* While it peeks, its top melts from Neutral 100 into the card's colour */
 .sheet--fade {
   position: absolute;
   left: -8px;
   top: 0;
   width: 417px;
   height: 404px;
-  background: linear-gradient(var(--system-white) 31.609%, rgba(240, 240, 240, 0) 97.573%);
+  background: linear-gradient(var(--neutral-100) 31.609%, rgba(240, 240, 240, 0) 97.573%);
   opacity: calc(1 - var(--p, 0));
   pointer-events: none;
 }
@@ -1177,7 +1176,7 @@ button.fortune--card:active { transform: scale(0.98); }
 }
 /* On a dark card colour, white words; and the back arrow too, once the
    sheet fills the screen behind it */
-.sheet[data-ink="light"] .sheet--howto { color: var(--system-white); }
+.sheet[data-ink="light"] .sheet--howto { color: var(--neutral-100); }
 .stage:has(.sheet.is-full[data-ink="light"]) .m-back img { filter: brightness(0) invert(1); }
 /* Share: the back arrow's twin, on the right */
 .m-share { left: auto; right: 8px; }
@@ -1191,7 +1190,7 @@ button.fortune--card:active { transform: scale(0.98); }
   padding: 7px 18px;
   border-radius: 36px;
   background: var(--system-black);
-  color: var(--system-white);
+  color: var(--neutral-100);
   font-family: var(--font-display);
   font-size: 14px;
   letter-spacing: var(--tracking);
@@ -1307,8 +1306,8 @@ button.fortune--card:active { transform: scale(0.98); }
   height: 80px;
   z-index: 2;
   border-radius: 999px;
-  border: 1.4px dashed var(--system-white);
-  background: color-mix(in srgb, var(--ui-white) 20%, transparent);
+  border: 1.4px dashed var(--neutral-100);
+  background: color-mix(in srgb, var(--system-white) 20%, transparent);
   cursor: grab;
   animation: grip-pulse 1.6s ease-in-out infinite;
 }
@@ -1341,7 +1340,7 @@ button.fortune--card:active { transform: scale(0.98); }
 }
 /* Bad weather: a grey sky, the sun gone; it clears once the doll is hung */
 .sheet { transition: background-color 1.2s; }
-.sheet:has(.ritual--teru.is-gloomy) { background-color: var(--dark-grey); }
+.sheet:has(.ritual--teru.is-gloomy) { background-color: var(--neutral-700); }
 .teru--scene[src*="sun"] { transition: opacity 0.9s 0.3s, translate 1.2s 0.3s cubic-bezier(0.3, 1.2, 0.5, 1); }
 .is-gloomy .teru--scene[src*="sun"] { opacity: 0; translate: 0 40px; }
 .teru--scene {
@@ -1453,8 +1452,8 @@ button.fortune--card:active { transform: scale(0.98); }
   height: 51px;
   padding: 0 15px;
   border-radius: 43px;
-  background: var(--ui-white);
-  border: 1px solid var(--system-black);
+  background: var(--system-white);
+  border: 1px solid var(--neutral-500);  /* outlined (Figma 637:282) */
   color: var(--system-black);
   font-family: var(--font-display);
   font-size: 16px;  /* main buttons' text */
@@ -1464,7 +1463,7 @@ button.fortune--card:active { transform: scale(0.98); }
   -webkit-tap-highlight-color: transparent;
   transition: transform 0.15s, background-color 0.15s;
 }
-.claimed--btn:active { transform: scale(0.97); background: var(--system-white); }
+.claimed--btn:active { transform: scale(0.97); background: var(--neutral-100); }
 
 /* Claimed: the clover pops in with a twist, then the words and button rise
    in one after another */
@@ -1543,9 +1542,9 @@ button.fortune--card:active { transform: scale(0.98); }
   color: var(--system-black);
 }
 [data-view="tree"] .head--title { display: none; }
-[data-view="tree"] .head--page { display: block; color: var(--system-white); }
+[data-view="tree"] .head--page { display: block; color: var(--neutral-100); }
 /* Over the dark canopy the status bar turns white */
-[data-view="tree"] .status--time { color: var(--system-white); }
+[data-view="tree"] .status--time { color: var(--neutral-100); }
 [data-view="tree"] .status--right { filter: invert(1) brightness(2); }
 .tree {
   position: absolute;
@@ -1706,11 +1705,11 @@ button.fortune--card:active { transform: scale(0.98); }
   top: 122px;
   width: max-content;
   margin: 0 auto;
-  /* 460:5296: plain UI White words over the canopy */
+  /* 460:5296: plain System White words over the canopy */
   font-family: var(--font-display);
   font-size: 14px;
   letter-spacing: var(--tracking);
-  color: var(--ui-white);
+  color: var(--system-white);
   z-index: 1;
   pointer-events: none;
 }
@@ -1733,7 +1732,7 @@ button.fortune--card:active { transform: scale(0.98); }
   transition: opacity 0.4s;
 }
 .wish.is-open .wish--scrim { opacity: 1; }
-/* "Wish 1": Cooper, System White, centred where the header was */
+/* "Wish 1": Cooper, Neutral 100, centred where the header was */
 .wish--title {
   position: absolute;
   left: 75px;
@@ -1746,7 +1745,7 @@ button.fortune--card:active { transform: scale(0.98); }
   font-size: 19px;
   letter-spacing: -0.02em;
   line-height: 25px;
-  color: var(--system-white);
+  color: var(--neutral-100);
   opacity: 0;
   transition: opacity 0.3s;
 }
@@ -1754,7 +1753,7 @@ button.fortune--card:active { transform: scale(0.98); }
 .wish.is-open .wish--title { opacity: 1; }
 /* The header makes way for the close button while a wish is open */
 .is-reading .head { opacity: 0; pointer-events: none; }
-/* The ×, UI White, at the header icons' 28px, in a 44px tap area, its box on the 16px margin */
+/* The ×, System White, at the header icons' 28px, in a 44px tap area, its box on the 16px margin */
 .wish--close {
   position: absolute;
   right: 8px;
@@ -1772,14 +1771,14 @@ button.fortune--card:active { transform: scale(0.98); }
   transition: opacity 0.3s;
 }
 .wish--close svg { display: block; overflow: visible; }
-.wish--close path { fill: none; stroke: var(--ui-white); stroke-width: 1.5px; stroke-linecap: round; }
+.wish--close path { fill: none; stroke: var(--system-white); stroke-width: 1.5px; stroke-linecap: round; }
 .is-phone .wish--close { top: 7px; }
 .wish--close:focus-visible,
 .wishform--close:focus-visible { outline: 1.5px solid var(--system-black); outline-offset: -2px; }
 .wish.is-open .wish--close { opacity: 1; }
 /* The slip (460:5271): 294 x 491, a little above the middle */
 .wish--slip {
-  --paper: var(--system-white);
+  --paper: var(--neutral-100);
   position: absolute;
   left: 54px;
   top: calc(50% - 235px);  /* 497:8061: the hint, 29, the slip, 29, the row */
@@ -1804,7 +1803,7 @@ button.fortune--card:active { transform: scale(0.98); }
 }
 .wish--trace path {
   fill: none;
-  stroke: var(--ui-white);
+  stroke: var(--system-white);
   stroke-width: 1.5px;
   stroke-linejoin: round;
   stroke-linecap: round;
@@ -1820,7 +1819,7 @@ button.fortune--card:active { transform: scale(0.98); }
   0% { rotate: y 0deg; }
   100% { rotate: y 360deg; }
 }
-/* Above the slip: 14px, System White; while held, "Hold..." at 16 */
+/* Above the slip: 14px, Neutral 100; while held, "Hold..." at 16 */
 .wish--hold {
   position: absolute;
   left: 16px;
@@ -1832,7 +1831,7 @@ button.fortune--card:active { transform: scale(0.98); }
   font-size: 14px;
   line-height: 19px;
   letter-spacing: var(--tracking);
-  color: var(--system-white);
+  color: var(--neutral-100);
   opacity: 0;
   transition: opacity 0.3s;
 }
@@ -1955,7 +1954,7 @@ button.fortune--card:active { transform: scale(0.98); }
   height: 51px;
   padding: 0;
   transform: translateX(-50%);
-  border: 1px solid var(--system-black);
+  border: 0;  /* main (Figma 636:272): no line */
   border-radius: 43px;
   background: var(--system-black);
   color: var(--system-white);
@@ -1982,7 +1981,7 @@ button.fortune--card:active { transform: scale(0.98); }
   padding: 7px 18px;
   border-radius: 36px;
   background: var(--system-black);
-  color: var(--system-white);
+  color: var(--neutral-100);
   font-family: var(--font-display);
   font-size: 14px;
   letter-spacing: var(--tracking);
@@ -2006,7 +2005,7 @@ button.fortune--card:active { transform: scale(0.98); }
   100% { rotate: -3deg; }
 }
 
-/* The sheet: UI White from the bottom, as the filter's */
+/* The sheet: System White from the bottom, as the filter's */
 /* Writing a wish (Figma 543:7897): the tree dimmed behind, as for reading
    one; the header's clover count stays over it */
 .wishform {
@@ -2076,7 +2075,7 @@ button.fortune--card:active { transform: scale(0.98); }
 }
 .is-writing .head { z-index: 61; pointer-events: none; }  /* shown over it, but taps go through to the back arrow */
 /* the count, writing: no pill, in white on the dark green, on the margin */
-.is-writing .head--count { padding: 0; background: none; filter: none; color: var(--system-white); }
+.is-writing .head--count { padding: 0; background: none; filter: none; color: var(--neutral-100); }
 .is-writing .head--count img { filter: brightness(0) invert(1); }
 .is-writing .head--page,
 .is-writing .head--title,
@@ -2138,8 +2137,8 @@ button.fortune--card:active { transform: scale(0.98); }
   line-height: normal;
   color: var(--system-black);
 }
-/* "Write a wish": Cooper, System White, as the reader's "Wish 1" */
-.wishform--title { font-family: var(--font-title); font-size: 19px; letter-spacing: var(--tracking-title); color: var(--system-white); }
+/* "Write a wish": Cooper, Neutral 100, as the reader's "Wish 1" */
+.wishform--title { font-family: var(--font-title); font-size: 19px; letter-spacing: var(--tracking-title); color: var(--neutral-100); }
 /* The blank slip, written on directly: the open slip's own size and shape
    (294.89 x 490.72), a little bigger, as the sketch's (332 across), in the
    room left between the title and the switch; smaller if it must be
@@ -2152,7 +2151,7 @@ button.fortune--card:active { transform: scale(0.98); }
   margin-top: 14px;
 }
 .wishform--slip {
-  --paper: var(--system-white);
+  --paper: var(--neutral-100);
   position: absolute;
   left: 50%;
   top: 50%;
@@ -2177,10 +2176,10 @@ button.fortune--card:active { transform: scale(0.98); }
   font-size: 16px;
   line-height: 1.35;
 }
-.wishform--slip textarea::placeholder { color: var(--dark-grey); }
+.wishform--slip textarea::placeholder { color: var(--neutral-700); }
 /* at its foot: how much is written, and who it's from (where an open
    slip's "Anonymous" is) */
-.wishform--count { position: absolute; left: 25px; top: 420px; font-size: 14px; color: var(--dark-grey); }
+.wishform--count { position: absolute; left: 25px; top: 420px; font-size: 14px; color: var(--neutral-700); }
 .wishform--by { position: absolute; left: 25px; top: 442.7px; font-size: 14px; line-height: 1.35; }
 /* Anonymous or signed: a switch */
 .wishform--anon {
@@ -2191,7 +2190,7 @@ button.fortune--card:active { transform: scale(0.98); }
   justify-content: space-between;
   margin: 18px 0;
   font-size: 16px;
-  color: var(--system-white);
+  color: var(--neutral-100);
 }
 .wishform--switch {
   position: relative;
@@ -2201,7 +2200,7 @@ button.fortune--card:active { transform: scale(0.98); }
   padding: 0;
   border: 0;
   border-radius: 999px;
-  background: var(--dark-grey);  /* off */
+  background: var(--neutral-700);  /* off */
   cursor: pointer;
   transition: background 0.2s;
 }
@@ -2213,13 +2212,13 @@ button.fortune--card:active { transform: scale(0.98); }
   width: 25px;
   height: 25px;
   border-radius: 50%;
-  background: var(--ui-white);
+  background: var(--system-white);
   transition: translate 0.25s cubic-bezier(0.3, 1.3, 0.5, 1);
 }
 .wishform--switch[aria-checked="true"] { background: var(--system-black); }
 .wishform--switch[aria-checked="true"] span { translate: 20px 0; }
-.wishform--switch:focus-visible { box-shadow: 0 0 0 3px var(--system-black), 0 0 0 4.5px var(--ui-white); outline: none; }
-/* Hang it: System Black, the price in white; UI White and Dark Grey until
+.wishform--switch:focus-visible { box-shadow: 0 0 0 3px var(--system-black), 0 0 0 4.5px var(--system-white); outline: none; }
+/* Hang it: System Black, the price in white; System White and Neutral 700 until
    there's a wish to hang (or clovers to pay with) */
 .wishform--hang {
   flex: none;
@@ -2242,18 +2241,18 @@ button.fortune--card:active { transform: scale(0.98); }
 .wishform--hang:active { transform: scale(0.97); }
 .wishform--hang-cost { display: inline-flex; align-items: center; gap: 2px; }
 .wishform--hang:disabled {
-  background: var(--ui-white);
-  color: var(--dark-grey);
+  background: var(--neutral-300);  /* disabled (Figma 638:287) */
+  color: var(--neutral-900);
   cursor: default;
 }
-.wishform--hang:disabled .wishform--hang-cost img { filter: brightness(0.55); }
+.wishform--hang:disabled .wishform--hang-cost img { filter: brightness(0.34); }  /* the white clover in Neutral 900 */
 .wishform--hang.is-short .wishform--hang-cost { display: none; }
 .wishform--balance {
   min-height: 17px;
   margin-top: 10px;
   font-size: 14px;
   text-align: center;
-  color: var(--system-white);
+  color: var(--neutral-100);
 }
 /* Before the clovers go: asked over the filter's overlay (the same dim) */
 .wishform--confirm {
@@ -2275,14 +2274,14 @@ button.fortune--card:active { transform: scale(0.98); }
   box-sizing: border-box;
   border-radius: 30px;
   border: 0.771px solid var(--system-black);
-  background: var(--ui-white);
+  background: var(--system-white);
   text-align: center;
   transform: scale(0.94);
   transition: transform 0.3s cubic-bezier(0.3, 1.4, 0.5, 1);
 }
 .wishform.is-confirming .wishform--card { transform: none; }
 .wishform--q { font-size: 20px; }
-.wishform--a { margin-top: 8px; font-size: 16px; color: var(--dark-grey); }
+.wishform--a { margin-top: 8px; font-size: 16px; color: var(--neutral-700); }
 .wishform--choices {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -2296,18 +2295,18 @@ button.fortune--card:active { transform: scale(0.98); }
   gap: 8px;
   height: 51px;
   border-radius: 43px;
-  border: 0.771px solid var(--system-black);
+  border: 1px solid var(--neutral-500);  /* outlined (Figma 637:282) */
   font-size: 16px;  /* main buttons' text */
   cursor: pointer;
 }
-.wishform--no { background: var(--ui-white); }
+.wishform--no { background: var(--system-white); color: var(--system-black); }
 /* not enough clovers: one button, to close it */
 .wishform.is-short .wishform--choices { grid-template-columns: 1fr; }
 .wishform.is-short .wishform--yes { display: none; }
-.wishform .wishform--yes { background: var(--system-black); color: var(--system-white); }
-.wishform.is-short .wishform--no { background: var(--system-black); color: var(--system-white); border-color: var(--system-black); }  /* the one way out, so the main button */
+.wishform .wishform--yes { background: var(--system-black); color: var(--system-white); border-color: transparent; }
+.wishform.is-short .wishform--no { background: var(--system-black); color: var(--system-white); border-color: transparent; }  /* the one way out, so the main button */
 .wishform--choices button:focus { outline: none; }
-.wishform--choices button:focus-visible { box-shadow: 0 0 0 3px var(--ui-white), 0 0 0 4.5px var(--system-black); }  /* the system's double line */
+.wishform--choices button:focus-visible { box-shadow: 0 0 0 3px var(--system-white), 0 0 0 4.5px var(--system-black); }  /* the system's double line */
 /* The slip on its way up to the tree */
 .wishform--fly {
   position: absolute;
@@ -2325,7 +2324,7 @@ button.fortune--card:active { transform: scale(0.98); }
   overflow: hidden;
 }
 
-/* Splash (Figma 486:5534): System White under the paper grain, the logo in
+/* Splash (Figma 486:5534): Neutral 100 under the paper grain, the logo in
    the middle (363 x 163). The letters are trimmed on by splash.js; the
    sticker behind them is stuck down once they're drawn. Above everything
    but the status bar and home indicator. */
@@ -2333,7 +2332,7 @@ button.fortune--card:active { transform: scale(0.98); }
   position: absolute;
   inset: 0;
   z-index: 69;
-  background: var(--system-white);
+  background: var(--neutral-100);
   transition: opacity calc(var(--out, 0.55s) * 0.73) calc(var(--out, 0.55s) * 0.27) ease, visibility 0s var(--out, 0.55s);
 }
 .splash::after {
@@ -2409,14 +2408,14 @@ button.fortune--card:active { transform: scale(0.98); }
 
 /* --- Onboarding -------------------------------------------------------------
    Over everything but the splash, the status bar and the home indicator:
-   System White under the paper grain. Every value is the design system's:
+   Neutral 100 under the paper grain. Every value is the design system's:
    Cooper titles (27), Paperlogy 17 / 16 / 14, the 371 x 51 buttons, the
    0.771px line, the rituals' progress bar. */
 .ob {
   position: absolute;
   inset: 0;
   z-index: 68;
-  background: var(--system-white);
+  background: var(--neutral-100);
   font-family: var(--font-display);
   letter-spacing: var(--tracking);
   color: var(--system-black);
@@ -2508,7 +2507,7 @@ button.fortune--card:active { transform: scale(0.98); }
   box-sizing: border-box;
   border: 0.771px solid var(--system-black);
   border-radius: 16px;
-  background: var(--ui-white);
+  background: var(--system-white);
   font: inherit;
   font-size: 16px;  /* fields' text: a step under 17 */
   letter-spacing: var(--tracking);
@@ -2517,8 +2516,8 @@ button.fortune--card:active { transform: scale(0.98); }
   -webkit-appearance: none;
   appearance: none;
 }
-.ob--field input::placeholder { color: var(--dark-grey); }
-.ob--field input:focus-visible { box-shadow: 0 0 0 3px var(--ui-white), 0 0 0 4.5px var(--system-black); }
+.ob--field input::placeholder { color: var(--neutral-700); }
+.ob--field input:focus-visible { box-shadow: 0 0 0 3px var(--system-white), 0 0 0 4.5px var(--system-black); }
 .ob--field input[type="date"] { line-height: 49px; }
 /* a word under the password when the account doesn't check out */
 .ob--note { margin: -6px 0 0; min-height: 18px; font-size: 14px; color: var(--hot-pink); }
@@ -2540,7 +2539,7 @@ button.fortune--card:active { transform: scale(0.98); }
   height: 51px;
   padding: 0;
   border-radius: 43px;
-  border: 1px solid var(--system-black);
+  border: 1px solid transparent;  /* main (Figma 636:272): no line showing */
   background: var(--system-black);
   color: var(--system-white);
   font: inherit;
@@ -2550,8 +2549,8 @@ button.fortune--card:active { transform: scale(0.98); }
   transition: background 0.2s, color 0.2s, border-color 0.2s, transform 0.15s;
 }
 .ob--btn:active { transform: scale(0.97); }
-.ob--btn:disabled { background: var(--ui-white); border-color: var(--dark-grey); color: var(--dark-grey); cursor: default; transform: none; }
-.ob--btn.is-line { background: var(--ui-white); color: var(--system-black); }
+.ob--btn:disabled { background: var(--neutral-300); border-color: transparent; color: var(--neutral-900); cursor: default; transform: none; }  /* Figma 638:287 */
+.ob--btn.is-line { background: var(--system-white); border-color: var(--neutral-500); color: var(--system-black); }  /* Figma 637:282 */
 .ob--link {
   padding: 10px;
   border: 0;
@@ -2563,7 +2562,7 @@ button.fortune--card:active { transform: scale(0.98); }
   cursor: pointer;
 }
 .ob--link u { text-underline-offset: 3px; }
-.ob--muted { color: var(--dark-grey); }  /* the question in grey, the way in in black */
+.ob--muted { color: var(--neutral-700); }  /* the question in grey, the way in in black */
 .ob--or {
   display: flex;
   align-items: center;
@@ -2606,7 +2605,7 @@ button.fortune--card:active { transform: scale(0.98); }
   content: "";
   position: absolute;
   inset: 0;
-  background: linear-gradient(to bottom, transparent 60%, var(--system-white) 80%);  /* a long, soft fade above the buttons */
+  background: linear-gradient(to bottom, transparent 60%, var(--neutral-100) 80%);  /* a long, soft fade above the buttons */
 }
 @media (prefers-reduced-motion: reduce) { .ob--ring { animation: none; } }
 .ob--logo {
@@ -2705,7 +2704,7 @@ button.fortune--card:active { transform: scale(0.98); }
   padding: 0 14px;
   border: 0.771px solid var(--system-black);
   border-radius: 999px;
-  background: var(--ui-white);
+  background: var(--system-white);
   font: inherit;
   font-size: 14px;
   letter-spacing: var(--tracking);
@@ -2743,7 +2742,7 @@ button.fortune--card:active { transform: scale(0.98); }
   font-family: var(--font-display);
   font-size: 10px;
   letter-spacing: var(--tracking);
-  color: var(--dark-grey);
+  color: var(--neutral-700);
   opacity: 0;
   pointer-events: none;
   transition: opacity 0.4s;
@@ -2829,15 +2828,15 @@ button.fortune--card:active { transform: scale(0.98); }
 .clover-fly.is-dark img:first-child { filter: brightness(0.16); }
 
 /* Settings (the profile's gear): slides in over the profile as Daily
-   Fortune does; a grouped list, each group an outlined UI White card
-   (the filter tiles' line and corner), rows split by a System White rule */
+   Fortune does; a grouped list, each group an outlined System White card
+   (the filter tiles' line and corner), rows split by a Neutral 100 rule */
 .settings {
   --top: 0px;
   position: absolute;
   inset: 0;
   z-index: 65;
   overflow: hidden;
-  background: var(--system-white);
+  background: var(--neutral-100);
   font-family: var(--font-display);
   letter-spacing: var(--tracking);
   color: var(--system-black);
@@ -2882,7 +2881,7 @@ button.fortune--card:active { transform: scale(0.98); }
   overflow: hidden;
   border: 0.771px solid var(--system-black);
   border-radius: 15px;
-  background: var(--ui-white);
+  background: var(--system-white);
 }
 .settings--row {
   position: relative;
@@ -2907,9 +2906,9 @@ button.fortune--card:active { transform: scale(0.98); }
 }
 div.settings--row { cursor: default; }
 .settings--row[hidden] { display: none; }
-.settings--row + .settings--row { border-top: 1px solid var(--system-white); }
+.settings--row + .settings--row { border-top: 1px solid var(--neutral-100); }
 button.settings--row:active,
-label.settings--row:active { background: var(--system-white); }
+label.settings--row:active { background: var(--neutral-100); }
 .settings--row:focus-visible { outline: 1.5px solid var(--system-black); outline-offset: -3px; }
 .settings--value { margin-left: auto; }
 .settings--go { width: 13.3333px; height: 7.33333px; rotate: -90deg; opacity: 0.7; }
@@ -2946,8 +2945,8 @@ label.settings--row:active { background: var(--system-white); }
 .settings.is-confirming .settings--confirm { opacity: 1; visibility: visible; transition: opacity 0.3s; }
 .settings--confirm .wishform--card { transform: scale(0.94); }
 .settings.is-confirming .wishform--card { transform: none; }
-.settings .wishform--yes { background: var(--system-black); color: var(--system-white); }
-/* Volume: quiet and loud at the ends; the track System White in the line,
+.settings .wishform--yes { background: var(--system-black); color: var(--system-white); border-color: transparent; }
+/* Volume: quiet and loud at the ends; the track Neutral 100 in the line,
    filled System Black to the knob (the switch's knob); faded with sound off */
 .settings--volume { gap: 12px; cursor: default; }
 .settings--volume img { flex: none; display: block; }
@@ -2966,9 +2965,9 @@ label.settings--row:active { background: var(--system-white); }
   height: 6px;
   border-radius: 999px;
   border: 0.771px solid var(--system-black);
-  background: linear-gradient(to right, var(--system-black) var(--v), var(--system-white) var(--v));
+  background: linear-gradient(to right, var(--system-black) var(--v), var(--neutral-100) var(--v));
 }
-.settings--volume input::-moz-range-track { height: 6px; border-radius: 999px; border: 0.771px solid var(--system-black); background: var(--system-white); }
+.settings--volume input::-moz-range-track { height: 6px; border-radius: 999px; border: 0.771px solid var(--system-black); background: var(--neutral-100); }
 .settings--volume input::-moz-range-progress { height: 6px; border-radius: 999px; background: var(--system-black); }
 .settings--volume input::-webkit-slider-thumb {
   -webkit-appearance: none;
@@ -2977,15 +2976,15 @@ label.settings--row:active { background: var(--system-white); }
   margin-top: -10.5px;
   border-radius: 50%;
   border: 0.771px solid var(--system-black);
-  background: var(--ui-white);
+  background: var(--system-white);
 }
-.settings--volume input::-moz-range-thumb { width: 25px; height: 25px; border-radius: 50%; border: 0.771px solid var(--system-black); background: var(--ui-white); }
+.settings--volume input::-moz-range-thumb { width: 25px; height: 25px; border-radius: 50%; border: 0.771px solid var(--system-black); background: var(--system-white); }
 .settings--volume input:focus { outline: none; }
-.settings--volume input:focus-visible::-webkit-slider-thumb { box-shadow: 0 0 0 3px var(--ui-white), 0 0 0 4.5px var(--system-black); }
+.settings--volume input:focus-visible::-webkit-slider-thumb { box-shadow: 0 0 0 3px var(--system-white), 0 0 0 4.5px var(--system-black); }
 .settings--volume.is-off { opacity: 0.4; }
 
 /* Guest mode (guest.js): the profile's header as Figma 554:18473, a grey
-   sky and white clouds, the doll a Dark Grey silhouette with a question
+   sky and white clouds, the doll a Neutral 700 silhouette with a question
    mark (tapped, it asks you to sign up), the name not to be changed */
 .is-guest .profile--hero { background-image: url("assets/profile/guest-hero.svg"); }
 .is-guest .profile--hero::before { background: #b0b0b0; }  /* the sky's grey, carried on up */
@@ -3031,7 +3030,7 @@ label.settings--row:active { background: var(--system-white); }
 .nudge.is-open { opacity: 1; visibility: visible; transition: opacity 0.3s; }
 .nudge .wishform--card { transform: scale(0.94); }
 .nudge.is-open .wishform--card { transform: none; }
-.nudge .wishform--yes { background: var(--system-black); color: var(--system-white); }
+.nudge .wishform--yes { background: var(--system-black); color: var(--system-white); border-color: transparent; }
 
 /* Daily Fortune, for a guest: the birthday first, as onboarding asks it */
 .fortune--ask {
@@ -3049,7 +3048,7 @@ label.settings--row:active { background: var(--system-white); }
 .fortune .fortune--ask-title { margin: 0; font-family: var(--font-title); font-weight: 400; font-size: 27px; letter-spacing: var(--tracking-title); line-height: 1.15; color: var(--system-black); }
 .fortune .fortune--ask-sub { margin: 10px 0 32px; font-size: 16px; line-height: 1.35; }
 .fortune--ask .ob--btn { margin: auto auto 0; color: var(--system-white); }
-.fortune--ask .ob--btn:disabled { color: var(--dark-grey); }
+.fortune--ask .ob--btn:disabled { color: var(--neutral-900); }
 
 /* Settings, for a guest: what a guest is, and the way to keep it, in place
    of your details and the account */

@@ -63,7 +63,7 @@ html, body {
 .clover--found svg {
   position: absolute;
   overflow: visible;
-  filter: drop-shadow(0 0 18px var(--ui-white));
+  filter: drop-shadow(0 0 18px var(--system-white));
 }
 
 /* The pointing hand, showing a swipe across the field */

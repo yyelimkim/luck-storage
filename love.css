@@ -14,7 +14,7 @@ html, body {
   overflow: hidden;
   font-family: var(--font-display);
   letter-spacing: var(--tracking);
-  color: var(--system-white);  /* on the Hot Pink card, white, as its sheet's words */
+  color: var(--neutral-100);  /* on the Hot Pink card, white, as its sheet's words */
   -webkit-user-select: none;
   user-select: none;
 }
@@ -94,7 +94,7 @@ html, body {
   padding: 0 58px 0 22px;
   border-radius: 43px;
   border: 0.771px solid var(--system-black);
-  background: var(--ui-white);
+  background: var(--system-white);
   font: inherit;
   font-size: 16px;  /* fields' text */
   letter-spacing: var(--tracking);
@@ -103,9 +103,9 @@ html, body {
   -webkit-user-select: text;
   user-select: text;
 }
-.love--field input::placeholder { color: var(--dark-grey); }
+.love--field input::placeholder { color: var(--neutral-700); }
 .love--field input:focus,
-.love--field input:focus-visible { box-shadow: 0 0 0 3px var(--ui-white), 0 0 0 4.5px var(--system-black); }  /* the double line, as the sign-up fields */
+.love--field input:focus-visible { box-shadow: 0 0 0 3px var(--system-white), 0 0 0 4.5px var(--system-black); }  /* the double line, as the sign-up fields */
 .love--send {
   position: absolute;
   right: 7px;
@@ -122,7 +122,7 @@ html, body {
   cursor: pointer;
   transition: opacity 0.2s, transform 0.15s;
 }
-.love--send:disabled { opacity: 0.35; cursor: default; }
+.love--send:disabled { background: var(--neutral-300); color: var(--neutral-900); cursor: default; }  /* disabled (Figma 638:287) */
 .love--send:not(:disabled):active { transform: scale(0.92); }
 
 

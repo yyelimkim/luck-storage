@@ -52,5 +52,5 @@
   stroke-dashoffset: 1;
   transition: stroke-dashoffset 0.35s cubic-bezier(0.3, 0.8, 0.2, 1);
 }
-.eye--cracks path.is-edge { stroke: var(--ui-white); stroke-width: 4px; opacity: 0.85; }
+.eye--cracks path.is-edge { stroke: var(--system-white); stroke-width: 4px; opacity: 0.85; }
 .eye--cracks path.is-run { stroke-dashoffset: 0; }
