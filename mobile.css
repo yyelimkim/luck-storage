@@ -2669,8 +2669,8 @@ button.fortune--card:active { transform: scale(0.98); }
 /* the wordmark, as the welcome's (Figma 626:213: 160 × 68) */
 .ob--wordmark { align-self: center; width: 160px; height: auto; margin-bottom: 20px; }
 /* the terms, under the button */
-.ob--legal { margin: 12px 0 0; font-size: 14px; line-height: 1.35; text-align: center; }
-.ob--legal u { text-underline-offset: 3px; }
+.ob--legal { margin: 12px 0 0; font-size: 14px; line-height: 1.35; text-align: center; color: var(--neutral-700); }  /* secondary words in Neutral 700 */
+.ob--legal u { text-underline-offset: 3px; color: var(--system-black); }  /* the links, as "Log in" after its grey question */
 /* the other way in, at the foot over the system line */
 .ob--foot {
   margin-top: auto;
