@@ -142,7 +142,7 @@ img { -webkit-user-drag: none; }
   filter: drop-shadow(0 4px 2px rgba(168, 164, 164, 0.2));
   color: var(--system-black);
 }
-.head--count span { font-size: 17px; }
+.head--count span { font-size: 16px; }  /* body text: 16 */
 .head--count img { display: block; }
 
 /* Cards: placed every frame by mobile.js */
@@ -382,7 +382,7 @@ img { -webkit-user-drag: none; }
   align-items: flex-end;
   gap: 4px;
   font-family: var(--font-title);
-  font-size: 41px;
+  font-size: 40px;
   letter-spacing: var(--tracking-title);
   line-height: 0.75;  /* trimmed to the capitals, as 390:6980 */
 }
@@ -862,7 +862,7 @@ button.fortune--card:active { transform: scale(0.98); }
   color: var(--system-black);
   font-family: var(--font-display);
   font-weight: 400;
-  font-size: 16px;  /* a step under the 17 */
+  font-size: 16px;  /* body text */
   letter-spacing: var(--tracking);
   line-height: normal;
 }
@@ -1116,7 +1116,7 @@ button.fortune--card:active { transform: scale(0.98); }
   margin: 0;
   text-align: center;
   font-family: var(--font-display);
-  font-size: 17px;
+  font-size: 16px;  /* body text */
   letter-spacing: var(--tracking);
   line-height: normal;
 }
@@ -2509,7 +2509,7 @@ button.fortune--card:active { transform: scale(0.98); }
   border-radius: 16px;
   background: var(--system-white);
   font: inherit;
-  font-size: 16px;  /* fields' text: a step under 17 */
+  font-size: 16px;  /* fields' text: body size */
   letter-spacing: var(--tracking);
   color: var(--system-black);
   outline: none;
@@ -2618,11 +2618,11 @@ button.fortune--card:active { transform: scale(0.98); }
 .is-phone .ob--logo { margin-top: 30px; }
 .ob--hero {
   position: relative;
-  margin: auto 0 60px;  /* under the ring, 60px above Get started (Figma 626:2) */
+  margin: auto 0 43px;  /* under the ring, as far from the cards as from Get started */
   text-align: center;
   font-family: var(--font-title);
   font-weight: 400;
-  font-size: 41px;  /* as the profile's name */
+  font-size: 40px;  /* as the profile's name */
   letter-spacing: var(--tracking-title);
   line-height: 1.1;
 }

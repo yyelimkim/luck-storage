@@ -100,7 +100,7 @@ html, body {
   min-height: 24px;
   text-align: center;
 }
-.hito--say { display: none; margin: 0; font-size: 18px; line-height: 1.3; }  /* the rituals' step-words size */
+.hito--say { display: none; margin: 0; font-size: 16px; line-height: 1.3; }  /* the rituals' step-words size */
 [data-step="write"] .hito--say[data-for="write"],
 [data-step="doll"] .hito--say[data-for="doll"],
 [data-step="done"] .hito--say[data-for="done"] { display: block; animation: rise 0.45s cubic-bezier(0.3, 0.8, 0.2, 1); }
