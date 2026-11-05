@@ -2441,6 +2441,7 @@ button.fortune--card:active { transform: scale(0.98); }
   z-index: 2;
   display: flex;
   align-items: center;
+  gap: 8px;
   height: 44px;
 }
 .is-phone .ob--top { top: 10px; }
@@ -2457,16 +2458,28 @@ button.fortune--card:active { transform: scale(0.98); }
   transition: opacity 0.3s;
 }
 .ob--back img { display: block; }
-/* the clover, small and centred, over each step (as Reddit's mark) */
-.ob--mark {
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  translate: -50% -50%;
+/* How far along: the rituals' progress bar, from the back arrow to the
+   screen's 16px margin */
+.ob--bar {
+  flex: 1;
+  height: 14px;
+  margin-right: 8px;
+  padding: 2px;
+  box-sizing: border-box;
+  border-radius: 999px;
+  border: 1px solid var(--system-black);
+  background: var(--system-white);
   transition: opacity 0.3s;
 }
-.ob[data-step="email"] .ob--mark,
-.ob[data-step="login"] .ob--mark { opacity: 0; }
+.ob--fill {
+  display: block;
+  width: var(--done, 0%);
+  height: 100%;
+  border-radius: 999px;
+  background: var(--system-black);
+  transition: width 0.4s cubic-bezier(0.3, 0.8, 0.2, 1);
+}
+.ob[data-step="login"] .ob--bar { opacity: 0; }  /* logging in: one step, nothing to count */
 .ob[data-step="welcome"] .ob--top,
 .ob[data-step="done"] .ob--top { opacity: 0; pointer-events: none; }
 
@@ -2723,14 +2736,17 @@ button.fortune--card:active { transform: scale(0.98); }
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 28px 16px 40px;
+  padding: 10px 16px 40px;
+  touch-action: none;  /* dragged down by its grabber */
 }
+/* the grabber, iOS's: a 36 × 5 pill in Neutral 500, centred at the top */
+.ob--grabber { display: block; width: 36px; height: 5px; margin-bottom: 18px; border-radius: 999px; background: var(--neutral-500); cursor: grab; }
 .ob--ways .ob--title { margin-bottom: 24px; text-align: center; }
 .ob--ways-list { display: flex; flex-direction: column; align-items: center; gap: 10px; width: 100%; }
 .ob--btn.has-icon { position: relative; }
 .ob--btn.has-icon > svg,
 .ob--btn.has-icon > img { position: absolute; left: 20px; top: 50%; translate: 0 -50%; display: block; }
-.ob--ways .ob--legal { margin: 16px 0 6px; }
+.ob--ways .ob--legal { margin: 16px 0 0; }
 
 /* Demo only: under the phone, very small, while onboarding is up */
 .demo-hint {

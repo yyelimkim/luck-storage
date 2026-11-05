@@ -43,6 +43,8 @@
     return;
   }
   const pages = Object.fromEntries([...ob.querySelectorAll('.ob--page')].map((p) => [p.dataset.page, p]));
+  const bar = ob.querySelector('.ob--bar');
+  const fill = ob.querySelector('.ob--fill');
   const DEMO = { email: 'yelim@luckcorner.app', password: 'fourleaf8', username: 'yelim', name: 'Yelim', birthday: '2006-04-15' };
 
   let mode = 'signup';  // or 'login'
@@ -88,6 +90,13 @@
     next.classList.add('is-on');
     next.classList.remove('is-back');
     ob.dataset.step = step;
+    // how far along: a fifth for each of email, code, username, password, birthday
+    const steps = STEPS.signup;
+    const i = steps.indexOf(step);
+    if (i >= 0) {
+      fill.style.setProperty('--done', `${((i + 1) / steps.length) * 100}%`);
+      bar.setAttribute('aria-valuenow', String(i + 1));
+    }
     if (step === 'name') suggestName();
     // the first field ready to type in (not on a phone, where it'd pop the keyboard)
     const input = next.querySelector('input');
@@ -113,6 +122,31 @@
   function openWays() { ways.classList.add('is-open'); ways.setAttribute('aria-hidden', 'false'); }
   function closeWays() { ways.classList.remove('is-open'); ways.setAttribute('aria-hidden', 'true'); }
   ways.querySelector('.filter--scrim').addEventListener('click', closeWays);
+  // the grabber: drag the sheet down to put it away (past a third of it, or a flick)
+  const waysSheet = ways.querySelector('.filter--sheet');
+  let drag = null;
+  waysSheet.addEventListener('pointerdown', (e) => {
+    if (e.target.closest('button, a')) return;
+    drag = { y: e.clientY, t: performance.now(), dy: 0 };
+    waysSheet.setPointerCapture(e.pointerId);
+    waysSheet.style.transition = 'none';
+  });
+  waysSheet.addEventListener('pointermove', (e) => {
+    if (!drag) return;
+    drag.dy = Math.max(0, e.clientY - drag.y);
+    waysSheet.style.transform = `translateY(${drag.dy}px)`;
+  });
+  const endDrag = () => {
+    if (!drag) return;
+    const fast = drag.dy / (performance.now() - drag.t) > 0.5;
+    const far = drag.dy > waysSheet.getBoundingClientRect().height / 3;
+    drag = null;
+    waysSheet.style.transition = '';
+    waysSheet.style.transform = '';
+    if (fast || far) closeWays();
+  };
+  waysSheet.addEventListener('pointerup', endDrag);
+  waysSheet.addEventListener('pointercancel', endDrag);
   addEventListener('keydown', (e) => { if (e.key === 'Escape') closeWays(); });
 
   function begin(m, step) {
@@ -129,7 +163,6 @@
       if (ob.dataset.step !== 'welcome') { path = []; show('welcome', true); }
       openWays();
     }
-    if (to === 'cancel') closeWays();
     if (to === 'email') begin('signup', 'email');
     // Google and Apple: the demo's email, straight on
     if (to === 'google' || to === 'apple') {
