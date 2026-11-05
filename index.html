@@ -13,7 +13,7 @@
   <!-- installed as an app (Chrome's Install): its name and icon (Figma 495:8045) -->
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="stylesheet" href="design-system.css?v=12">
-  <link rel="stylesheet" href="mobile.css?v=267">
+  <link rel="stylesheet" href="mobile.css?v=268">
 </head>
 <body>
   <!-- iPhone 17 screen (Figma 97:630 at rest, 97:730 while dialing), laid out at
@@ -476,7 +476,7 @@
       </form>
 
       <!-- Verify: the code sent to your email -->
-      <form class="ob--page is-centred" data-page="verify" novalidate>
+      <form class="ob--page" data-page="verify" novalidate>
         <h2 class="ob--title">Check your email</h2>
         <p class="ob--sub" id="ob-verify-sub">We sent you a 6-digit code.</p>
         <label class="ob--field"><span>Code</span><input type="text" name="code" inputmode="numeric" autocomplete="one-time-code" placeholder="123456" maxlength="6" required></label>
@@ -488,7 +488,7 @@
       </form>
 
       <!-- Username: one ready for you, checked as you type, with others to pick -->
-      <form class="ob--page is-centred" data-page="name" novalidate>
+      <form class="ob--page" data-page="name" novalidate>
         <h2 class="ob--title">Create your username</h2>
         <p class="ob--sub">Pick a name to use on Luck Corner. Choose carefully, you won’t be able to change it later.</p>
         <label class="ob--field has-mark"><span>Username</span><input type="text" name="username" autocomplete="username" placeholder="yourname" maxlength="20" autocapitalize="none" spellcheck="false" required><img class="ob--ok" src="assets/filter/check.svg" width="10" height="7.3773" alt=""></label>
@@ -497,7 +497,7 @@
       </form>
 
       <!-- Password: at least 8, to see as you type it if you like -->
-      <form class="ob--page is-centred" data-page="password" novalidate>
+      <form class="ob--page" data-page="password" novalidate>
         <h2 class="ob--title">Set a password</h2>
         <label class="ob--field has-mark"><span>Password</span><input type="password" name="password" autocomplete="new-password" placeholder="Password" minlength="8" required><img class="ob--ok" src="assets/filter/check.svg" width="10" height="7.3773" alt=""><button type="button" class="ob--peek" aria-label="Show password" aria-pressed="false"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M2.5 12S6 5.5 12 5.5 21.5 12 21.5 12 18 18.5 12 18.5 2.5 12 2.5 12Z" stroke="#272727" stroke-width="1.5" stroke-linejoin="round"/><circle cx="12" cy="12" r="3" stroke="#272727" stroke-width="1.5"/><path class="ob--peek-off" d="M4 4l16 16" stroke="#272727" stroke-width="1.5" stroke-linecap="round"/></svg></button></label>
         <p class="ob--note is-hint" id="ob-pw-note">Password must be at least 8 characters</p>
@@ -505,7 +505,7 @@
       </form>
 
       <!-- Birthday -->
-      <form class="ob--page is-centred" data-page="birthday" novalidate>
+      <form class="ob--page" data-page="birthday" novalidate>
         <h2 class="ob--title">When’s your birthday?</h2>
         <p class="ob--sub">Your daily fortune is read from it.</p>
         <label class="ob--field"><span>Birthday</span><input type="date" name="birthday" min="1900-01-01" required></label>

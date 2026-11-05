@@ -2660,6 +2660,8 @@ button.fortune--card:active { transform: scale(0.98); }
 .ob--page.is-centred .ob--title,
 .ob--page.is-centred .ob--sub { text-align: center; }
 .ob--page.is-centred .ob--btn { align-self: center; flex: none; }
+/* the steps between (code, username, password, birthday): words from the left, as v1 */
+.ob--page:not(.is-centred) .ob--btn { align-self: center; flex: none; }
 /* the email and log-in steps open on the clover, as All set does */
 .ob--page[data-page="login"] { padding-top: 150px; }
 .is-phone .ob--page[data-page="login"] { padding-top: 100px; }
