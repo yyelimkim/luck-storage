@@ -2553,6 +2553,23 @@ button.fortune--card:active { transform: scale(0.98); }
 .ob--field:has(input:not(:placeholder-shown)) input,
 .ob--field input[type="date"] { padding-top: 18px; }
 .ob--field input[type="date"] { line-height: 38px; }
+/* (kept apart, so a browser that doesn't know one of these keeps the rest) */
+.ob--field:has(input:-webkit-autofill) > span:first-child { transform: translateY(-10px) scale(0.75); }
+.ob--field:has(input:autofill) > span:first-child { transform: translateY(-10px) scale(0.75); }
+.ob--field input:-webkit-autofill { padding-top: 18px; }
+.ob--field input:autofill { padding-top: 18px; }
+/* the browser's suggestions (hovered, or picked): shown as if typed in our
+   own face, on our own white, with the name risen above them */
+.ob--field input:-webkit-autofill,
+.ob--field input:-webkit-autofill:hover,
+.ob--field input:-webkit-autofill:focus {
+  -webkit-box-shadow: 0 0 0 100px var(--system-white) inset;
+  -webkit-text-fill-color: var(--system-black);
+  caret-color: var(--system-black);
+  transition: background-color 600000s 0s, padding-top 0.18s ease;
+}
+.ob--field input:-webkit-autofill:focus-visible { -webkit-box-shadow: 0 0 0 100px var(--system-white) inset, 0 0 0 1.5px var(--system-white), 0 0 0 3px var(--system-black); }
+.ob--field input:-webkit-autofill::first-line { font-family: var(--font-display); font-size: 16px; letter-spacing: var(--tracking); }
 /* a word under the password when the account doesn't check out */
 .ob--note { margin: -6px 0 0; min-height: 18px; font-size: 14px; color: var(--hot-pink); }
 .ob--note.is-ok { color: var(--forest-green); }  /* good news: a name that's free, a long-enough password, a code on its way */
