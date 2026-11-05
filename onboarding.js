@@ -291,7 +291,7 @@
   async function sendCode() {
     const email = pending.email;
     document.getElementById('ob-verify-sub').textContent = `We sent a 6-digit code to ${email}.`;
-    if (isTest(email)) { vNote.textContent = ''; pages.verify.elements.code.value = ''; return true; }
+    if (isTest(email)) { vNote.textContent = ''; pages.verify.elements.code.value = '000000'; check(pages.verify); return true; }  // a test: the code filled in
     const r = await ask('/api/verify', json({ email }));
     if (!r) return null;  // not set up: no verifying
     if (r.status === 200) { vNote.textContent = ''; pages.verify.elements.code.value = ''; return true; }
