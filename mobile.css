@@ -2681,9 +2681,8 @@ button.fortune--card:active { transform: scale(0.98); }
 /* the other way in, at the foot over the system line */
 .ob--foot {
   margin-top: auto;
-  margin-bottom: 28px;  /* the rule well up from the foot, as Reddit's */
   padding-top: 20px;
-  border-top: 1px solid var(--system-black);
+  border-top: 1px solid var(--neutral-900);  /* a step lighter than the words */
   display: flex;
   justify-content: center;
 }
