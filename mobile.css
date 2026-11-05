@@ -2510,7 +2510,7 @@ button.fortune--card:active { transform: scale(0.98); }
   line-height: 1.15;
 }
 .ob--sub { margin: 10px 0 32px; font-size: 16px; line-height: 1.35; }
-.ob--field { display: block; margin-bottom: 16px; }
+.ob--field { display: block; margin-bottom: 16px; transition: margin-top 0.28s ease-in-out; }
 .ob--field span { display: block; margin-bottom: 8px; font-size: 14px; }
 .ob--field input {
   display: block;
@@ -2597,7 +2597,7 @@ button.fortune--card:active { transform: scale(0.98); }
   font-size: 16px;  /* main buttons' text */
   letter-spacing: var(--tracking);
   cursor: pointer;
-  transition: background 0.2s, color 0.2s, border-color 0.2s, transform 0.15s;
+  transition: background 0.2s, color 0.2s, border-color 0.2s, transform 0.15s, margin-top 0.28s ease-in-out;
 }
 .ob--btn:active { transform: scale(0.97); }
 .ob--btn:disabled { background: var(--neutral-300); border-color: transparent; color: var(--neutral-900); cursor: default; transform: none; }  /* Figma 638:287 */
@@ -2739,10 +2739,12 @@ button.fortune--card:active { transform: scale(0.98); }
   transition: opacity 0.2s;
 }
 .ob--field.is-ok .ob--ok { opacity: 1; }
-.ob--field.is-ok + .ob--note { display: none; }  /* the tick says it: no word under it */
+/* a word under a field opens its room smoothly, and closes it the same way */
+.ob--note { max-height: 2.7em; overflow: hidden; transition: max-height 0.28s ease-in-out, min-height 0.28s ease-in-out, margin 0.28s ease-in-out, opacity 0.2s ease; }  /* room for two lines */
+.ob--field.is-ok + .ob--note { max-height: 0; min-height: 0; margin: 0; opacity: 0; }  /* the tick says it: no word under it */
 /* no word under a field: no room kept for one either; the fields sit at
    their usual 16px, and shift down only when a word comes */
-.ob--note:empty { min-height: 0; margin: 0; }
+.ob--note:empty { max-height: 0; min-height: 0; margin: 0; opacity: 0; }
 .ob--note:empty + .ob--field,
 .ob--field.is-ok + .ob--note + .ob--field { margin-top: 0; }
 .ob--note:empty + .ob--btn { margin-top: 24px; }  /* buttons keep where they stood */
@@ -2750,10 +2752,10 @@ button.fortune--card:active { transform: scale(0.98); }
 /* while it's checked: a little wheel where the tick will come */
 .ob--spin {
   position: absolute;
-  right: 18px;
+  right: 17px;
   bottom: 21px;
-  width: 15px;
-  height: 15px;
+  width: 16px;  /* every mark in a field: 16px, as the tick */
+  height: 16px;
   box-sizing: border-box;
   border: 1.5px solid var(--neutral-300);
   border-top-color: var(--system-black);
